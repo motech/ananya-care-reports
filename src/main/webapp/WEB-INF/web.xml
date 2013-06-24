@@ -1,0 +1,39 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+    <display-name>Ananya CARE Reporting</display-name>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:/applicationContext.xml
+            /WEB-INF/applicationContext*.xml
+        </param-value>
+    </context-param>
+
+    <error-page>
+        <error-code>400</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+        <location>/general-error.html</location>
+    </error-page>
+</web-app>
