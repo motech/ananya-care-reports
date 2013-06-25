@@ -9,12 +9,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
+        
         <spring.version>3.2.3.RELEASE</spring.version>
         <spring-security.version>3.1.4.RELEASE</spring-security.version>
         <log4j.version>1.2.17</log4j.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
-
+        <postgres-driver.version>9.1-901.jdbc4</postgres-driver.version>
+        <jackson.version>1.9.12</jackson.version>
+        <javax-servlet.version>2.5</javax-servlet.version>
+        
         <modules.root.dir>${basedir}</modules.root.dir>
 
         <check.code.skip>${maven.test.skip}</check.code.skip>
@@ -27,6 +31,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -50,6 +64,16 @@
             <version>${spring-security.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
@@ -65,6 +89,23 @@
             <artifactId>mockito-all</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgres-driver.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${javax-servlet.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -148,6 +189,23 @@
                     </execution>
                 </executions>
             </plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.10.v20130312</version>
+				<configuration>
+					<webAppConfig>
+						<contextPath>/</contextPath>
+						</webAppConfig>
+					<reload>manual</reload>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.bio.SocketConnector">
+							<port>8080</port>
+						</connector>
+					</connectors> 
+				</configuration>
+			</plugin>
 
         </plugins>
     </build>

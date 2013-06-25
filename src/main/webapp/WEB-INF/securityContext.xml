@@ -1,0 +1,26 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <http pattern="/resources/**" security="none"/>
+    <http pattern="/login*" security="none" />
+
+    <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+		<form-login login-page='/login' default-target-url="/"
+			authentication-failure-url="/login?e=1" always-use-default-target="false"
+			username-parameter="login" password-parameter="password" />
+		<logout logout-url="/logout" logout-success-url="/" />
+	</http>
+	
+    <authentication-manager>
+    	<authentication-provider ref="authenticationProvider" />
+	</authentication-manager>
+
+	<global-method-security pre-post-annotations="enabled" />
+
+</beans:beans>
