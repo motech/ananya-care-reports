@@ -1,0 +1,22 @@
+* {
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+}
+
+#login-container {
+ height:100%;
+ display:table;
+ width: 100%;
+}
+
+#login-container .row-fluid {
+    height: 100%;
+    display:table-cell;
+    vertical-align: middle;
+}
+
+input {
+    height: 30px !important;
+    line-height: 30px !important;
+}
