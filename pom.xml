@@ -231,6 +231,21 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <distributionManagement>
+        <repository>
+            <id>care-repo</id>
+            <name>Care Releases Repository</name>
+            <url>http://care.soldevelo.com/nexus/content/repositories/releases</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>care-repo</id>
+            <name>Care Snapshots Repository</name>
+            <url>http://care.soldevelo.com/nexus/content/repositories/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
     <ciManagement>
         <system>Jenkins</system>
         <url>http://care.soldevelo.com/ci/</url>
