@@ -10,10 +10,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
         <spring.version>3.2.3.RELEASE</spring.version>
-	<spring-security.version>3.1.4.RELEASE</spring-security.version>
+        <spring-security.version>3.1.4.RELEASE</spring-security.version>
         <log4j.version>1.2.17</log4j.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
+
+        <modules.root.dir>${basedir}</modules.root.dir>
+
+        <check.code.skip>${maven.test.skip}</check.code.skip>
+        <findbugs.skip>${check.code.skip}</findbugs.skip>
+        <pmd.skip>${check.code.skip}</pmd.skip>
+        <checkstyle.skip>${check.code.skip}</checkstyle.skip>
+
     </properties>
     <dependencies>
         <dependency>
@@ -62,6 +70,7 @@
     <build>
         <finalName>ananya-care-reports</finalName>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -71,6 +80,75 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.7.1</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${modules.root.dir}/pmd.xml</ruleset>
+                    </rulesets>
+                    <includeTests>false</includeTests>
+                    <targetJdk>${jdk.version}</targetJdk>
+                    <skip>${pmd.skip}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <configLocation>${modules.root.dir}/checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <enableFilesSummary>true</enableFilesSummary>
+                    <failsOnError>true</failsOnError>
+                    <consoleOutput>true</consoleOutput>
+                    <skip>${checkstyle.skip}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <failOnError>true</failOnError>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <excludeFilterFile>${modules.root.dir}/findbugs-exclude.xml</excludeFilterFile>
+                    <includeFilterFile>${modules.root.dir}/findbugs-include.xml</includeFilterFile>
+                    <skip>${findbugs.skip}</skip>
+                    <includeTests>false</includeTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
