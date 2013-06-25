@@ -4,7 +4,7 @@
     <groupId>ananya-care-reports</groupId>
     <artifactId>ananya-care-reports</artifactId>
     <packaging>war</packaging>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
     <name>Ananya CARE Reports</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
