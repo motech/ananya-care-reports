@@ -230,4 +230,10 @@
             <url>http://care.soldevelo.com/nexus/content/repositories/public</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://care.soldevelo.com/ci/</url>
+    </ciManagement>
+
 </project>
