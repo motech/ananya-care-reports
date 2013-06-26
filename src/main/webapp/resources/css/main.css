@@ -4,19 +4,32 @@
     box-sizing: border-box !important;
 }
 
-#login-container {
+.centered-container {
  height:100%;
  display:table;
- width: 100%;
 }
 
-#login-container .row-fluid {
+.centered-row {
     height: 100%;
     display:table-cell;
     vertical-align: middle;
+}
+
+#loginContainer button {
+    float: right;
+    margin-top: 15px;
 }
 
 input {
     height: 30px !important;
     line-height: 30px !important;
 }
+
+#dashboard-container {
+    height: 100%;
+}
+
+form button {
+    margin-top: 15px;
+}
+

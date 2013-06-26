@@ -1,0 +1,31 @@
+<div class="container centered-container" ng-show="showCreateForm">
+    <div class="row centered-row">
+        <div class="span5 offset3 well">
+            <form>
+                <label for="name">Name:</label>
+                <input id="name" type="text" ng-model="indicator.name" class="input-block-level" placeholder="Enter name..." />
+                <label for="definedAs">Defined as:</label>
+                <select id="definedAs" ng-model="indicator.definedAs" ng-options="item.value as item.name for item in indicator.listDefinedAs" class="input-block-level"></select>
+                <label for="classifiedAs">Classified as:</label>
+                <select id="classifiedAs" ng-model="indicator.classifiedAs" ng-options="item.value as item.name for item in indicator.listClassifiedAs" class="input-block-level"></select>
+                <hr class="btn-info" />
+                <label for="operator">Operator:</label>
+                <select id="operator" ng-model="indicator.operator" ng-options="item.value as item.name for item in indicator.listOperators" class="input-block-level"></select>
+                <label for="form">Form:</label>
+                <select id="form" ng-model="indicator.form" ng-options="item.value as item.name for item in indicator.listForms" class="input-block-level"></select>
+                <label for="calculateBy">Calculate By:</label>
+                <select id="calculateBy" ng-model="indicator.calculateBy" ng-options="item.value as item.name for item in indicator.listCalculateBy" class="input-block-level"></select>
+                <div class="text-right">
+                    <button class="btn">Add Dimension</button>
+                    <button class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container" ng-show="showUpdateForm">
+    <div class="row">
+        <div></div>
+    </div>
+</div>
