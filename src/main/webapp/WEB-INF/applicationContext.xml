@@ -11,13 +11,39 @@
 	
 	<context:property-placeholder location="classpath:configuration.properties" />
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.user}" />
-		<property name="password" value="${jdbc.password}" />
-	</bean>
-	
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverName}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.user}" />
+        <property name="password" value="${jdbc.password}" />
+
+        <property name="acquireIncrement" value="1" />
+        <property name="minPoolSize" value="2" />
+        <property name="maxPoolSize" value="15" />
+        <property name="initialPoolSize" value="2" />
+
+        <property name="idleConnectionTestPeriod" value="200" />
+        <property name="checkoutTimeout" value="10000" /> <!-- IN MILISECOND -->
+        <property name="unreturnedConnectionTimeout" value="600" /> <!--  SECONDS so 10 MIN-->
+        <property name="automaticTestTable" value="conTest" />
+        <property name="testConnectionOnCheckin" value="true" />
+
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="org.motechproject.carereporting.domain" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basename" value="classpath:messages/messages" />
 		<property name="defaultEncoding" value="UTF-8" />
