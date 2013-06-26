@@ -1,29 +1,28 @@
 package org.motechproject.carereporting.auth;
 
+import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.service.UserException;
+import org.motechproject.carereporting.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CareReportingAuthenticationProvider implements AuthenticationProvider {
 
-    private String testUserName = "test";
-    private String testPassword = "test";
+    @Autowired
+    private UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        if (testUserName.equals(authentication.getPrincipal()) && testPassword.equals(authentication.getCredentials())) {
-            GrantedAuthority grantedAuthority = new GrantedAuthorityImpl("ROLE_USER");
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<>(1);
-            grantedAuthorities.add(grantedAuthority);
-            return new UsernamePasswordAuthenticationToken(testUserName, testPassword, grantedAuthorities);
+        try {
+            UserEntity user = userService.login((String) authentication.getPrincipal(),
+                    (String) authentication.getCredentials());
+            return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        } catch (UserException e) {
+            throw new BadCredentialsException("Bad credentials", e);
         }
-        throw new BadCredentialsException("Bad credentials");
     }
 
     @Override
