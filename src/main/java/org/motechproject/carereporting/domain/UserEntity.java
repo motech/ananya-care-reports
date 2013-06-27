@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,9 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "care_user")
-public class UserEntity implements Serializable, UserDetails {
-
-    private static final long serialVersionUID = 0L;
+public class UserEntity extends AbstractEntity implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -104,4 +101,5 @@ public class UserEntity implements Serializable, UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

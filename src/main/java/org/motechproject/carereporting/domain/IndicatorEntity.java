@@ -6,13 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "care_indicator")
-public class IndicatorEntity implements Serializable {
-
-    private static final long serialVersionUID = 0L;
+public class IndicatorEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue

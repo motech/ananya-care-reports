@@ -6,13 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "role")
-public class RoleEntity implements Serializable {
-
-    private static final long serialVersionUID = 0L;
+public class RoleEntity extends AbstractEntity {
 
     @Id
     @GeneratedValue
