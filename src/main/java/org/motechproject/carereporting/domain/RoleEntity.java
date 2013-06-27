@@ -5,13 +5,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "user_role")
+@Table(name = "role")
 public class RoleEntity implements Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -19,22 +17,10 @@ public class RoleEntity implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 
     public String getName() {
         return name;
@@ -44,11 +30,12 @@ public class RoleEntity implements Serializable {
         this.name = name;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
+
 }

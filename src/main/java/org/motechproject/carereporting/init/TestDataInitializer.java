@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.init;
 
+import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.service.UserException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
-public class TestUserInitializer implements ApplicationListener<ContextRefreshedEvent> {
+public class TestDataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private UserService userService;
@@ -20,13 +21,24 @@ public class TestUserInitializer implements ApplicationListener<ContextRefreshed
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        createAdminRole();
+        createTestUser();
+    }
+
+    private void createAdminRole() {
+        try {
+            userService.addRole("ROLE_ADMIN");
+        } catch (Exception e) {
+            //role already exists - it's ok
+        }
+    }
+
+    private void createTestUser() {
         try {
             userService.login(testUsername, testPassword);
         } catch (UserException e) {
             //cannot login to test user, let's create one
-            ArrayList<String> roles = new ArrayList<>();
-            roles.add("ROLE_TEST");
-            userService.register(testUsername, testPassword, roles);
+            userService.register(testUsername, testPassword, new HashSet<RoleEntity>(userService.getAllRoles()));
         }
     }
 

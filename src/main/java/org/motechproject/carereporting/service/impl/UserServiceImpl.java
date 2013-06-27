@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -13,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private RoleDao roleDao;
 
     @Transactional
     @Override
@@ -37,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = false)
     @Override
-    public void register(String username, String password, List<String> roles) {
+    public void register(String username, String password, Set<RoleEntity> roles) {
         String encodedPassword = encodePasswordWithSalt(password, username);
         UserEntity user = createUser(username, encodedPassword, roles);
         userDao.save(user);
@@ -65,24 +68,26 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    private UserEntity createUser(String username, String password, List<String> roles) {
+    private UserEntity createUser(String username, String password, Set<RoleEntity> roles) {
         UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setPassword(password);
-        Set<RoleEntity> userRoles = createRoles(user, roles);
-        user.setRoles(userRoles);
+        user.setRoles(roles);
         return user;
     }
 
-    private Set<RoleEntity> createRoles(UserEntity user, List<String> roles) {
-        Set<RoleEntity> outRoles = new HashSet<>();
-        for (String roleStr: roles) {
-            RoleEntity role = new RoleEntity();
-            role.setName(roleStr);
-            role.setUser(user);
-            outRoles.add(role);
-        }
-        return outRoles;
+    @Transactional
+    @Override
+    public List<RoleEntity> getAllRoles() {
+        return roleDao.findAll();
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void addRole(String roleName) {
+        RoleEntity role = new RoleEntity();
+        role.setName(roleName);
+        roleDao.save(role);
     }
 
 }
