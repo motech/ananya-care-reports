@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class IndicatorEntity extends AbstractEntity {
     private Integer id;
 
     @NotNull
+    @NotEmpty
     @Column(name = "name", nullable = false)
     private String name;
 

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -51,7 +52,7 @@ public class IndicatorApiResource {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewIndicator(@Valid IndicatorEntity indicatorEntity, BindingResult bindingResult) {
+    public void createNewIndicator(@RequestBody @Valid IndicatorEntity indicatorEntity, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
         }
@@ -59,16 +60,24 @@ public class IndicatorApiResource {
         indicatorService.createNewIndicator(indicatorEntity);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateIndicator(@Valid IndicatorEntity indicatorEntity, BindingResult bindingResult) {
+    public void updateIndicator(@RequestBody @Valid IndicatorEntity indicatorEntity, BindingResult bindingResult,
+                                @PathVariable Integer indicatorId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
         }
 
-        indicatorService.updateIndicator(indicatorEntity);
+        IndicatorEntity indicatorEntityToUpdate = indicatorService.findIndicatorById(indicatorId);
+
+        if (indicatorEntityToUpdate == null) {
+            throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorId);
+        }
+
+        indicatorEntityToUpdate.setName(indicatorEntity.getName());
+        indicatorService.updateIndicator(indicatorEntityToUpdate);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },
