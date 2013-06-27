@@ -17,11 +17,13 @@ public class IndicatorServiceImpl implements IndicatorService {
     private IndicatorDao indicatorDao;
 
     @Override
+    @Transactional
     public List<IndicatorEntity> findAllIndicators() {
         return indicatorDao.findAll();
     }
 
     @Override
+    @Transactional
     public IndicatorEntity findIndicatorById(Integer id) {
         return indicatorDao.findById(id);
     }
