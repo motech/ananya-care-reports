@@ -34,7 +34,7 @@ public abstract class GenericDaoHibernateImpl<T> implements GenericDao<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findById(Long id) {
+    public T findById(Integer id) {
         return (T) sessionFactory.getCurrentSession().get(type, id);
     }
 

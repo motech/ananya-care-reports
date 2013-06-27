@@ -19,6 +19,7 @@
         <jackson.version>1.9.12</jackson.version>
         <javax-servlet.version>2.5</javax-servlet.version>
         <hibernate.version>4.1.10.Final</hibernate.version>
+        <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
         <c3po.version>0.9.1.2</c3po.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
@@ -143,6 +144,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
         </dependency>
     </dependencies>
     <build>

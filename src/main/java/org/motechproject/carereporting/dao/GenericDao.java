@@ -6,7 +6,7 @@ public interface GenericDao<T> {
 
     List<T> findAll();
 
-    T findById(Long id);
+    T findById(Integer id);
 
     void save(T entity);
 
