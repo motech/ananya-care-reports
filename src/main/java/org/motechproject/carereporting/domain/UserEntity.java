@@ -57,7 +57,9 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (RoleEntity role: roles) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            for (PermissionEntity permission: role.getPermissions()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+            }
         }
         return grantedAuthorities;
     }

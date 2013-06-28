@@ -30,6 +30,12 @@
         <pmd.skip>${check.code.skip}</pmd.skip>
         <checkstyle.skip>${check.code.skip}</checkstyle.skip>
 
+        <test.jdbc.driverClassName>org.postgresql.Driver</test.jdbc.driverClassName>
+        <test.jdbc.url>jdbc:postgresql://127.0.0.1:5432</test.jdbc.url>
+        <test.jdbc.username>postgres</test.jdbc.username>
+        <test.jdbc.password>postgres</test.jdbc.password>
+        <test.database>carereportingtest</test.database>
+
     </properties>
     <dependencies>
         <dependency>
@@ -263,6 +269,77 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgres-driver.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <driver>${test.jdbc.driverClassName}</driver>
+                    <url>${test.jdbc.url}</url>
+                    <username>${test.jdbc.username}</username>
+                    <password>${test.jdbc.password}</password>
+                </configuration>
+
+                <executions>
+
+                    <!--  It creates integration test data before running the tests -->
+                    <execution>
+                        <id>create-integration-test-database</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <sqlCommand>
+                                DROP DATABASE IF EXISTS ${test.database};
+                                CREATE DATABASE ${test.database};
+                            </sqlCommand>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>create-integration-test-data</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <url>${test.jdbc.url}/${test.database}</url>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>src/main/resources/db/create_tables.sql</srcFile>
+                                <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
+
+                    <!--  It drops data after executing tests -->
+                    <execution>
+                        <id>drop-db-after-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <sqlCommand>DROP DATABASE IF EXISTS ${test.database};</sqlCommand>
+                        </configuration>
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
         </plugins>
     </build>
 
@@ -341,6 +418,72 @@
                                 <goals>
                                     <goal>verify</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>create-database</id>
+            <properties>
+                <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
+                <jdbc.url>jdbc:postgresql://127.0.0.1:5432</jdbc.url>
+                <jdbc.username>postgres</jdbc.username>
+                <jdbc.password>postgres</jdbc.password>
+                <care.database>carereporting</care.database>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgres-driver.version}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <configuration>
+                            <driver>${jdbc.driverClassName}</driver>
+                            <url>${jdbc.url}</url>
+                            <username>${jdbc.username}</username>
+                            <password>${jdbc.password}</password>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>create-database</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>
+                                        DROP DATABASE IF EXISTS ${care.database};
+                                        CREATE DATABASE ${care.database};
+                                    </sqlCommand>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-tables-and-insert-initial-data</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${jdbc.url}/${care.database}</url>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>src/main/resources/db/create_tables.sql</srcFile>
+                                        <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

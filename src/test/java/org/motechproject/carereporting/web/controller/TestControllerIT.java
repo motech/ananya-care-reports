@@ -3,6 +3,8 @@ package org.motechproject.carereporting.web.controller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.carereporting.domain.RoleEntity;
+import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
@@ -23,6 +26,9 @@ import static java.util.Arrays.asList;
 public class TestControllerIT {
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     TestController testController;
 
     private String username = "test";
@@ -30,6 +36,7 @@ public class TestControllerIT {
 
     @Before
     public void setup() {
+        userService.register(username, password, new HashSet<RoleEntity>());
         setUpSecurityContextWithoutTestRole();
     }
 

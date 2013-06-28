@@ -27,14 +27,6 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Before
-    public void deleteUsersAndRoles() {
-        sessionFactory.getCurrentSession()
-                .createQuery("delete from UserEntity");
-        sessionFactory.getCurrentSession()
-                .createQuery("delete from RoleEntity");
-    }
-
     @Test
     public void testRegisterUser() throws Exception {
         String username = "username";
@@ -47,15 +39,15 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
     @Test
     public void testAddRoles() throws Exception {
         addRoles("ROLE1", "ROLE2");
-        assertEquals(3, userService.getAllRoles().size()); //we expect 3, since ROLE_ADMIN is added on startup
+        assertEquals(2, userService.getAllRoles().size());
     }
 
     @Test
     public void testRegisterUserWithRoles() throws Exception {
-        addRoles("ROLE1", "ROLE2", "ROLE3");
+        addRoles("TEST1", "TEST1", "TEST1");
         RoleEntity role = userService.getAllRoles().get(0);
-        String username = "username";
-        String password = "password";
+        String username = "username2";
+        String password = "password2";
         Set<RoleEntity> roles = new HashSet<>();
         roles.add(role);
         userService.register(username, password, roles);
@@ -71,7 +63,7 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
 
     @Test(expected = UserException.class)
     public void testLoginFailed() throws Exception {
-        String username = "bad-username";
+        String username = "bad-usernamepg";
         String password = "bad-password";
         userService.login(username, password);
     }
