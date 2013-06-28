@@ -90,6 +90,11 @@ public class UserServiceImpl implements UserService {
         roleDao.save(role);
     }
 
+    @Override
+    public void updateUser(UserEntity user) {
+        userDao.update(user);
+    }
+
 }
 
 

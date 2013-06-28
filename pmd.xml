@@ -56,7 +56,7 @@
                 <value>
                     <![CDATA[
                 //ImportDeclaration
-                [not(starts-with(Name/@Image, 'org.motechproject'))]
+                [not(starts-with(Name/@Image, 'org'))]
                 [contains(Name/@Image, '.internal.')]
                 ]]>
                 </value>
