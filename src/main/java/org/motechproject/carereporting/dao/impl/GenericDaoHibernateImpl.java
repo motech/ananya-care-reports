@@ -1,13 +1,14 @@
 package org.motechproject.carereporting.dao.impl;
 
 import org.motechproject.carereporting.dao.GenericDao;
+import org.motechproject.carereporting.domain.AbstractEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.hibernate.SessionFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-public abstract class GenericDaoHibernateImpl<T> implements GenericDao<T> {
+public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implements GenericDao<T> {
 
     @Autowired
     private SessionFactory sessionFactory;

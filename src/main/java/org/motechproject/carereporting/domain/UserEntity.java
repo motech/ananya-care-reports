@@ -4,12 +4,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,12 +21,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "care_user")
+@AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "user_id"))
+})
 public class UserEntity extends AbstractEntity implements UserDetails {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private Integer id;
 
     @Column(name = "username", unique = true)
     private String username;
@@ -53,14 +51,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     @Override

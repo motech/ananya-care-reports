@@ -2,34 +2,24 @@ package org.motechproject.carereporting.domain;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "care_indicator")
+@AttributeOverrides({
+        @AttributeOverride(name = "id", column = @Column(name = "indicator_id"))
+})
 public class IndicatorEntity extends AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private Integer id;
 
     @NotNull
     @NotEmpty
     @Column(name = "name", nullable = false)
     private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
