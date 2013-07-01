@@ -17,7 +17,7 @@ public class FormsServiceImpl implements FormsService {
     private DataSource dataSource;
 
     private static final String TABLE_LIST_SQL =
-            "SELECT table_name FROM information_schema.tables WHERE table_name like '%_form' and table_schema='report'";
+            "SELECT table_name FROM information_schema.tables WHERE table_name like '%_form' and table_schema ='report'";
 
     private static final String COLUMNS_IN_TABLE_SQL =
             "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema='report' AND TABLE_NAME = ?";

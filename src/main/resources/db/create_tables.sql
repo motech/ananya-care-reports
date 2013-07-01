@@ -380,3 +380,17 @@ CREATE TABLE IF NOT EXISTS public.indicator_indicator_category(
 	CONSTRAINT indicator_indicator_category_uk UNIQUE (indicator_id,indicator_category_id)
 );
 -- ddl-end --
+
+-- object: public.indicator_indicator_category | type: TABLE --
+CREATE TABLE IF NOT EXISTS public.indicator_user(
+	indicator_id integer NOT NULL,
+	user_id integer NOT NULL,
+	CONSTRAINT indicator_user_indicator_id_fk FOREIGN KEY (indicator_id)
+	REFERENCES public.indicator (indicator_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_user_user_id_fk FOREIGN KEY (user_id)
+	REFERENCES public.care_user (user_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_user_uk UNIQUE (indicator_id,user_id)
+);
+-- ddl-end --

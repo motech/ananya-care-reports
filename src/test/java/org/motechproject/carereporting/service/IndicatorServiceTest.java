@@ -94,12 +94,12 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
         assertNull(indicatorEntityResult);
     }
 
-    private IndicatorEntity constructIndicator(String name, UserEntity userEntity, LevelEntity levelEntity,
+    private IndicatorEntity constructIndicator(String name, Set<UserEntity> userEntities, LevelEntity levelEntity,
             IndicatorTypeEntity indicatorTypeEntity, Set<IndicatorCategoryEntity> indicatorCategoryEntities,
             Integer frequency) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(name);
-        indicatorEntity.setUserEntity(userEntity);
+        indicatorEntity.setUserEntities(userEntities);
         indicatorEntity.setLevelEntity(levelEntity);
         indicatorEntity.setIndicatorTypeEntity(indicatorTypeEntity);
         indicatorEntity.setIndicatorCategoryEntities(indicatorCategoryEntities);

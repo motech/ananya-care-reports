@@ -1,8 +1,61 @@
 <h1 class="text-center">Create new indicator</h1>
-<div class="container centered-container" ng-show="showCreateForm">
-    <div class="row centered-row">
-        <div class="span5 offset3 well">
-            <form>
+<div class="container" ng-show="showCreateForm">
+    <form id="indicatorForm">
+        <div class="row-fluid">
+            <div class="span6 well">
+                <div class="nested-well">
+                    <fieldset>
+                        <legend>Define Owner:</legend>
+                        <div class="scroll">
+                            <ul class="unstyled">
+                                <li ng-repeat="item in indicator.listOwners">
+                                    <input id="indicatorOwner_{{item.value}}" type="radio" name="owner" value="{{item.value}}" />
+                                    <label class="inline" for="indicatorOwner_{{item.value}}">{{item.name}}</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="nested-well">
+                    <fieldset>
+                        <legend>Define Frequency:</legend>
+                        <div class="scroll">
+                            <ul class="unstyled">
+                                <li ng-repeat="item in indicator.listFrequencies">
+                                    <input id="indicatorFrequency_{{item.value}}" type="radio" name="frequency" value="{{item.value}}" />
+                                    <label class="inline" for="indicatorFrequency_{{item.value}}">{{item.name}}</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="nested-well">
+                    <fieldset>
+                        <legend>Define Level:</legend>
+                        <div id="defineLevel">
+                            <ul class="unstyled">
+                                <li>
+                                    <label class="span4 text-right" for="level_district">Select District:</label>
+                                    <select class="span8" id="level_district" ng-model="indicator.levelDistrict" ng-options="item.value as item.name for item in indicator.listLevelDistrict" class="input-block-level"></select>
+                                </li>
+                                <li>
+                                    <label class="span4 text-right" for="level_block">Select Block:</label>
+                                    <select class="span8" id="level_block" ng-model="indicator.levelBlock" ng-options="item.value as item.name for item in indicator.listLevelBlock" class="input-block-level"></select>
+                                </li>
+                                <li>
+                                    <label class="span4 text-right" for="level_subcentre">Select Subcentre:</label>
+                                    <select class="span8" id="level_subcentre" ng-model="indicator.levelSubcentre" ng-options="item.value as item.name for item in indicator.listLevelSubcentre" class="input-block-level"></select>
+                                </li>
+                                <li>
+                                    <label class="span4 text-right" for="level_flw_type">Select FLW Type:</label>
+                                    <select class="span8" id="level_flw_type" ng-model="indicator.levelFlwType" ng-options="item.value as item.name for item in indicator.listLevelFlwType" class="input-block-level"></select>
+                                </li>
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="span6 well">
                 <label for="name">Name:</label>
                 <input id="name" type="text" ng-model="indicator.name" class="input-block-level" placeholder="Enter name..." />
                 <label for="definedAs">Defined as:</label>
@@ -20,9 +73,9 @@
                     <button class="btn">Add Dimension</button>
                     <button class="btn btn-primary">Create</button>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <div class="container" ng-show="showUpdateForm">

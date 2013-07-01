@@ -40,9 +40,10 @@ public class IndicatorEntity extends AbstractEntity {
     private LevelEntity levelEntity;
 
     @NotNull
-    @ManyToOne(targetEntity = UserEntity.class)
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", nullable = false)
-    private UserEntity userEntity;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = "indicator_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    private Set<UserEntity> userEntities;
 
     @NotNull
     @Column(name = "frequency", nullable = false)
@@ -77,12 +78,12 @@ public class IndicatorEntity extends AbstractEntity {
         this.levelEntity = levelEntity;
     }
 
-    public UserEntity getUserEntity() {
-        return userEntity;
+    public Set<UserEntity> getUserEntities() {
+        return userEntities;
     }
 
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
+    public void setUserEntities(Set<UserEntity> userEntities) {
+        this.userEntities = userEntities;
     }
 
     public Integer getFrequency() {

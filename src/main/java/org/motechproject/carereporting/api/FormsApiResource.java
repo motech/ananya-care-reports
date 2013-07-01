@@ -22,17 +22,17 @@ public class FormsApiResource {
     @Autowired
     private FormsService formsService;
 
-    @RequestMapping(value="/tables", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/tables", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<String> getTables() {
         return formsService.getTables();
     }
 
-    @RequestMapping(value="/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody void addForm(@RequestBody FormEntity form, BindingResult result) {
-
+    public
+    @ResponseBody
+    void addForm(@RequestBody FormEntity form, BindingResult result) {
     }
-
 }
