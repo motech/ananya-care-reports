@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -20,6 +21,7 @@ import java.util.Set;
 })
 public class RoleEntity extends AbstractEntity {
 
+    @NotNull
     @Column(name = "name", unique = true)
     private String name;
 
@@ -27,6 +29,9 @@ public class RoleEntity extends AbstractEntity {
     @JoinTable(name = "role_permission", joinColumns = { @JoinColumn(name = "role_id") },
             inverseJoinColumns = { @JoinColumn(name = "permission_id") })
     private Set<PermissionEntity> permissions;
+
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<UserEntity> users;
 
     public String getName() {
         return name;
@@ -42,5 +47,13 @@ public class RoleEntity extends AbstractEntity {
 
     public void setPermissions(Set<PermissionEntity> permissions) {
         this.permissions = permissions;
+    }
+
+    public Set<UserEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserEntity> users) {
+        this.users = users;
     }
 }

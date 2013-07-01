@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,14 +29,23 @@ import java.util.UUID;
 })
 public class UserEntity extends AbstractEntity implements UserDetails {
 
+    @NotNull
     @Column(name = "username", unique = true)
     private String username;
 
+    @NotNull
     @Column(name = "password")
     private String password;
 
+    @NotNull
     @Column(name = "salt")
     private String salt;
+
+    @ManyToMany(mappedBy = "owners")
+    private Set<DashboardEntity> dashboards;
+
+    @ManyToMany(mappedBy = "owners")
+    private Set<IndicatorEntity> indicators;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "care_user_role", joinColumns = { @JoinColumn(name = "user_id") },
@@ -96,6 +106,30 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         return username;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public Set<DashboardEntity> getDashboards() {
+        return dashboards;
+    }
+
+    public void setDashboards(Set<DashboardEntity> dashboards) {
+        this.dashboards = dashboards;
+    }
+
+    public Set<IndicatorEntity> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(Set<IndicatorEntity> indicators) {
+        this.indicators = indicators;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -114,13 +148,5 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 }

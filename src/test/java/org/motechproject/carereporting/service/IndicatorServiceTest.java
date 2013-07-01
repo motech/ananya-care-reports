@@ -99,10 +99,10 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
             Integer frequency) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(name);
-        indicatorEntity.setUserEntities(userEntities);
-        indicatorEntity.setLevelEntity(levelEntity);
-        indicatorEntity.setIndicatorTypeEntity(indicatorTypeEntity);
-        indicatorEntity.setIndicatorCategoryEntities(indicatorCategoryEntities);
+        indicatorEntity.setOwners(userEntities);
+        indicatorEntity.setLevel(levelEntity);
+        indicatorEntity.setIndicatorType(indicatorTypeEntity);
+        indicatorEntity.setCategories(indicatorCategoryEntities);
         indicatorEntity.setFrequency(frequency);
 
         return indicatorEntity;

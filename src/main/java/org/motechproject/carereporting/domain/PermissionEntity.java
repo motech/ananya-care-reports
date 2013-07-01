@@ -5,7 +5,10 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "permission")
@@ -14,11 +17,16 @@ import javax.persistence.Table;
 })
 public class PermissionEntity extends AbstractEntity {
 
+    @NotNull
     @Column(name = "name", unique = true)
     private String name;
 
+    @NotNull
     @Column(name = "display_name")
     private String displayName;
+
+    @ManyToMany(mappedBy = "permissions")
+    private Set<RoleEntity> roles;
 
     public String getName() {
         return name;
@@ -34,5 +42,13 @@ public class PermissionEntity extends AbstractEntity {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
     }
 }

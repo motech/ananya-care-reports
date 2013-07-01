@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -24,26 +25,29 @@ import java.util.Set;
 public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
-    @ManyToOne(targetEntity = IndicatorTypeEntity.class)
+    @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "indicator_type_id", nullable = false)
-    private IndicatorTypeEntity indicatorTypeEntity;
+    private IndicatorTypeEntity indicatorType;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
-    private Set<IndicatorCategoryEntity> indicatorCategoryEntities;
+    private Set<IndicatorCategoryEntity> categories;
 
     @NotNull
-    @ManyToOne(targetEntity = LevelEntity.class)
+    @ManyToOne
     @JoinColumn(name = "top_level_id", referencedColumnName = "level_id", nullable = false)
-    private LevelEntity levelEntity;
+    private LevelEntity level;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
-    private Set<UserEntity> userEntities;
+    private Set<UserEntity> owners;
+
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
+    private Set<IndicatorValueEntity> values;
 
     @NotNull
     @Column(name = "frequency", nullable = false)
@@ -54,36 +58,44 @@ public class IndicatorEntity extends AbstractEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    public IndicatorTypeEntity getIndicatorTypeEntity() {
-        return indicatorTypeEntity;
+    public IndicatorTypeEntity getIndicatorType() {
+        return indicatorType;
     }
 
-    public void setIndicatorTypeEntity(IndicatorTypeEntity indicatorTypeEntity) {
-        this.indicatorTypeEntity = indicatorTypeEntity;
+    public void setIndicatorType(IndicatorTypeEntity indicatorType) {
+        this.indicatorType = indicatorType;
     }
 
-    public Set<IndicatorCategoryEntity> getIndicatorCategoryEntities() {
-        return indicatorCategoryEntities;
+    public Set<IndicatorCategoryEntity> getCategories() {
+        return categories;
     }
 
-    public void setIndicatorCategoryEntities(Set<IndicatorCategoryEntity> indicatorCategoryEntities) {
-        this.indicatorCategoryEntities = indicatorCategoryEntities;
+    public void setCategories(Set<IndicatorCategoryEntity> categories) {
+        this.categories = categories;
     }
 
-    public LevelEntity getLevelEntity() {
-        return levelEntity;
+    public LevelEntity getLevel() {
+        return level;
     }
 
-    public void setLevelEntity(LevelEntity levelEntity) {
-        this.levelEntity = levelEntity;
+    public void setLevel(LevelEntity level) {
+        this.level = level;
     }
 
-    public Set<UserEntity> getUserEntities() {
-        return userEntities;
+    public Set<UserEntity> getOwners() {
+        return owners;
     }
 
-    public void setUserEntities(Set<UserEntity> userEntities) {
-        this.userEntities = userEntities;
+    public void setOwners(Set<UserEntity> owners) {
+        this.owners = owners;
+    }
+
+    public Set<IndicatorValueEntity> getValues() {
+        return values;
+    }
+
+    public void setValues(Set<IndicatorValueEntity> values) {
+        this.values = values;
     }
 
     public Integer getFrequency() {
