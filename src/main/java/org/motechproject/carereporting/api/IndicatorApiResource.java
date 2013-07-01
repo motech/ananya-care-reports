@@ -31,6 +31,7 @@ public class IndicatorApiResource {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<IndicatorEntity> getIndicatorList() {
+
         return indicatorService.findAllIndicators();
     }
 

@@ -44,6 +44,8 @@ public class IndicatorServiceImpl implements IndicatorService {
         } catch (SQLGrammarException e) {
             if (e.getCause().getMessage().contains("does not exist")) {
                 throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorEntity.getId(), e);
+            } else {
+                throw new RuntimeException(e);
             }
         }
     }

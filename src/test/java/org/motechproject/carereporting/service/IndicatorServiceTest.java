@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -94,14 +95,14 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
     }
 
     private IndicatorEntity constructIndicator(String name, UserEntity userEntity, LevelEntity levelEntity,
-            IndicatorTypeEntity indicatorTypeEntity, IndicatorCategoryEntity indicatorCategoryEntity,
+            IndicatorTypeEntity indicatorTypeEntity, Set<IndicatorCategoryEntity> indicatorCategoryEntities,
             Integer frequency) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(name);
         indicatorEntity.setUserEntity(userEntity);
         indicatorEntity.setLevelEntity(levelEntity);
         indicatorEntity.setIndicatorTypeEntity(indicatorTypeEntity);
-        indicatorEntity.setIndicatorCategoryEntity(indicatorCategoryEntity);
+        indicatorEntity.setIndicatorCategoryEntities(indicatorCategoryEntities);
         indicatorEntity.setFrequency(frequency);
 
         return indicatorEntity;

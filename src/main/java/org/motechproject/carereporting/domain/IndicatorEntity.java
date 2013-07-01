@@ -4,12 +4,17 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "indicator")
@@ -24,9 +29,10 @@ public class IndicatorEntity extends AbstractEntity {
     private IndicatorTypeEntity indicatorTypeEntity;
 
     @NotNull
-    @ManyToOne(targetEntity = IndicatorCategoryEntity.class)
-    @JoinColumn(name = "category_id", referencedColumnName = "indicator_category_id", nullable = false)
-    private IndicatorCategoryEntity indicatorCategoryEntity;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
+            inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
+    private Set<IndicatorCategoryEntity> indicatorCategoryEntities;
 
     @NotNull
     @ManyToOne(targetEntity = LevelEntity.class)
@@ -55,12 +61,12 @@ public class IndicatorEntity extends AbstractEntity {
         this.indicatorTypeEntity = indicatorTypeEntity;
     }
 
-    public IndicatorCategoryEntity getIndicatorCategoryEntity() {
-        return indicatorCategoryEntity;
+    public Set<IndicatorCategoryEntity> getIndicatorCategoryEntities() {
+        return indicatorCategoryEntities;
     }
 
-    public void setIndicatorCategoryEntity(IndicatorCategoryEntity indicatorCategoryEntity) {
-        this.indicatorCategoryEntity = indicatorCategoryEntity;
+    public void setIndicatorCategoryEntities(Set<IndicatorCategoryEntity> indicatorCategoryEntities) {
+        this.indicatorCategoryEntities = indicatorCategoryEntities;
     }
 
     public LevelEntity getLevelEntity() {

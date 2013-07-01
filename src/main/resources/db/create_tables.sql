@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS public.indicator_category(
 -- object: public.level | type: TABLE --
 CREATE TABLE IF NOT EXISTS public.level(
 	level_id serial NOT NULL,
-	parent_level_id integer NOT NULL,
+	parent_level_id integer,
 	name character varying(100) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
@@ -367,4 +367,16 @@ CREATE TABLE IF NOT EXISTS public.indicator_value(
 
 -- ddl-end --
 
-
+-- object: public.indicator_indicator_category | type: TABLE --
+CREATE TABLE IF NOT EXISTS public.indicator_indicator_category(
+	indicator_id integer NOT NULL,
+	indicator_category_id integer NOT NULL,
+	CONSTRAINT indicator_indicator_category_indicator_id_fk FOREIGN KEY (indicator_id)
+	REFERENCES public.indicator (indicator_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_indicator_category_indicator_category_id_fk FOREIGN KEY (indicator_category_id)
+	REFERENCES public.indicator_category (indicator_category_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_indicator_category_uk UNIQUE (indicator_id,indicator_category_id)
+);
+-- ddl-end --
