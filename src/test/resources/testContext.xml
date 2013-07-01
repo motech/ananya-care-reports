@@ -15,6 +15,15 @@
 		http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 
+    <context:property-placeholder location="classpath:configuration.properties" />
+
+    <bean id="careDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${care.jdbc.driverName}" />
+        <property name="url" value="${care.jdbc.url}" />
+        <property name="username" value="${care.jdbc.user}" />
+        <property name="password" value="${care.jdbc.password}" />
+    </bean>
+
     <context:component-scan base-package="org.motechproject.carereporting" />
 
     <mvc:annotation-driven />
@@ -23,10 +32,10 @@
           class="org.motechproject.carereporting.auth.CareReportingAuthenticationProvider" />
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver" />
-        <property name="url" value="jdbc:postgresql://127.0.0.1:5432/carereportingtest" />
-        <property name="username" value="postgres" />
-        <property name="password" value="postgres" />
+        <property name="driverClassName" value="${test.jdbc.driverName}" />
+        <property name="url" value="${test.jdbc.url}" />
+        <property name="username" value="${test.jdbc.user}" />
+        <property name="password" value="${test.jdbc.password}" />
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
