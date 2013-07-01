@@ -14,6 +14,13 @@
 	
 	<context:property-placeholder location="classpath:configuration.properties" />
 
+    <bean id="careDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${care.jdbc.driverName}" />
+        <property name="url" value="${care.jdbc.url}" />
+        <property name="username" value="${care.jdbc.user}" />
+        <property name="password" value="${care.jdbc.password}" />
+    </bean>
+
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverName}" />
         <property name="jdbcUrl" value="${jdbc.url}" />

@@ -1,47 +1,16 @@
- [class^="icon-"] {
-      background-image: url("/resources/images/glyphicons-halflings.png");
+[class^="icon-"] {
+    background-image: url("/resources/images/glyphicons-halflings.png");
 }
 
 [class*="icon-white"] {
-       background-image: url("/resources/images/glyphicons-halflings-white.png");
+    background-image: url("/resources/images/glyphicons-halflings-white.png");
 }
 
-* {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
+.login-container {
+    top: 100px;
+    position: absolute;
 }
 
-.centered-container {
- height:100%;
- display:table;
-}
-
-.centered-row {
-    height: 100%;
-    display:table-cell;
-    vertical-align: middle;
-}
-
-#loginContainer button {
-    float: right;
-    margin-top: 15px;
-}
-
-input {
-    height: 30px !important;
-    line-height: 30px !important;
-}
-
-#dashboard-container {
-    height: 100%;
-}
-
-form button {
-    margin-top: 15px;
-}
-
-.container .dashboard {
-
-height: 100%;
+.login-form {
+    margin-top: 30px;
 }

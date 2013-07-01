@@ -12,4 +12,7 @@ import javax.persistence.Table;
         @AttributeOverride(name = "id", column = @Column(name = "form_id"))
 })
 public class FormEntity extends AbstractEntity {
+
+
+
 }

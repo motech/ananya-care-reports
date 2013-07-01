@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html ng-app="care">
 <head>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="/resources/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/resources/lib/angular/angular.min.js" type="text/javascript"></script>
     <script src="/resources/lib/angular/angular-resource.min.js" type="text/javascript"></script>
     <script src="/resources/lib/angular/angular-strap.min.js" type="text/javascript"></script>
@@ -17,13 +19,20 @@
 </head>
 <body>
     <div id="dashboard-container" class="container">
-        <div class="navbar navbar-static-top" bs-navbar>
+        <div class="navbar" bs-navbar>
             <div class="navbar-inner">
                 <ul class="nav">
                     <li data-match-route="/"><a href="#">Dashboard</a></li>
                     <li data-match-route="/indicator/new"><a href="#/indicator/new">Create indicator</a></li>
                     <li><a href="#">Manage indicators</a></li>
                     <li><a href="#">Manage system users</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage forms <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/#/forms"><i class="icon-list"></i> Form list</a></li>
+                            <li><a href="/#/forms/new"><i class="icon-plus-sign"></i> Add new form</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="pull-right">
                     <span>Welcome, <sec:authentication property="principal.username" />!</span>
