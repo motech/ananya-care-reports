@@ -64,3 +64,8 @@ form#indicatorForm div.scroll:not(:last-child) label {
 div#defineLevel label {
     padding: 5px;
 }
+
+.error {
+    font-size: 25px;
+    line-height: 150%;
+}
