@@ -20,4 +20,9 @@ public class CareResourceNotFoundRuntimeException extends RuntimeException {
         super(constructMessage(clazz, id));
         this.errorList.add(this.getMessage());
     }
+
+    public CareResourceNotFoundRuntimeException(Class clazz, Integer id, Throwable cause) {
+        super(constructMessage(clazz, id), cause);
+        this.errorList.add(this.getMessage());
+    }
 }

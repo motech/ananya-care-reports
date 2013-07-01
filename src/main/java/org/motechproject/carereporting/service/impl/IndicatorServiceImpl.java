@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.exception.SQLGrammarException;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,13 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void updateIndicator(IndicatorEntity indicatorEntity) {
-        indicatorDao.update(indicatorEntity);
+        try {
+            indicatorDao.update(indicatorEntity);
+        } catch (SQLGrammarException e) {
+            if (e.getCause().getMessage().contains("does not exist")) {
+                throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorEntity.getId(), e);
+            }
+        }
     }
 
     @Transactional(readOnly = false)

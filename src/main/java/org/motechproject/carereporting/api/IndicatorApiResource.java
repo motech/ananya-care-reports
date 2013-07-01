@@ -70,14 +70,8 @@ public class IndicatorApiResource {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
         }
 
-        IndicatorEntity indicatorEntityToUpdate = indicatorService.findIndicatorById(indicatorId);
-
-        if (indicatorEntityToUpdate == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorId);
-        }
-
-        indicatorEntityToUpdate.setName(indicatorEntity.getName());
-        indicatorService.updateIndicator(indicatorEntityToUpdate);
+        indicatorEntity.setId(indicatorId);
+        indicatorService.updateIndicator(indicatorEntity);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },
