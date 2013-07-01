@@ -4,7 +4,7 @@ import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.service.UserException;
+import org.motechproject.carereporting.exception.UserException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserEntity login(String username, String password) {
-        String encodedPassword = encodePasswordWithSalt(password, username);
+        String salt = userDao.getSaltForUser(username);
+        String encodedPassword = encodePasswordWithSalt(password, salt);
         UserEntity user = userDao.findByUsernameAndPassword(username, encodedPassword);
         if (user != null) {
             return user;
@@ -41,9 +42,18 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     @Override
     public void register(String username, String password, Set<RoleEntity> roles) {
-        String encodedPassword = encodePasswordWithSalt(password, username);
-        UserEntity user = createUser(username, encodedPassword, roles);
+        UserEntity user = new UserEntity(username, password, roles);
+        String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
+        user.setPassword(encodedPassword);
         userDao.save(user);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void register(UserEntity userEntity) {
+        String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
+        userEntity.setPassword(encodedPassword);
+        userDao.save(userEntity);
     }
 
     private String encodePasswordWithSalt(String password, String salt) {
@@ -66,14 +76,6 @@ public class UserServiceImpl implements UserService {
         String result = formatter.toString();
         formatter.close();
         return result;
-    }
-
-    private UserEntity createUser(String username, String password, Set<RoleEntity> roles) {
-        UserEntity user = new UserEntity();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setRoles(roles);
-        return user;
     }
 
     @Transactional

@@ -16,8 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "care_user")
@@ -32,10 +34,30 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "salt")
+    private String salt;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
     private Set<RoleEntity> roles;
+
+    public UserEntity() {
+    }
+
+    public UserEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.roles = new HashSet<>();
+        this.salt = UUID.randomUUID().toString();
+    }
+
+    public UserEntity(String username, String password, Set<RoleEntity> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.salt = UUID.randomUUID().toString();
+    }
 
     public Set<RoleEntity> getRoles() {
         return roles;
@@ -94,4 +116,11 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         return true;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }

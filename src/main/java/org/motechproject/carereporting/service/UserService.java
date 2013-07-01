@@ -10,6 +10,7 @@ public interface UserService {
 
     UserEntity login(String username, String password);
     void register(String username, String password, Set<RoleEntity> roles);
+    void register(UserEntity userEntity);
     List<RoleEntity> getAllRoles();
     void addRole(String roleName);
     void updateUser(UserEntity user);

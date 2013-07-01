@@ -6,4 +6,5 @@ public interface UserDao extends GenericDao<UserEntity> {
 
     UserEntity findByUsernameAndPassword(String username, String password);
 
+    String getSaltForUser(String username);
 }

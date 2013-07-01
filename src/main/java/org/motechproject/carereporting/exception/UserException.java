@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.service;
+package org.motechproject.carereporting.exception;
 
 public class UserException extends RuntimeException {
 

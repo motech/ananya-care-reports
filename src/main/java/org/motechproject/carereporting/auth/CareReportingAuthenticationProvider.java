@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.auth;
 
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.service.UserException;
+import org.motechproject.carereporting.exception.UserException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

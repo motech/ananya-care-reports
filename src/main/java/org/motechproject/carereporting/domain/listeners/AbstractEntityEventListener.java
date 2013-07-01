@@ -16,6 +16,7 @@ public class AbstractEntityEventListener implements PreInsertEventListener, PreU
         if (preInsertEvent.getEntity() instanceof AbstractEntity) {
             AbstractEntity entity = (AbstractEntity) preInsertEvent.getEntity();
             entity.setCreationDate(new Date());
+            entity.setModificationDate(new Date());
         }
         return false;
     }
