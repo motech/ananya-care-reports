@@ -31,6 +31,11 @@ public class AreaEntity extends AbstractEntity {
     @OneToMany(mappedBy = "area", cascade = CascadeType.ALL)
     private Set<IndicatorValueEntity> indicatorValues;
 
+    public AreaEntity(String name, LevelEntity level) {
+        this.name = name;
+        this.level = level;
+    }
+
     public String getName() {
         return name;
     }
