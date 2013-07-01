@@ -1,9 +1,7 @@
 var care = angular.module('care');
 
-care.controller('loginController', function($scope) {
-});
-
 care.controller('mainController', function($scope) {
+
 });
 
 care.controller('createIndicatorController', function($scope) {
@@ -41,4 +39,5 @@ care.controller('createIndicatorController', function($scope) {
         { name: "Formula 2", value: "2" }
     ];
     $scope.indicator.calculateBy = "1";
+
 });
