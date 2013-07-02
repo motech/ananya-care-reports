@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ public abstract class AbstractEntity implements Serializable {
     protected static final long serialVersionUID = 0L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     protected Integer id;
 

@@ -1,11 +1,12 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -22,8 +23,8 @@ public class IndicatorTypeEntity extends AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "indicator_id")
+    @JsonIgnore
+    @OneToMany(mappedBy = "indicatorType", cascade = CascadeType.ALL)
     private Set<IndicatorEntity> indicators;
 
     public String getName() {
@@ -34,6 +35,7 @@ public class IndicatorTypeEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }

@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -20,7 +22,6 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @Column (name = "name")
     private String name;
 
-    @NotNull
     @ManyToMany(mappedBy = "categories")
     private Set<IndicatorEntity> indicators;
 
@@ -32,6 +33,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }

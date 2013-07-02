@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -36,8 +38,13 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "condition_id")
     private ComplexConditionEntity condition;
 
+    @JsonIgnore
     public IndicatorEntity getIndicator() {
         return indicator;
+    }
+
+    public Integer getIndicatorId() {
+        return indicator.getId();
     }
 
     public void setIndicator(IndicatorEntity indicator) {
@@ -52,16 +59,26 @@ public class IndicatorValueEntity extends AbstractEntity {
         this.date = date;
     }
 
+    @JsonIgnore
     public AreaEntity getArea() {
         return area;
+    }
+
+    public Integer getAreaId() {
+        return area.getId();
     }
 
     public void setArea(AreaEntity area) {
         this.area = area;
     }
 
+    @JsonIgnore
     public ComplexConditionEntity getCondition() {
         return condition;
+    }
+
+    public Integer getConditionId() {
+        return condition.getId();
     }
 
     public void setCondition(ComplexConditionEntity condition) {

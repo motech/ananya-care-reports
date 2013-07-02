@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.AttributeOverride;
@@ -58,14 +59,20 @@ public class IndicatorEntity extends AbstractEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
+    @JsonIgnore
     public IndicatorTypeEntity getIndicatorType() {
         return indicatorType;
+    }
+
+    public Integer getIndicatorTypeId() {
+        return indicatorType.getId();
     }
 
     public void setIndicatorType(IndicatorTypeEntity indicatorType) {
         this.indicatorType = indicatorType;
     }
 
+    @JsonIgnore
     public Set<IndicatorCategoryEntity> getCategories() {
         return categories;
     }
@@ -74,14 +81,20 @@ public class IndicatorEntity extends AbstractEntity {
         this.categories = categories;
     }
 
+    @JsonIgnore
     public LevelEntity getLevel() {
         return level;
+    }
+
+    public Integer getLevelId() {
+        return level.getId();
     }
 
     public void setLevel(LevelEntity level) {
         this.level = level;
     }
 
+    @JsonIgnore
     public Set<UserEntity> getOwners() {
         return owners;
     }
@@ -90,6 +103,7 @@ public class IndicatorEntity extends AbstractEntity {
         this.owners = owners;
     }
 
+    @JsonIgnore
     public Set<IndicatorValueEntity> getValues() {
         return values;
     }

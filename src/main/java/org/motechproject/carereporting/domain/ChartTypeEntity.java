@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -32,6 +34,7 @@ public class ChartTypeEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public Set<ReportTypeEntity> getReportTypes() {
         return reportTypes;
     }

@@ -24,7 +24,7 @@ class ErrorController {
         }
 
         StackTraceElement[] stackTrace = null;
-        if(throwable != null) {
+        if (throwable != null) {
             stackTrace = throwable.getStackTrace();
         }
 

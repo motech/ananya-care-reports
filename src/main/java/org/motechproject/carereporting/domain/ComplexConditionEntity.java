@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -56,24 +58,39 @@ public class ComplexConditionEntity extends AbstractEntity {
         this.comparisonValue = comparisonValue;
     }
 
+    @JsonIgnore
     public OperatorTypeEntity getOperatorType() {
         return operatorType;
+    }
+
+    public Integer getOperatorTypeId() {
+        return operatorType.getId();
     }
 
     public void setOperatorType(OperatorTypeEntity operatorType) {
         this.operatorType = operatorType;
     }
 
+    @JsonIgnore
     public FormEntity getForm() {
         return form;
+    }
+
+    public Integer getFormId() {
+        return form.getId();
     }
 
     public void setForm(FormEntity form) {
         this.form = form;
     }
 
+    @JsonIgnore
     public ComparisonSymbolEntity getComparisonSymbol() {
         return comparisonSymbol;
+    }
+
+    public Integer getComparisonSymbolId() {
+        return comparisonSymbol.getId();
     }
 
     public void setComparisonSymbol(ComparisonSymbolEntity comparisonSymbol) {

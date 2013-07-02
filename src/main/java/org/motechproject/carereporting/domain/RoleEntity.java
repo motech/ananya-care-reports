@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -41,6 +43,7 @@ public class RoleEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public Set<PermissionEntity> getPermissions() {
         return permissions;
     }
@@ -49,6 +52,7 @@ public class RoleEntity extends AbstractEntity {
         this.permissions = permissions;
     }
 
+    @JsonIgnore
     public Set<UserEntity> getUsers() {
         return users;
     }

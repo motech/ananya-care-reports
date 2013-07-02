@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -44,6 +46,7 @@ public class FormEntity extends AbstractEntity {
         this.displayName = displayName;
     }
 
+    @JsonIgnore
     public Set<ComplexConditionEntity> getComplexConditions() {
         return complexConditions;
     }

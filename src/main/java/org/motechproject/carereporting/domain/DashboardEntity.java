@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -50,6 +52,7 @@ public class DashboardEntity extends AbstractEntity {
         this.tabPosition = tabPosition;
     }
 
+    @JsonIgnore
     public Set<UserEntity> getOwners() {
         return owners;
     }

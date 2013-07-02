@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,6 +70,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.salt = UUID.randomUUID().toString();
     }
 
+    @JsonIgnore
     public Set<RoleEntity> getRoles() {
         return roles;
     }
@@ -106,6 +108,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         return username;
     }
 
+    @JsonIgnore
     public String getSalt() {
         return salt;
     }
@@ -114,6 +117,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.salt = salt;
     }
 
+    @JsonIgnore
     public Set<DashboardEntity> getDashboards() {
         return dashboards;
     }
@@ -122,6 +126,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.dashboards = dashboards;
     }
 
+    @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }

@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -33,8 +35,13 @@ public class ReportEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public ReportTypeEntity getReportType() {
         return reportType;
+    }
+
+    public Integer getReportTypeId() {
+        return reportType.getId();
     }
 
     public void setReportType(ReportTypeEntity reportType) {

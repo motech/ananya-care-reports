@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -43,14 +45,20 @@ public class LevelEntity extends AbstractEntity {
         this.name = name;
     }
 
+    @JsonIgnore
     public LevelEntity getParentLevel() {
         return parentLevel;
+    }
+
+    public Integer getLevelId() {
+        return parentLevel.getId();
     }
 
     public void setParentLevel(LevelEntity parentLevel) {
         this.parentLevel = parentLevel;
     }
 
+    @JsonIgnore
     public Set<AreaEntity> getAreas() {
         return areas;
     }
