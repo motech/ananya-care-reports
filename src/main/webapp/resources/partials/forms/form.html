@@ -1,5 +1,5 @@
+<h1 class="text-center">Edit form</h1>
 <div class="well span6 offset3">
-    <h1 class="text-center">Add new form</h1>
     <form class="form-horizontal">
         <div class="control-group">
             <label class="control-label" for="tableName">Table: </label>
@@ -11,14 +11,13 @@
             <label class="control-label" for="displayName">Display name: </label>
             <div class="controls">
                 <div class="input-append">
-                    <input ng-mode="careForm.displayName" type="text" id="displayName" name="displayName" placeholder="Enter form display name...">
+                    <input ng-model="careForm.displayName" type="text" id="displayName" name="displayName" placeholder="Enter form display name...">
                     <span class="add-on"><i class="icon-tag"></i></span>
                 </div>
-
             </div>
         </div>
         <div class="control-group">
-            <button type="submit" class="btn btn-primary offset2" ng-click="addNewForm(careForm)">Add form</button>
+            <button type="submit" class="btn btn-primary offset2" ng-click="submitForm(careForm)">Submit</button>
         </div>
     </form>
 </div>

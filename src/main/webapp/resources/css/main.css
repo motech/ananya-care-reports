@@ -69,3 +69,7 @@ div#defineLevel label {
     font-size: 25px;
     line-height: 150%;
 }
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #eeeeee;
+}

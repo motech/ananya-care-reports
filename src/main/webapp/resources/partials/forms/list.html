@@ -1,0 +1,23 @@
+<h1 class="text-center">Forms</h1>
+<div class="span8 offset2 well">
+    <table class="table table-hover" ng-show="forms.length > 0">
+        <thead>
+        <tr>
+            <th>Display name</th>
+            <th>Table name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="form in forms">
+            <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+            <td>{{form.tableName}}</td>
+            <td><span class="btn btn-link" ng-click="deleteForm(form);"><i class="icon-remove"></i></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="forms.length == 0">No forms to display<br /><br /></span>
+        <a class="btn btn-primary" href="#/forms/new">Add new form</a>
+    </p>
+</div>

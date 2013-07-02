@@ -84,22 +84,71 @@ care.controller('createIndicatorController', function($scope) {
 
 });
 
-care.controller('createFormController', function($scope, $http) {
+care.controller('formController', function($scope, $http, $routeParams, $location, $dialog) {
 
-   $scope.careForm = {}
+    $scope.formId = $routeParams.formId;
+    $scope.careForm = {};
 
-   $scope.fetchTables = function() {
-        $http.get('forms/tables').success(function(tables) {
-            $scope.tables = tables;
-        });
-    }
-
-    $scope.addNewForm = function(form) {
-        $http.post("forms/add", form).success(function(response) {
-            }).error(function(response) {
+    $scope.fetchForm = function() {
+        $http.get('api/forms/' + $scope.formId)
+            .success(function(form) {
+                $scope.careForm = form;
+            }).error(function() {
+                $dialog.messageBox("Error", "Cannot load form.", [{label: 'Ok', cssClass: 'btn'}]).open();
             });
-    }
+    };
+
+    $scope.fetchTables = function() {
+        $http.get('api/forms/tables')
+            .success(function(tables) {
+                $scope.tables = tables;
+            })
+            .error(function() {
+                $dialog.messageBox("Error", "Cannot load available tables.", [{label: 'Ok', cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.submitForm = function(form) {
+
+        $http({method: 'PUT', url: 'api/forms' + (form.id !== undefined ? ('/' + form.id) : ''), data: form})
+            .success(function(response) {
+                $location.path( "/forms" );
+            }).error(function(response) {
+                $dialog.messageBox("Error", "Cannot submit form.", [{label: 'Ok', cssClass: 'btn'}]).open();
+            });
+    };
 
     $scope.fetchTables();
+
+    if ($scope.formId !== undefined) {
+        $scope.fetchForm();
+    };
+});
+
+care.controller('formListController', function($scope, $http, $dialog) {
+
+    $scope.fetchForms = function() {
+        $http.get('api/forms').success(function(forms) {
+            $scope.forms = forms;
+        });
+    };
+
+    $scope.deleteForm = function(form) {
+        var btns = [{result:'yes', label: 'Yes', cssClass: 'btn-primary btn'}, {result:'no', label: 'No', cssClass: 'btn-danger btn'}];
+        $dialog.messageBox("Confirm delete form", "Are you sure you want to delete form: " + form.displayName + '?', btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({method: 'DELETE', url: 'api/forms/' + form.id})
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchForms();
+                    }).error(function(response) {
+                        $dialog.messageBox("Error", "Cannot delete form.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                    });
+                }
+            });
+    };
+
+    $scope.fetchForms();
 
 });
