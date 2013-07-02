@@ -7,10 +7,12 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 @Table(name = "complex_condition")
@@ -41,6 +43,9 @@ public class ComplexConditionEntity extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id")
     private ComparisonSymbolEntity comparisonSymbol;
+
+    @ManyToMany(mappedBy = "complexConditions")
+    private Set<IndicatorEntity> indicators;
 
     public String getField() {
         return field;
@@ -95,5 +100,13 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     public void setComparisonSymbol(ComparisonSymbolEntity comparisonSymbol) {
         this.comparisonSymbol = comparisonSymbol;
+    }
+
+    public Set<IndicatorEntity> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(Set<IndicatorEntity> indicators) {
+        this.indicators = indicators;
     }
 }

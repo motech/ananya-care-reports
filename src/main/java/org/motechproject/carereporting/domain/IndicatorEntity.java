@@ -25,6 +25,8 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
+    private static final String INDICATOR_ID_COLUMN_NAME = "indicator_id";
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "indicator_type_id", nullable = false)
@@ -32,7 +34,7 @@ public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
+    @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
     private Set<IndicatorCategoryEntity> categories;
 
@@ -43,9 +45,15 @@ public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = "indicator_id") },
+    @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<UserEntity> owners;
+
+    @NotNull
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "indicator_complex_condition", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
+            inverseJoinColumns = { @JoinColumn(name = "complex_condition_id") })
+    private Set<ComplexConditionEntity> complexConditions;
 
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
     private Set<IndicatorValueEntity> values;
@@ -101,6 +109,15 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setOwners(Set<UserEntity> owners) {
         this.owners = owners;
+    }
+
+    @JsonIgnore
+    public Set<ComplexConditionEntity> getComplexConditions() {
+        return complexConditions;
+    }
+
+    public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
+        this.complexConditions = complexConditions;
     }
 
     @JsonIgnore

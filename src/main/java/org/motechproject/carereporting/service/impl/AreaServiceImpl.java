@@ -22,31 +22,37 @@ public class AreaServiceImpl implements AreaService {
     private LevelDao levelDao;
 
     @Override
+    @Transactional
     public List<AreaEntity> getAllAreas() {
         return areaDao.findAll();
     }
 
     @Override
+    @Transactional
     public List<LevelEntity> getAllLevels() {
         return levelDao.findAll();
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void createNewArea(AreaEntity areaEntity) {
         areaDao.save(areaEntity);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void updateArea(AreaEntity areaEntity) {
         areaDao.update(areaEntity);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void deleteArea(AreaEntity areaEntity) {
         areaDao.remove(areaEntity);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void createNewLevel(LevelEntity level) {
         levelDao.save(level);
     }
