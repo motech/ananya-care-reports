@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
+    <c:set var="req" value="${pageContext.request}" />
+    <c:set var="uri" value="${req.requestURI}" />
+    <c:set var="url">${req.requestURL}</c:set>
+    <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
+    <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 </head>
 <body>
     <div class="container">

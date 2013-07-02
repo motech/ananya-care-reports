@@ -1,9 +1,9 @@
 [class^="icon-"] {
-    background-image: url("/resources/images/glyphicons-halflings.png");
+    background-image: url("../images/glyphicons-halflings.png");
 }
 
 [class*="icon-white"] {
-    background-image: url("/resources/images/glyphicons-halflings-white.png");
+    background-image: url("../images/glyphicons-halflings-white.png");
 }
 
 .login-container {

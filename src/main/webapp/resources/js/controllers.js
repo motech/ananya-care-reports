@@ -89,13 +89,13 @@ care.controller('createFormController', function($scope, $http) {
    $scope.careForm = {}
 
    $scope.fetchTables = function() {
-        $http.get('/forms/tables').success(function(tables) {
+        $http.get('forms/tables').success(function(tables) {
             $scope.tables = tables;
         });
     }
 
     $scope.addNewForm = function(form) {
-        $http.post("/forms/add", form).success(function(response) {
+        $http.post("forms/add", form).success(function(response) {
             }).error(function(response) {
             });
     }

@@ -18,6 +18,7 @@
         <postgres-driver.version>9.1-901.jdbc4</postgres-driver.version>
         <jackson.version>1.9.12</jackson.version>
         <javax-servlet.version>2.5</javax-servlet.version>
+        <javax-servlet-jstl.version>1.2</javax-servlet-jstl.version>
         <hibernate.version>4.1.10.Final</hibernate.version>
         <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
         <c3po.version>0.9.1.2</c3po.version>
@@ -136,6 +137,11 @@
             <version>${javax-servlet.version}</version>
             <type>jar</type>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${javax-servlet-jstl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
