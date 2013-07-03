@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.UserService;
@@ -28,6 +29,13 @@ public class UserController {
     @ResponseBody
     public Set<UserEntity> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @RequestMapping(value = "/roles", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<RoleEntity> getAllRoles() {
+        return userService.getAllRoles();
     }
 
     @RequestMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })

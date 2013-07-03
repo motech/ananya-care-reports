@@ -1,0 +1,21 @@
+<h1 class="text-center">{{msg('users.roles')}}</h1>
+<div class="span8 offset2 well">
+    <table class="table table-hover" ng-show="roles.length > 0">
+        <thead>
+        <tr>
+            <th>{{msg('users.roles.roleName')}}</th>
+            <th>{{msg('actions')}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="role in roles">
+            <td><a href="#/users/roles/{{role.id}}">{{role.name}}</a></td>
+            <td><span class="btn btn-link" ng-click="deleteRole(role);"><i class="icon-remove"></i></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="roles.length == 0">{{msg('users.roles.list.empty')}}<br /><br /></span>
+        <a class="btn btn-primary" href="#/users/roles/new">{{msg('users.roles.list.add')}}</a>
+    </p>
+</div>

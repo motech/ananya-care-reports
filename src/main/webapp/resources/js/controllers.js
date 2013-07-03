@@ -167,7 +167,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
                 if (result === 'yes') {
                     $http({method: 'DELETE', url: 'api/users/' + user.id})
                     .success(function(data, status, headers, config) {
-                        $scope.fetchForms();
+                        $scope.fetchUsers();
                     }).error(function(response) {
                         $dialog.messageBox("Error", "Cannot delete user.", [{label: 'Ok', cssClass: 'btn'}]).open();
                     });
@@ -176,5 +176,36 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
     };
 
     $scope.fetchUsers();
+
+});
+
+care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog) {
+
+    $scope.fetchRoles = function() {
+        $http.get('api/users/roles').success(function(roles) {
+            $scope.roles = roles;
+        });
+    };
+
+    $scope.deleteRole = function(role) {
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'},
+                            {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+                $dialog.messageBox($scope.msg('users.roles.list.confirmDelete.header'),
+                                   $scope.msg('users.roles.list.confirmDelete.message') + role.name + '?', btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({method: 'DELETE', url: 'api/users/roles' + role.id})
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchRoles();
+                    }).error(function(response) {
+                        $dialog.messageBox(@scope.msg('Error'), $scope.msg('users.roles.list.error.delete'),
+                                            [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                    });
+                }
+            });
+    };
+
+    $scope.fetchRoles();
 
 });

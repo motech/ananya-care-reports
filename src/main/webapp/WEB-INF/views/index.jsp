@@ -39,6 +39,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="#/users"><i class="icon-list"></i> User list</a></li>
+                            <li><a href="#/users/roles"><i class="icon-list"></i>{{msg('menu.manageSystemUsers.rolesList')}}</a></li>
                             <li><a href="#/users/new"><i class="icon-plus-sign"></i> Add new user</a></li>
                         </ul>
                     </li>
