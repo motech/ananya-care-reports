@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public List<RoleEntity> getAllRoles() {
+    public Set<RoleEntity> getAllRoles() {
         return roleDao.findAll();
     }
 

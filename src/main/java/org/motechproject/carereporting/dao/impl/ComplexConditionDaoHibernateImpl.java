@@ -4,7 +4,7 @@ import org.motechproject.carereporting.dao.ComplexConditionDao;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 @Component
 public class ComplexConditionDaoHibernateImpl
@@ -12,7 +12,7 @@ public class ComplexConditionDaoHibernateImpl
 
     // TODO: Implement finding all complex conditions by indicator id
     @Override
-    public List<ComplexConditionEntity> getAllByIndicatorId(Integer indicatorId) {
+    public Set<ComplexConditionEntity> getAllByIndicatorId(Integer indicatorId) {
         throw new UnsupportedOperationException();
     }
 }

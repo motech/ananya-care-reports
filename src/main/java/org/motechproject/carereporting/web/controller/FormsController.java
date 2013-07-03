@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.motechproject.carereporting.domain.FormEntity;
 
-import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/api/forms")
@@ -26,7 +26,7 @@ public class FormsController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<FormEntity> getAllForms() {
+    public Set<FormEntity> getAllForms() {
         return formsService.getAllForms();
     }
 
@@ -46,7 +46,7 @@ public class FormsController {
     @RequestMapping(value = "/tables", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<String> getTables() {
+    public Set<String> getTables() {
         return formsService.getTables();
     }
 

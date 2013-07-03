@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,22 +55,22 @@ public class FormsServiceImpl implements FormsService {
     }
 
     @Override
-    public List<FormEntity> getAllForms() {
+    public Set<FormEntity> getAllForms() {
         return formDao.findAll();
     }
 
     @Override
     @Transactional
-    public List<String> getTables() {
+    public Set<String> getTables() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return (List<String>) jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class);
+        return new HashSet<String>(jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class));
     }
 
     @Override
     @Transactional
-    public List<String> getTableColumns(String tableName) {
+    public Set<String> getTableColumns(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return (List<String>) jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class, tableName);
+        return new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class, tableName));
     }
 }
 

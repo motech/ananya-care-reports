@@ -2,11 +2,11 @@ package org.motechproject.carereporting.dao;
 
 import org.motechproject.carereporting.domain.AbstractEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface GenericDao<T extends AbstractEntity> {
 
-    List<T> findAll();
+    Set<T> findAll();
 
     T findById(Integer id);
 

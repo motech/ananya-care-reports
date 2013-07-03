@@ -4,16 +4,18 @@ import org.hibernate.exception.SQLGrammarException;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
+import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
+import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,11 +32,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private IndicatorCategoryDao indicatorCategoryDao;
 
+    @Autowired
+    private IndicatorValueDao indicatorValueDao;
+
     // IndicatorEntity
 
     @Override
     @Transactional
-    public List<IndicatorEntity> findAllIndicators() {
+    public Set<IndicatorEntity> findAllIndicators() {
         return indicatorDao.findAll();
     }
 
@@ -82,7 +87,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public List<IndicatorTypeEntity> findAllIndicatorTypes() {
+    public Set<IndicatorTypeEntity> findAllIndicatorTypes() {
         return indicatorTypeDao.findAll();
     }
 
@@ -132,7 +137,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public List<IndicatorCategoryEntity> findAllIndicatorCategories() {
+    public Set<IndicatorCategoryEntity> findAllIndicatorCategories() {
         return indicatorCategoryDao.findAll();
     }
 
@@ -176,5 +181,35 @@ public class IndicatorServiceImpl implements IndicatorService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Transactional
+    @Override
+    public Set<IndicatorValueEntity> findAllIndicatorValues() {
+        return indicatorValueDao.findAll();
+    }
+
+    @Transactional
+    @Override
+    public IndicatorValueEntity findIndicatorValueById(Integer id) {
+        return indicatorValueDao.findById(id);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
+        indicatorValueDao.save(indicatorValueEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
+        indicatorValueDao.update(indicatorValueEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
+        indicatorValueDao.remove(indicatorValueEntity);
     }
 }

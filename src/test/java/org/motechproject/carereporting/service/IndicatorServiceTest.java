@@ -15,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -77,7 +76,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
         indicatorService.createNewIndicator(indicatorEntity1);
         indicatorService.createNewIndicator(indicatorEntity2);
 
-        List<IndicatorEntity> indicatorList = indicatorService.findAllIndicators();
+        Set<IndicatorEntity> indicatorList = indicatorService.findAllIndicators();
         assertNotNull(indicatorList);
         assertEquals("IndicatorEntity list size is: " + indicatorList.size()
                 + ", expected: " + EXPECTED_INDICATOR_LIST_SIZE,

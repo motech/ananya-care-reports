@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,7 +28,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public List<ComplexConditionEntity> getAllComplexConditions() {
+    public Set<ComplexConditionEntity> getAllComplexConditions() {
         return complexConditionDao.findAll();
     }
 
@@ -40,7 +40,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public List<ComplexConditionEntity> getComplexConditionsByIndicatorId(Integer indicatorId) {
+    public Set<ComplexConditionEntity> getComplexConditionsByIndicatorId(Integer indicatorId) {
         return complexConditionDao.getAllByIndicatorId(indicatorId);
     }
 
@@ -52,7 +52,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public List<OperatorTypeEntity> getAllOperatorTypes() {
+    public Set<OperatorTypeEntity> getAllOperatorTypes() {
         return operatorTypeDao.findAll();
     }
 
@@ -70,7 +70,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public List<ComparisonSymbolEntity> getAllComparisonSymbols() {
+    public Set<ComparisonSymbolEntity> getAllComparisonSymbols() {
         return comparisonSymbolDao.findAll();
     }
 

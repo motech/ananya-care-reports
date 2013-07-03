@@ -3,15 +3,15 @@ package org.motechproject.carereporting.service;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface AreaService {
 
-    List<AreaEntity> getAllAreas();
+    Set<AreaEntity> getAllAreas();
 
     AreaEntity getAreaById(Integer areaId);
 
-    List<LevelEntity> getAllLevels();
+    Set<LevelEntity> getAllLevels();
 
     LevelEntity getLevelById(Integer levelId);
 

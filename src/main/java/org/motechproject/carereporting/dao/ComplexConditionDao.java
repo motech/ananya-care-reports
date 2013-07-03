@@ -2,10 +2,10 @@ package org.motechproject.carereporting.dao;
 
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ComplexConditionDao extends GenericDao<ComplexConditionEntity> {
 
-    List<ComplexConditionEntity> getAllByIndicatorId(Integer indicatorId);
+    Set<ComplexConditionEntity> getAllByIndicatorId(Integer indicatorId);
 
 }

@@ -4,25 +4,25 @@ import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ComplexConditionService {
 
-    List<ComplexConditionEntity> getAllComplexConditions();
+    Set<ComplexConditionEntity> getAllComplexConditions();
 
     ComplexConditionEntity getComplexConditionById(Integer complexConditionId);
 
-    List<ComplexConditionEntity> getComplexConditionsByIndicatorId(Integer indicatorId);
+    Set<ComplexConditionEntity> getComplexConditionsByIndicatorId(Integer indicatorId);
 
     void createComplexCondition(ComplexConditionEntity complexCondition);
 
-    List<OperatorTypeEntity> getAllOperatorTypes();
+    Set<OperatorTypeEntity> getAllOperatorTypes();
 
     OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId);
 
     void createOperatorType(OperatorTypeEntity operatorType);
 
-    List<ComparisonSymbolEntity> getAllComparisonSymbols();
+    Set<ComparisonSymbolEntity> getAllComparisonSymbols();
 
     ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId);
 

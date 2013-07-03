@@ -2,7 +2,7 @@ package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.FormEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface FormsService {
 
@@ -10,9 +10,9 @@ public interface FormsService {
    void updateForm(FormEntity form);
    void deleteFormById(Integer id);
    FormEntity findFormById(Integer formId);
-   List<FormEntity> getAllForms();
-   List<String> getTables();
-   List<String> getTableColumns(String tableName);
+   Set<FormEntity> getAllForms();
+   Set<String> getTables();
+   Set<String> getTableColumns(String tableName);
 
 }
 

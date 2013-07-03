@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Set;
 
 @RequestMapping("api/indicator")
 @Controller
@@ -34,7 +34,7 @@ public class IndicatorController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<IndicatorEntity> getIndicatorList() {
+    public Set<IndicatorEntity> getIndicatorList() {
 
         return indicatorService.findAllIndicators();
     }
@@ -100,7 +100,7 @@ public class IndicatorController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<IndicatorTypeEntity> getIndicatorTypeList() {
+    public Set<IndicatorTypeEntity> getIndicatorTypeList() {
 
         return indicatorService.findAllIndicatorTypes();
     }
@@ -177,7 +177,7 @@ public class IndicatorController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<IndicatorCategoryEntity> getIndicatorCategoryList() {
+    public Set<IndicatorCategoryEntity> getIndicatorCategoryList() {
 
         return indicatorService.findAllIndicatorCategories();
     }

@@ -1,12 +1,13 @@
 package org.motechproject.carereporting.dao.impl;
 
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.hibernate.SessionFactory;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implements GenericDao<T> {
 
@@ -28,9 +29,9 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> findAll() {
-        return sessionFactory.getCurrentSession()
-                .createCriteria(type).list();
+    public Set<T> findAll() {
+        return new HashSet<T>(sessionFactory.getCurrentSession()
+                .createCriteria(type).list());
     }
 
     @Override

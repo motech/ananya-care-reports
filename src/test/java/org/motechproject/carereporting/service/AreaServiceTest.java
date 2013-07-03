@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -31,10 +31,12 @@ public class AreaServiceTest extends AbstractTransactionalJUnit4SpringContextTes
         areaService.createNewLevel(level);
         AreaEntity area = new AreaEntity("newArea", level);
         areaService.createNewArea(area);
-        List<AreaEntity> areas = areaService.getAllAreas();
+        Set<AreaEntity> areas = areaService.getAllAreas();
+        AreaEntity [] areaEntities = {};
+        areaEntities = areas.toArray(areaEntities);
         assertNotNull(areas);
         assertEquals(areas.size(), 1);
-        assertEquals(areas.get(0).getLevel().getName(), "newLevel");
-        assertEquals(areas.get(0).getName(), "newArea");
+        assertEquals(areaEntities[0].getLevel().getName(), "newLevel");
+        assertEquals(areaEntities[0].getName(), "newArea");
     }
 }
