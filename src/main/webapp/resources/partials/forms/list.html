@@ -1,11 +1,11 @@
-<h1 class="text-center">Forms</h1>
+<h1 class="text-center">{{msg('forms.list.header')}}</h1>
 <div class="span8 offset2 well">
     <table class="table table-hover" ng-show="forms.length > 0">
         <thead>
         <tr>
-            <th>Display name</th>
-            <th>Table name</th>
-            <th>Actions</th>
+            <th>{{msg('forms.list.displayName')}}</th>
+            <th>{{msg('forms.list.tableName')}}</th>
+            <th>{{msg('forms.list.actions')}}</th>
         </tr>
         </thead>
         <tbody>
@@ -17,7 +17,7 @@
         </tbody>
     </table>
     <p class="text-center">
-        <span class="text-info" ng-show="forms.length == 0">No forms to display<br /><br /></span>
-        <a class="btn btn-primary" href="#/forms/new">Add new form</a>
+        <span class="text-info" ng-show="forms.length == 0">{{msg('forms.list.empty')}}<br /><br /></span>
+        <a class="btn btn-primary" href="#/forms/new">{{msg('forms.list.addNewForm')}}</a>
     </p>
 </div>

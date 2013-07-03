@@ -1,12 +1,10 @@
 var care = angular.module('care');
 
-care.controller('mainController', function($scope) {
+care.controller('dashboardController', function($scope) {
 
 });
 
 care.controller('createIndicatorController', function($scope) {
-    $scope.showCreateForm = true;
-    $scope.showUpdateForm = false;
 
     $scope.indicator = {};
 
@@ -94,7 +92,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(form) {
                 $scope.careForm = form;
             }).error(function() {
-                $dialog.messageBox("Error", "Cannot load form.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotLoadForm'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -104,7 +102,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
                 $scope.tables = tables;
             })
             .error(function() {
-                $dialog.messageBox("Error", "Cannot load available tables.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotLoadTables'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -114,7 +112,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/forms" );
             }).error(function(response) {
-                $dialog.messageBox("Error", "Cannot submit form.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('forms.form.error.submit'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -134,8 +132,8 @@ care.controller('formListController', function($scope, $http, $dialog) {
     };
 
     $scope.deleteForm = function(form) {
-        var btns = [{result:'yes', label: 'Yes', cssClass: 'btn-primary btn'}, {result:'no', label: 'No', cssClass: 'btn-danger btn'}];
-        $dialog.messageBox("Confirm delete form", "Are you sure you want to delete form: " + form.displayName + '?', btns)
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+        $dialog.messageBox($scope.msg('forms.list.confirmDelete.header'), $scope.msg('forms.list.confirmDelete.message', form.displayName), btns)
             .open()
             .then(function(result) {
                 if (result === 'yes') {
@@ -143,7 +141,7 @@ care.controller('formListController', function($scope, $http, $dialog) {
                     .success(function(data, status, headers, config) {
                         $scope.fetchForms();
                     }).error(function(response) {
-                        $dialog.messageBox("Error", "Cannot delete form.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                        $dialog.messageBox("Error", $scope.msg('forms.list.error.delete'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
                     });
                 }
             });
