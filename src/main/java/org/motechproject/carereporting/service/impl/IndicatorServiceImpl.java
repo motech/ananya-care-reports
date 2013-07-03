@@ -62,7 +62,10 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorEntity findIndicatorById(Integer id) {
-        return indicatorDao.findById(id);
+        IndicatorEntity indicatorEntity = indicatorDao.findById(id);
+        validateEntity(indicatorEntity);
+
+        return indicatorEntity;
     }
 
     @Transactional(readOnly = false)
@@ -215,7 +218,10 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorTypeEntity findIndicatorTypeById(Integer id) {
-        return indicatorTypeDao.findById(id);
+        IndicatorTypeEntity indicatorTypeEntity = indicatorTypeDao.findById(id);
+        validateEntity(indicatorTypeEntity);
+
+        return indicatorTypeEntity;
     }
 
     @Transactional(readOnly = false)
@@ -265,7 +271,10 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorCategoryEntity findIndicatorCategoryById(Integer id) {
-        return indicatorCategoryDao.findById(id);
+        IndicatorCategoryEntity indicatorCategoryEntity = indicatorCategoryDao.findById(id);
+        validateEntity(indicatorCategoryEntity);
+
+        return indicatorCategoryEntity;
     }
 
     @Transactional(readOnly = false)
@@ -315,7 +324,10 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorValueEntity findIndicatorValueById(Integer id) {
-        return indicatorValueDao.findById(id);
+        IndicatorValueEntity indicatorValueEntity = indicatorValueDao.findById(id);
+        validateEntity(indicatorValueEntity);
+
+        return indicatorValueEntity;
     }
 
     @Transactional(readOnly = false)

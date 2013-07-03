@@ -1,6 +1,10 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
+import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
+import org.motechproject.carereporting.exception.CareApiRuntimeException;
+import org.motechproject.carereporting.service.ComplexConditionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -13,19 +17,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Set;
 
 @RequestMapping("api/complexcondition")
 @Controller
 public class ComplexConditionController {
 
+    @Autowired
+    private ComplexConditionService complexConditionService;
+
     @RequestMapping(method = RequestMethod.GET, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ComplexConditionEntity> getComplexConditionList() {
-
-        return null;
+    public Set<ComplexConditionEntity> getComplexConditionList() {
+        return complexConditionService.findAllComplexConditions();
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.GET,
@@ -34,17 +40,20 @@ public class ComplexConditionController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ComplexConditionEntity getComplexCondition(@PathVariable Integer complexConditionId) {
-
-        return null;
+        return complexConditionService.findComplexConditionById(complexConditionId);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewComplexCondition(@RequestBody @Valid ComplexConditionEntity complexConditionEntity,
+    public void createNewComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
             BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+        }
 
+        complexConditionService.createNewComplexCondition(complexConditionFormObject);
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.PUT,
@@ -52,9 +61,14 @@ public class ComplexConditionController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateComplexCondition(@RequestBody @Valid ComplexConditionEntity complexConditionEntity,
+    public void updateComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
             BindingResult bindingResult, @PathVariable Integer complexConditionId) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+        }
 
+        complexConditionFormObject.setId(complexConditionId);
+        complexConditionService.updateComplexCondition(complexConditionFormObject);
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -62,6 +76,7 @@ public class ComplexConditionController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteComplexCondition(@PathVariable Integer complexConditionId) {
-
+        ComplexConditionEntity complexConditionEntity = complexConditionService.findComplexConditionById(complexConditionId);
+        complexConditionService.deleteComplexCondition(complexConditionEntity);
     }
 }

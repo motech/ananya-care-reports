@@ -39,7 +39,10 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Override
     public UserEntity findUserById(Integer id) {
-        return userDao.findById(id);
+        UserEntity userEntity = userDao.findById(id);
+        validateEntity(userEntity);
+
+        return userEntity;
     }
 
     @Transactional
@@ -122,7 +125,10 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Transactional
     @Override
     public PermissionEntity findPermissionById(Integer id) {
-        return permissionDao.findById(id);
+        PermissionEntity permissionEntity = permissionDao.findById(id);
+        validateEntity(permissionEntity);
+
+        return permissionEntity;
     }
 
     @Transactional(readOnly = false)

@@ -5,7 +5,6 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
-import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ public class IndicatorController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<IndicatorEntity> getIndicatorList() {
-
         return indicatorService.findAllIndicators();
     }
 
@@ -45,20 +43,14 @@ public class IndicatorController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorEntity getIndicator(@PathVariable Integer indicatorId) {
-        IndicatorEntity indicatorEntity = indicatorService.findIndicatorById(indicatorId);
-
-        if (indicatorEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorId);
-        }
-
-        return indicatorEntity;
+        return indicatorService.findIndicatorById(indicatorId);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewIndicator(@RequestBody IndicatorFormObject indicatorFormObject,
+    public void createNewIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
@@ -87,11 +79,6 @@ public class IndicatorController {
     @ResponseBody
     public void deleteIndicator(@PathVariable Integer indicatorId) {
         IndicatorEntity indicatorEntity = indicatorService.findIndicatorById(indicatorId);
-
-        if (indicatorEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorId);
-        }
-
         indicatorService.deleteIndicator(indicatorEntity);
     }
 
@@ -103,7 +90,6 @@ public class IndicatorController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<IndicatorTypeEntity> getIndicatorTypeList() {
-
         return indicatorService.findAllIndicatorTypes();
     }
 
@@ -113,13 +99,7 @@ public class IndicatorController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorTypeEntity getIndicatorType(@PathVariable Integer indicatorTypeId) {
-        IndicatorTypeEntity indicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
-
-        if (indicatorTypeEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorTypeEntity.class, indicatorTypeId);
-        }
-
-        return indicatorTypeEntity;
+        return indicatorService.findIndicatorTypeById(indicatorTypeId);
     }
 
     @RequestMapping(value = "/type", method = RequestMethod.POST,
@@ -149,10 +129,6 @@ public class IndicatorController {
 
         IndicatorTypeEntity foundIndicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
 
-        if (foundIndicatorTypeEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorTypeEntity.class, indicatorTypeId);
-        }
-
         foundIndicatorTypeEntity.setName(indicatorTypeEntity.getName());
         indicatorService.updateIndicatorType(foundIndicatorTypeEntity);
     }
@@ -164,10 +140,6 @@ public class IndicatorController {
     @ResponseBody
     public void deleteIndicatorType(@PathVariable Integer indicatorTypeId) {
         IndicatorTypeEntity indicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
-
-        if (indicatorTypeEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorTypeEntity.class, indicatorTypeId);
-        }
 
         indicatorService.deleteIndicatorType(indicatorTypeEntity);
     }
@@ -190,13 +162,7 @@ public class IndicatorController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorCategoryEntity getIndicatoryCategory(@PathVariable Integer indicatorCategoryId) {
-        IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
-
-        if (indicatorCategoryEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class, indicatorCategoryId);
-        }
-
-        return indicatorCategoryEntity;
+        return indicatorService.findIndicatorCategoryById(indicatorCategoryId);
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.POST,
@@ -225,9 +191,6 @@ public class IndicatorController {
         }
 
         IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
-        if (foundIndicatorCategoryEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class, indicatorCategoryId);
-        }
 
         foundIndicatorCategoryEntity.setName(indicatorCategoryEntity.getName());
         indicatorService.updateIndicatorCategory(foundIndicatorCategoryEntity);
@@ -240,10 +203,6 @@ public class IndicatorController {
     @ResponseBody
     public void deleteIndicatorCategory(@PathVariable Integer indicatorCategoryId) {
         IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
-
-        if (indicatorCategoryEntity == null) {
-            throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class, indicatorCategoryId);
-        }
 
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
     }

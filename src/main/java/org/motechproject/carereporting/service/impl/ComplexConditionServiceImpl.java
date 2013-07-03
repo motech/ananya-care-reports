@@ -47,7 +47,10 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public ComplexConditionEntity findComplexConditionById(Integer complexConditionId) {
-        return complexConditionDao.findById(complexConditionId);
+        ComplexConditionEntity complexConditionEntity = complexConditionDao.findById(complexConditionId);
+        validateEntity(complexConditionEntity);
+
+        return complexConditionEntity;
     }
 
     @Override
@@ -148,7 +151,10 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId) {
-        return operatorTypeDao.findById(operatorTypeId);
+        OperatorTypeEntity operatorTypeEntity = operatorTypeDao.findById(operatorTypeId);
+        validateEntity(operatorTypeEntity);
+
+        return operatorTypeEntity;
     }
 
     @Override
@@ -178,7 +184,10 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId) {
-        return comparisonSymbolDao.findById(comparisonSymbolId);
+        ComparisonSymbolEntity comparisonSymbolEntity = comparisonSymbolDao.findById(comparisonSymbolId);
+        validateEntity(comparisonSymbolEntity);
+
+        return comparisonSymbolEntity;
     }
 
     @Override
