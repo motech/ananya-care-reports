@@ -204,12 +204,30 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        indicatorValueDao.update(indicatorValueEntity);
+        try {
+            indicatorValueDao.update(indicatorValueEntity);
+        } catch (SQLGrammarException e) {
+            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
+                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
+                        indicatorValueEntity.getId(), e);
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        indicatorValueDao.remove(indicatorValueEntity);
+        try {
+            indicatorValueDao.remove(indicatorValueEntity);
+        } catch (SQLGrammarException e) {
+            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
+                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
+                        indicatorValueEntity.getId(), e);
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

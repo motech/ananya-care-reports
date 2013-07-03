@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.domain.listeners;
 
-import org.hibernate.HibernateException;
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
@@ -22,7 +21,7 @@ public class AbstractEntityEventListener implements PreInsertEventListener, Save
     }
 
     @Override
-    public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
+    public void onSaveOrUpdate(SaveOrUpdateEvent event) {
         if (event.getEntity() instanceof AbstractEntity) {
             AbstractEntity entity = (AbstractEntity) event.getEntity();
             entity.setModificationDate(new Date());

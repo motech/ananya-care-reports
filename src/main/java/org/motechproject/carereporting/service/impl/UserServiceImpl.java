@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.motechproject.carereporting.dao.PermissionDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
+import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.UserException;
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private PermissionDao permissionDao;
 
     @Transactional
     @Override
@@ -53,6 +58,12 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
         userEntity.setPassword(encodedPassword);
         userDao.save(userEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateUser(UserEntity user) {
+        userDao.update(user);
     }
 
     private String encodePasswordWithSalt(String password, String salt) {
@@ -91,9 +102,34 @@ public class UserServiceImpl implements UserService {
         roleDao.save(role);
     }
 
+    @Transactional
     @Override
-    public void updateUser(UserEntity user) {
-        userDao.update(user);
+    public Set<PermissionEntity> getAllPermissions() {
+        return permissionDao.findAll();
+    }
+
+    @Transactional
+    @Override
+    public PermissionEntity getPermissionById(Integer id) {
+        return permissionDao.findById(id);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewPermission(PermissionEntity permissionEntity) {
+        permissionDao.save(permissionEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updatePermission(PermissionEntity permissionEntity) {
+        permissionDao.update(permissionEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void deletePermission(PermissionEntity permissionEntity) {
+        permissionDao.remove(permissionEntity);
     }
 
 }
