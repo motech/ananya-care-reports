@@ -47,6 +47,21 @@ public class ComplexConditionEntity extends AbstractEntity {
     @ManyToMany(mappedBy = "complexConditions")
     private Set<IndicatorEntity> indicators;
 
+    public ComplexConditionEntity() {
+
+    }
+
+    public ComplexConditionEntity(String field, BigDecimal comparisonValue,
+            OperatorTypeEntity operatorType, FormEntity form,
+            ComparisonSymbolEntity comparisonSymbol, Set<IndicatorEntity> indicators) {
+        this.field = field;
+        this.comparisonValue = comparisonValue;
+        this.operatorType = operatorType;
+        this.form = form;
+        this.comparisonSymbol = comparisonSymbol;
+        this.indicators = indicators;
+    }
+
     public String getField() {
         return field;
     }

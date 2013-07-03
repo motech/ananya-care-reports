@@ -25,6 +25,14 @@ public class IndicatorTypeEntity extends AbstractEntity {
     @OneToMany(mappedBy = "indicatorType")
     private Set<IndicatorEntity> indicators;
 
+    public IndicatorTypeEntity() {
+
+    }
+
+    public IndicatorTypeEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

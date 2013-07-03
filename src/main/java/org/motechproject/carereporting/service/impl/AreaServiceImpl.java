@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class AreaServiceImpl implements AreaService {
+public class AreaServiceImpl extends AbstractService implements AreaService {
 
     @Autowired
     private AreaDao areaDao;
@@ -23,25 +23,25 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional
-    public Set<AreaEntity> getAllAreas() {
+    public Set<AreaEntity> findAllAreas() {
         return areaDao.findAll();
     }
 
     @Override
     @Transactional
-    public AreaEntity getAreaById(Integer areaId) {
+    public AreaEntity findAreaById(Integer areaId) {
         return areaDao.findById(areaId);
     }
 
     @Override
     @Transactional
-    public Set<LevelEntity> getAllLevels() {
+    public Set<LevelEntity> findAllLevels() {
         return levelDao.findAll();
     }
 
     @Override
     @Transactional
-    public LevelEntity getLevelById(Integer levelId) {
+    public LevelEntity findLevelById(Integer levelId) {
         return levelDao.findById(levelId);
     }
 

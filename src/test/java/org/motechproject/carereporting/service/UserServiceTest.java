@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,14 +41,14 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
     @Test
     public void testAddRoles() throws Exception {
         addRoles("ROLE1", "ROLE2");
-        assertEquals(2, userService.getAllRoles().size());
+        assertEquals(2, userService.findAllRoles().size());
     }
 
     @Test
     public void testRegisterUserWithRoles() throws Exception {
         addRoles("TEST1", "TEST1", "TEST1");
         RoleEntity[] roleEntities = {};
-        roleEntities = userService.getAllRoles().toArray(roleEntities);
+        roleEntities = userService.findAllRoles().toArray(roleEntities);
         RoleEntity role = roleEntities[0];
         String username = "username2";
         String password = "password2";

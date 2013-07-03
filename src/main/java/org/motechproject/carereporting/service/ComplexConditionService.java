@@ -3,29 +3,46 @@ package org.motechproject.carereporting.service;
 import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
+import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
 
 import java.util.Set;
 
 public interface ComplexConditionService {
 
-    Set<ComplexConditionEntity> getAllComplexConditions();
+    Set<ComplexConditionEntity> findAllComplexConditions();
 
-    ComplexConditionEntity getComplexConditionById(Integer complexConditionId);
+    ComplexConditionEntity findComplexConditionById(Integer complexConditionId);
 
-    Set<ComplexConditionEntity> getComplexConditionsByIndicatorId(Integer indicatorId);
+    Set<ComplexConditionEntity> findComplexConditionsByIndicatorId(Integer indicatorId);
 
-    void createComplexCondition(ComplexConditionEntity complexCondition);
+    void createNewComplexCondition(ComplexConditionEntity complexCondition);
 
-    Set<OperatorTypeEntity> getAllOperatorTypes();
+    void createNewComplexCondition(ComplexConditionFormObject complexConditionFormObject);
 
-    OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId);
+    void updateComplexCondition(ComplexConditionEntity complexConditionEntity);
 
-    void createOperatorType(OperatorTypeEntity operatorType);
+    void updateComplexCondition(ComplexConditionFormObject complexConditionFormObject);
 
-    Set<ComparisonSymbolEntity> getAllComparisonSymbols();
+    void deleteComplexCondition(ComplexConditionEntity complexConditionEntity);
 
-    ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId);
+    Set<OperatorTypeEntity> findAllOperatorTypes();
 
-    void createComparisonSymbol(ComparisonSymbolEntity comparisonSymbol);
+    OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId);
+
+    void createNewOperatorType(OperatorTypeEntity operatorType);
+
+    void updateOperatorType(OperatorTypeEntity operatorTypeEntity);
+
+    void deleteOperatorType(OperatorTypeEntity operatorTypeEntity);
+
+    Set<ComparisonSymbolEntity> findAllComparisonSymbols();
+
+    ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId);
+
+    void createNewComparisonSymbol(ComparisonSymbolEntity comparisonSymbol);
+
+    void updateComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity);
+
+    void deleteComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity);
 
 }

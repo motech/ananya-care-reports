@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbstractService implements UserService {
 
     @Autowired
     private UserDao userDao;
@@ -33,8 +33,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Set<UserEntity> getAllUsers() {
+    public Set<UserEntity> findAllUsers() {
         return userDao.findAll();
+    }
+
+    @Override
+    public UserEntity findUserById(Integer id) {
+        return userDao.findById(id);
     }
 
     @Transactional
@@ -96,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Set<RoleEntity> getAllRoles() {
+    public Set<RoleEntity> findAllRoles() {
         return roleDao.findAll();
     }
 
@@ -110,13 +115,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Set<PermissionEntity> getAllPermissions() {
+    public Set<PermissionEntity> findAllPermissions() {
         return permissionDao.findAll();
     }
 
     @Transactional
     @Override
-    public PermissionEntity getPermissionById(Integer id) {
+    public PermissionEntity findPermissionById(Integer id) {
         return permissionDao.findById(id);
     }
 
@@ -136,11 +141,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deletePermission(PermissionEntity permissionEntity) {
         permissionDao.remove(permissionEntity);
-    }
-
-    @Override
-    public UserEntity findUserById(Integer id) {
-        return userDao.findById(id);
     }
 
 }

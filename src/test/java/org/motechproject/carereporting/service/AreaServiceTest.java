@@ -31,7 +31,7 @@ public class AreaServiceTest extends AbstractTransactionalJUnit4SpringContextTes
         areaService.createNewLevel(level);
         AreaEntity area = new AreaEntity("newArea", level);
         areaService.createNewArea(area);
-        Set<AreaEntity> areas = areaService.getAllAreas();
+        Set<AreaEntity> areas = areaService.findAllAreas();
         AreaEntity [] areaEntities = {};
         areaEntities = areas.toArray(areaEntities);
         assertNotNull(areas);

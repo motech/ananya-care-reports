@@ -27,7 +27,7 @@ public class FormsController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<FormEntity> getAllForms() {
-        return formsService.getAllForms();
+        return formsService.findAllForms();
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.GET)

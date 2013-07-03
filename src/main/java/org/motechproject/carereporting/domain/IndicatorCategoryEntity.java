@@ -25,6 +25,14 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @ManyToMany(mappedBy = "categories")
     private Set<IndicatorEntity> indicators;
 
+    public IndicatorCategoryEntity() {
+
+    }
+
+    public IndicatorCategoryEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

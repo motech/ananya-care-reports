@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class FormsServiceImpl implements FormsService {
+public class FormsServiceImpl extends AbstractService implements FormsService {
 
     @Resource(name = "careDataSource")
     private DataSource dataSource;
@@ -55,7 +55,7 @@ public class FormsServiceImpl implements FormsService {
     }
 
     @Override
-    public Set<FormEntity> getAllForms() {
+    public Set<FormEntity> findAllForms() {
         return formDao.findAll();
     }
 

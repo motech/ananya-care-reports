@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 public class IndicatorFormObject implements Serializable {
 
@@ -18,18 +18,18 @@ public class IndicatorFormObject implements Serializable {
     private Integer indicatorType;
 
     @NotNull
-    private List<Integer> categories;
+    private Set<Integer> categories;
 
     @NotNull
     @Min(1)
     private Integer level;
 
     @NotNull
-    private List<Integer> owners;
+    private Set<Integer> owners;
 
-    private List<Integer> complexConditions;
+    private Set<Integer> complexConditions;
 
-    private List<Integer> values;
+    private Set<Integer> values;
 
     @NotNull
     @Min(1)
@@ -43,9 +43,9 @@ public class IndicatorFormObject implements Serializable {
 
     }
 
-    public IndicatorFormObject(final Integer indicatorType, final List<Integer> categories,
-            final Integer level, final List<Integer> owners, final List<Integer> complexConditions,
-            final List<Integer> values, final Integer frequency,
+    public IndicatorFormObject(final Integer indicatorType, final Set<Integer> categories,
+            final Integer level, final Set<Integer> owners, final Set<Integer> complexConditions,
+            final Set<Integer> values, final Integer frequency,
             final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
@@ -69,7 +69,7 @@ public class IndicatorFormObject implements Serializable {
         return indicatorType;
     }
 
-    public List<Integer> getCategories() {
+    public Set<Integer> getCategories() {
         return categories;
     }
 
@@ -77,15 +77,15 @@ public class IndicatorFormObject implements Serializable {
         return level;
     }
 
-    public List<Integer> getOwners() {
+    public Set<Integer> getOwners() {
         return owners;
     }
 
-    public List<Integer> getComplexConditions() {
+    public Set<Integer> getComplexConditions() {
         return complexConditions;
     }
 
-    public List<Integer> getValues() {
+    public Set<Integer> getValues() {
         return values;
     }
 

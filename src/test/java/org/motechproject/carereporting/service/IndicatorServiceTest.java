@@ -5,11 +5,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.IndicatorTypeEntity;
-import org.motechproject.carereporting.domain.LevelEntity;
-import org.motechproject.carereporting.domain.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -21,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-// TODO : Fix this after required services are implemented
+// TODO: Complete all dependencies
 
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -47,7 +43,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     public void testCreateNewIndicator() {
-        IndicatorEntity indicatorEntity = constructIndicator(TEST_INDICATOR_1_NAME, null, null, null, null, 30);
+        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
         indicatorService.createNewIndicator(indicatorEntity);
 
         IndicatorEntity indicatorEntityResult = indicatorService.findIndicatorById(indicatorEntity.getId());
@@ -56,7 +52,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     public void testUpdateIndicator() {
-        IndicatorEntity indicatorEntity = constructIndicator(TEST_INDICATOR_1_NAME, null, null, null, null, 30);
+        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
         indicatorService.createNewIndicator(indicatorEntity);
 
         indicatorEntity.setName(TEST_INDICATOR_1_UPDATED_NAME);
@@ -71,8 +67,8 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     public void testFindAllIndicators() {
-        IndicatorEntity indicatorEntity1 = constructIndicator(TEST_INDICATOR_1_NAME, null, null, null, null, 30);
-        IndicatorEntity indicatorEntity2 = constructIndicator(TEST_INDICATOR_2_NAME, null, null, null, null, 30);
+        IndicatorEntity indicatorEntity1 = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
+        IndicatorEntity indicatorEntity2 = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_2_NAME);
         indicatorService.createNewIndicator(indicatorEntity1);
         indicatorService.createNewIndicator(indicatorEntity2);
 
@@ -85,7 +81,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     public void testDeleteIndicator() {
-        IndicatorEntity indicatorEntity = constructIndicator(TEST_INDICATOR_1_NAME, null, null, null, null, 30);
+        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
         indicatorService.createNewIndicator(indicatorEntity);
         indicatorService.deleteIndicator(indicatorEntity);
 
@@ -93,17 +89,4 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
         assertNull(indicatorEntityResult);
     }
 
-    private IndicatorEntity constructIndicator(String name, Set<UserEntity> userEntities, LevelEntity levelEntity,
-            IndicatorTypeEntity indicatorTypeEntity, Set<IndicatorCategoryEntity> indicatorCategoryEntities,
-            Integer frequency) {
-        IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorEntity.setName(name);
-        indicatorEntity.setOwners(userEntities);
-        indicatorEntity.setLevel(levelEntity);
-        indicatorEntity.setIndicatorType(indicatorTypeEntity);
-        indicatorEntity.setCategories(indicatorCategoryEntities);
-        indicatorEntity.setFrequency(frequency);
-
-        return indicatorEntity;
-    }
 }

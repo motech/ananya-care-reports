@@ -28,14 +28,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<UserEntity> getAllUsers() {
-        return userService.getAllUsers();
+        return userService.findAllUsers();
     }
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<RoleEntity> getAllRoles() {
-        return userService.getAllRoles();
+        return userService.findAllRoles();
     }
 
     @RequestMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })

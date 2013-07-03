@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    Set<UserEntity> getAllUsers();
+    Set<UserEntity> findAllUsers();
 
     UserEntity login(String username, String password);
 
@@ -18,15 +18,15 @@ public interface UserService {
 
     void updateUser(UserEntity user);
 
-    Set<RoleEntity> getAllRoles();
+    Set<RoleEntity> findAllRoles();
 
     void addRole(String roleName);
 
     UserEntity findUserById(Integer id);
 
-    Set<PermissionEntity> getAllPermissions();
+    Set<PermissionEntity> findAllPermissions();
 
-    PermissionEntity getPermissionById(Integer id);
+    PermissionEntity findPermissionById(Integer id);
 
     void createNewPermission(PermissionEntity permissionEntity);
 
