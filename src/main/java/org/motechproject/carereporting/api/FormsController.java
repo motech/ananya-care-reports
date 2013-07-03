@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/forms")
-public class FormsApiResource {
+public class FormsController {
 
     @Autowired
     private FormsService formsService;

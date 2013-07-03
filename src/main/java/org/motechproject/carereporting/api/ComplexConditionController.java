@@ -17,7 +17,7 @@ import java.util.List;
 
 @RequestMapping("api/complexcondition")
 @Controller
-public class ComplexConditionApiResource {
+public class ComplexConditionController {
 
     @RequestMapping(method = RequestMethod.GET, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })

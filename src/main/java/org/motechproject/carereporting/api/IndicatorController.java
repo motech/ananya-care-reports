@@ -23,7 +23,7 @@ import java.util.List;
 
 @RequestMapping("api/indicator")
 @Controller
-public class IndicatorApiResource {
+public class IndicatorController {
 
     @Autowired
     private IndicatorService indicatorService;

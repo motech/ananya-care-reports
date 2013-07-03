@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 @RequestMapping(value = "api/user")
 @Controller
-public class UserApiResource {
+public class UserController {
 
     //@Autowired
     //private UserService userService;
