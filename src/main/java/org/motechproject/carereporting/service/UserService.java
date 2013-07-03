@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface UserService {
 
+    Set<UserEntity> getAllUsers();
+
     UserEntity login(String username, String password);
 
     void register(String username, String password, Set<RoleEntity> roles);

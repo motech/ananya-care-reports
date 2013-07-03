@@ -1,0 +1,27 @@
+<h1 class="text-center">Edit user</h1>
+<div class="well span6 offset3">
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="userName">User name: </label>
+            <div class="controls">
+                <div class="input-append">
+                    <input ng-model="careUser.userName" type="text" id="userName" name="userName" placeholder="Enter user name...">
+                    <span class="add-on"><i class="icon-tag"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="userPassword">Password: </label>
+            <div class="controls">
+                <div class="input-append">
+                    <input ng-model="careUser.userPassword" type="password" id="userPassword" name="userPassword"
+                           placeholder="Enter user password...">
+                    <span class="add-on"><i class="icon-tag"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)">Submit</button>
+        </div>
+    </form>
+</div>

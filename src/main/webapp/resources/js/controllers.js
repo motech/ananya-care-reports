@@ -150,3 +150,31 @@ care.controller('formListController', function($scope, $http, $dialog) {
     $scope.fetchForms();
 
 });
+
+care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog) {
+
+    $scope.fetchUsers = function() {
+        $http.get('api/users').success(function(users) {
+            $scope.users = users;
+        });
+    };
+
+    $scope.deleteUser = function(user) {
+        var btns = [{result:'yes', label: 'Yes', cssClass: 'btn-primary btn'}, {result:'no', label: 'No', cssClass: 'btn-danger btn'}];
+        $dialog.messageBox("Confirm delete user", "Are you sure you want to delete user: " + user.username + '?', btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({method: 'DELETE', url: 'api/users/' + user.id})
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchForms();
+                    }).error(function(response) {
+                        $dialog.messageBox("Error", "Cannot delete user.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                    });
+                }
+            });
+    };
+
+    $scope.fetchUsers();
+
+});

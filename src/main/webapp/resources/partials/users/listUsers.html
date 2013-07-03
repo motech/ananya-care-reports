@@ -1,0 +1,21 @@
+<h1 class="text-center">Users</h1>
+<div class="span8 offset2 well">
+    <table class="table table-hover" ng-show="users.length > 0">
+        <thead>
+        <tr>
+            <th>User name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="user in users">
+            <td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
+            <td><span class="btn btn-link" ng-click="deleteUser(user);"><i class="icon-remove"></i></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="forms.length == 0">No users to display<br /><br /></span>
+        <a class="btn btn-primary" href="#/users/new">Add new user</a>
+    </p>
+</div>

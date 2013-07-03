@@ -35,7 +35,13 @@
                     <li data-match-route="/"><a href="#">{{msg('menu.dashboard')}}</a></li>
                     <li data-match-route="/indicator/new"><a href="#/indicator/new">{{msg('menu.createIndicator')}}</a></li>
                     <li><a href="#">{{msg('menu.manageIndicators')}}</a></li>
-                    <li><a href="#">{{msg('menu.manageSystemUsers')}}</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/users"><i class="icon-list"></i> User list</a></li>
+                            <li><a href="#/users/new"><i class="icon-plus-sign"></i> Add new user</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageForms')}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">

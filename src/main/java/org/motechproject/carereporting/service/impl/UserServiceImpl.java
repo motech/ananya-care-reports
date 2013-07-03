@@ -31,6 +31,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PermissionDao permissionDao;
 
+    @Override
+    @Transactional
+    public Set<UserEntity> getAllUsers() {
+        return userDao.findAll();
+    }
+
     @Transactional
     @Override
     public UserEntity login(String username, String password) {
