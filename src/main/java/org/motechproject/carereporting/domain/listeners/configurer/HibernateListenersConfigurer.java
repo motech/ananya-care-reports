@@ -24,6 +24,7 @@ public class HibernateListenersConfigurer {
 
         EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
         registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(listener);
-        registry.getEventListenerGroup(EventType.PRE_UPDATE).appendListener(listener);
+        registry.getEventListenerGroup(EventType.UPDATE).appendListener(listener);
+        registry.getEventListenerGroup(EventType.SAVE).appendListener(listener);
     }
 }
