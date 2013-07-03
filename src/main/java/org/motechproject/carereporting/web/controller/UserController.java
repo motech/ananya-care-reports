@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.api;
+package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;

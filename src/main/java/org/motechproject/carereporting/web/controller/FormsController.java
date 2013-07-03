@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.api;
+package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;

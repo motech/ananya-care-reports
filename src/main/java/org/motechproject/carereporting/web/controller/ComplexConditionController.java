@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.api;
+package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.springframework.http.HttpStatus;
