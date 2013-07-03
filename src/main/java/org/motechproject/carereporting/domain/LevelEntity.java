@@ -32,6 +32,10 @@ public class LevelEntity extends AbstractEntity {
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
     private Set<AreaEntity> areas;
 
+    public LevelEntity() {
+
+    }
+
     public LevelEntity(String name, LevelEntity parentLevel) {
         this.name = name;
         this.parentLevel = parentLevel;
@@ -50,8 +54,8 @@ public class LevelEntity extends AbstractEntity {
         return parentLevel;
     }
 
-    public Integer getLevelId() {
-        return parentLevel.getId();
+    public Integer getParentLevelId() {
+        return (parentLevel == null) ? null : parentLevel.getId();
     }
 
     public void setParentLevel(LevelEntity parentLevel) {

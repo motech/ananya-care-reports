@@ -5,16 +5,25 @@ import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
+import org.motechproject.carereporting.domain.AbstractEntity;
+import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
+import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Service
@@ -35,16 +44,25 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private IndicatorValueDao indicatorValueDao;
 
+    @Autowired
+    private AreaService areaService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ComplexConditionService complexConditionService;
+
     // IndicatorEntity
 
-    @Override
     @Transactional
     public Set<IndicatorEntity> findAllIndicators() {
+
         return indicatorDao.findAll();
     }
 
-    @Override
     @Transactional
+    @Override
     public IndicatorEntity findIndicatorById(Integer id) {
         return indicatorDao.findById(id);
     }
@@ -52,6 +70,99 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
+        indicatorDao.save(indicatorEntity);
+    }
+
+    private void validateEntity(AbstractEntity entity, Integer id) {
+        if (entity == null) {
+            throw new CareResourceNotFoundRuntimeException(entity.getClass(), id);
+        }
+    }
+
+    private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
+        IndicatorTypeEntity indicatorTypeEntity = this.findIndicatorTypeById(indicatorFormObject.getIndicatorType());
+        validateEntity(indicatorTypeEntity, indicatorFormObject.getIndicatorType());
+
+        return indicatorTypeEntity;
+    }
+
+    private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromFormObject(
+            IndicatorFormObject indicatorFormObject) {
+        Set<IndicatorCategoryEntity> indicatorCategoryEntities = new LinkedHashSet<>();
+
+        for (Integer indicatorCategoryId : indicatorFormObject.getCategories()) {
+            IndicatorCategoryEntity indicatorCategoryEntity = this.findIndicatorCategoryById(indicatorCategoryId);
+            validateEntity(indicatorCategoryEntity, indicatorCategoryId);
+
+            indicatorCategoryEntities.add(indicatorCategoryEntity);
+        }
+
+        return indicatorCategoryEntities;
+    }
+
+    private LevelEntity findLevelEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
+        LevelEntity levelEntity = areaService.getLevelById(indicatorFormObject.getLevel());
+        validateEntity(levelEntity, indicatorFormObject.getLevel());
+
+        return levelEntity;
+    }
+
+    private Set<UserEntity> findUserEntitiesFromFormObject(IndicatorFormObject indicatorFormObject) {
+        Set<UserEntity> userEntities = new LinkedHashSet<>();
+
+        for (Integer ownerId : indicatorFormObject.getOwners()) {
+            UserEntity userEntity = userService.findUserById(ownerId);
+            validateEntity(userEntity, ownerId);
+
+            userEntities.add(userEntity);
+        }
+
+        return userEntities;
+    }
+
+    private Set<ComplexConditionEntity> findComplexConditionEntitiesFromFormObject(
+            IndicatorFormObject indicatorFormObject) {
+        Set<ComplexConditionEntity> complexConditionEntities = new LinkedHashSet<>();
+
+        for (Integer complexConditionId : indicatorFormObject.getComplexConditions()) {
+            ComplexConditionEntity complexConditionEntity = complexConditionService
+                    .getComplexConditionById(complexConditionId);
+            validateEntity(complexConditionEntity, complexConditionId);
+
+            complexConditionEntities.add(complexConditionEntity);
+        }
+
+        return complexConditionEntities;
+    }
+
+    private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromFormObject(
+            IndicatorFormObject indicatorFormObject) {
+        Set<IndicatorValueEntity> indicatorValueEntities = new LinkedHashSet<>();
+
+        for (Integer valueId : indicatorFormObject.getValues()) {
+            IndicatorValueEntity indicatorValueEntity = this.findIndicatorValueById(valueId);
+            validateEntity(indicatorValueEntity, valueId);
+
+            indicatorValueEntities.add(indicatorValueEntity);
+        }
+
+        return indicatorValueEntities;
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
+
+        IndicatorEntity indicatorEntity = new IndicatorEntity(
+                findIndicatorTypeEntityFromFormObject(indicatorFormObject),
+                findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject),
+                findLevelEntityFromFormObject(indicatorFormObject),
+                findUserEntitiesFromFormObject(indicatorFormObject),
+                findComplexConditionEntitiesFromFormObject(indicatorFormObject),
+                findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
+                indicatorFormObject.getFrequency(),
+                indicatorFormObject.getName());
+
         indicatorDao.save(indicatorEntity);
     }
 
@@ -67,6 +178,24 @@ public class IndicatorServiceImpl implements IndicatorService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
+        IndicatorEntity indicatorEntity = this.findIndicatorById(indicatorFormObject.getId());
+        validateEntity(indicatorEntity, indicatorFormObject.getId());
+
+        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setLevel(findLevelEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setOwners(findUserEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setComplexConditions(findComplexConditionEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
+        indicatorEntity.setName(indicatorFormObject.getName());
+
+        indicatorDao.save(indicatorEntity);
     }
 
     @Transactional(readOnly = false)
@@ -188,6 +317,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Set<IndicatorValueEntity> findAllIndicatorValues() {
         return indicatorValueDao.findAll();
     }
+
+    // IndicatorValueEntity
 
     @Transactional
     @Override

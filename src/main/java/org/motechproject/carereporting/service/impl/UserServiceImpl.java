@@ -138,6 +138,11 @@ public class UserServiceImpl implements UserService {
         permissionDao.remove(permissionEntity);
     }
 
+    @Override
+    public UserEntity findUserById(Integer id) {
+        return userDao.findById(id);
+    }
+
 }
 
 

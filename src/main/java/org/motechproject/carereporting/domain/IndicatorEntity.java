@@ -33,7 +33,7 @@ public class IndicatorEntity extends AbstractEntity {
     private IndicatorTypeEntity indicatorType;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
     private Set<IndicatorCategoryEntity> categories;
@@ -44,13 +44,13 @@ public class IndicatorEntity extends AbstractEntity {
     private LevelEntity level;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<UserEntity> owners;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_complex_condition", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "complex_condition_id") })
     private Set<ComplexConditionEntity> complexConditions;
@@ -67,20 +67,31 @@ public class IndicatorEntity extends AbstractEntity {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @JsonIgnore
-    public IndicatorTypeEntity getIndicatorType() {
-        return indicatorType;
+    public IndicatorEntity() {
+
     }
 
-    public Integer getIndicatorTypeId() {
-        return indicatorType.getId();
+    public IndicatorEntity(final IndicatorTypeEntity indicatorType, final Set<IndicatorCategoryEntity> categories,
+            final LevelEntity level, final Set<UserEntity> owners, final Set<ComplexConditionEntity> complexConditions,
+            final Set<IndicatorValueEntity> values, final Integer frequency, final String name) {
+        this.indicatorType = indicatorType;
+        this.categories = categories;
+        this.level = level;
+        this.owners = owners;
+        this.complexConditions = complexConditions;
+        this.values = values;
+        this.frequency = frequency;
+        this.name = name;
+    }
+
+    public IndicatorTypeEntity getIndicatorType() {
+        return indicatorType;
     }
 
     public void setIndicatorType(IndicatorTypeEntity indicatorType) {
         this.indicatorType = indicatorType;
     }
 
-    @JsonIgnore
     public Set<IndicatorCategoryEntity> getCategories() {
         return categories;
     }
@@ -89,20 +100,14 @@ public class IndicatorEntity extends AbstractEntity {
         this.categories = categories;
     }
 
-    @JsonIgnore
     public LevelEntity getLevel() {
         return level;
-    }
-
-    public Integer getLevelId() {
-        return level.getId();
     }
 
     public void setLevel(LevelEntity level) {
         this.level = level;
     }
 
-    @JsonIgnore
     public Set<UserEntity> getOwners() {
         return owners;
     }
@@ -111,7 +116,6 @@ public class IndicatorEntity extends AbstractEntity {
         this.owners = owners;
     }
 
-    @JsonIgnore
     public Set<ComplexConditionEntity> getComplexConditions() {
         return complexConditions;
     }

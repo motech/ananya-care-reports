@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 
 import java.util.Set;
 
@@ -13,7 +14,9 @@ public interface IndicatorService {
     IndicatorEntity findIndicatorById(Integer id);
 
     void createNewIndicator(IndicatorEntity indicatorEntity);
+    void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject);
     void updateIndicator(IndicatorEntity indicatorEntity);
+    void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject);
     void deleteIndicator(IndicatorEntity indicatorEntity);
 
     Set<IndicatorTypeEntity> findAllIndicatorTypes();

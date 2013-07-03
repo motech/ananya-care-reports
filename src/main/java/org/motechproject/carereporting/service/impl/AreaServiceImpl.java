@@ -47,6 +47,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional(readOnly = false)
+
     public void createNewArea(AreaEntity areaEntity) {
         areaDao.save(areaEntity);
     }

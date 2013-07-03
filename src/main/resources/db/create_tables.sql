@@ -267,9 +267,7 @@ CREATE TABLE IF NOT EXISTS public.role_permission(
 CREATE TABLE IF NOT EXISTS public.indicator(
 	indicator_id serial NOT NULL,
 	type_id integer NOT NULL,
-	category_id integer NOT NULL,
 	top_level_id integer NOT NULL,
-	owner_id integer NOT NULL,
 	frequency integer NOT NULL,
 	name character varying NOT NULL,
 	creation_date timestamp,
@@ -278,14 +276,8 @@ CREATE TABLE IF NOT EXISTS public.indicator(
 	CONSTRAINT indicator_type_id_fk FOREIGN KEY (type_id)
 	REFERENCES public.indicator_type (indicator_type_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_category_id_fk FOREIGN KEY (category_id)
-	REFERENCES public.indicator_category (indicator_category_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_top_level_id_fk FOREIGN KEY (top_level_id)
 	REFERENCES public.level (level_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_owner_id_fk FOREIGN KEY (owner_id)
-	REFERENCES public.care_user (user_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_name_uk UNIQUE (name)
 );
@@ -392,5 +384,19 @@ CREATE TABLE IF NOT EXISTS public.indicator_user(
 	REFERENCES public.care_user (user_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_user_uk UNIQUE (indicator_id,user_id)
+);
+-- ddl-end --
+
+-- object: public.role_permission | type: TABLE --
+CREATE TABLE IF NOT EXISTS public.indicator_complex_condition(
+	indicator_id integer NOT NULL,
+	complex_condition_id integer NOT NULL,
+	CONSTRAINT indicator_complex_condition_indicator_id_fk FOREIGN KEY (indicator_id)
+	REFERENCES public.indicator (indicator_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_complex_condition_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
+	REFERENCES public.complex_condition (complex_condition_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_complex_condition_uk UNIQUE (indicator_id,complex_condition_id)
 );
 -- ddl-end --

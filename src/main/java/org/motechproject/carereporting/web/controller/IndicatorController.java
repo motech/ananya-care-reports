@@ -3,6 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
+import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -57,26 +58,27 @@ public class IndicatorController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewIndicator(@RequestBody @Valid IndicatorEntity indicatorEntity, BindingResult bindingResult) {
+    public void createNewIndicator(@RequestBody IndicatorFormObject indicatorFormObject,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
         }
 
-        indicatorService.createNewIndicator(indicatorEntity);
+        indicatorService.createNewIndicatorFromFormObject(indicatorFormObject);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateIndicator(@RequestBody @Valid IndicatorEntity indicatorEntity, BindingResult bindingResult,
-                                @PathVariable Integer indicatorId) {
+    public void updateIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
+            BindingResult bindingResult, @PathVariable Integer indicatorId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getAllErrors());
         }
 
-        indicatorEntity.setId(indicatorId);
-        indicatorService.updateIndicator(indicatorEntity);
+        indicatorFormObject.setId(indicatorId);
+        indicatorService.updateIndicatorFromFormObject(indicatorFormObject);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },

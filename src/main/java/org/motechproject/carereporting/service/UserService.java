@@ -22,6 +22,8 @@ public interface UserService {
 
     void addRole(String roleName);
 
+    UserEntity findUserById(Integer id);
+
     Set<PermissionEntity> getAllPermissions();
 
     PermissionEntity getPermissionById(Integer id);

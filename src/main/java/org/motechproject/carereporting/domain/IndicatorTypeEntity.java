@@ -4,7 +4,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -23,8 +22,7 @@ public class IndicatorTypeEntity extends AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "indicatorType", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "indicatorType")
     private Set<IndicatorEntity> indicators;
 
     public String getName() {

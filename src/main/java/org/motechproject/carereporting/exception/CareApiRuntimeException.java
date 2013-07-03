@@ -1,11 +1,14 @@
 package org.motechproject.carereporting.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class CareApiRuntimeException extends RuntimeException {
 
     private List<ObjectError> apiErrors;
