@@ -29,8 +29,20 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional
+    public AreaEntity getAreaById(Integer areaId) {
+        return areaDao.findById(areaId);
+    }
+
+    @Override
+    @Transactional
     public List<LevelEntity> getAllLevels() {
         return levelDao.findAll();
+    }
+
+    @Override
+    @Transactional
+    public LevelEntity getLevelById(Integer levelId) {
+        return levelDao.findById(levelId);
     }
 
     @Override
