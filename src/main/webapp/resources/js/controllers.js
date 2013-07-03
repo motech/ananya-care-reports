@@ -199,7 +199,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchRoles();
                     }).error(function(response) {
-                        $dialog.messageBox(@scope.msg('Error'), $scope.msg('users.roles.list.error.delete'),
+                        $dialog.messageBox($scope.msg('Error'), $scope.msg('users.roles.list.error.delete'),
                                             [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
                     });
                 }
