@@ -233,6 +233,9 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         var selectedCategories = [];
 
         for (var key in $scope.categories) {
+            if (!$scope.categories.hasOwnProperty(key)) {
+                continue;
+            }
             selectedCategories.push($scope.categories[key].id);
         }
 
@@ -305,7 +308,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         $scope.fetchComparisonSymbols();
 
         var dialog = $modal({
-            template: "/resources/partials/newComplexConditionDialog.html",
+            template: "resources/partials/newComplexConditionDialog.html",
             persist: true,
             show: true,
             backdrop: "static",
@@ -455,4 +458,11 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 
     $scope.fetchRoles();
 
+});
+
+care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog) {
+
+    $scope.fetchPermissions = function() {
+
+    }
 });
