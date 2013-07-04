@@ -1,92 +1,109 @@
 package org.motechproject.carereporting.service;
 
-import org.hibernate.SessionFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-// TODO: Complete all dependencies
-
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-    private final static String TEST_INDICATOR_1_NAME = "TEST_INDICATOR_1";
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
-    private final static String TEST_INDICATOR_2_NAME = "TEST_INDICATOR_2";
-    private final static int EXPECTED_INDICATOR_LIST_SIZE = 2;
 
     @Autowired
     private IndicatorService indicatorService;
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @Mock
+    private IndicatorDao indicatorDao = mock(IndicatorDao.class);
+
+    private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor;
 
     @Before
-    public void initialize() {
-        sessionFactory.getCurrentSession()
-                .createQuery("delete from IndicatorEntity");
+    public void setup() {
+        indicatorService.setIndicatorDao(indicatorDao);
+        indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
     }
 
     @Test
     public void testCreateNewIndicator() {
-        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
 
-        IndicatorEntity indicatorEntityResult = indicatorService.findIndicatorById(indicatorEntity.getId());
-        assertNotNull(indicatorEntityResult);
+        verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
+
+        final List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
+        assertEquals(1, indicatorEntities.size());
+        assertEquals(indicatorEntity, indicatorEntities.get(0));
     }
 
     @Test
     public void testUpdateIndicator() {
-        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
 
         indicatorEntity.setName(TEST_INDICATOR_1_UPDATED_NAME);
         indicatorService.updateIndicator(indicatorEntity);
 
-        IndicatorEntity indicatorEntityResult = indicatorService.findIndicatorById(indicatorEntity.getId());
-        assertNotNull(indicatorEntityResult);
-        assertEquals("IndicatorEntity name is: '" + indicatorEntityResult.getName() + "'"
-                + ", expected: '" + TEST_INDICATOR_1_UPDATED_NAME + "'.",
-                TEST_INDICATOR_1_UPDATED_NAME, indicatorEntityResult.getName());
+        verify(indicatorDao).update(indicatorEntityArgumentCaptor.capture());
+
+        final List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
+        assertEquals(1, indicatorEntities.size());
+        assertEquals(TEST_INDICATOR_1_UPDATED_NAME, indicatorEntities.get(0).getName());
     }
 
     @Test
     public void testFindAllIndicators() {
-        IndicatorEntity indicatorEntity1 = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
-        IndicatorEntity indicatorEntity2 = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_2_NAME);
-        indicatorService.createNewIndicator(indicatorEntity1);
-        indicatorService.createNewIndicator(indicatorEntity2);
-
+        Set <IndicatorEntity> indicatorEntities = new HashSet<>();
+        indicatorEntities.add(new IndicatorEntity());
+        when(indicatorDao.findAll()).thenReturn(indicatorEntities);
         Set<IndicatorEntity> indicatorList = indicatorService.findAllIndicators();
-        assertNotNull(indicatorList);
-        assertEquals("IndicatorEntity list size is: " + indicatorList.size()
-                + ", expected: " + EXPECTED_INDICATOR_LIST_SIZE,
-                EXPECTED_INDICATOR_LIST_SIZE, indicatorList.size());
+
+        verify(indicatorDao).findAll();
+
+        assertEquals(1, indicatorList.size());
+    }
+
+    @Test
+    public void testFindIndicatorById() {
+        String name = "qwertyuiop";
+        Integer id = 1;
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
+        indicatorEntity.setId(id);
+        indicatorEntity.setName(name);
+
+        when(indicatorDao.findById(id)).thenReturn(indicatorEntity);
+        IndicatorEntity returnedIndicator = indicatorService.findIndicatorById(id);
+
+        verify(indicatorDao).findById(id);
+
+        assertEquals(id, returnedIndicator.getId());
+        assertEquals(name, returnedIndicator.getName());
     }
 
     @Test
     public void testDeleteIndicator() {
-        IndicatorEntity indicatorEntity = new IndicatorEntity(null, null, null, null, null, null, 30, TEST_INDICATOR_1_NAME);
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
         indicatorService.deleteIndicator(indicatorEntity);
 
-        IndicatorEntity indicatorEntityResult = indicatorService.findIndicatorById(indicatorEntity.getId());
-        assertNull(indicatorEntityResult);
+        verify(indicatorDao).remove(indicatorEntity);
     }
 
 }

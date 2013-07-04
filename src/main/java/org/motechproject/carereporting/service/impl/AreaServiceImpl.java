@@ -30,10 +30,7 @@ public class AreaServiceImpl extends AbstractService implements AreaService {
     @Override
     @Transactional
     public AreaEntity findAreaById(Integer areaId) {
-        AreaEntity areaEntity = areaDao.findById(areaId);
-        validateEntity(areaEntity);
-
-        return areaEntity;
+        return areaDao.findById(areaId);
     }
 
     @Override
@@ -45,10 +42,7 @@ public class AreaServiceImpl extends AbstractService implements AreaService {
     @Override
     @Transactional
     public LevelEntity findLevelById(Integer levelId) {
-        LevelEntity levelEntity = levelDao.findById(levelId);
-        validateEntity(levelEntity);
-
-        return levelEntity;
+        return levelDao.findById(levelId);
     }
 
     @Override

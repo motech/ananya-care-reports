@@ -51,10 +51,7 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
 
     @Override
     public FormEntity findFormById(Integer formId) {
-        FormEntity formEntity = formDao.findById(formId);
-        validateEntity(formEntity);
-
-        return formEntity;
+        return formDao.findById(formId);
     }
 
     @Override

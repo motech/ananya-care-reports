@@ -47,10 +47,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public ComplexConditionEntity findComplexConditionById(Integer complexConditionId) {
-        ComplexConditionEntity complexConditionEntity = complexConditionDao.findById(complexConditionId);
-        validateEntity(complexConditionEntity);
-
-        return complexConditionEntity;
+        return complexConditionDao.findById(complexConditionId);
     }
 
     @Override
@@ -85,8 +82,6 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
 
         for(Integer indicatorId: complexConditionFormObject.getIndicators()) {
             IndicatorEntity indicatorEntity = indicatorService.findIndicatorById(indicatorId);
-            validateEntity(indicatorEntity);
-
             indicatorEntities.add(indicatorEntity);
         }
 
@@ -94,24 +89,15 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     }
 
     private ComparisonSymbolEntity findComparisionSymbolFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
-        ComparisonSymbolEntity comparisonSymbolEntity = this.findComparisonSymbolById(complexConditionFormObject.getComparisonSymbol());
-        validateEntity(comparisonSymbolEntity);
-
-        return comparisonSymbolEntity;
+        return findComparisonSymbolById(complexConditionFormObject.getComparisonSymbol());
     }
 
     private FormEntity findFormEntityFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
-        FormEntity formEntity = formsService.findFormById(complexConditionFormObject.getForm());
-        validateEntity(formEntity);
-
-        return formEntity;
+        return formsService.findFormById(complexConditionFormObject.getForm());
     }
 
     private OperatorTypeEntity findOperatorTypeFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
-        OperatorTypeEntity operatorTypeEntity = this.findOperatorTypeById(complexConditionFormObject.getOperatorType());
-        validateEntity(operatorTypeEntity);
-
-        return operatorTypeEntity;
+        return findOperatorTypeById(complexConditionFormObject.getOperatorType());
     }
 
     @Override
@@ -124,7 +110,6 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Transactional(readOnly = false)
     public void updateComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
         ComplexConditionEntity complexConditionEntity = this.findComplexConditionById(complexConditionFormObject.getId());
-        validateEntity(complexConditionEntity);
 
         complexConditionEntity.setComparisonSymbol(findComparisionSymbolFromFormObject(complexConditionFormObject));
         complexConditionEntity.setComparisonValue(complexConditionFormObject.getComparisonValue());
@@ -151,10 +136,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId) {
-        OperatorTypeEntity operatorTypeEntity = operatorTypeDao.findById(operatorTypeId);
-        validateEntity(operatorTypeEntity);
-
-        return operatorTypeEntity;
+        return operatorTypeDao.findById(operatorTypeId);
     }
 
     @Override
@@ -184,10 +166,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Override
     @Transactional
     public ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId) {
-        ComparisonSymbolEntity comparisonSymbolEntity = comparisonSymbolDao.findById(comparisonSymbolId);
-        validateEntity(comparisonSymbolEntity);
-
-        return comparisonSymbolEntity;
+        return comparisonSymbolDao.findById(comparisonSymbolId);
     }
 
     @Override

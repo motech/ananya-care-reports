@@ -11,10 +11,16 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> im
 
     @Override
     public UserEntity findByUsernameAndPassword(String username, String password) {
-        return (UserEntity) getSessionFactory().getCurrentSession().createCriteria(UserEntity.class)
+        UserEntity user = (UserEntity) getSessionFactory().getCurrentSession().createCriteria(UserEntity.class)
             .add(Restrictions.eq("username", username))
             .add(Restrictions.eq("password", password))
             .uniqueResult();
+
+        if(user == null) {
+            throw new UserException("Bad username or password");
+        }
+
+        return user;
     }
 
     @Override
@@ -23,9 +29,10 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> im
                 .add(Restrictions.eq("username", username))
                 .uniqueResult();
 
-        if (user != null) {
-            return user.getSalt();
+        if (user == null) {
+            throw new UserException("Bad username or password");
         }
-        throw new UserException("Bad username or password");
+
+        return user.getSalt();
     }
 }

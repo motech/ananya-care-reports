@@ -1,5 +1,9 @@
 package org.motechproject.carereporting.service;
 
+import org.motechproject.carereporting.dao.IndicatorCategoryDao;
+import org.motechproject.carereporting.dao.IndicatorDao;
+import org.motechproject.carereporting.dao.IndicatorTypeDao;
+import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -9,6 +13,14 @@ import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import java.util.Set;
 
 public interface IndicatorService {
+
+    void setIndicatorDao(IndicatorDao indicatorDao);
+
+    void setIndicatorTypeDao(IndicatorTypeDao indicatorTypeDao);
+
+    void setIndicatorCategoryDao(IndicatorCategoryDao indicatorCategoryDao);
+
+    void setIndicatorValueDao(IndicatorValueDao indicatorValueDao);
 
     Set<IndicatorEntity> findAllIndicators();
 

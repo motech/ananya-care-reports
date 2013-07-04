@@ -40,10 +40,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Override
     public UserEntity findUserById(Integer id) {
-        UserEntity userEntity = userDao.findById(id);
-        validateEntity(userEntity);
-
-        return userEntity;
+        return userDao.findById(id);
     }
 
     @Override
@@ -59,11 +56,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
     public UserEntity login(String username, String password) {
         String salt = userDao.getSaltForUser(username);
         String encodedPassword = encodePasswordWithSalt(password, salt);
-        UserEntity user = userDao.findByUsernameAndPassword(username, encodedPassword);
-        if (user != null) {
-            return user;
-        }
-        throw new UserException("Bad username or password");
+        return userDao.findByUsernameAndPassword(username, encodedPassword);
     }
 
     @Transactional(readOnly = false)
@@ -141,10 +134,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Transactional
     @Override
     public PermissionEntity findPermissionById(Integer id) {
-        PermissionEntity permissionEntity = permissionDao.findById(id);
-        validateEntity(permissionEntity);
-
-        return permissionEntity;
+        return permissionDao.findById(id);
     }
 
     @Transactional(readOnly = false)

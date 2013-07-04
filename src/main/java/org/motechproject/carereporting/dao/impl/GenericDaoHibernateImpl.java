@@ -3,6 +3,8 @@ package org.motechproject.carereporting.dao.impl;
 import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
+import org.motechproject.carereporting.exception.CareNullArgumentRuntimeException;
+import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
@@ -37,7 +39,17 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     @Override
     @SuppressWarnings("unchecked")
     public T findById(Integer id) {
-        return (T) sessionFactory.getCurrentSession().get(type, id);
+        if (id == null) {
+            throw new CareNullArgumentRuntimeException();
+        }
+
+        T entity = (T) sessionFactory.getCurrentSession().get(type, id);
+
+        if (entity == null) {
+            throw new CareResourceNotFoundRuntimeException(type, id);
+        }
+
+        return entity;
     }
 
     @Override

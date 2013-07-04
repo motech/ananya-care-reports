@@ -40,10 +40,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     @Transactional
     public ReportEntity findReportById(Integer id) {
-        ReportEntity reportEntity = reportDao.findById(id);
-        validateEntity(reportEntity);
-
-        return reportEntity;
+        return reportDao.findById(id);
     }
 
     @Override
@@ -73,10 +70,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     @Transactional
     public ReportTypeEntity findReportTypeById(Integer id) {
-        ReportTypeEntity reportTypeEntity = reportTypeDao.findById(id);
-        validateEntity(reportTypeEntity);
-
-        return reportTypeEntity;
+        return reportTypeDao.findById(id);
     }
 
     @Override
@@ -106,10 +100,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     @Transactional
     public DashboardEntity findDashboardById(Integer id) {
-        DashboardEntity dashboardEntity = dashboardDao.findById(id);
-        validateEntity(dashboardEntity);
-
-        return dashboardEntity;
+        return dashboardDao.findById(id);
     }
 
     @Override
@@ -139,10 +130,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     @Transactional
     public ChartTypeEntity findChartTypeById(Integer id) {
-        ChartTypeEntity chartTypeEntity = chartTypeDao.findById(id);
-        validateEntity(chartTypeEntity);
-
-        return chartTypeEntity;
+        return chartTypeDao.findById(id);
     }
 
     @Override

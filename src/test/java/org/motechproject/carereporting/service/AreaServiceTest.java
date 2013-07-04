@@ -22,9 +22,6 @@ public class AreaServiceTest extends AbstractTransactionalJUnit4SpringContextTes
     @Autowired
     private AreaService areaService;
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
     @Test
     public void testGetAllAreas() {
         LevelEntity level = new LevelEntity("newLevel", null);

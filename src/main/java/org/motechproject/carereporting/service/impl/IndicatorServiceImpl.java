@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.hibernate.exception.SQLGrammarException;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
@@ -13,7 +12,6 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
-import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -28,8 +26,6 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl extends AbstractService implements IndicatorService {
-
-    private static final String ENTITY_DOES_NOT_EXIST_ERROR = "does not exist";
 
     @Autowired
     private IndicatorDao indicatorDao;
@@ -52,7 +48,22 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Autowired
     private ComplexConditionService complexConditionService;
 
-    // IndicatorEntity
+    public void setIndicatorDao(IndicatorDao indicatorDao) {
+        this.indicatorDao = indicatorDao;
+    }
+
+    public void setIndicatorTypeDao(IndicatorTypeDao indicatorTypeDao) {
+        this.indicatorTypeDao = indicatorTypeDao;
+    }
+
+    public void setIndicatorCategoryDao(IndicatorCategoryDao indicatorCategoryDao) {
+        this.indicatorCategoryDao = indicatorCategoryDao;
+    }
+
+    public void setIndicatorValueDao(IndicatorValueDao indicatorValueDao) {
+        this.indicatorValueDao = indicatorValueDao;
+    }
+// IndicatorEntity
 
     @Transactional
     public Set<IndicatorEntity> findAllIndicators() {
@@ -62,10 +73,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorEntity findIndicatorById(Integer id) {
-        IndicatorEntity indicatorEntity = indicatorDao.findById(id);
-        validateEntity(indicatorEntity);
-
-        return indicatorEntity;
+        return indicatorDao.findById(id);
     }
 
     @Transactional(readOnly = false)
@@ -75,10 +83,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     }
 
     private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        IndicatorTypeEntity indicatorTypeEntity = this.findIndicatorTypeById(indicatorFormObject.getIndicatorType());
-        validateEntity(indicatorTypeEntity);
-
-        return indicatorTypeEntity;
+        return findIndicatorTypeById(indicatorFormObject.getIndicatorType());
     }
 
     private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromFormObject(
@@ -87,7 +92,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
         for (Integer indicatorCategoryId : indicatorFormObject.getCategories()) {
             IndicatorCategoryEntity indicatorCategoryEntity = this.findIndicatorCategoryById(indicatorCategoryId);
-            validateEntity(indicatorCategoryEntity);
 
             indicatorCategoryEntities.add(indicatorCategoryEntity);
         }
@@ -96,10 +100,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     }
 
     private LevelEntity findLevelEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        LevelEntity levelEntity = areaService.findLevelById(indicatorFormObject.getLevel());
-        validateEntity(levelEntity);
-
-        return levelEntity;
+        return areaService.findLevelById(indicatorFormObject.getLevel());
     }
 
     private Set<UserEntity> findUserEntitiesFromFormObject(IndicatorFormObject indicatorFormObject) {
@@ -107,7 +108,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
         for (Integer ownerId : indicatorFormObject.getOwners()) {
             UserEntity userEntity = userService.findUserById(ownerId);
-            validateEntity(userEntity);
 
             userEntities.add(userEntity);
         }
@@ -122,7 +122,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         for (Integer complexConditionId : indicatorFormObject.getComplexConditions()) {
             ComplexConditionEntity complexConditionEntity = complexConditionService
                     .findComplexConditionById(complexConditionId);
-            validateEntity(complexConditionEntity);
 
             complexConditionEntities.add(complexConditionEntity);
         }
@@ -136,7 +135,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
         for (Integer valueId : indicatorFormObject.getValues()) {
             IndicatorValueEntity indicatorValueEntity = this.findIndicatorValueById(valueId);
-            validateEntity(indicatorValueEntity);
 
             indicatorValueEntities.add(indicatorValueEntity);
         }
@@ -164,22 +162,13 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void updateIndicator(IndicatorEntity indicatorEntity) {
-        try {
-            indicatorDao.update(indicatorEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorDao.update(indicatorEntity);
     }
 
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
         IndicatorEntity indicatorEntity = this.findIndicatorById(indicatorFormObject.getId());
-        validateEntity(indicatorEntity);
 
         indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
@@ -196,15 +185,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicator(IndicatorEntity indicatorEntity) {
-        try {
-            indicatorDao.remove(indicatorEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorEntity.class, indicatorEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorDao.remove(indicatorEntity);
     }
 
     // IndicatorTypeEntity
@@ -218,10 +199,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorTypeEntity findIndicatorTypeById(Integer id) {
-        IndicatorTypeEntity indicatorTypeEntity = indicatorTypeDao.findById(id);
-        validateEntity(indicatorTypeEntity);
-
-        return indicatorTypeEntity;
+        return indicatorTypeDao.findById(id);
     }
 
     @Transactional(readOnly = false)
@@ -233,31 +211,13 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorType(IndicatorTypeEntity indicatorTypeEntity) {
-        try {
-            indicatorTypeDao.update(indicatorTypeEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorTypeEntity.class,
-                        indicatorTypeEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorTypeDao.update(indicatorTypeEntity);
     }
 
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorType(IndicatorTypeEntity indicatorTypeEntity) {
-        try {
-            indicatorTypeDao.remove(indicatorTypeEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorTypeEntity.class,
-                indicatorTypeEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorTypeDao.remove(indicatorTypeEntity);
     }
 
     // IndicatorCategoryEntity
@@ -271,10 +231,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorCategoryEntity findIndicatorCategoryById(Integer id) {
-        IndicatorCategoryEntity indicatorCategoryEntity = indicatorCategoryDao.findById(id);
-        validateEntity(indicatorCategoryEntity);
-
-        return indicatorCategoryEntity;
+        return indicatorCategoryDao.findById(id);
     }
 
     @Transactional(readOnly = false)
@@ -286,31 +243,13 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
-        try {
-            indicatorCategoryDao.update(indicatorCategoryEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
-                        indicatorCategoryEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorCategoryDao.update(indicatorCategoryEntity);
     }
 
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
-        try {
-            indicatorCategoryDao.remove(indicatorCategoryEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
-                        indicatorCategoryEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorCategoryDao.remove(indicatorCategoryEntity);
     }
 
     @Transactional
@@ -324,10 +263,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     @Override
     public IndicatorValueEntity findIndicatorValueById(Integer id) {
-        IndicatorValueEntity indicatorValueEntity = indicatorValueDao.findById(id);
-        validateEntity(indicatorValueEntity);
-
-        return indicatorValueEntity;
+        return indicatorValueDao.findById(id);
     }
 
     @Transactional(readOnly = false)
@@ -339,30 +275,12 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        try {
-            indicatorValueDao.update(indicatorValueEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
-                        indicatorValueEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorValueDao.update(indicatorValueEntity);
     }
 
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        try {
-            indicatorValueDao.remove(indicatorValueEntity);
-        } catch (SQLGrammarException e) {
-            if (e.getCause().getMessage().contains(ENTITY_DOES_NOT_EXIST_ERROR)) {
-                throw new CareResourceNotFoundRuntimeException(IndicatorCategoryEntity.class,
-                        indicatorValueEntity.getId(), e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
+        indicatorValueDao.remove(indicatorValueEntity);
     }
 }
