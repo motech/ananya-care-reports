@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
-public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private UserService userService;

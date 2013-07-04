@@ -3,6 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
+import org.motechproject.carereporting.exception.UserException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,7 +69,12 @@ public class UserController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        userService.register(userEntity);
+        try {
+            userService.register(userEntity);
+        } catch (UserException e) {
+            bindingResult.rejectValue("username", "Duplicate.userEntity.username");
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
+        }
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
@@ -78,7 +84,12 @@ public class UserController {
             throw new CareApiRuntimeException(result.getFieldErrors());
         }
 
-        userService.updateUser(userEntity);
+        try {
+            userService.updateUser(userEntity);
+        } catch (UserException e) {
+            result.rejectValue("username", "Duplicate.userEntity.username");
+            throw new CareApiRuntimeException(result.getFieldErrors(), e);
+        }
     }
 
 }

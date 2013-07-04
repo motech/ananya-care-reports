@@ -22,6 +22,7 @@
         <hibernate.version>4.1.10.Final</hibernate.version>
         <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
         <c3po.version>0.9.1.2</c3po.version>
+        <json-path.version>0.8.1</json-path.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
 
@@ -177,6 +178,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>10.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${json-path.version}</version>
         </dependency>
     </dependencies>
     <build>

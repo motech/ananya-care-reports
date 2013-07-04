@@ -18,4 +18,9 @@ public class CareApiRuntimeException extends RuntimeException {
     public CareApiRuntimeException(List<FieldError> errors) {
         this.errors = errors;
     }
+
+    public CareApiRuntimeException(List<FieldError> errors, Exception e) {
+        super(e);
+        this.errors = errors;
+    }
 }

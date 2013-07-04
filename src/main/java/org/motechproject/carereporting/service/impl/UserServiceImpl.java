@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.motechproject.carereporting.dao.PermissionDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
@@ -9,6 +10,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.UserException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -65,7 +67,11 @@ public class UserServiceImpl extends AbstractService implements UserService {
         UserEntity user = new UserEntity(username, password, roles);
         String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
         user.setPassword(encodedPassword);
-        userDao.save(user);
+        try {
+            userDao.save(user);
+        } catch (ConstraintViolationException e) {
+            throw new UserException("Username already exists", e);
+        }
     }
 
     @Transactional(readOnly = false)
@@ -73,20 +79,29 @@ public class UserServiceImpl extends AbstractService implements UserService {
     public void register(UserEntity userEntity) {
         String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
         userEntity.setPassword(encodedPassword);
-        userDao.save(userEntity);
+        try {
+            userDao.save(userEntity);
+        } catch (ConstraintViolationException e) {
+            throw new UserException("Username already exists", e);
+        }
     }
 
     @Transactional(readOnly = false)
     @Override
     public void updateUser(UserEntity user) {
-        UserEntity userToUpdate = findUserById(user.getId());
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setRoles(user.getRoles());
-        if (!StringUtils.isEmpty(user.getPassword())) {
-            String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
-            userToUpdate.setPassword(encodedPassword);
+        try {
+            UserEntity userToUpdate = findUserById(user.getId());
+            userToUpdate.setUsername(user.getUsername());
+            userToUpdate.setRoles(user.getRoles());
+            if (!StringUtils.isEmpty(user.getPassword())) {
+                String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
+                userToUpdate.setPassword(encodedPassword);
+            }
+
+            userDao.update(userToUpdate);
+        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
+            throw new UserException("Username already exists", e);
         }
-        userDao.update(userToUpdate);
     }
 
     private String encodePasswordWithSalt(String password, String salt) {

@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.dao.impl;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
@@ -59,7 +60,9 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     public void update(T entity) {
-        sessionFactory.getCurrentSession().update(entity);
+        Session session = sessionFactory.getCurrentSession();
+        session.update(entity);
+        session.flush();
     }
 
     @Override

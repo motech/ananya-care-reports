@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
-public class AreaServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private AreaService areaService;
