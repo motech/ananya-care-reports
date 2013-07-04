@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
+import org.motechproject.carereporting.domain.OperatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComplexConditionService;
@@ -26,16 +28,28 @@ public class ComplexConditionController {
     @Autowired
     private ComplexConditionService complexConditionService;
 
-    @RequestMapping(method = RequestMethod.GET, consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<ComplexConditionEntity> getComplexConditionList() {
         return complexConditionService.findAllComplexConditions();
     }
 
+    @RequestMapping(value = "/operatortype", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<OperatorTypeEntity> getOperatorTypeList() {
+        return complexConditionService.findAllOperatorTypes();
+    }
+
+    @RequestMapping(value = "/comparisonsymbol", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<ComparisonSymbolEntity> getComparisonSymbolList() {
+        return complexConditionService.findAllComparisonSymbols();
+    }
+
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -71,7 +85,8 @@ public class ComplexConditionController {
         complexConditionService.updateComplexCondition(complexConditionFormObject);
     }
 
-    @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.DELETE,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

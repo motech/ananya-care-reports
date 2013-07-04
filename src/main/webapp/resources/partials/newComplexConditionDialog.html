@@ -1,20 +1,21 @@
+<form id="createComplexConditionForm" name="createForm" novalidate>
 <div class="modal-header">
     <h3>Create New Condition</h3>
 </div>
 <div class="modal-body">
-    <label for="operator">Operator:</label>
-    <input type="hidden" id="conditionId" ng-model="condition.id" value="1" />
-    <select id="operator" ng-model="condition.operator" ng-options="item.value as item.name for item in indicator.listOperators" class="input-block-level"></select>
+    <label for="operatorType">Operator:</label>
+    <select id="operatorType" ng-model="newCondition.operatorType" ng-options="item.id as item.name for item in listOperatorTypes" class="input-block-level" required></select>
     <label for="form">Form:</label>
-    <select id="form" ng-model="condition.form" ng-options="item.value as item.name for item in indicator.listForms" class="input-block-level"></select>
-    <label for="calculateBy">Calculate By:</label>
-    <select id="calculateBy" ng-model="condition.calculateBy" ng-options="item.value as item.name for item in indicator.listCalculateBy" class="input-block-level"></select>
+    <select id="form" ng-model="newCondition.form" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
+    <label for="field">Calculate By:</label>
+    <input id="field" type="text" ng-model="newCondition.field" required />
     <label for="comparisonSymbol">Comparison:</label>
-    <select id="comparisonSymbol" ng-model="condition.comparisonSymbol" ng-options="item.value as item.name for item in indicator.listComparisonSymbols" class="input-block-level"></select>
+    <select id="comparisonSymbol" ng-model="newCondition.comparisonSymbol" ng-options="item.id as item.name for item in listComparisonSymbols" class="input-block-level" required></select>
     <label for="comparisonValue">Value:</label>
-    <input id="comparisonValue" type="number" ng-model="condition.comparisonValue" />
+    <input id="comparisonValue" type="number" ng-model="newCondition.comparisonValue" required />
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="saveNewComplexCondition();hide()">Save Changes</button>
+    <button class="btn btn-primary" ng-click="saveNewComplexCondition();dismiss()" ng-disabled="createForm.$invalid">Save Changes</button>
     <button class="btn" ng-click="dismiss()">Cancel</button>
 </div>
+</form>
