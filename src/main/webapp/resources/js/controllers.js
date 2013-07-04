@@ -592,8 +592,10 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             }).error(function(response) {
                 var errors = "<ul>";
                 for (i in response) {
-                    var error = response[i];
-                    errors += "<li>" + error.message + "</li>";
+                    if (response.hasOwnProperty(i)) {
+                        var error = response[i];
+                        errors += "<li>" + error.message + "</li>";
+                    }
                 }
                 errors += "</ul>"
 

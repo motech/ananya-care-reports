@@ -17,9 +17,11 @@
                     content: function () {
                         var html = angular.element('<ul />');
                         for (var i in scope.user.roles) {
-                            var li = angular.element('<li />');
-                            li.text(scope.user.roles[i].name);
-                            html.append(li);
+                            if (scope.user.roles.hasOwnProperty(i)) {
+                                var li = angular.element('<li />');
+                                li.text(scope.user.roles[i].name);
+                                html.append(li);
+                            }
                         }
 
                         console.log(scope.user);
