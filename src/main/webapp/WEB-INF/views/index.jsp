@@ -12,6 +12,7 @@
     <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
 
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
     <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
@@ -23,6 +24,8 @@
     <script src="resources/lib/angular/angular-bootstrap.js" type="text/javascript"></script>
     <script src="resources/lib/angular/angular-strap.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/ui-bootstrap-tpls-0.4.0.js"></script>
+    <script src="resources/lib/angular/angular-strap.min.js"></script>
+    <script src="resources/lib/bootstrap-multiselect.js"></script>
     <script src="resources/js/localization.js"></script>
     <script src="resources/js/app.js" type="text/javascript"></script>
     <script src="resources/js/services.js" type="text/javascript"></script>
@@ -41,14 +44,16 @@
                             <li><a href="#/indicator/new"><i class="icon-plus-sign"></i>{{msg('menu.manageIndicators.addNewIndicator')}}</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/users"><i class="icon-list"></i> User list</a></li>
-                            <li><a href="#/users/roles"><i class="icon-list"></i>{{msg('menu.manageSystemUsers.rolesList')}}</a></li>
-                            <li><a href="#/users/new"><i class="icon-plus-sign"></i> Add new user</a></li>
-                        </ul>
-                    </li>
+                    <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/users"><i class="icon-list"></i> User list</a></li>
+								<li><a href="#/users/roles"><i class="icon-list"></i>{{msg('menu.manageSystemUsers.rolesList')}}</a></li>
+                                <li><a href="#/users/new"><i class="icon-plus-sign"></i> Add new user</a></li>
+                            </ul>
+                        </li>
+                    </sec:authorize>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageForms')}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">

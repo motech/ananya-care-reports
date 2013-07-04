@@ -1,21 +1,21 @@
-<h1 class="text-center">Users</h1>
+<h1 class="text-center">{{msg('users.list.header')}}</h1>
 <div class="span8 offset2 well">
     <table class="table table-hover" ng-show="users.length > 0">
         <thead>
         <tr>
-            <th>User name</th>
-            <th>Actions</th>
+            <th>{{msg('users.list.userName')}}</th>
+            <th>{{msg('users.list.actions')}}</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="user in users">
+        <tr ng-repeat="user in users" user-popover>
             <td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
             <td><span class="btn btn-link" ng-click="deleteUser(user);"><i class="icon-remove"></i></span></td>
         </tr>
         </tbody>
     </table>
     <p class="text-center">
-        <span class="text-info" ng-show="forms.length == 0">No users to display<br /><br /></span>
-        <a class="btn btn-primary" href="#/users/new">Add new user</a>
+        <span class="text-info" ng-show="users.length == 0">{{msg('users.list.empty')}}<br /><br /></span>
+        <a class="btn btn-primary" href="#/users/new">{{msg('users.list.addUser')}}</a>
     </p>
 </div>

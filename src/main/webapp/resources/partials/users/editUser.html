@@ -1,27 +1,33 @@
-<h1 class="text-center">Edit user</h1>
+<h1 class="text-center">{{msg('users.form.header')}}</h1>
 <div class="well span6 offset3">
     <form class="form-horizontal">
         <div class="control-group">
-            <label class="control-label" for="userName">User name: </label>
+            <label class="control-label" for="username">{{msg('users.form.username.label')}}: </label>
             <div class="controls">
                 <div class="input-append">
-                    <input ng-model="careUser.userName" type="text" id="userName" name="userName" placeholder="Enter user name...">
-                    <span class="add-on"><i class="icon-tag"></i></span>
+                    <input ng-model="careUser.username" type="text" id="username" name="username" placeholder="{{msg('users.form.username.placeholder')}}" required>
+                    <span class="add-on"><i class="icon-user"></i></span>
                 </div>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="userPassword">Password: </label>
+            <label class="control-label" for="password">{{msg('users.form.password.label')}}: </label>
             <div class="controls">
                 <div class="input-append">
-                    <input ng-model="careUser.userPassword" type="password" id="userPassword" name="userPassword"
-                           placeholder="Enter user password...">
-                    <span class="add-on"><i class="icon-tag"></i></span>
+                    <input ng-model="careUser.password" type="password" id="password" name="password"
+                           placeholder="{{{true: msg('users.form.password.changePlaceholder'), false: msg('users.form.password.enterPlaceholder')}[isEditing()]}}">
+                    <span class="add-on"><i class="icon-lock"></i></span>
                 </div>
             </div>
         </div>
         <div class="control-group">
-            <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)">Submit</button>
+            <label class="control-label" for="roles">{{msg('users.form.roles')}}: </label>
+            <div class="controls">
+                <select multiple="multiple" id="roles" name="roles" ng-model="careUser.roles" ng-options="role as role.name for role in roles" />
+            </div>
+        </div>
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)">{{msg('users.form.submit')}}</button>
         </div>
     </form>
 </div>

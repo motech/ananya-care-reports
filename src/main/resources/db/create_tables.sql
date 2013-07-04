@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS public.care_user(
 	user_id serial NOT NULL,
 	username character varying(100) NOT NULL,
 	password character varying(40) NOT NULL,
-	salt character varying(16) NOT NULL,
+	salt character varying(40) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT user_pk PRIMARY KEY (user_id),

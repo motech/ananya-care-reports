@@ -145,6 +145,38 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         { name: "FLW 3", value: "3" }
     ];
     $scope.levelFlwType = "1";
+    $scope.listOperators = [
+        { name: "ADD", value: "1" },
+        { name: "SUBTRACT", value: "2" },
+        { name: "MULTIPLY", value: "3" },
+        { name: "DIVIDE", value: "4" }
+    ];
+    $scope.listForms = [
+        { name: "Form 1", value: "1" },
+        { name: "Form 2", value: "2" }
+    ];
+    $scope.listCalculateBy = [
+        { name: "Formula 1", value: "1" },
+        { name: "Formula 2", value: "2" }
+    ];
+    $scope.listComparisonSymbols = [
+        { name: "<=", value: "1" },
+        { name: ">=", value: "2" }
+    ];
+
+    $scope.listComplexConditions = [
+        { id: 0, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 10 },
+        { id: 1, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 11 },
+        { id: 2, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 12 }
+    ];
+
+    $scope.condition = {
+        operator: "1",
+        form: "1",
+        calculateBy: "1",
+        comparisonSymbol: "1",
+        comparisonValue: 10
+    };
 
     $scope.validateOwners = function() {
         $scope.ownersValid = false;
@@ -401,6 +433,37 @@ care.controller('formListController', function($scope, $http, $dialog) {
 
 });
 
+care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog) {
+
+    $scope.fetchRoles = function() {
+        $http.get('api/users/roles').success(function(roles) {
+            $scope.roles = roles;
+        });
+    };
+
+    $scope.deleteRole = function(role) {
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'},
+                            {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+                $dialog.messageBox($scope.msg('users.roles.list.confirmDelete.header'),
+                                   $scope.msg('users.roles.list.confirmDelete.message') + role.name + '?', btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({method: 'DELETE', url: 'api/users/roles' + role.id})
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchRoles();
+                    }).error(function(response) {
+                        $dialog.messageBox($scope.msg('Error'), $scope.msg('users.roles.list.error.delete'),
+                                            [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                    });
+                }
+            });
+    };
+
+    $scope.fetchRoles();
+
+});
+
 care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog) {
 
     $scope.fetchUsers = function() {
@@ -411,7 +474,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
 
     $scope.deleteUser = function(user) {
         var btns = [{result:'yes', label: 'Yes', cssClass: 'btn-primary btn'}, {result:'no', label: 'No', cssClass: 'btn-danger btn'}];
-        $dialog.messageBox("Confirm delete user", "Are you sure you want to delete user: " + user.username + '?', btns)
+        $dialog.messageBox($scope.msg('users.list.confirmDelete.header'), $scope.msg('users.list.confirmDelete.message', user.username), btns)
             .open()
             .then(function(result) {
                 if (result === 'yes') {
@@ -419,7 +482,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchUsers();
                     }).error(function(response) {
-                        $dialog.messageBox("Error", "Cannot delete user.", [{label: 'Ok', cssClass: 'btn'}]).open();
+                        $dialog.messageBox($scope.msg('error'), $scope.msg('users.list.error.deleteUser'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
                     });
                 }
             });
@@ -466,3 +529,107 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
 
     }
 });
+
+care.controller('userController', function($scope, $http, $routeParams, $location, $dialog) {
+
+    $scope.userId = $routeParams.userId;
+
+    $scope.isEditing = function() {
+        return $scope.userId != undefined;
+    }
+
+    $scope.careUser = {};
+
+    $scope.assignUser = function(user) {
+        roles:
+        for (var role in user.roles) {
+            for (var globalRole in $scope.roles) {
+                if ($scope.roles[globalRole].id == user.roles[role].id) {
+                    user.roles[role] = $scope.roles[globalRole];
+                    continue roles;
+                }
+            }
+        }
+        $scope.$watch('careUser', function() {
+            $("#roles").multiselect('refresh');
+        });
+        $scope.careUser = user;
+    };
+
+    $scope.fetchUser = function() {
+        $http.get('api/users/' + $scope.userId)
+            .success(function(user) {
+                if ($scope.roles == undefined) {
+                    $scope.$watch('roles', function() {
+                        $scope.assignUser(user);
+                    });
+                } else {
+                    $scope.assignUser(user);
+                }
+            }).error(function() {
+                $dialog.messageBox($scope.msg('error'), $scope.msg('users.form.error.cannotFetchUser'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.fetchRoles = function() {
+        $http.get('api/users/roles')
+            .success(function(roles) {
+                $scope.$watch('roles', function() {
+                    $("#roles").multiselect();
+                });
+                $scope.roles = roles;
+            })
+            .error(function() {
+                $dialog.messageBox($scope.msg('error'), $scope.msg('users.form.error.cannotLoadRoles'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.submitUser = function(user) {
+
+        $http({method: 'PUT', url: 'api/users' + (user.id !== undefined ? ('/' + user.id) : ''), data: user})
+            .success(function(response) {
+                $location.path( "/users" );
+            }).error(function(response) {
+                var errors = "<ul>";
+                for (i in response) {
+                    var error = response[i];
+                    errors += "<li>" + error.message + "</li>";
+                }
+                errors += "</ul>"
+
+                var t = '<div class="modal-header">'+
+                          '<h3>' + $scope.msg('users.form.error.cannotSubmitHeader') + '</h3>'+
+                          '</div>'+
+                          '<div class="modal-body">'+
+                          errors +
+                          '</div>'+
+                          '<div class="modal-footer">'+
+                          '<button ng-click="close()" class="btn btn-primary" >' + $scope.msg('close') + '</button>'+
+                          '</div>';
+
+                  $scope.opts = {
+                    backdrop: true,
+                    keyboard: true,
+                    backdropClick: true,
+                    template:  t,
+                    controller: 'ErrorsDialogController'
+                  };
+
+                $dialog.dialog($scope.opts).open();
+            });
+
+    };
+
+    $scope.fetchRoles();
+
+    if ($scope.userId !== undefined) {
+        $scope.fetchUser();
+    };
+});
+
+function ErrorsDialogController($scope, dialog){
+  $scope.close = function(result){
+    dialog.close(result);
+  };
+}
+

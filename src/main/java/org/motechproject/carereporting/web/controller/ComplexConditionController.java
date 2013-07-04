@@ -64,7 +64,7 @@ public class ComplexConditionController {
     public void createNewComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         complexConditionService.createNewComplexCondition(complexConditionFormObject);
@@ -78,7 +78,7 @@ public class ComplexConditionController {
     public void updateComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
             BindingResult bindingResult, @PathVariable Integer complexConditionId) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         complexConditionFormObject.setId(complexConditionId);

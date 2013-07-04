@@ -2,18 +2,26 @@ package org.motechproject.carereporting.service;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +36,14 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Before
+    public void setupAuthentication() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("CAN_MANAGE_SYSTEM_USERS"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("principal", "credentials", authorities));
+    }
 
     @Test
     public void testRegisterUser() throws Exception {
@@ -90,6 +106,7 @@ public class UserServiceTest extends AbstractTransactionalJUnit4SpringContextTes
         UserEntity userEntity = new UserEntity(username, password);
         userService.register(userEntity);
         userEntity.setUsername(newusername);
+        userEntity.setPassword(password);
         userService.updateUser(userEntity);
         userEntity = userService.login(newusername, password);
 

@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @Controller
@@ -52,17 +54,21 @@ public class FormsController {
 
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void addForm(@RequestBody FormEntity form, BindingResult result) {
-        if (!result.hasErrors()) {
-            formsService.addForm(form);
+    public void addForm(@RequestBody @Valid FormEntity form, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new CareApiRuntimeException(result.getFieldErrors());
         }
+
+        formsService.addForm(form);
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public void updateForm(@PathVariable Integer formId, @RequestBody FormEntity form, BindingResult result) {
-        if (!result.hasErrors()) {
-            formsService.updateForm(form);
+    public void updateForm(@PathVariable Integer formId, @RequestBody @Valid FormEntity form, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new CareApiRuntimeException(result.getFieldErrors());
         }
+
+        formsService.updateForm(form);
     }
 }

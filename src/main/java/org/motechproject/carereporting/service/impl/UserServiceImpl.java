@@ -11,6 +11,7 @@ import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -45,6 +46,14 @@ public class UserServiceImpl extends AbstractService implements UserService {
         return userEntity;
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void removeUserById(Integer userId) {
+        UserEntity user = new UserEntity();
+        user.setId(userId);
+        userDao.remove(user);
+    }
+
     @Transactional
     @Override
     public UserEntity login(String username, String password) {
@@ -77,7 +86,14 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Transactional(readOnly = false)
     @Override
     public void updateUser(UserEntity user) {
-        userDao.update(user);
+        UserEntity userToUpdate = findUserById(user.getId());
+        userToUpdate.setUsername(user.getUsername());
+        userToUpdate.setRoles(user.getRoles());
+        if (!StringUtils.isEmpty(user.getPassword())) {
+            String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
+            userToUpdate.setPassword(encodedPassword);
+        }
+        userDao.update(userToUpdate);
     }
 
     private String encodePasswordWithSalt(String password, String salt) {

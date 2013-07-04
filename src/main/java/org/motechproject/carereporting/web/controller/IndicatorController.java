@@ -51,7 +51,7 @@ public class IndicatorController {
     public void createNewIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         indicatorService.createNewIndicatorFromFormObject(indicatorFormObject);
@@ -64,7 +64,7 @@ public class IndicatorController {
     public void updateIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
             BindingResult bindingResult, @PathVariable Integer indicatorId) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         indicatorFormObject.setId(indicatorId);
@@ -105,7 +105,7 @@ public class IndicatorController {
     public void createNewIndicatorType(@RequestBody @Valid IndicatorTypeEntity indicatorTypeEntity,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         indicatorService.createNewIndicatorType(indicatorTypeEntity);
@@ -119,7 +119,7 @@ public class IndicatorController {
     public void updateIndicatorType(@RequestBody @Valid IndicatorTypeEntity indicatorTypeEntity,
             BindingResult bindingResult, @PathVariable Integer indicatorTypeId) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         IndicatorTypeEntity foundIndicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
@@ -166,7 +166,7 @@ public class IndicatorController {
     public void createNewIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         indicatorService.createNewIndicatorCategory(indicatorCategoryEntity);
@@ -180,7 +180,7 @@ public class IndicatorController {
     public void updateIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult, @PathVariable Integer indicatorCategoryId) {
         if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
         IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);

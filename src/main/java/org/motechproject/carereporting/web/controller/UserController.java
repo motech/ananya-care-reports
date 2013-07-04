@@ -8,28 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Set;
 
-@RequestMapping(value = "api/users")
+@RequestMapping(value = "/api/users")
 @Controller
 public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Set<UserEntity> getAllUsers() {
-        return userService.findAllUsers();
-    }
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
@@ -38,12 +35,50 @@ public class UserController {
         return userService.findAllRoles();
     }
 
-    @RequestMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-    public void registerUser(@Valid UserEntity userEntity, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getAllErrors());
+    @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<UserEntity> getAllUsers() {
+        return userService.findAllUsers();
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserEntity getUserById(@PathVariable Integer userId) {
+        return userService.findUserById(userId);
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void deleteUser(@PathVariable Integer userId) {
+        userService.removeUserById(userId);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void registerUser(@RequestBody @Valid UserEntity userEntity, BindingResult bindingResult,
+                             HttpServletRequest request) {
+        if (StringUtils.isEmpty(userEntity.getPassword())) {
+            bindingResult.rejectValue("password", "NotNull.userEntity.password");
         }
 
-        //userService.register(userEntity.getUsername(), userEntity.getPassword(), userEntity.getRoles());
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+
+        userService.register(userEntity);
     }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUser(@RequestBody @PathVariable Integer userId, @RequestBody @Valid UserEntity userEntity, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new CareApiRuntimeException(result.getFieldErrors());
+        }
+
+        userService.updateUser(userEntity);
+    }
+
 }

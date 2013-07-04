@@ -81,3 +81,7 @@ form#indicatorForm div#formButtons {
 .float-left {
     float: left;
 }
+
+.popover {
+    max-width: none;
+}

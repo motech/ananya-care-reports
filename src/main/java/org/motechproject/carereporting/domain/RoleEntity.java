@@ -43,7 +43,6 @@ public class RoleEntity extends AbstractEntity {
         this.name = name;
     }
 
-    @JsonIgnore
     public Set<PermissionEntity> getPermissions() {
         return permissions;
     }

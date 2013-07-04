@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonSetter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,11 +34,9 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Column(name = "username", unique = true)
     private String username;
 
-    @NotNull
     @Column(name = "password")
     private String password;
 
-    @NotNull
     @Column(name = "salt")
     private String salt;
 
@@ -53,6 +52,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     private Set<RoleEntity> roles;
 
     public UserEntity() {
+        this.salt = UUID.randomUUID().toString();
     }
 
     public UserEntity(String username, String password) {
@@ -69,7 +69,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.salt = UUID.randomUUID().toString();
     }
 
-    @JsonIgnore
     public Set<RoleEntity> getRoles() {
         return roles;
     }
@@ -78,6 +77,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.roles = roles;
     }
 
+    @JsonSetter
     public void setPassword(String password) {
         this.password = password;
     }
@@ -136,21 +136,25 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.indicators = indicators;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
