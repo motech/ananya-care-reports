@@ -35,8 +35,12 @@
             <div class="navbar-inner">
                 <ul class="nav">
                     <li data-match-route="/"><a href="#">{{msg('menu.dashboard')}}</a></li>
-                    <li data-match-route="/indicator/new"><a href="#/indicator/new">{{msg('menu.createIndicator')}}</a></li>
-                    <li><a href="#">{{msg('menu.manageIndicators')}}</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageIndicators')}}<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/indicator/new"><i class="icon-plus-sign"></i>{{msg('menu.manageIndicators.addNewIndicator')}}</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
