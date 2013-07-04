@@ -1,0 +1,51 @@
+<div class="well span6 offset3">
+    <h1 class="text-center">{{msg('category.categories')}}</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>{{msg('category.name')}}</th>
+                <th>{{msg('category.remove')}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="cat in category">
+                <td>{{cat.name}}</td>
+                <td><span class="btn btn-link"
+                    ng-click="deleteCategory(cat);"><i
+                        class="icon-remove"></i></span></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="category.length == 0">{{msg('category.empty')}}<br /> <br />
+        </span>
+    </p>
+</div>
+<div class="well span6 offset3">
+    <h1 class="text-center">{{msg('edit')}}</h1>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="tableName">{{msg('category')}}
+            </label>
+            <div class="controls">
+                <select id="categoryName" ng-model="cat"
+                    ng-options="cat.name for cat in category">
+                     <option value="">{{msg('category.select')}}-</option></select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">{{msg('category.new.name')}} </label>
+            <div class="controls">
+                <div class="input-append">
+                    <input ng-model="newName" type="text"
+                        placeholder="{{msg('category.name.placeholder')}}">
+                    <span class="add-on"><i class="icon-tag"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary offset2"
+                ng-click="editCategory(cat, newName)">{{msg('forms.form.submit')}}</button>
+        </div>
+    </form>
+</div>

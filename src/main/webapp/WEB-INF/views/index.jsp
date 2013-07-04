@@ -61,6 +61,13 @@
                             <li><a href="#/forms/new"><i class="icon-plus-sign"></i> {{msg('menu.manageForms.addNewForm')}}</a></li>
                         </ul>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageCategories')}}  <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/categories"><i class="icon-list"></i> {{msg('menu.manageCategories.list')}}</a></li>
+                            <li><a href="#/categories/add"><i class="icon-plus-sign"></i> {{msg('menu.manageCategories.add')}}</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="pull-right">
                     <span>{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</span>

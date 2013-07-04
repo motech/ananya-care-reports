@@ -12,6 +12,8 @@
             .when('/users/roles', {templateUrl: 'resources/partials/users/listRoles.html', controller: 'roleListController'})
             .when('/users/new', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
             .when('/users/:userId', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
+            .when('/categories', { templateUrl: 'resources/partials/categories.html', controller: 'categoriesController'})
+            .when('/categories/add', { templateUrl: 'resources/partials/addCategory.html', controller: 'categoriesController'})
             .otherwise({ redirectTo: '/' });
     }]).run(function($rootScope, i18nService) {
         $rootScope.msg = function(key, params) {
