@@ -33,6 +33,14 @@ public class ReportTypeEntity extends AbstractEntity {
     @OneToMany(mappedBy = "reportType", cascade = CascadeType.ALL)
     private Set<ReportEntity> reports;
 
+    public ReportTypeEntity() {
+
+    }
+
+    public ReportTypeEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

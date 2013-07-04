@@ -1,7 +1,5 @@
 package org.motechproject.carereporting.dao;
 
-import org.hibernate.SessionFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.exception.CareNullArgumentRuntimeException;
@@ -17,14 +15,6 @@ public class IndicatorDaoTest extends AbstractTransactionalJUnit4SpringContextTe
 
     @Autowired
     private IndicatorDao indicatorDao;
-
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Before
-    public void flushHibernate() {
-        sessionFactory.getCurrentSession().clear();
-    }
 
     @Test(expected = CareNullArgumentRuntimeException.class)
     public void shouldThrowCareNullArgumentExceptionWhenEntityIdIsNull() {

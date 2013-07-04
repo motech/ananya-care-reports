@@ -26,6 +26,14 @@ public class ChartTypeEntity extends AbstractEntity {
     @OneToMany(mappedBy = "chartType", cascade = CascadeType.ALL)
     private Set<ReportTypeEntity> reportTypes;
 
+    public ChartTypeEntity() {
+
+    }
+
+    public ChartTypeEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

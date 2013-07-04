@@ -70,7 +70,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
                 complexConditionFormObject.getComparisonValue(),
                 findOperatorTypeFromFormObject(complexConditionFormObject),
                 findFormEntityFromFormObject(complexConditionFormObject),
-                findComparisionSymbolFromFormObject(complexConditionFormObject),
+                findComparisonSymbolFromFormObject(complexConditionFormObject),
                 findIndicatorsFromFormObject(complexConditionFormObject)
         );
 
@@ -88,7 +88,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
         return indicatorEntities;
     }
 
-    private ComparisonSymbolEntity findComparisionSymbolFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
+    private ComparisonSymbolEntity findComparisonSymbolFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
         return findComparisonSymbolById(complexConditionFormObject.getComparisonSymbol());
     }
 
@@ -111,7 +111,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     public void updateComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
         ComplexConditionEntity complexConditionEntity = this.findComplexConditionById(complexConditionFormObject.getId());
 
-        complexConditionEntity.setComparisonSymbol(findComparisionSymbolFromFormObject(complexConditionFormObject));
+        complexConditionEntity.setComparisonSymbol(findComparisonSymbolFromFormObject(complexConditionFormObject));
         complexConditionEntity.setComparisonValue(complexConditionFormObject.getComparisonValue());
         complexConditionEntity.setField(complexConditionFormObject.getField());
         complexConditionEntity.setForm(findFormEntityFromFormObject(complexConditionFormObject));

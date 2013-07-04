@@ -26,6 +26,14 @@ public class ComparisonSymbolEntity extends AbstractEntity {
     @OneToMany(mappedBy = "comparisonSymbol", cascade = CascadeType.ALL)
     private Set<ComplexConditionEntity> complexConditions;
 
+    public ComparisonSymbolEntity() {
+
+    }
+
+    public ComparisonSymbolEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

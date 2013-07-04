@@ -38,6 +38,17 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "condition_id")
     private ComplexConditionEntity condition;
 
+    public IndicatorValueEntity() {
+
+    }
+
+    public IndicatorValueEntity(Date date, IndicatorEntity indicator, AreaEntity area, ComplexConditionEntity condition) {
+        this.date = date;
+        this.indicator = indicator;
+        this.area = area;
+        this.condition = condition;
+    }
+
     @JsonIgnore
     public IndicatorEntity getIndicator() {
         return indicator;

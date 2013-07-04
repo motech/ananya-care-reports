@@ -38,6 +38,10 @@ public class AreaEntity extends AbstractEntity {
         this.level = level;
     }
 
+    public AreaEntity() {
+
+    }
+
     public String getName() {
         return name;
     }

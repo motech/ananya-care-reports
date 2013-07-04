@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +29,13 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
     @Autowired
     private IndicatorService indicatorService;
 
-    @Mock
     private IndicatorDao indicatorDao = mock(IndicatorDao.class);
 
-    private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor;
+    private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
 
     @Before
     public void setup() {
         indicatorService.setIndicatorDao(indicatorDao);
-        indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
     }
 
     @Test
@@ -48,7 +45,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
 
-        final List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
+        List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
         assertEquals(1, indicatorEntities.size());
         assertEquals(indicatorEntity, indicatorEntities.get(0));
     }
@@ -63,7 +60,7 @@ public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringConte
 
         verify(indicatorDao).update(indicatorEntityArgumentCaptor.capture());
 
-        final List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
+        List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
         assertEquals(1, indicatorEntities.size());
         assertEquals(TEST_INDICATOR_1_UPDATED_NAME, indicatorEntities.get(0).getName());
     }

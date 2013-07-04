@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.service;
 
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.AreaEntity;

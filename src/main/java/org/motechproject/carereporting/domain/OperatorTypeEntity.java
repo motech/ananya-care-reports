@@ -26,6 +26,14 @@ public class OperatorTypeEntity extends AbstractEntity {
     @OneToMany(mappedBy = "operatorType", cascade = CascadeType.ALL)
     private Set<ComplexConditionEntity> complexConditions;
 
+    public OperatorTypeEntity() {
+
+    }
+
+    public OperatorTypeEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

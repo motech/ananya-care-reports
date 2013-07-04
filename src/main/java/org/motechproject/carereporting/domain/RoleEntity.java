@@ -35,6 +35,14 @@ public class RoleEntity extends AbstractEntity {
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserEntity> users;
 
+    public RoleEntity() {
+
+    }
+
+    public RoleEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

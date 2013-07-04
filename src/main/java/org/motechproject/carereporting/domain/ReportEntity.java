@@ -27,6 +27,15 @@ public class ReportEntity extends AbstractEntity {
     @JoinColumn(name = "report_type_id")
     private ReportTypeEntity reportType;
 
+    public ReportEntity() {
+
+    }
+
+    public ReportEntity(String name, ReportTypeEntity reportType) {
+        this.name = name;
+        this.reportType = reportType;
+    }
+
     public String getName() {
         return name;
     }

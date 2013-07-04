@@ -30,6 +30,15 @@ public class PermissionEntity extends AbstractEntity {
     @ManyToMany(mappedBy = "permissions")
     private Set<RoleEntity> roles;
 
+    public PermissionEntity() {
+
+    }
+
+    public PermissionEntity(String name, String displayName) {
+        this.name = name;
+        this.displayName = displayName;
+    }
+
     public String getName() {
         return name;
     }
