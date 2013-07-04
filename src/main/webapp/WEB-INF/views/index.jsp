@@ -20,6 +20,8 @@
     <script src="resources/lib/angular/angular.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/angular-resource.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/angular-ui.min.js" type="text/javascript"></script>
+    <script src="resources/lib/angular/angular-bootstrap.js" type="text/javascript"></script>
+    <script src="resources/lib/angular/angular-strap.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/ui-bootstrap-tpls-0.4.0.js"></script>
     <script src="resources/js/localization.js"></script>
     <script src="resources/js/app.js" type="text/javascript"></script>

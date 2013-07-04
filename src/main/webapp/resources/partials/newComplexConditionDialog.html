@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h3>Create New Condition</h3>
+</div>
+<div class="modal-body">
+    <label for="operator">Operator:</label>
+    <input type="hidden" id="conditionId" ng-model="condition.id" value="1" />
+    <select id="operator" ng-model="condition.operator" ng-options="item.value as item.name for item in indicator.listOperators" class="input-block-level"></select>
+    <label for="form">Form:</label>
+    <select id="form" ng-model="condition.form" ng-options="item.value as item.name for item in indicator.listForms" class="input-block-level"></select>
+    <label for="calculateBy">Calculate By:</label>
+    <select id="calculateBy" ng-model="condition.calculateBy" ng-options="item.value as item.name for item in indicator.listCalculateBy" class="input-block-level"></select>
+    <label for="comparisonSymbol">Comparison:</label>
+    <select id="comparisonSymbol" ng-model="condition.comparisonSymbol" ng-options="item.value as item.name for item in indicator.listComparisonSymbols" class="input-block-level"></select>
+    <label for="comparisonValue">Value:</label>
+    <input id="comparisonValue" type="number" ng-model="condition.comparisonValue" />
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="saveNewComplexCondition();hide()">Save Changes</button>
+    <button class="btn" ng-click="dismiss()">Cancel</button>
+</div>

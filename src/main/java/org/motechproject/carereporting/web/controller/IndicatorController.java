@@ -30,16 +30,14 @@ public class IndicatorController {
 
     // IndicatorEntity
 
-    @RequestMapping(method = RequestMethod.GET, consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<IndicatorEntity> getIndicatorList() {
         return indicatorService.findAllIndicators();
     }
 
-    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorEntity getIndicator(@PathVariable Integer indicatorId) {
@@ -84,9 +82,7 @@ public class IndicatorController {
 
     // IndicatorTypeEntity
 
-    @RequestMapping(value = "/type", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/type", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<IndicatorTypeEntity> getIndicatorTypeList() {
@@ -94,7 +90,6 @@ public class IndicatorController {
     }
 
     @RequestMapping(value = "/type/{indicatorTypeId}", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -147,7 +142,6 @@ public class IndicatorController {
     // IndicatorCategoryEntity
 
     @RequestMapping(value = "/category", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -157,7 +151,6 @@ public class IndicatorController {
     }
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

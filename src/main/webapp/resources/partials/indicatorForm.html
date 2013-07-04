@@ -1,6 +1,6 @@
 <h1 class="text-center">{{msg('indicators.form.header')}}</h1>
 <div class="container">
-    <form id="indicatorForm">
+    <form id="indicatorForm" name="form" novalidate>
         <div class="row-fluid">
             <div class="span6 well">
                 <div class="nested-well">
@@ -8,9 +8,9 @@
                         <legend>{{msg('indicators.form.defineOwner')}}:</legend>
                         <div class="scroll">
                             <ul class="unstyled">
-                                <li ng-repeat="item in indicator.listOwners">
-                                    <input id="indicatorOwner_{{item.value}}" type="radio" name="owner" value="{{item.value}}" />
-                                    <label class="inline" for="indicatorOwner_{{item.value}}">{{item.name}}</label>
+                                <li ng-repeat="item in users">
+                                    <input id="indicatorOwner_{{item.id}}" type="checkbox" ng-model="selectedOwners[item.id]" value="{{item.id}}" ng-click="validateOwners()" />
+                                    <label class="inline" for="indicatorOwner_{{item.id}}">{{item.username}}</label>
                                 </li>
                             </ul>
                         </div>
@@ -21,8 +21,8 @@
                         <legend>{{msg('indicators.form.defineFrequency')}}:</legend>
                         <div class="scroll">
                             <ul class="unstyled">
-                                <li ng-repeat="item in indicator.listFrequencies">
-                                    <input id="indicatorFrequency_{{item.value}}" type="radio" name="frequency" value="{{item.value}}" />
+                                <li ng-repeat="item in listFrequencies">
+                                    <input id="indicatorFrequency_{{item.value}}" type="radio" ng-model="indicator.frequency" value="{{item.value}}" />
                                     <label class="inline" for="indicatorFrequency_{{item.value}}">{{item.name}}</label>
                                 </li>
                             </ul>
@@ -36,19 +36,19 @@
                             <ul class="unstyled">
                                 <li>
                                     <label class="span4 text-right" for="level_district">{{msg('indicators.form.selectDistrict')}}: </label>
-                                    <select class="span8" id="level_district" ng-model="indicator.levelDistrict" ng-options="item.value as item.name for item in indicator.listLevelDistrict" class="input-block-level"></select>
+                                    <select class="span8" id="level_district" ng-model="levelDistrict" ng-options="item.value as item.name for item in listLevelDistrict" class="input-block-level"></select>
                                 </li>
                                 <li>
                                     <label class="span4 text-right" for="level_block">{{msg('indicators.form.selectBlock')}}: </label>
-                                    <select class="span8" id="level_block" ng-model="indicator.levelBlock" ng-options="item.value as item.name for item in indicator.listLevelBlock" class="input-block-level"></select>
+                                    <select class="span8" id="level_block" ng-model="levelBlock" ng-options="item.value as item.name for item in listLevelBlock" class="input-block-level"></select>
                                 </li>
                                 <li>
                                     <label class="span4 text-right" for="level_subcentre">{{msg('indicators.form.selectSubcentre')}}: </label>
-                                    <select class="span8" id="level_subcentre" ng-model="indicator.levelSubcentre" ng-options="item.value as item.name for item in indicator.listLevelSubcentre" class="input-block-level"></select>
+                                    <select class="span8" id="level_subcentre" ng-model="levelSubcentre" ng-options="item.value as item.name for item in listLevelSubcentre" class="input-block-level"></select>
                                 </li>
                                 <li>
                                     <label class="span4 text-right" for="level_flw_type">{{msg('indicators.form.selectFLWType')}}: </label>
-                                    <select class="span8" id="level_flw_type" ng-model="indicator.levelFlwType" ng-options="item.value as item.name for item in indicator.listLevelFlwType" class="input-block-level"></select>
+                                    <select class="span8" id="level_flw_type" ng-model="levelFlwType" ng-options="item.value as item.name for item in listLevelFlwType" class="input-block-level"></select>
                                 </li>
                             </ul>
                         </div>
@@ -57,21 +57,54 @@
             </div>
             <div class="span6 well">
                 <label for="name">{{msg('indicators.form.name.label')}}: </label>
-                <input id="name" type="text" ng-model="indicator.name" class="input-block-level" placeholder="{{msg('indicators.form.name.placeholder')}}" />
-                <label for="definedAs">{{msg('indicators.form.definedAs')}}: </label>
-                <select id="definedAs" ng-model="indicator.definedAs" ng-options="item.value as item.name for item in indicator.listDefinedAs" class="input-block-level"></select>
-                <label for="classifiedAs">{{msg('indicators.form.classifiedAs')}}: </label>
-                <select id="classifiedAs" ng-model="indicator.classifiedAs" ng-options="item.value as item.name for item in indicator.listClassifiedAs" class="input-block-level"></select>
-                <hr class="btn-info" />
-                <label for="operator">{{msg('indicators.form.operator')}}: </label>
-                <select id="operator" ng-model="indicator.operator" ng-options="item.value as item.name for item in indicator.listOperators" class="input-block-level"></select>
-                <label for="form">{{msg('indicators.form.form')}}: </label>
-                <select id="form" ng-model="indicator.form" ng-options="item.value as item.name for item in indicator.listForms" class="input-block-level"></select>
-                <label for="calculateBy">{{msg('indicators.form.calculatedBy')}}: </label>
-                <select id="calculateBy" ng-model="indicator.calculateBy" ng-options="item.value as item.name for item in indicator.listCalculateBy" class="input-block-level"></select>
+                <input id="name" type="text" ng-model="indicator.name" class="input-block-level" placeholder="{{msg('indicators.form.name.placeholder')}}" required />
+                <label for="indicatorType">{{msg('indicators.form.definedAs')}}: </label>
+                <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for (key, item) in listIndicatorTypes | orderBy:'name'" class="input-block-level"></select>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="2">{{msg('indicators.form.categories.label')}}:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="(key, item) in categories">
+                        <td class="span9">
+                            <span>{{item.name}}</span>
+                        </td>
+                        <td class="span3">
+                            <button class="span12 btn" ng-click="removeCategory(key)">{{msg('indicators.form.removeComplexCondition')}}</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <label for="category">{{msg('indicators.form.classifiedAs')}}: </label>
+                <select id="category" ng-model="selectedCategory" ng-options="key as item.name for (key, item) in listCategories | orderBy:'name'" class="input-block-level"></select>
                 <div class="text-right">
-                    <button class="btn">{{msg('indicators.form.addDimension')}}</button>
-                    <button class="btn btn-primary">{{msg('indicators.form.submit')}}</button>
+                    <button class="btn" ng-click="addCategory()">{{msg('indicators.form.addCategory')}}</button>
+                </div>
+                <hr class="btn-info" />
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th colspan="2">{{msg('indicators.form.complexConditions.label')}}:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(key, item) in complexConditions">
+                            <td class="span9">
+                                <span>{{item.operator+' '+item.field+' from '+item.form+' where '+item.comparisonSymbol+' '+item.comparisonValue}}</span>
+                            </td>
+                            <td class="span3">
+                                <button class="span12 btn" ng-click="removeComplexCondition(key)">{{msg('indicators.form.removeComplexCondition')}}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <label for="complexConditionsAdd">{{msg('indicators.form.complexConditions.list.label')}}:</label>
+                <select id="complexConditionsAdd" ng-model="selectedComplexCondition" ng-options="key as item.operator+' '+item.field+' from '+item.form+' where '+item.comparisonSymbol+' '+item.comparisonValue for (key, item) in listComplexConditions | orderBy:'id'" class="input-block-level"></select>
+                <div class="text-right">
+                    <button class="btn" ng-click="addComplexCondition()">{{msg('indicators.form.addDimension')}}</button>
+                    <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid">{{msg('indicators.form.submit')}}</button>
                 </div>
             </div>
         </div>

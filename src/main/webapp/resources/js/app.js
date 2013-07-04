@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('care', ['ngResource', 'ui.bootstrap', 'localization']).config(['$routeProvider', function($routeProvider) {
+    angular.module('care', ['ngResource', '$strap.directives', 'ui.bootstrap', 'localization']).config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/', { templateUrl: 'resources/partials/dashboard.html', controller: 'dashboardController' })
             .when('/indicator/new', { templateUrl: 'resources/partials/indicatorForm.html', controller: 'createIndicatorController' })

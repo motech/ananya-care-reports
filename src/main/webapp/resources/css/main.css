@@ -65,6 +65,10 @@ div#defineLevel label {
     padding: 5px;
 }
 
+form#indicatorForm div#formButtons {
+    margin-top: 30px;
+}
+
 .error {
     font-size: 25px;
     line-height: 150%;
