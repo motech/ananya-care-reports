@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap-responsive.min.css" />
     <link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
+    <title><spring:message code="login.header" /></title>
 </head>
 <body>
     <div class="container">

@@ -13,10 +13,11 @@ Array.prototype.sortById = function() {
 }
 
 care.controller('dashboardController', function($scope) {
-
+    $scope.title = $scope.msg('dashboard.title');
 });
 
 care.controller('createIndicatorController', function($scope, $http, $modal, $dialog, $filter, $location) {
+    $scope.title = $scope.msg('indicators.title');
 
     $scope.addCategoryDisabled = true;
     $scope.addDimensionDisabled = true;
@@ -365,6 +366,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
 });
 
 care.controller('formController', function($scope, $http, $routeParams, $location, $dialog) {
+    $scope.title = $scope.msg('forms.title');
 
     $scope.formId = $routeParams.formId;
     $scope.careForm = {};
@@ -406,6 +408,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
 });
 
 care.controller('formListController', function($scope, $http, $dialog) {
+    $scope.title = $scope.msg('forms.title');
 
     $scope.fetchForms = function() {
         $http.get('api/forms').success(function(forms) {
@@ -460,6 +463,7 @@ care.controller('formListController', function($scope, $http, $dialog) {
 });
 
 care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog) {
+    $scope.title = $scope.msg('users.title');
 
     $scope.fetchRoles = function() {
         $http.get('api/users/roles').success(function(roles) {
@@ -491,6 +495,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 });
 
 care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog) {
+    $scope.title = $scope.msg('users.title');
 
     $scope.fetchUsers = function() {
         $http.get('api/users').success(function(users) {
@@ -519,6 +524,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
 });
 
 care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog) {
+    $scope.title = $scope.msg('users.title');
 
     var isEdit = ($routeParams.roleId !== undefined);
     $scope.selectedPermissions = [];
@@ -587,6 +593,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
 });
 
 care.controller('userController', function($scope, $http, $routeParams, $location, $dialog) {
+    $scope.title = $scope.msg('users.title');
 
     $scope.userId = $routeParams.userId;
 
@@ -719,6 +726,8 @@ function ErrorsDialogController($scope, dialog){
   };
 }
 care.controller('categoriesController', function($scope, $http, $dialog, $route) {
+    $scope.title = $scope.msg('category.title');
+
     $scope.category = {};
     $scope.fetchCategories = function() {
         $http.get('api/indicator/category').success(function(category) {
@@ -728,9 +737,9 @@ care.controller('categoriesController', function($scope, $http, $dialog, $route)
         });
     };
     $scope.createCategory = function(category) {
-        $http({method: 'POST', 
-            url: 'api/indicator/category' , 
-            data: category, 
+        $http({method: 'POST',
+            url: 'api/indicator/category' ,
+            data: category,
             headers: { 'Content-Type': 'application/json' }
         })
         .success(function(response) {

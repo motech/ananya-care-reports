@@ -10,6 +10,7 @@
     <c:set var="uri" value="${req.requestURI}" />
     <c:set var="url">${req.requestURL}</c:set>
     <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
+    <title ng:bind-template="{{pageTitle}} - Care Reporting"></title>
 
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
@@ -33,6 +34,7 @@
     <script src="resources/js/directives.js" type="text/javascript"></script>
 </head>
 <body>
+
     <div id="dashboard-container" class="container">
         <div class="navbar" bs-navbar>
             <div class="navbar-inner">
@@ -41,16 +43,16 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageIndicators')}}<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#/indicator/new"><i class="icon-plus-sign"></i>{{msg('menu.manageIndicators.addNewIndicator')}}</a></li>
+                            <li><a href="#/indicator/new"><i class="icon-plus-sign"></i> {{msg('menu.manageIndicators.addNewIndicator')}}</a></li>
                         </ul>
                     </li>
                     <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#/users"><i class="icon-list"></i> User list</a></li>
-								<li><a href="#/users/roles"><i class="icon-list"></i>{{msg('menu.manageSystemUsers.rolesList')}}</a></li>
-                                <li><a href="#/users/new"><i class="icon-plus-sign"></i> Add new user</a></li>
+                                <li><a href="#/users"><i class="icon-list"></i> {{msg('menu.manageSystemUsers.usersList')}}</a></li>
+								<li><a href="#/users/roles"><i class="icon-list"></i> {{msg('menu.manageSystemUsers.rolesList')}}</a></li>
+                                <li><a href="#/users/new"><i class="icon-plus-sign"></i> {{msg('menu.manageSystemUsers.addNewUser')}}</a></li>
                             </ul>
                         </li>
                     </sec:authorize>

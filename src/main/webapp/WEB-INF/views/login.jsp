@@ -12,6 +12,7 @@
     <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
+    <title><spring:message code="login.title" /></title>
 </head>
 <body>
     <div class="container">
