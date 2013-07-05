@@ -32,6 +32,9 @@ public class LevelEntity extends AbstractEntity {
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
     private Set<AreaEntity> areas;
 
+    @Column(name = "hierarchy_depth")
+    private Integer hierarchyDepth;
+
     public LevelEntity() {
 
     }
@@ -39,6 +42,14 @@ public class LevelEntity extends AbstractEntity {
     public LevelEntity(String name, LevelEntity parentLevel) {
         this.name = name;
         this.parentLevel = parentLevel;
+    }
+
+    public Integer getHierarchyDepth() {
+        return hierarchyDepth;
+    }
+
+    public void setHierarchyDepth(Integer hierarchyDepth) {
+        this.hierarchyDepth = hierarchyDepth;
     }
 
     public String getName() {

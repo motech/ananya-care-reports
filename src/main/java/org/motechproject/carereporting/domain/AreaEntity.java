@@ -30,6 +30,10 @@ public class AreaEntity extends AbstractEntity {
     @JoinColumn(name = "level_id")
     private LevelEntity level;
 
+    @ManyToOne
+    @JoinColumn(name = "parent_area_id")
+    private AreaEntity parentArea;
+
     @OneToMany(mappedBy = "area", cascade = CascadeType.ALL)
     private Set<IndicatorValueEntity> indicatorValues;
 
@@ -40,6 +44,15 @@ public class AreaEntity extends AbstractEntity {
 
     public AreaEntity() {
 
+    }
+
+    @JsonIgnore
+    public AreaEntity getParentArea() {
+        return parentArea;
+    }
+
+    public void setParentArea(AreaEntity parentArea) {
+        this.parentArea = parentArea;
     }
 
     public String getName() {

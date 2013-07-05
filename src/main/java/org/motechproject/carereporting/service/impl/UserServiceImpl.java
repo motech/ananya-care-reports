@@ -4,6 +4,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.motechproject.carereporting.dao.PermissionDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -63,10 +64,11 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Transactional(readOnly = false)
     @Override
-    public void register(String username, String password, String firstName, String lastName, Set<RoleEntity> roles) {
+    public void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles) {
         UserEntity user = new UserEntity(username, password, roles);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setArea(area);
         String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
         user.setPassword(encodedPassword);
         try {
@@ -98,6 +100,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
             userToUpdate.setLastName(user.getLastName());
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setRoles(user.getRoles());
+            userToUpdate.setArea(user.getArea());
             if (!StringUtils.isEmpty(user.getPassword())) {
                 String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
                 userToUpdate.setPassword(encodedPassword);

@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service;
 
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -17,7 +18,7 @@ public interface UserService {
     UserEntity login(String username, String password);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
-    void register(String username, String password, String firstName, String lastName, Set<RoleEntity> roles);
+    void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(UserEntity userEntity);

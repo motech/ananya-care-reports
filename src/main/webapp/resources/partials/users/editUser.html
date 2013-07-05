@@ -54,6 +54,12 @@
             </div>
         </div>
         <div class="control-group">
+            <label class="control-label" for="area">{{msg('users.form.area')}}: </label>
+            <div class="controls">
+                <select id="area" name="area" ng-model="careUser.area" ng-options="area as area.name for area in areas" />
+            </div>
+        </div>
+        <div class="control-group">
             <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)">{{msg('users.form.submit')}}</button>
         </div>
     </form>

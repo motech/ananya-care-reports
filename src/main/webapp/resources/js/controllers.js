@@ -640,8 +640,35 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             });
     };
 
-    $scope.submitUser = function(user) {
+    $scope.fetchAreas = function() {
+       $http.get('api/users/areas')
+           .success(function(areas) {
+               $scope.areas = areas;
+               var assignUserArea = function() {
+                    for (var area in areas) {
+                        if ($scope.careUser.area != undefined && areas[area].id == $scope.careUser.area.id) {
+                            $scope.careUser.area = areas[area];
+                            break;
+                        }
+                    }
+               };
+               if ($scope.user == undefined) {
+               $scope.$watch('careUser', function() {
+                    assignUserArea();
+               });
+               } else {
+                   assignUserArea();
+               }
+           })
+           .error(function() {
+               $dialog.messageBox($scope.msg('error'), $scope.msg('users.form.error.cannotLoadAreas'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+           });
+    }
 
+    $scope.submitUser = function(user) {
+        if (user.area != undefined) {
+            delete user.area.levelId;
+        }
         $http({method: 'PUT', url: 'api/users' + (user.id !== undefined ? ('/' + user.id) : ''), data: user})
             .success(function(response) {
                 $location.path( "/users" );
@@ -679,6 +706,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
     };
 
     $scope.fetchRoles();
+    $scope.fetchAreas();
 
     if ($scope.userId !== undefined) {
         $scope.fetchUser();

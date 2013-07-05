@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS public.level(
 	level_id serial NOT NULL,
 	parent_level_id integer,
 	name character varying(100) NOT NULL,
+	hierarchy_depth integer NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT level_pk PRIMARY KEY (level_id),
@@ -62,13 +63,17 @@ CREATE TABLE IF NOT EXISTS public.level(
 CREATE TABLE IF NOT EXISTS public.area(
 	area_id serial NOT NULL,
 	level_id integer NOT NULL,
+	parent_area_id integer,
 	name character varying(100) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT area_pk PRIMARY KEY (area_id),
-	CONSTRAINT area_level_id_fk FOREIGN KEY (area_id)
+	CONSTRAINT area_level_id_fk FOREIGN KEY (level_id)
 	REFERENCES public.level (level_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT area_parent_area_id_fk FOREIGN KEY (parent_area_id)
+    REFERENCES public.area (area_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT area_name_uk UNIQUE (name)
 );
 -- ddl-end --
@@ -196,11 +201,14 @@ CREATE TABLE IF NOT EXISTS public.care_user(
 	first_name character varying(40) NOT NULL,
     last_name character varying(40) NOT NULL,
     email character varying(120),
+    area_id integer NOT NULL,
 	salt character varying(40) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT user_pk PRIMARY KEY (user_id),
-	CONSTRAINT user_username_uk UNIQUE (username)
+	CONSTRAINT user_username_uk UNIQUE (username),
+    CONSTRAINT care_user_area_id_fk FOREIGN KEY (area_id)
+    REFERENCES public.area (area_id) MATCH FULL
 );
 -- ddl-end --
 

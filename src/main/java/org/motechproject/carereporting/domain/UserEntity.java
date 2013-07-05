@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Column(name = "salt")
     private String salt;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "area_id")
+    private AreaEntity area;
+
     @ManyToMany(mappedBy = "owners")
     private Set<DashboardEntity> dashboards;
 
@@ -80,6 +86,14 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.password = password;
         this.roles = roles;
         this.salt = UUID.randomUUID().toString();
+    }
+
+    public AreaEntity getArea() {
+        return area;
+    }
+
+    public void setArea(AreaEntity area) {
+        this.area = area;
     }
 
     public String getFirstName() {

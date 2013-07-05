@@ -24,6 +24,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testGetAllAreas() {
         LevelEntity level = new LevelEntity("newLevel", null);
+        level.setHierarchyDepth(0);
         areaService.createNewLevel(level);
         AreaEntity area = new AreaEntity("newArea", level);
         areaService.createNewArea(area);
@@ -31,8 +32,6 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         AreaEntity [] areaEntities = {};
         areaEntities = areas.toArray(areaEntities);
         assertNotNull(areas);
-        assertEquals(areas.size(), 1);
-        assertEquals(areaEntities[0].getLevel().getName(), "newLevel");
-        assertEquals(areaEntities[0].getName(), "newArea");
+        assertEquals(7, areas.size());
     }
 }

@@ -29,10 +29,10 @@ import java.util.HashSet;
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
-    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
-    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
-    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
-    private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"email\":\"this is not a valid email\"}";
+    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"email\":\"this is not a valid email\", \"area\":{\"id\":\"1\"}}";
 
     @Mock
 	private UserService userService;

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.UserException;
@@ -46,13 +47,16 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testRegisterUser() throws Exception {
-        String username = "username";
-        String password = "password";
+        String username = "username3";
+        String password = "password3";
         UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setPassword(password);
         user.setFirstName("firstName");
         user.setLastName("lastName");
+        AreaEntity area = new AreaEntity();
+        area.setId(1);
+        user.setArea(area);
         user.setRoles(new HashSet<RoleEntity>());
         userService.register(user);
         assertNotNull(userService.login(username, password));
@@ -61,22 +65,18 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testAddRoles() throws Exception {
         addRoles("ROLE1", "ROLE2");
-        assertEquals(2, userService.findAllRoles().size());
+        assertEquals(4, userService.findAllRoles().size());
     }
 
     @Test
     public void testRegisterUserWithRoles() throws Exception {
-        addRoles("TEST1", "TEST1", "TEST1");
-        RoleEntity[] roleEntities = {};
-        roleEntities = userService.findAllRoles().toArray(roleEntities);
-        RoleEntity role = roleEntities[0];
         String username = "username2";
         String password = "password2";
-        Set<RoleEntity> roles = new HashSet<>();
-        roles.add(role);
-        userService.register(username, password, "firstName", "lastName", roles);
+        AreaEntity area = new AreaEntity();
+        area.setId(1);
+        userService.register(username, password, "firstName", "lastName", area, userService.findAllRoles());
         UserEntity user = userService.login(username, password);
-        assertEquals(1, user.getRoles().size());
+        assertEquals(2, user.getRoles().size());
     }
 
     private void addRoles(String... roles) {
@@ -94,9 +94,11 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testUserCreationDate() {
-        String username = "username";
-        String password = "password";
-        userService.register(username, password, "firstName", "lastName", new HashSet<RoleEntity>());
+        String username = "username4";
+        String password = "password4";
+        AreaEntity area = new AreaEntity();
+        area.setId(1);
+        userService.register(username, password, "firstName", "lastName", area, new HashSet<RoleEntity>());
         UserEntity userEntity = userService.login(username, password);
 
         assertEquals(true, DateUtils.isSameDay(userEntity.getCreationDate(), new Date()));
@@ -110,6 +112,9 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         UserEntity userEntity = new UserEntity(username, password);
         userEntity.setFirstName("firstName");
         userEntity.setLastName("lastName");
+        AreaEntity area = new AreaEntity();
+        area.setId(1);
+        userEntity.setArea(area);
         userService.register(userEntity);
         userEntity.setUsername(newusername);
         userEntity.setPassword(password);
