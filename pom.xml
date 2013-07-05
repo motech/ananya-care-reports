@@ -43,6 +43,8 @@
         <jdbc.username>postgres</jdbc.username>
         <jdbc.password>postgres</jdbc.password>
         <care.database>carereporting</care.database>
+        <care.schema>care</care.schema>
+        <care.reporting.schema>reporting</care.reporting.schema>
     </properties>
     <dependencies>
         <dependency>

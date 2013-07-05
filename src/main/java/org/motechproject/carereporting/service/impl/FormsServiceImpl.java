@@ -4,6 +4,7 @@ import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,17 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     @Autowired
     private FormDao formDao;
 
+    @Value("${care.jdbc.schema}")
+    private String careSchemaName;
+
     private static final String TABLE_LIST_SQL =
-            "SELECT table_name FROM information_schema.tables WHERE table_name like '%_form' and table_schema ='report'";
+            "SELECT table_name FROM information_schema.tables WHERE table_name like '%_form' and table_schema = ?";
 
     private static final String COLUMNS_IN_TABLE_SQL =
-            "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema='report' AND TABLE_NAME = ?";
+            "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema= ? AND TABLE_NAME = ?";
 
     private static final String FOREIGN_KEY_FOR_TABLE =
-            "SELECT ccu.table_name AS foreign_table_namen FROM information_schema.table_constraints AS tc " +
+            "SELECT ccu.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc " +
                     "JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name " +
                     "WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name like '%_case' AND tc.table_name = ?";
 
@@ -68,14 +72,15 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     @Transactional
     public Set<String> getTables() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return new HashSet<String>(jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class));
+        return new HashSet<String>(jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class, careSchemaName));
     }
 
     @Override
     @Transactional
     public Set<String> getTableColumns(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class, tableName));
+        return new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class,
+                careSchemaName, tableName));
     }
 
     @Override
