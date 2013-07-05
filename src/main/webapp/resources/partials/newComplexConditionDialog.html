@@ -10,7 +10,7 @@
     <label for="form">Form:</label>
     <select id="form" ng-model="newCondition.form" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
     <label for="field">Calculate By:</label>
-    <input id="field" type="text" ng-model="newCondition.field" required />
+    <select id="field" type="text" ng-model="newCondition.field" ng-options="item as item for item in listFields" class="input-block-level" required></select>
     <label for="comparisonSymbol">Comparison:</label>
     <select id="comparisonSymbol" ng-model="newCondition.comparisonSymbol" ng-options="item.id as item.name for item in listComparisonSymbols" class="input-block-level" required></select>
     <label for="comparisonValue">Value:</label>

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Service
@@ -79,8 +80,19 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     @Transactional
     public Set<String> getTableColumns(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class,
-                careSchemaName, tableName));
+        Set<String> columnNames = new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class,
+            careSchemaName, tableName));
+
+        Iterator<String> iterator = columnNames.iterator();
+        while (iterator.hasNext()) {
+            String columnName = iterator.next();
+
+            if (columnName.equals("id") || columnName.endsWith("_id")) {
+                iterator.remove();
+            }
+        }
+
+        return columnNames;
     }
 
     @Override

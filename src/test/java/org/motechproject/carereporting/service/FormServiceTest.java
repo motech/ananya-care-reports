@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.service;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,19 +57,15 @@ public class FormServiceTest extends AbstractTransactionalJUnit4SpringContextTes
     @Test
     public void testGetTableColumns() {
         String tableName = "abort_form";
-        int columnsNumber = 11;
+        int columnsNumber = 7;
         String[] tab = new String[] {
                 "date_aborted",
                 "birth_status",
                 "close",
                 "abortion_type",
                 "date_modified",
-                "case_id",
-                "user_id",
                 "time_start",
-                "time_end",
-                "instance_id",
-                "id"
+                "time_end"
         };
 
         Set<String> columns = formsService.getTableColumns(tableName);

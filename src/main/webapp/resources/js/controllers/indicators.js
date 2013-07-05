@@ -4,13 +4,13 @@ Array.prototype.sortByName = function() {
     this.sort(function(a, b) {
         return (a.name > b.name);
     });
-}
+};
 
 Array.prototype.sortById = function() {
     this.sort(function(a, b) {
         return (a.id < b.id);
     });
-}
+};
 
 care.controller('createIndicatorController', function($scope, $http, $modal, $dialog, $filter, $location) {
     $scope.title = $scope.msg('indicators.title');
@@ -29,6 +29,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
     $scope.typeValid = false;
     $scope.categoriesValid = false;
     $scope.conditionsValid = false;
+    $scope.newCondition = {};
 
     $scope.fetchUsers = function() {
         $http.get('api/users/')
@@ -305,7 +306,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
     $scope.fetchForms = function() {
         $http.get('api/forms')
             .success(function(forms) {
-                forms.sortByName();
+                forms.sort(function(a,b) { return a.displayName > b.displayName; });
                 $scope.listForms = forms;
 
                 if (Object.keys($scope.listForms).length > 0) {
@@ -313,6 +314,27 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
                 }
             }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadFormTypeList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.fetchFields = function() {
+        var formId = $scope.newCondition.form;
+        if (isNaN(formId) || !isFinite(formId)) {
+            return;
+        }
+
+        console.log(formId);
+
+        $http.get('api/forms/' + formId + "/fields")
+            .success(function(fields) {
+                fields.sort(function(a,b) { return a.displayName > b.displayName; });
+                $scope.listFields = fields;
+
+                if (Object.keys($scope.listFields).length > 0) {
+                    $scope.newCondition.field = $scope.listFields[0];
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -331,7 +353,6 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
     };
 
     $scope.launchDialog = function() {
-        $scope.newCondition = {};
         $scope.fetchOperatorTypes();
         $scope.fetchForms();
         $scope.fetchComparisonSymbols();
@@ -359,4 +380,8 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateNewComplexCondition'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
+
+    $scope.$watch('newCondition.form', function() {
+        $scope.fetchFields();
+    });
 });
