@@ -7,8 +7,8 @@ INSERT INTO care_user (username, password, first_name, last_name, email, area_id
           VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 1, 'test', now(), now());
 INSERT INTO role (name) VALUES ('Admin'), ('Manager');
 INSERT INTO permission(name, display_name) VALUES ('CAN_CREATE_INDICATORS', 'Can create indicators'),
-    ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users');
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2);
+    ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users'), ('CAN_MANAGE_REPORTS', 'Can manage reports');
+INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2), (1, 3);
 INSERT INTO care_user_role (user_id, role_id) VALUES (1, 1), (1, 2);
 
 insert into form (table_name, display_name) values
