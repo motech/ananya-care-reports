@@ -20,5 +20,6 @@ public interface FormsService {
 
    Set<String> getTableColumns(String tableName);
 
+   String getForeignKeyForTable(String tableName);
 }
 

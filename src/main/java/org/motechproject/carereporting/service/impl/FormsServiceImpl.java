@@ -29,6 +29,11 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     private static final String COLUMNS_IN_TABLE_SQL =
             "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema='report' AND TABLE_NAME = ?";
 
+    private static final String FOREIGN_KEY_FOR_TABLE =
+            "SELECT ccu.table_name AS foreign_table_namen FROM information_schema.table_constraints AS tc " +
+                    "JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name " +
+                    "WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name like '%_case' AND tc.table_name = ?";
+
     @Override
     @Transactional(readOnly = false)
     public void addForm(FormEntity form) {
@@ -71,6 +76,12 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     public Set<String> getTableColumns(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class, tableName));
+    }
+
+    @Override
+    public String getForeignKeyForTable(String tableName) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return new String(jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_TABLE, String.class, tableName));
     }
 }
 

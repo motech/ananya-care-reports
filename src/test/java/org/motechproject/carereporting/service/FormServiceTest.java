@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class FormServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
@@ -78,5 +77,15 @@ public class FormServiceTest extends AbstractTransactionalJUnit4SpringContextTes
 
         assertEquals(columnsNumber, columns.size());
         assertThat(columns, hasItems(tab));
+    }
+
+    @Test
+    public void testGetForeignKeyForTable() {
+        String tableName = "abort_form";
+        String foreignKey = "mother_case";
+
+        String result = formsService.getForeignKeyForTable(tableName);
+
+        assertEquals(foreignKey, result);
     }
 }

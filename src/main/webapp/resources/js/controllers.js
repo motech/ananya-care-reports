@@ -409,7 +409,33 @@ care.controller('formListController', function($scope, $http, $dialog) {
 
     $scope.fetchForms = function() {
         $http.get('api/forms').success(function(forms) {
-            $scope.forms = forms;
+            var mother_forms = new Array();
+            var child_forms = new Array();
+            var other_forms = new Array();
+            for(var i = 0; i < forms.length; i++) {
+                if(forms[i].tableName.indexOf("mother") !== -1) {
+                    mother_forms.push(forms[i]);
+                } else if (forms[i].tableName.indexOf("child") !== -1) {
+                    child_forms.push(forms[i]);
+                } else {
+                    $http.get('api/forms/table/foreignKey/' + forms[i].tableName, {index:i})
+                        .success(function(foreignKey, status, header, config) {
+                            if(foreignKey.indexOf("mother") !== -1) {
+                                mother_forms.push(forms[config.index]);
+                            } else if(foreignKey.indexOf("child") !== -1) {
+                                child_forms.push(forms[config.index]);
+                            } else {
+                                other_forms.push(forms[config.index]);
+                            }
+                        })
+                        .error(function(data, status, header, config) {
+                            $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotReceiveForeignKey', forms[config.index].tableName), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                        })
+                }
+            }
+            $scope.mother_forms = mother_forms;
+            $scope.child_forms = child_forms;
+            $scope.other_forms = other_forms;
         });
     };
 

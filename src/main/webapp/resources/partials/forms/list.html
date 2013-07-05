@@ -1,23 +1,70 @@
-<h1 class="text-center">{{msg('forms.list.header')}}</h1>
-<div class="span8 offset2 well">
-    <table class="table table-hover" ng-show="forms.length > 0">
-        <thead>
-        <tr>
-            <th>{{msg('forms.list.displayName')}}</th>
-            <th>{{msg('forms.list.tableName')}}</th>
-            <th>{{msg('actions')}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="form in forms">
-            <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
-            <td>{{form.tableName}}</td>
-            <td><span class="btn btn-link" ng-click="deleteForm(form);"><i class="icon-remove"></i></span></td>
-        </tr>
-        </tbody>
-    </table>
-    <p class="text-center">
-        <span class="text-info" ng-show="forms.length == 0">{{msg('forms.list.empty')}}<br /><br /></span>
-        <a class="btn btn-primary" href="#/forms/new">{{msg('forms.list.addNewForm')}}</a>
-    </p>
+<div ng-show="mother_forms.length > 0">
+    <h1 class="text-center">{{msg('forms.list.header.mother')}}</h1>
+
+    <div class="span8 offset2 well">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>{{msg('forms.list.displayName')}}</th>
+                <th>{{msg('forms.list.tableName')}}</th>
+                <th>{{msg('actions')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="form in mother_forms">
+                <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                <td>{{form.tableName}}</td>
+                <td><span class="btn btn-link" ng-click="deleteForm(form);"><i class="icon-remove"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+<div ng-show="child_forms.length > 0">
+    <h1 class="text-center">{{msg('forms.list.header.child')}}</h1>
+
+    <div class="span8 offset2 well">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>{{msg('forms.list.displayName')}}</th>
+                <th>{{msg('forms.list.tableName')}}</th>
+                <th>{{msg('actions')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="form in child_forms">
+                <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                <td>{{form.tableName}}</td>
+                <td><span class="btn btn-link" ng-click="deleteForm(form);"><i class="icon-remove"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div ng-show="other_forms.length > 0">
+    <h1 class="text-center">{{msg('forms.list.header.other')}}</h1>
+
+    <div class="span8 offset2 well">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>{{msg('forms.list.displayName')}}</th>
+                <th>{{msg('forms.list.tableName')}}</th>
+                <th>{{msg('actions')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="form in other_forms">
+                <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                <td>{{form.tableName}}</td>
+                <td><span class="btn btn-link" ng-click="deleteForm(form);"><i class="icon-remove"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="text-center">
+    <span class="text-info" ng-show="forms.length == 0">{{msg('forms.list.empty')}}<br/><br/></span>
+    <a class="btn btn-primary" href="#/forms/new">{{msg('forms.list.addNewForm')}}</a>
+</p>

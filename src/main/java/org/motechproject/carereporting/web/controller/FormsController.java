@@ -45,6 +45,13 @@ public class FormsController {
         formsService.deleteFormById(formId);
     }
 
+    @RequestMapping(value = "/table/foreignKey/{tableName}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getForeignKeyForTableName(@PathVariable String tableName) {
+        return formsService.getForeignKeyForTable(tableName);
+    }
+
     @RequestMapping(value = "/tables", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
