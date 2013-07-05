@@ -1,27 +1,4 @@
 <div class="well span6 offset3">
-    <h1 class="text-center">{{msg('category.categories')}}</h1>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>{{msg('category.name')}}</th>
-                <th>{{msg('category.remove')}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="cat in category">
-                <td>{{cat.name}}</td>
-                <td><span class="btn btn-link"
-                    ng-click="deleteCategory(cat);"><i
-                        class="icon-remove"></i></span></td>
-            </tr>
-        </tbody>
-    </table>
-    <p class="text-center">
-        <span class="text-info" ng-show="category.length == 0">{{msg('category.empty')}}<br /> <br />
-        </span>
-    </p>
-</div>
-<div class="well span6 offset3">
     <h1 class="text-center">{{msg('edit')}}</h1>
     <form class="form-horizontal">
         <div class="control-group">
@@ -48,4 +25,27 @@
                 ng-click="editCategory(cat, newName)">{{msg('forms.form.submit')}}</button>
         </div>
     </form>
+</div>
+<div class="well span6 offset3">
+    <h1 class="text-center">{{msg('category.categories')}}</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>{{msg('category.name')}}</th>
+                <th>{{msg('category.remove')}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="cat in category">
+                <td>{{cat.name}}</td>
+                <td><span class="btn btn-link"
+                    ng-click="deleteCategory(cat);"><i
+                        class="icon-remove"></i></span></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="category.length == 0">{{msg('category.empty')}}<br /> <br />
+        </span>
+    </p>
 </div>
