@@ -63,8 +63,10 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Transactional(readOnly = false)
     @Override
-    public void register(String username, String password, Set<RoleEntity> roles) {
+    public void register(String username, String password, String firstName, String lastName, Set<RoleEntity> roles) {
         UserEntity user = new UserEntity(username, password, roles);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
         user.setPassword(encodedPassword);
         try {
@@ -92,6 +94,9 @@ public class UserServiceImpl extends AbstractService implements UserService {
         try {
             UserEntity userToUpdate = findUserById(user.getId());
             userToUpdate.setUsername(user.getUsername());
+            userToUpdate.setFirstName(user.getFirstName());
+            userToUpdate.setLastName(user.getLastName());
+            userToUpdate.setEmail(user.getEmail());
             userToUpdate.setRoles(user.getRoles());
             if (!StringUtils.isEmpty(user.getPassword())) {
                 String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());

@@ -48,9 +48,14 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     public void testRegisterUser() throws Exception {
         String username = "username";
         String password = "password";
-        userService.register(username, password, new HashSet<RoleEntity>());
-        UserEntity user = userService.login(username, password);
-        assertNotNull(user);
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setFirstName("firstName");
+        user.setLastName("lastName");
+        user.setRoles(new HashSet<RoleEntity>());
+        userService.register(user);
+        assertNotNull(userService.login(username, password));
     }
 
     @Test
@@ -69,7 +74,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password2";
         Set<RoleEntity> roles = new HashSet<>();
         roles.add(role);
-        userService.register(username, password, roles);
+        userService.register(username, password, "firstName", "lastName", roles);
         UserEntity user = userService.login(username, password);
         assertEquals(1, user.getRoles().size());
     }
@@ -91,7 +96,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     public void testUserCreationDate() {
         String username = "username";
         String password = "password";
-        userService.register(username, password, new HashSet<RoleEntity>());
+        userService.register(username, password, "firstName", "lastName", new HashSet<RoleEntity>());
         UserEntity userEntity = userService.login(username, password);
 
         assertEquals(true, DateUtils.isSameDay(userEntity.getCreationDate(), new Date()));
@@ -103,6 +108,8 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password";
         String newusername = "new user";
         UserEntity userEntity = new UserEntity(username, password);
+        userEntity.setFirstName("firstName");
+        userEntity.setLastName("lastName");
         userService.register(userEntity);
         userEntity.setUsername(newusername);
         userEntity.setPassword(password);

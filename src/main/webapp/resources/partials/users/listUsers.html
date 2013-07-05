@@ -1,15 +1,21 @@
 <h1 class="text-center">{{msg('users.list.header')}}</h1>
-<div class="span8 offset2 well">
+<div class="span9 offset1 well">
     <table class="table table-hover" ng-show="users.length > 0">
         <thead>
         <tr>
             <th>{{msg('users.list.userName')}}</th>
+            <th>{{msg('users.list.firstName')}}</th>
+            <th>{{msg('users.list.lastName')}}</th>
+            <th>{{msg('users.list.email')}}</th>
             <th>{{msg('users.list.actions')}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="user in users" user-popover>
             <td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td>{{user.email}}</td>
             <td><span class="btn btn-link" ng-click="deleteUser(user);"><i class="icon-remove"></i></span></td>
         </tr>
         </tbody>

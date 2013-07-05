@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonSetter;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +38,18 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @NotNull
+    @Column(name = "first_name")
+    private String firstName;
+
+    @NotNull
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Email
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "salt")
     private String salt;
 
@@ -67,6 +80,30 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.password = password;
         this.roles = roles;
         this.salt = UUID.randomUUID().toString();
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Set<RoleEntity> getRoles() {

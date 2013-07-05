@@ -29,8 +29,10 @@ import java.util.HashSet;
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
-    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\"}";
-    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\"}";
+    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
+    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
+    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\"}";
+    private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"email\":\"this is not a valid email\"}";
 
     @Mock
 	private UserService userService;
@@ -83,13 +85,31 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void testRegisterUsernameEmptyValidation() throws Exception {
+	public void testRegisterInvalidEmail() throws Exception {
+        mockMvc.perform(put("/api/users")
+                .content(REGISTER_JSON_INVALID_EMAIL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        verify(userService, times(0)).register((UserEntity) anyObject());
+	}
+
+    @Test
+    public void testRegisterUsernameEmptyValidation() throws Exception {
         mockMvc.perform(put("/api/users")
                 .content(REGISTER_JSON_NO_USERNAME)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         verify(userService, times(0)).register((UserEntity) anyObject());
-	}
+    }
+
+    @Test
+    public void testRegisterPasswordEmptyValidation() throws Exception {
+        mockMvc.perform(put("/api/users")
+                .content(REGISTER_JSON_NO_PASSWORD)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        verify(userService, times(0)).register((UserEntity) anyObject());
+    }
 
 }
 

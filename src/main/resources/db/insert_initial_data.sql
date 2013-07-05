@@ -1,5 +1,5 @@
-INSERT INTO care_user (username, password, salt, creation_date, modification_date)
-          VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c','test', now(), now());
+INSERT INTO care_user (username, password, first_name, last_name, email, salt, creation_date, modification_date)
+          VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 'test', now(), now());
 INSERT INTO role (name) VALUES ('Admin'), ('Manager');
 INSERT INTO permission(name, display_name) VALUES ('CAN_CREATE_INDICATORS', 'Can create indicators'),
     ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users');

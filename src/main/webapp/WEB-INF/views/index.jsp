@@ -63,7 +63,7 @@
                     </li>
                 </ul>
                 <div class="pull-right">
-                    <span>{{msg('menu.welcome', '<sec:authentication property="principal.username" />')}}</span>
+                    <span>{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</span>
                     <a href="logout" class="btn btn-info">{{msg('menu.logout')}}</a>
                 </div>
             </div>
