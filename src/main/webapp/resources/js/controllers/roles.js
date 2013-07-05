@@ -32,7 +32,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 
 });
 
-care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
     $scope.title = $scope.msg('users.title');
 
     var isEdit = ($routeParams.roleId !== undefined);
@@ -101,10 +101,10 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
             method: requestMethod,
             data: $scope.role,
             headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
+        }).success(function(response) {
                 $location.path("/users/roles");
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg(errorMsg), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            }).error(function(response) {
+                $errorsDialogService($scope, response);
         });
     };
 });

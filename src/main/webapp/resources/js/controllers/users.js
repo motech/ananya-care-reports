@@ -35,7 +35,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
 
 });
 
-care.controller('userController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('userController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.userId = $routeParams.userId;
@@ -123,34 +123,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/users" );
             }).error(function(response) {
-                var errors = "<ul>";
-                for (i in response) {
-                    if (response.hasOwnProperty(i)) {
-                        var error = response[i];
-                        errors += "<li>" + error.message + "</li>";
-                    }
-                }
-                errors += "</ul>"
-
-                var t = '<div class="modal-header">'+
-                          '<h3>' + $scope.msg('users.form.error.cannotSubmitHeader') + '</h3>'+
-                          '</div>'+
-                          '<div class="modal-body">'+
-                          errors +
-                          '</div>'+
-                          '<div class="modal-footer">'+
-                          '<button ng-click="close()" class="btn btn-primary" >' + $scope.msg('close') + '</button>'+
-                          '</div>';
-
-                  $scope.opts = {
-                    backdrop: true,
-                    keyboard: true,
-                    backdropClick: true,
-                    template:  t,
-                    controller: 'errorsDialogController'
-                  };
-
-                $dialog.dialog($scope.opts).open();
+                $errorsDialogService($scope, response);
             });
 
     };
