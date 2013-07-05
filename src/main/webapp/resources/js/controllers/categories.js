@@ -1,6 +1,35 @@
 var care = angular.module('care');
 
-care.controller('categoriesController', function($scope, $http, $dialog, $route) {
+care.controller('categoriesController', function($scope, $http, $dialog, $routeParams, $location) {
+    $scope.title = $scope.msg('category.title');
+
+    $scope.categoryId = $routeParams.categoryId;
+    $scope.category = {};
+
+    $scope.fetchCategory = function() {
+            $http.get('api/indicator/category/' + $scope.categoryId)
+                .success(function(cat) {
+                    $scope.category = cat;
+                }).error(function() {
+                    $dialog.messageBox("Error", $scope.msg('category.error.edit.load'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                });
+        };
+
+    $scope.submitCategory = function(category) {
+        $http({method: 'PUT', url: 'api/indicator/category' + (category.id !== undefined ? ('/' + category.id) : ''), data: category})
+            .success(function(response) {
+                $location.path( "/categories" );
+            }).error(function(response) {
+                $dialog.messageBox("Error", $scope.msg('category.error.edit'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    if ($scope.categoryId !== undefined) {
+        $scope.fetchCategory();
+    };
+});
+
+care.controller('categoriesListController', function($scope, $http, $dialog, $route) {
     $scope.title = $scope.msg('category.title');
 
     $scope.category = {};
@@ -10,41 +39,6 @@ care.controller('categoriesController', function($scope, $http, $dialog, $route)
         }).error(function(response) {
             $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.load'), [{label: 'Ok', cssClass: 'btn'}]).open();
         });
-    };
-    $scope.createCategory = function(category) {
-        $http({method: 'POST',
-            url: 'api/indicator/category' ,
-            data: category,
-            headers: { 'Content-Type': 'application/json' }
-        })
-        .success(function(response) {
-            $dialog.messageBox($scope.msg('information'), $scope.msg('category.success.create'), [{label: 'Ok', cssClass: 'btn'}]).open();
-        }).error(function(response) {
-            $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.create'), [{label: 'Ok', cssClass: 'btn'}]).open();
-        });
-    };
-    $scope.editCategory = function(category, newName) {
-        if(newName && category && newName != category.name){
-            category.name = newName;
-            $http({method: 'PUT',
-                url: 'api/indicator/category/' + category.id,
-                data: category,
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .success(function(response) {
-                $route.reload();
-                $dialog.messageBox($scope.msg('information'), $scope.msg('category.success.edit'), [{label: 'Ok', cssClass: 'btn'}]).open();
-            }).error(function(response) {
-                $route.reload();
-                $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.edit'), [{label: 'Ok', cssClass: 'btn'}]).open();
-            });
-        }
-        else if(!category){
-            $dialog.messageBox($scope.msg('error'), $scope.msg('category.choose'), [{label: 'Ok', cssClass: 'btn'}]).open();
-        }
-        else {
-            $dialog.messageBox($scope.msg('error'), $scope.msg('category.name.valid'), [{label: 'Ok', cssClass: 'btn'}]).open();
-        }
     };
 
     $scope.deleteCategory = function(category) {
@@ -66,5 +60,6 @@ care.controller('categoriesController', function($scope, $http, $dialog, $route)
             }
         });
     };
+
     $scope.fetchCategories();
 });

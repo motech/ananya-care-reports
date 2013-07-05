@@ -158,7 +158,7 @@ public class IndicatorController {
         return indicatorService.findIndicatorCategoryById(indicatorCategoryId);
     }
 
-    @RequestMapping(value = "/category", method = RequestMethod.POST,
+    @RequestMapping(value = "/category", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
