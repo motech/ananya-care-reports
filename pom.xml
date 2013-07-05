@@ -38,6 +38,11 @@
         <test.jdbc.password>postgres</test.jdbc.password>
         <test.database>carereportingtest</test.database>
 
+        <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
+        <jdbc.url>jdbc:postgresql://127.0.0.1:5432</jdbc.url>
+        <jdbc.username>postgres</jdbc.username>
+        <jdbc.password>postgres</jdbc.password>
+        <care.database>carereporting</care.database>
     </properties>
     <dependencies>
         <dependency>
@@ -440,13 +445,6 @@
         </profile>
         <profile>
             <id>create-database</id>
-            <properties>
-                <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
-                <jdbc.url>jdbc:postgresql://127.0.0.1:5432</jdbc.url>
-                <jdbc.username>postgres</jdbc.username>
-                <jdbc.password>postgres</jdbc.password>
-                <care.database>carereporting</care.database>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -497,6 +495,48 @@
                                         <srcFile>src/main/resources/db/create_tables.sql</srcFile>
                                         <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
                                     </srcFiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>load-data</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgres-driver.version}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <executions>
+                            <execution>
+                                <id>load-data</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${jdbc.url}/${care.database}</url>
+                                    <driver>${jdbc.driverClassName}</driver>
+                                    <username>${jdbc.username}</username>
+                                    <password>${jdbc.password}</password>
+
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>src/main/resources/db/care_reports.sql</srcFile>
+                                    </srcFiles>
+                                    <onError>continue</onError>
                                 </configuration>
                             </execution>
                         </executions>
