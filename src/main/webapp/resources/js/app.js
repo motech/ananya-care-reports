@@ -10,6 +10,8 @@
             .when('/forms/:formId', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })
             .when('/users', {templateUrl: 'resources/partials/users/listUsers.html', controller: 'userListController'})
             .when('/users/roles', {templateUrl: 'resources/partials/users/listRoles.html', controller: 'roleListController'})
+            .when('/users/roles/new', {templateUrl: 'resources/partials/users/editRole.html', controller: 'roleController'})
+            .when('/users/roles/:roleId', {templateUrl: 'resources/partials/users/editRole.html', controller: 'roleController'})
             .when('/users/new', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
             .when('/users/:userId', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
             .when('/categories', { templateUrl: 'resources/partials/categories.html', controller: 'categoriesController'})

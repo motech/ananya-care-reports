@@ -137,6 +137,12 @@ public class UserServiceImpl extends AbstractService implements UserService {
         return roleDao.findAll();
     }
 
+    @Transactional
+    @Override
+    public RoleEntity findRoleById(Integer id) {
+        return roleDao.findById(id);
+    }
+
     @Transactional(readOnly = false)
     @Override
     public void addRole(String roleName) {
@@ -175,6 +181,28 @@ public class UserServiceImpl extends AbstractService implements UserService {
         permissionDao.remove(permissionEntity);
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewRole(RoleEntity roleEntity) {
+        roleDao.save(roleEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateRole(RoleEntity roleEntity) {
+        roleDao.update(roleEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void removeRoleById(Integer id) {
+        RoleEntity roleEntity = this.findRoleById(id);
+
+        for (UserEntity userEntity : roleEntity.getUsers()) {
+            userEntity.getRoles().remove(roleEntity);
+        }
+
+        roleDao.remove(roleEntity);
+    }
+
 }
-
-

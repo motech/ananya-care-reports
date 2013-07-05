@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
@@ -36,11 +37,62 @@ public class UserController {
         return userService.findAllRoles();
     }
 
+    @RequestMapping(value = "/roles/{roleId}", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public RoleEntity getRole(@PathVariable Integer roleId) {
+        return userService.findRoleById(roleId);
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<UserEntity> getAllUsers() {
         return userService.findAllUsers();
+    }
+
+    @RequestMapping(value = "/roles", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void createNewRole(@RequestBody @Valid RoleEntity roleEntity, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+
+        userService.createNewRole(roleEntity);
+    }
+
+    @RequestMapping(value = "/roles/{roleId}", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateRole(@RequestBody @Valid RoleEntity roleEntity, BindingResult bindingResult,
+            @PathVariable Integer roleId) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+
+        roleEntity.setId(roleId);
+        userService.updateRole(roleEntity);
+    }
+
+    @RequestMapping(value = "/roles/{roleId}", method = RequestMethod.DELETE,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateRole(@PathVariable Integer roleId) {
+        userService.removeRoleById(roleId);
+    }
+
+    @RequestMapping(value = "/permissions", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<PermissionEntity> getAllPermissions() {
+        return userService.findAllPermissions();
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

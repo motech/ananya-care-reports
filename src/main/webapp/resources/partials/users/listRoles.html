@@ -8,9 +8,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="role in roles">
+        <tr ng-repeat="role in roles | orderBy:'+name'" role-popover>
             <td><a href="#/users/roles/{{role.id}}">{{role.name}}</a></td>
             <td><span class="btn btn-link" ng-click="deleteRole(role);"><i class="icon-remove"></i></span></td>
+            <td><a class="btn" href="#users/roles/{{role.id}}">{{msg('edit')}}</a></td>
         </tr>
         </tbody>
     </table>

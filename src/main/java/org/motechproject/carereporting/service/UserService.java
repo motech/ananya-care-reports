@@ -29,6 +29,9 @@ public interface UserService {
     Set<RoleEntity> findAllRoles();
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
+    RoleEntity findRoleById(Integer id);
+
+    @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void addRole(String roleName);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
@@ -46,5 +49,11 @@ public interface UserService {
     void updatePermission(PermissionEntity permissionEntity);
 
     void deletePermission(PermissionEntity permissionEntity);
+
+    void createNewRole(RoleEntity roleEntity);
+
+    void updateRole(RoleEntity roleEntity);
+
+    void removeRoleById(Integer id);
 }
 
