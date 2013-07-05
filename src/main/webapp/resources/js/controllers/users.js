@@ -1,10 +1,10 @@
 var care = angular.module('care');
 
-care.controller('errorsDialogController', ($scope, dialog)) {
+care.controller('errorsDialogController', function($scope, dialog) {
     $scope.close = function(result){
     dialog.close(result);
   };
-}
+});
 
 care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog) {
     $scope.title = $scope.msg('users.title');
