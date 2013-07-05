@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -12,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -22,7 +22,7 @@ import java.util.Set;
 })
 public class RoleEntity extends AbstractEntity {
 
-    @NotNull
+    @NotEmpty
     @Column(name = "name", unique = true)
     private String name;
 

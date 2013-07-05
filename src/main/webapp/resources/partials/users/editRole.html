@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="(key, item) in permissionList">
-                    <td class="span1"><input id="permission_{{key}}" type="checkbox" ng-model="selectedPermissions[key]" ng-checked="selectedPermissions[key]" /></td>
+                    <td class="span1"><input id="permission_{{key}}" type="checkbox" ng-model="selectedPermissions[item.id]" ng-checked="selectedPermissions[item.id]" /></td>
                     <td class="span11"><label for="permission_{{key}}">{{item.displayName}}</label></td>
                 </tr>
             </tbody>
