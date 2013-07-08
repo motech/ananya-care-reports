@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS reporting.chart_type(
 
 -- object: reporting.report_type | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.report_type(
-	report_type_id integer NOT NULL,
+	report_type_id serial NOT NULL,
 	chart_type_id integer,
 	name character varying(100) NOT NULL,
 	creation_date timestamp,
@@ -108,23 +108,6 @@ CREATE TABLE IF NOT EXISTS reporting.report_type(
 	REFERENCES reporting.chart_type (chart_type_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT report_type_name_uk UNIQUE (name)
-);
--- ddl-end --
-
--- ddl-end --
-
--- object: reporting.report | type: TABLE --
-CREATE TABLE IF NOT EXISTS reporting.report(
-	report_id serial NOT NULL,
-	type_id integer NOT NULL,
-	name character varying(100) NOT NULL,
-	creation_date timestamp,
-	modification_date timestamp,
-	CONSTRAINT report_pk PRIMARY KEY (report_id),
-	CONSTRAINT report_type_id_fk FOREIGN KEY (type_id)
-	REFERENCES reporting.report_type (report_type_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT report_name_uk UNIQUE (name)
 );
 -- ddl-end --
 
@@ -294,6 +277,27 @@ CREATE TABLE IF NOT EXISTS reporting.indicator(
 	REFERENCES reporting.level (level_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_name_uk UNIQUE (name)
+);
+-- ddl-end --
+
+-- ddl-end --
+
+-- object: reporting.report | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.report(
+	report_id serial NOT NULL,
+	indicator_id integer NOT NULL,
+	report_type_id integer NOT NULL,
+	name character varying(100) NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT report_pk PRIMARY KEY (report_id),
+	CONSTRAINT report_type_id_fk FOREIGN KEY (report_type_id)
+	REFERENCES reporting.report_type (report_type_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_id_fk FOREIGN KEY (indicator_id)
+    REFERENCES reporting.indicator (indicator_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT report_name_uk UNIQUE (name)
 );
 -- ddl-end --
 

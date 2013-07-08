@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.exception.UserException;
+import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,7 +55,7 @@ public class UserControllerTest {
         userEntity.setUsername(username);
         userEntity.setRoles(new HashSet<RoleEntity>());
 
-        when(userController.getUserById(userId)).thenReturn(userEntity);
+        when(userService.findUserById(userId)).thenReturn(userEntity);
 
         mockMvc.perform(get("/api/users/" + userId)
                 .accept(MediaType.APPLICATION_JSON))
@@ -65,7 +65,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUsernameDuplicate() throws Exception {
-        doThrow(new UserException()).when(userService).register((UserEntity) anyObject());
+        doThrow(new EntityException()).when(userService).register((UserEntity) anyObject());
 
         mockMvc.perform(put("/api/users")
                 .content(REGISTER_JSON)

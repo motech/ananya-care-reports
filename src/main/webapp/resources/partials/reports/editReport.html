@@ -1,0 +1,31 @@
+<div ng:init="$root.pageTitle = title"></div>
+
+<h1 class="text-center">{{msg('reports.form.header')}}</h1>
+<div class="well span6 offset3">
+    <form class="form-horizontal" name="reportForm">
+        <div class="control-group">
+            <label class="control-label" for="name">{{msg('reports.form.name.label')}}: </label>
+            <div class="controls">
+                <div class="input-append">
+                    <input ng-model="report.name" type="text" id="name" name="name" placeholder="{{msg('reports.form.name.placeholder')}}" required>
+                    <span class="add-on"><i class="icon-tag"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="indicator">{{msg('reports.form.indicator')}}: </label>
+            <div class="controls">
+                <select id="indicator" name="indicator" ng-model="report.indicatorId" ng-options="indicator.id as indicator.name for indicator in indicators" required/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="reportType">{{msg('reports.form.reportType')}}: </label>
+            <div class="controls">
+                <select id="reportType" name="reportType" ng-model="report.reportTypeId" ng-options="reportType.id as reportType.name for reportType in reportTypes" required/>
+            </div>
+        </div>
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary offset2" ng-click="submitReport(report)" ng-disabled="reportForm.$invalid">{{msg('reports.form.submit')}}</button>
+        </div>
+    </form>
+</div>

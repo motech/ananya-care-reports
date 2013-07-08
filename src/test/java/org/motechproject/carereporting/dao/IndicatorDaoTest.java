@@ -23,7 +23,7 @@ public class IndicatorDaoTest extends AbstractTransactionalJUnit4SpringContextTe
 
     @Test(expected = CareResourceNotFoundRuntimeException.class)
     public void shouldThrowCareResourceNotFoundExceptionWhenEntityDoesNotExistsInDatabase() {
-        indicatorDao.findById(1);
+        indicatorDao.findById(99);
     }
 
 }

@@ -16,7 +16,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
     };
 
     $scope.deleteUser = function(user) {
-        var btns = [{result:'yes', label: 'Yes', cssClass: 'btn-primary btn'}, {result:'no', label: 'No', cssClass: 'btn-danger btn'}];
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
         $dialog.messageBox($scope.msg('users.list.confirmDelete.header'), $scope.msg('users.list.confirmDelete.message', user.username), btns)
             .open()
             .then(function(result) {

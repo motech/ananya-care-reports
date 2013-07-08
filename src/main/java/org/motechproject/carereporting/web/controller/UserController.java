@@ -5,7 +5,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
-import org.motechproject.carereporting.exception.UserException;
+import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +136,7 @@ public class UserController {
 
         try {
             userService.register(userEntity);
-        } catch (UserException e) {
+        } catch (EntityException e) {
             bindingResult.rejectValue("username", "Duplicate.userEntity.username");
             throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
         }
@@ -151,7 +151,7 @@ public class UserController {
 
         try {
             userService.updateUser(userEntity);
-        } catch (UserException e) {
+        } catch (EntityException e) {
             result.rejectValue("username", "Duplicate.userEntity.username");
             throw new CareApiRuntimeException(result.getFieldErrors(), e);
         }

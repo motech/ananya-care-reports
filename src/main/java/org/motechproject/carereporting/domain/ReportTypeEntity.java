@@ -37,6 +37,10 @@ public class ReportTypeEntity extends AbstractEntity {
 
     }
 
+    public ReportTypeEntity(Integer id) {
+        this.id = id;
+    }
+
     public ReportTypeEntity(String name) {
         this.name = name;
     }
@@ -55,7 +59,7 @@ public class ReportTypeEntity extends AbstractEntity {
     }
 
     public Integer getChartTypeId() {
-        return chartType.getId();
+        return chartType != null ? chartType.getId() : null;
     }
 
     public void setChartType(ChartTypeEntity chartType) {

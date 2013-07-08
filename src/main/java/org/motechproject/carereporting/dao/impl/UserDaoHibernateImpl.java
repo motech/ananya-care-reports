@@ -3,7 +3,7 @@ package org.motechproject.carereporting.dao.impl;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.exception.UserException;
+import org.motechproject.carereporting.exception.EntityException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +17,7 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> im
             .uniqueResult();
 
         if(user == null) {
-            throw new UserException("Bad username or password");
+            throw new EntityException("Bad username or password");
         }
 
         return user;
@@ -30,7 +30,7 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> im
                 .uniqueResult();
 
         if (user == null) {
-            throw new UserException("Bad username or password");
+            throw new EntityException("Bad username or password");
         }
 
         return user.getSalt();

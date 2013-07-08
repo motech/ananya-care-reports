@@ -6,10 +6,13 @@ import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.domain.ChartTypeEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +54,39 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Override
     @Transactional(readOnly = false)
+    public ReportEntity createNewReport(String name, Integer indicatorId, Integer reportTypeId) {
+        ReportEntity reportEntity = new ReportEntity(name, indicatorId, reportTypeId);
+        try {
+            reportDao.save(reportEntity);
+            return reportEntity;
+        } catch (DataIntegrityViolationException | org.hibernate.exception.ConstraintViolationException e) {
+            throw new EntityException(e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId) {
+        ReportEntity reportEntity = fetchAndUpdateReport(reportId, name, indicatorId, reportTypeId);
+        try {
+        reportDao.update(reportEntity);
+        } catch (DataIntegrityViolationException | org.hibernate.exception.ConstraintViolationException e) {
+            throw new EntityException(e);
+        }
+    }
+
+    private ReportEntity fetchAndUpdateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId) {
+        ReportEntity reportEntity = reportDao.findById(reportId);
+        reportEntity.setName(name);
+        IndicatorEntity indicatorEntity = new IndicatorEntity(indicatorId);
+        reportEntity.setIndicator(indicatorEntity);
+        ReportTypeEntity reportTypeEntity = new ReportTypeEntity(reportTypeId);
+        reportEntity.setReportType(reportTypeEntity);
+        return reportEntity;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void updateReport(ReportEntity reportEntity) {
         reportDao.update(reportEntity);
     }
@@ -58,6 +94,13 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     @Transactional(readOnly = false)
     public void deleteReport(ReportEntity reportEntity) {
+        reportDao.remove(reportEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteReportById(Integer reportId) {
+        ReportEntity reportEntity = new ReportEntity(reportId);
         reportDao.remove(reportEntity);
     }
 

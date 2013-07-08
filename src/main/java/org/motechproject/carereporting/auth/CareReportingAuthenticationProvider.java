@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.auth;
 
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.exception.UserException;
+import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -20,7 +20,7 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             UserEntity user = userService.login((String) authentication.getPrincipal(),
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        } catch (UserException e) {
+        } catch (EntityException e) {
             throw new BadCredentialsException("Bad credentials", e);
         }
     }

@@ -8,7 +8,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.exception.UserException;
+import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -74,7 +74,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
         try {
             userDao.save(user);
         } catch (ConstraintViolationException e) {
-            throw new UserException("Username already exists", e);
+            throw new EntityException("Username already exists", e);
         }
     }
 
@@ -86,7 +86,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
         try {
             userDao.save(userEntity);
         } catch (ConstraintViolationException e) {
-            throw new UserException("Username already exists", e);
+            throw new EntityException("Username already exists", e);
         }
     }
 
@@ -108,7 +108,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
             userDao.update(userToUpdate);
         } catch (DataIntegrityViolationException | ConstraintViolationException e) {
-            throw new UserException("Username already exists", e);
+            throw new EntityException("Username already exists", e);
         }
     }
 
@@ -120,7 +120,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
             crypt.update(stringToEncode.getBytes("UTF-8"));
             return byteToHex(crypt.digest());
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            throw new UserException("Cannot encode user password", e);
+            throw new EntityException("Cannot encode user password", e);
         }
     }
 

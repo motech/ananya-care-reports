@@ -36,6 +36,7 @@
     <script src="resources/js/controllers/indicators.js" type="text/javascript"></script>
     <script src="resources/js/controllers/roles.js" type="text/javascript"></script>
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
 </head>
 <body>
@@ -65,8 +66,8 @@
                       <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageReports')}}<b class="caret"></b></a>
                           <ul class="dropdown-menu">
-                              <li><a href="#/reports"><i class="icon-plus-sign"></i> {{msg('menu.manageReports.defineReport')}}</a></li>
-                             <li><a href="#/reports/new"><i class="icon-list"></i> {{msg('menu.manageReports.showDefinedReports')}}</a></li>
+                              <li><a href="#/report/new"><i class="icon-plus-sign"></i> {{msg('menu.manageReports.defineReport')}}</a></li>
+                             <li><a href="#/report"><i class="icon-list"></i> {{msg('menu.manageReports.showDefinedReports')}}</a></li>
                           </ul>
                       </li>
                   </sec:authorize>

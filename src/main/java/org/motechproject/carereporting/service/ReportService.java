@@ -4,20 +4,35 @@ import org.motechproject.carereporting.domain.ChartTypeEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
 
 public interface ReportService {
 
+    String HAS_ROLE_MANAGE_REPORTS = "hasRole('CAN_MANAGE_REPORTS')";
+
     Set<ReportEntity> findAllReports();
 
     ReportEntity findReportById(Integer id);
 
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void createNewReport(ReportEntity reportEntity);
 
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
+    ReportEntity createNewReport(String name, Integer indicatorId, Integer reportTypeId);
+
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
+    void updateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId);
+
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void updateReport(ReportEntity reportEntity);
 
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void deleteReport(ReportEntity reportEntity);
+
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
+    void deleteReportById(Integer reportId);
 
     Set<ReportTypeEntity> findAllReportTypes();
 

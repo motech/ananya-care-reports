@@ -1,0 +1,27 @@
+<div ng:init="$root.pageTitle = title"></div>
+
+<h1 class="text-center">{{msg('reports.list.header')}}</h1>
+<div class="span9 offset1 well">
+    <table class="table table-hover" ng-show="reports.length > 0">
+        <thead>
+        <tr>
+            <th>{{msg('reports.list.name')}}</th>
+            <th>{{msg('reports.list.indicator')}}</th>
+            <th>{{msg('reports.list.reportType')}}</th>
+            <th>{{msg('actions')}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="report in reports">
+            <td><a href="#/report/{{report.id}}">{{report.name}}</a></td>
+            <td><a href="#/indicator/{{report.indicatorId}}">{{report.indicatorName}}</a></td>
+            <td>{{report.reportType.name}}</td>
+            <td><span class="btn btn-link" ng-click="deleteReport(report);"><i class="icon-remove"></i></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-center">
+        <span class="text-info" ng-show="reports.length == 0">{{msg('reports.list.empty')}}<br /><br /></span>
+        <a class="btn btn-primary" href="#/report/new">{{msg('reports.list.defineReport')}}</a>
+    </p>
+</div>

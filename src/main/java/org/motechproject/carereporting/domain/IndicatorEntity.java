@@ -71,6 +71,10 @@ public class IndicatorEntity extends AbstractEntity {
 
     }
 
+    public IndicatorEntity(Integer id) {
+        this.id = id;
+    }
+
     public IndicatorEntity(final IndicatorTypeEntity indicatorType, final Set<IndicatorCategoryEntity> categories,
             final LevelEntity level, final Set<UserEntity> owners, final Set<ComplexConditionEntity> complexConditions,
             final Set<IndicatorValueEntity> values, final Integer frequency, final String name) {
@@ -108,6 +112,7 @@ public class IndicatorEntity extends AbstractEntity {
         this.level = level;
     }
 
+    @JsonIgnore
     public Set<UserEntity> getOwners() {
         return owners;
     }
