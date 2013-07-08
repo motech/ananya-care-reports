@@ -12,6 +12,39 @@ Array.prototype.sortById = function() {
     });
 };
 
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location) {
+    $scope.indicators = [];
+
+    $scope.fetchIndicators = function() {
+        $http.get('api/indicator')
+            .success(function(indicators) {
+                $scope.indicators = indicators;
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotLoadIndicatorList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+    $scope.fetchIndicators();
+
+    $scope.deleteIndicator = function(indicator) {
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+        $dialog.messageBox($scope.msg('indicators.list.confirmDelete.header'), $scope.msg('indicators.list.confirmDelete.message', indicator.name), btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({
+                        method: 'DELETE',
+                        url: 'api/indicator/' + indicator.id
+                    })
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchIndicators();
+                    }).error(function(response) {
+                        $dialog.messageBox("Error", $scope.msg('indicators.list.error.delete'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                    });
+                }
+            });
+    };
+});
+
 care.controller('createIndicatorController', function($scope, $http, $modal, $dialog, $filter, $location) {
     $scope.title = $scope.msg('indicators.title');
 
@@ -143,38 +176,6 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         { name: "FLW 3", value: "3" }
     ];
     $scope.levelFlwType = "1";
-    $scope.listOperators = [
-        { name: "ADD", value: "1" },
-        { name: "SUBTRACT", value: "2" },
-        { name: "MULTIPLY", value: "3" },
-        { name: "DIVIDE", value: "4" }
-    ];
-    $scope.listForms = [
-        { name: "Form 1", value: "1" },
-        { name: "Form 2", value: "2" }
-    ];
-    $scope.listCalculateBy = [
-        { name: "Formula 1", value: "1" },
-        { name: "Formula 2", value: "2" }
-    ];
-    $scope.listComparisonSymbols = [
-        { name: "<=", value: "1" },
-        { name: ">=", value: "2" }
-    ];
-
-    $scope.listComplexConditions = [
-        { id: 0, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 10 },
-        { id: 1, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 11 },
-        { id: 2, operator: 1, form: 1, calculateBy: 1, comparisonSymbol: 1, comparisonValue: 12 }
-    ];
-
-    $scope.condition = {
-        operator: "1",
-        form: "1",
-        calculateBy: "1",
-        comparisonSymbol: "1",
-        comparisonValue: 10
-    };
 
     $scope.validateOwners = function() {
         $scope.ownersValid = false;
@@ -283,7 +284,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
-                $location.path( "/" );
+                $location.path( "/indicators" );
             }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateIndicator'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
@@ -322,8 +323,6 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         if (isNaN(formId) || !isFinite(formId)) {
             return;
         }
-
-        console.log(formId);
 
         $http.get('api/forms/' + formId + "/fields")
             .success(function(fields) {

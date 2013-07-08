@@ -71,7 +71,7 @@ public class IndicatorController {
         indicatorService.updateIndicatorFromFormObject(indicatorFormObject);
     }
 
-    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE, consumes = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
