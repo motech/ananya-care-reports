@@ -93,22 +93,26 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
     $scope.fetchAreas = function() {
        $http.get('api/users/areas')
            .success(function(areas) {
-               $scope.areas = areas;
-               var assignUserArea = function() {
-                    for (var area in areas) {
-                        if ($scope.careUser.area != undefined && areas[area].id == $scope.careUser.area.id) {
-                            $scope.careUser.area = areas[area];
-                            break;
+                areas.sort(function(a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+                var arr = Array(),
+                    pushAllChildrenOf = function(arr, area) {
+                        for (var index=0; index<areas.length; index+=1) {
+                            if (areas[index].parentAreaId == area.id) {
+                                arr.push(areas[index]);
+                                pushAllChildrenOf(arr, areas[index]);
+                            }
                         }
+                    };
+
+                for (var index=0; index<areas.length; index+=1) {
+                    if (areas[index].levelHierarchyDepth == 0) {
+                        arr.push(areas[index]);
+                        pushAllChildrenOf(arr, areas[index]);
                     }
-               };
-               if ($scope.user == undefined) {
-               $scope.$watch('careUser', function() {
-                    assignUserArea();
-               });
-               } else {
-                   assignUserArea();
-               }
+                }
+                $scope.areas = arr;
            })
            .error(function() {
                $dialog.messageBox($scope.msg('error'), $scope.msg('users.form.error.cannotLoadAreas'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
@@ -118,6 +122,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
     $scope.submitUser = function(user) {
         if (user.area != undefined) {
             delete user.area.levelId;
+            delete user.area.levelHierarchyDepth
         }
         $http({method: 'PUT', url: 'api/users' + (user.id !== undefined ? ('/' + user.id) : ''), data: user})
             .success(function(response) {

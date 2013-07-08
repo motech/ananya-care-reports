@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -19,6 +20,7 @@ import java.util.Set;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "area_id"))
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AreaEntity extends AbstractEntity {
 
     @NotNull
@@ -51,6 +53,10 @@ public class AreaEntity extends AbstractEntity {
         return parentArea;
     }
 
+    public Integer getParentAreaId() {
+        return parentArea != null ? parentArea.getId() : null;
+    }
+
     public void setParentArea(AreaEntity parentArea) {
         this.parentArea = parentArea;
     }
@@ -74,6 +80,10 @@ public class AreaEntity extends AbstractEntity {
 
     public void setLevel(LevelEntity level) {
         this.level = level;
+    }
+
+    public Integer getLevelHierarchyDepth() {
+        return level != null ? level.getHierarchyDepth() : null;
     }
 
     @JsonIgnore

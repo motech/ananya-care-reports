@@ -58,7 +58,9 @@
         <div class="control-group">
             <label class="control-label" for="area">{{msg('users.form.area')}}: </label>
             <div class="controls">
-                <select id="area" name="area" ng-model="careUser.area" ng-options="area as area.name for area in areas" required/>
+                <select id="area" name="area" ng-model="careUser.area.id">
+                    <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="careUser.area.id == area.id" ng-repeat="area in areas">{{area.name}}</option>
+                </select>
             </div>
         </div>
         <div class="control-group">
