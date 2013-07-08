@@ -11,31 +11,6 @@ INSERT INTO permission(name, display_name) VALUES ('CAN_CREATE_INDICATORS', 'Can
 INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2), (1, 3);
 INSERT INTO care_user_role (user_id, role_id) VALUES (1, 1), (1, 2);
 
-insert into form (table_name, display_name) values
-('registration_mother_form', 'registration_mother_form'),
-('registration_child_form', 'registration_child_form'),
-('cf_child_form', 'cf_child_form'),
-('bp_form', 'bp_form'),
-('abort_form', 'abort_form'),
-('ui_mother_form', 'ui_mother_form'),
-('ui_child_form', 'ui_child_form'),
-('refer_mother_form', 'refer_mother_form'),
-('refer_child_form', 'refer_child_form'),
-('new_form', 'new_form'),
-('pnc_mother_form', 'pnc_mother_form'),
-('pnc_child_form', 'pnc_child_form'),
-('mi_form', 'mi_form'),
-('mo_form', 'mo_form'),
-('cf_mother_form', 'cf_mother_form'),
-('ebf_mother_form', 'ebf_mother_form'),
-('ebf_child_form', 'ebf_child_form'),
-('delivery_mother_form', 'delivery_mother_form'),
-('delivery_child_form', 'delivery_child_form'),
-('death_mother_form', 'death_mother_form'),
-('death_child_form', 'death_child_form'),
-('close_mother_form', 'close_mother_form'),
-('close_child_form', 'close_child_form');
-
 insert into indicator_type (name) values ('Average');
 insert into indicator_type (name) values ('Count');
 insert into indicator_type (name) values ('Percentage');
