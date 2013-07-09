@@ -2,6 +2,7 @@ package org.motechproject.carereporting.dao;
 
 import org.motechproject.carereporting.domain.AbstractEntity;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface GenericDao<T extends AbstractEntity> {
@@ -17,4 +18,8 @@ public interface GenericDao<T extends AbstractEntity> {
     void remove(T entity);
 
     void removeAll();
+
+    Object executeNamedQuery(final String queryName, final Map<String, ?> queryParams);
+
+    Object executeNamedQueryWithUniqueResult(final String queryName, final Map<String, ?> queryParams);
 }

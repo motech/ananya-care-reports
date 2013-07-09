@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CareNullArgumentRuntimeException extends RuntimeException {
+public class CareNullArgumentRuntimeException extends CareRuntimeException {
 
     private static String message = "Argument of this function cannot be null";
 

@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class CareResourceNotFoundRuntimeException extends RuntimeException {
+public class CareResourceNotFoundRuntimeException extends CareRuntimeException {
     // The error needs to be wrapped in a container, or else RestResponseEntityExceptionHandler
     // will not pass it to the response body
     private Set<String> errorList = new LinkedHashSet<>();

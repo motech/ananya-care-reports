@@ -12,6 +12,7 @@ import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -60,6 +61,12 @@ public class UserServiceImpl extends AbstractService implements UserService {
         String salt = userDao.getSaltForUser(username);
         String encodedPassword = encodePasswordWithSalt(password, salt);
         return userDao.findByUsernameAndPassword(username, encodedPassword);
+    }
+
+    @Transactional
+    @Override
+    public UserEntity findCurrentlyLoggedUser() {
+        return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @Transactional(readOnly = false)

@@ -17,6 +17,8 @@ public interface UserService {
 
     UserEntity login(String username, String password);
 
+    UserEntity findCurrentlyLoggedUser();
+
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles);
 

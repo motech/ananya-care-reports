@@ -306,19 +306,26 @@ CREATE TABLE IF NOT EXISTS reporting.report(
 -- object: reporting.dashboard | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.dashboard(
 	dashboard_id serial NOT NULL,
-	owner_id integer NOT NULL,
+	name character varying(100) NOT NULL,
 	tab_position smallint NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT dashboard_pk PRIMARY KEY (dashboard_id),
-	CONSTRAINT dashboard_user_id_fk FOREIGN KEY (owner_id)
+	CONSTRAINT dashboard_tab_position_uk UNIQUE (tab_position),
+	CONSTRAINT dashboard_name_uk UNIQUE (name)
+);
+
+CREATE TABLE IF NOT EXISTS reporting.dashboard_user(
+    dashboard_id integer NOT NULL,
+	user_id integer NOT NULL,
+	CONSTRAINT dashboard_user_dashboard_id_fk FOREIGN KEY (dashboard_id)
+	REFERENCES reporting.dashboard (dashboard_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT dashboard_user_user_id_fk FOREIGN KEY (user_id)
 	REFERENCES reporting.care_user (user_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT dashboard_tab_position_uk UNIQUE (tab_position)
+	CONSTRAINT dashboard_user_uk UNIQUE (dashboard_id,user_id)
 );
--- ddl-end --
-
--- ddl-end --
 
 -- object: reporting.report_dashboard | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.report_dashboard(

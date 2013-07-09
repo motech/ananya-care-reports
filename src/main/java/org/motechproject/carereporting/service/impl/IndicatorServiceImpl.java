@@ -8,6 +8,7 @@ import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
+import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -16,6 +17,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
+import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,10 +50,13 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     private AreaService areaService;
 
     @Autowired
-    private UserService userService;
+    private ComplexConditionService complexConditionService;
 
     @Autowired
-    private ComplexConditionService complexConditionService;
+    private DashboardService dashboardService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -274,6 +280,15 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Override
     public void createNewIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
         indicatorCategoryDao.save(indicatorCategoryEntity);
+        createDashboardForNewIndicatorCategory(indicatorCategoryEntity.getName());
+    }
+
+    private void createDashboardForNewIndicatorCategory(String name) {
+        Short newDashboardTabPosition = dashboardService.getTabPositionForNewDashboard();
+        Set<UserEntity> dashboardOwners = new HashSet<UserEntity>();
+        dashboardOwners.add(userService.findCurrentlyLoggedUser());
+        DashboardEntity dashboardEntity = new DashboardEntity(name, newDashboardTabPosition, dashboardOwners);
+        dashboardService.createNewDashboard(dashboardEntity);
     }
 
     @Transactional(readOnly = false)

@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.exception;
 
-public class EntityException extends RuntimeException {
+public class EntityException extends CareRuntimeException {
 
     public EntityException(String message) {
         super(message);

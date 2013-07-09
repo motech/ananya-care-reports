@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class CareApiRuntimeException extends RuntimeException {
+public class CareApiRuntimeException extends CareRuntimeException {
 
     private List<FieldError> errors;
 

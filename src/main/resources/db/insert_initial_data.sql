@@ -28,6 +28,16 @@ insert into indicator_type (name) values ('Percentage');
 insert into indicator_category (name) values ('Birth preparedness plan');
 insert into indicator_category (name) values ('IFA Tablets');
 
+insert into dashboard (name, tab_position) values ('Performance summary', 0);
+insert into dashboard (name, tab_position) values ('Map report', 1);
+insert into dashboard (name, tab_position) values ('Birth preparedness plan', 2);
+insert into dashboard (name, tab_position) values ('IFA Tablets', 3);
+
+insert into dashboard_user (dashboard_id, user_id) values (1, 1);
+insert into dashboard_user (dashboard_id, user_id) values (2, 1);
+insert into dashboard_user (dashboard_id, user_id) values (3, 1);
+insert into dashboard_user (dashboard_id, user_id) values (4, 1);
+
 insert into comparison_symbol (name) values ('=');
 insert into comparison_symbol (name) values ('>');
 insert into comparison_symbol (name) values ('<');
