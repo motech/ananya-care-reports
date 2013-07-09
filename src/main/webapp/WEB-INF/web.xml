@@ -4,11 +4,12 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
     <display-name>Ananya CARE Reporting</display-name>
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            /WEB-INF/applicationContext.xml
-             /WEB-INF/securityContext.xml
+            /WEB-INF/applicationContext.xml,
+            /WEB-INF/securityContext.xml
         </param-value>
     </context-param>
 
@@ -16,9 +17,9 @@
 		<servlet-name>ananya-care-reports</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
-		<init-param>
+        <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/applicationContext.xml, /WEB-INF/securityContext.xml</param-value>
+            <param-value></param-value>
         </init-param>
 	</servlet>
  

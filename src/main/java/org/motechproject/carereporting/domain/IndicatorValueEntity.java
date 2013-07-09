@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -38,15 +39,28 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "condition_id")
     private ComplexConditionEntity condition;
 
+    @Column(name = "condition_value")
+    private BigDecimal conditionValue;
+
     public IndicatorValueEntity() {
 
     }
 
-    public IndicatorValueEntity(Date date, IndicatorEntity indicator, AreaEntity area, ComplexConditionEntity condition) {
+    public IndicatorValueEntity(Date date, IndicatorEntity indicator, AreaEntity area, ComplexConditionEntity condition,
+                                BigDecimal conditionValue) {
         this.date = date;
         this.indicator = indicator;
         this.area = area;
         this.condition = condition;
+        this.conditionValue = conditionValue;
+    }
+
+    public BigDecimal getConditionValue() {
+        return conditionValue;
+    }
+
+    public void setConditionValue(BigDecimal conditionValue) {
+        this.conditionValue = conditionValue;
     }
 
     @JsonIgnore
