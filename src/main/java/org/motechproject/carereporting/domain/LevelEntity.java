@@ -29,7 +29,7 @@ public class LevelEntity extends AbstractEntity {
     @JoinColumn(name = "parent_level_id")
     private LevelEntity parentLevel;
 
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, targetEntity = AreaEntity.class)
     private Set<AreaEntity> areas;
 
     @Column(name = "hierarchy_depth")

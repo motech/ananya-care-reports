@@ -22,7 +22,7 @@ public class IndicatorFormObject implements Serializable {
 
     @NotNull
     @Min(1)
-    private Integer level;
+    private Integer area;
 
     @NotNull
     private Set<Integer> owners;
@@ -44,12 +44,12 @@ public class IndicatorFormObject implements Serializable {
     }
 
     public IndicatorFormObject(final Integer indicatorType, final Set<Integer> categories,
-            final Integer level, final Set<Integer> owners, final Set<Integer> complexConditions,
+            final Integer area, final Set<Integer> owners, final Set<Integer> complexConditions,
             final Set<Integer> values, final Integer frequency,
             final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
-        this.level = level;
+        this.area = area;
         this.owners = owners;
         this.complexConditions = complexConditions;
         this.values = values;
@@ -73,8 +73,8 @@ public class IndicatorFormObject implements Serializable {
         return categories;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getArea() {
+        return area;
     }
 
     public Set<Integer> getOwners() {

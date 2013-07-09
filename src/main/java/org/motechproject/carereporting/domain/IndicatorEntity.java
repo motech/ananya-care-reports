@@ -40,8 +40,8 @@ public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "top_level_id", referencedColumnName = "level_id", nullable = false)
-    private LevelEntity level;
+    @JoinColumn(name = "area_id", referencedColumnName = "area_id", nullable = false)
+    private AreaEntity area;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
@@ -76,11 +76,11 @@ public class IndicatorEntity extends AbstractEntity {
     }
 
     public IndicatorEntity(final IndicatorTypeEntity indicatorType, final Set<IndicatorCategoryEntity> categories,
-            final LevelEntity level, final Set<UserEntity> owners, final Set<ComplexConditionEntity> complexConditions,
+            final AreaEntity area, final Set<UserEntity> owners, final Set<ComplexConditionEntity> complexConditions,
             final Set<IndicatorValueEntity> values, final Integer frequency, final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
-        this.level = level;
+        this.area = area;
         this.owners = owners;
         this.complexConditions = complexConditions;
         this.values = values;
@@ -104,12 +104,12 @@ public class IndicatorEntity extends AbstractEntity {
         this.categories = categories;
     }
 
-    public LevelEntity getLevel() {
-        return level;
+    public AreaEntity getArea() {
+        return area;
     }
 
-    public void setLevel(LevelEntity level) {
-        this.level = level;
+    public void setArea(AreaEntity area) {
+        this.area = area;
     }
 
     @JsonIgnore

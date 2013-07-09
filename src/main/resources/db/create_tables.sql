@@ -264,7 +264,7 @@ CREATE TABLE IF NOT EXISTS reporting.role_permission(
 CREATE TABLE IF NOT EXISTS reporting.indicator(
 	indicator_id serial NOT NULL,
 	type_id integer NOT NULL,
-	top_level_id integer NOT NULL,
+	area_id integer NOT NULL,
 	frequency integer NOT NULL,
 	name character varying NOT NULL,
 	creation_date timestamp,
@@ -273,8 +273,8 @@ CREATE TABLE IF NOT EXISTS reporting.indicator(
 	CONSTRAINT indicator_type_id_fk FOREIGN KEY (type_id)
 	REFERENCES reporting.indicator_type (indicator_type_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_top_level_id_fk FOREIGN KEY (top_level_id)
-	REFERENCES reporting.level (level_id) MATCH FULL
+	CONSTRAINT indicator_area_id_fk FOREIGN KEY (area_id)
+	REFERENCES reporting.area (area_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_name_uk UNIQUE (name)
 );

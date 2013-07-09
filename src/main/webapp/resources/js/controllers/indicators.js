@@ -16,7 +16,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.indicators = [];
 
     $scope.fetchIndicators = function() {
-        $http.get('api/indicator')
+        $http.get('api/users/indicators')
             .success(function(indicators) {
                 $scope.indicators = indicators;
             }).error(function() {
@@ -73,6 +73,100 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
             });
     };
     $scope.fetchUsers();
+
+    $scope.selectedState = null;
+    $scope.listState = [];
+    $scope.selectedDistrict = null;
+    $scope.listDistrict = [];
+    $scope.showDistrict = false;
+    $scope.selectedBlock = null;
+    $scope.listBlock = [];
+    $scope.showBlock = false;
+    $scope.selectedHSC = null;
+    $scope.listHSC = [];
+    $scope.showHSC = false;
+    $scope.selectedAWC = null;
+    $scope.listAWC = [];
+    $scope.showAWC = false;
+
+    $scope.fetchStates = function() {
+        $http.get('api/users/areas/level/1')
+            .success(function(states) {
+                states.sortByName();
+                $scope.listState = states;
+
+                if (Object.keys($scope.listState).length > 0) {
+                    $scope.selectedState = $scope.listState[0].id;
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadStateList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.fetchAreasByParentAreaId = function(parentAreaId, name) {
+        var listName = 'list' + name;
+        var selectedItemName = 'selected' + name;
+        var msgAffix = 'cannotLoad' + name + 'List';
+
+        $http.get('api/users/areas/' + parentAreaId + '/list')
+            .success(function(items) {
+                items.sortByName();
+                $scope[listName] = items;
+                $scope[listName].unshift({ id: '-1', name: 'ALL' });
+                $scope[selectedItemName] = '-1';
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.' + msgAffix), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.resetDropdownDisplay = function(topAreaName) {
+        var areaNames = [ 'State', 'District', 'Block', 'HSC', 'AWC' ];
+        var found = false;
+
+        for (var i = 0; i < areaNames.length; i++) {
+            if (topAreaName == areaNames[i]) {
+                found = true;
+            }
+
+            $scope['show' + areaNames[i]] = !found;
+        }
+
+        $scope['show' + topAreaName] = true;
+    };
+
+    $scope.$watch('selectedState', function() {
+        if ($scope.selectedState > 0) {
+            $scope.fetchAreasByParentAreaId($scope.selectedState, 'District');
+        }
+
+        $scope.resetDropdownDisplay(($scope.selectedState > 0) ? 'District' : 'State');
+    });
+
+    $scope.$watch('selectedDistrict', function() {
+        if ($scope.selectedDistrict > 0) {
+            $scope.fetchAreasByParentAreaId($scope.selectedDistrict, 'Block');
+        }
+
+        $scope.resetDropdownDisplay(($scope.selectedDistrict > 0) ? 'Block' : 'District');
+    });
+
+    $scope.$watch('selectedBlock', function() {
+        if ($scope.selectedBlock > 0) {
+            $scope.fetchAreasByParentAreaId($scope.selectedBlock, 'HSC');
+        }
+
+        $scope.resetDropdownDisplay(($scope.selectedBlock > 0) ? 'HSC' : 'Block');
+    });
+    
+    $scope.$watch('selectedHSC', function() {
+        if ($scope.selectedHSC > 0) {
+            $scope.fetchAreasByParentAreaId($scope.selectedHSC, 'AWC');
+        }
+
+        $scope.resetDropdownDisplay(($scope.selectedHSC > 0) ? 'AWC' : 'HSC');
+    });
+
+    $scope.fetchStates();
 
     $scope.fetchIndicatorTypes = function() {
         $http.get('api/indicator/type')
@@ -152,30 +246,6 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         { name: "180 days", value: "180" }
     ];
     $scope.indicator.frequency = "30";
-    $scope.listLevelDistrict = [
-        { name: "District 9", value: "1" },
-        { name: "District X", value: "2" },
-        { name: "District Z", value: "3" }
-    ];
-    $scope.levelDistrict = "1";
-    $scope.listLevelBlock = [
-        { name: "Block 1", value: "1" },
-        { name: "Block 2", value: "2" },
-        { name: "Block 3", value: "3" }
-    ];
-    $scope.levelBlock = "1";
-    $scope.listLevelSubcentre = [
-        { name: "Subcentre A", value: "1" },
-        { name: "Subcentre B", value: "2" },
-        { name: "Subcentre C", value: "3" }
-    ];
-    $scope.levelSubcentre = "1";
-    $scope.listLevelFlwType = [
-        { name: "FLW 1", value: "1" },
-        { name: "FLW 2", value: "2" },
-        { name: "FLW 3", value: "3" }
-    ];
-    $scope.levelFlwType = "1";
 
     $scope.validateOwners = function() {
         $scope.ownersValid = false;
@@ -273,10 +343,24 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         return selectedCategories;
     };
 
+    $scope.getSelectedArea = function() {
+        if ($scope.selectedAWC > 0 && $scope.showAWC) {
+            return $scope.selectedAWC;
+        } else if ($scope.selectedHSC > 0 && $scope.showHSC) {
+            return $scope.selectedHSC;
+        } else if ($scope.selectedBlock > 0 && $scope.showBlock) {
+            return $scope.selectedBlock;
+        } else if ($scope.selectedDistrict > 0 && $scope.showDistrict) {
+            return $scope.selectedDistrict;
+        } else if ($scope.selectedState > 0) {
+            return $scope.selectedState;
+        }
+    };
+
     $scope.submit = function() {
         $scope.indicator.owners = $scope.getSelectedOwners();
         $scope.indicator.categories = $scope.getSelectedCategories();
-        $scope.indicator.level = 1;
+        $scope.indicator.area = $scope.getSelectedArea();
 
         $http({
             url: "api/indicator",

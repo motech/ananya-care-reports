@@ -9,6 +9,10 @@ public interface AreaService {
 
     Set<AreaEntity> findAllAreas();
 
+    Set<AreaEntity> findAreasByLevelId(Integer levelId);
+
+    Set<AreaEntity> findAreasByParentAreaId(Integer areaId);
+
     AreaEntity findAreaById(Integer areaId);
 
     Set<LevelEntity> findAllLevels();

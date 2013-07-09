@@ -33,24 +33,28 @@
                 </div>
                 <div class="nested-well">
                     <fieldset>
-                        <legend>{{msg('indicators.form.defineLevel')}}:</legend>
-                        <div id="defineLevel">
+                        <legend>{{msg('indicators.form.defineArea')}}:</legend>
+                        <div id="defineArea">
                             <ul class="unstyled">
                                 <li>
-                                    <label class="span4 text-right" for="level_district">{{msg('indicators.form.selectDistrict')}}: </label>
-                                    <select class="span8" id="level_district" ng-model="levelDistrict" ng-options="item.value as item.name for item in listLevelDistrict" class="input-block-level"></select>
+                                    <label class="span3 text-right" for="area_state">{{msg('indicators.form.selectState')}}: </label>
+                                    <select class="span9" id="area_state" ng-model="selectedState" ng-options="item.id as item.name for item in listState" class="input-block-level" required></select>
                                 </li>
-                                <li>
-                                    <label class="span4 text-right" for="level_block">{{msg('indicators.form.selectBlock')}}: </label>
-                                    <select class="span8" id="level_block" ng-model="levelBlock" ng-options="item.value as item.name for item in listLevelBlock" class="input-block-level"></select>
+                                <li ng-show="showDistrict">
+                                    <label class="span3 text-right" for="area_district">{{msg('indicators.form.selectDistrict')}}: </label>
+                                    <select class="span9" id="area_district" ng-model="selectedDistrict" ng-options="item.id as item.name for item in listDistrict" class="input-block-level"></select>
                                 </li>
-                                <li>
-                                    <label class="span4 text-right" for="level_subcentre">{{msg('indicators.form.selectSubcentre')}}: </label>
-                                    <select class="span8" id="level_subcentre" ng-model="levelSubcentre" ng-options="item.value as item.name for item in listLevelSubcentre" class="input-block-level"></select>
+                                <li ng-show="showBlock">
+                                    <label class="span3 text-right" for="area_block">{{msg('indicators.form.selectBlock')}}: </label>
+                                    <select class="span9" id="area_block" ng-model="selectedBlock" ng-options="item.id as item.name for item in listBlock" class="input-block-level"></select>
                                 </li>
-                                <li>
-                                    <label class="span4 text-right" for="level_flw_type">{{msg('indicators.form.selectFLWType')}}: </label>
-                                    <select class="span8" id="level_flw_type" ng-model="levelFlwType" ng-options="item.value as item.name for item in listLevelFlwType" class="input-block-level"></select>
+                                <li ng-show="showHSC">
+                                    <label class="span3 text-right" for="area_HSC">{{msg('indicators.form.selectHSC')}}: </label>
+                                    <select class="span9" id="area_HSC" ng-model="selectedHSC" ng-options="item.id as item.name for item in listHSC" class="input-block-level"></select>
+                                </li>
+                                <li ng-show="showAWC">
+                                    <label class="span3 text-right" for="area_AWC">{{msg('indicators.form.selectAWC')}}: </label>
+                                    <select class="span9" id="area_AWC" ng-model="selectedAWC" ng-options="item.id as item.name for item in listAWC" class="input-block-level"></select>
                                 </li>
                             </ul>
                         </div>

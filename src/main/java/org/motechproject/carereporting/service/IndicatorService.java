@@ -24,6 +24,8 @@ public interface IndicatorService {
 
     Set<IndicatorEntity> findAllIndicators();
 
+    Set<IndicatorEntity> findAllIndicatorsUnderUserArea(Integer userId);
+
     IndicatorEntity findIndicatorById(Integer id);
 
     void createNewIndicator(IndicatorEntity indicatorEntity);

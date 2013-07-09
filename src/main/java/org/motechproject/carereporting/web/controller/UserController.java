@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
@@ -7,10 +8,12 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Set;
 
 @RequestMapping(value = "/api/users")
@@ -35,12 +39,49 @@ public class UserController {
     @Autowired
     private AreaService areaService;
 
+    @Autowired
+    private IndicatorService indicatorService;
+
+    @RequestMapping(value = "/indicators", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<IndicatorEntity> getIndicatorsInUserArea(Principal principal) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                (UsernamePasswordAuthenticationToken)principal;
+        UserEntity userEntity = (UserEntity)usernamePasswordAuthenticationToken.getPrincipal();
+        return indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId());
+    }
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<AreaEntity> getAllAreas() {
         return areaService.findAllAreas();
+    }
+
+    @RequestMapping(value = "/areas/{areaId}", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public AreaEntity getArea(@PathVariable Integer areaId) {
+        return areaService.findAreaById(areaId);
+    }
+
+    @RequestMapping(value = "/areas/level/{levelId}", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<AreaEntity> getAreasByLevelId(@PathVariable Integer levelId) {
+        return areaService.findAreasByLevelId(levelId);
+    }
+
+    @RequestMapping(value = "/areas/{areaId}/list", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<AreaEntity> getAreasByParentAreaId(@PathVariable Integer areaId) {
+        return areaService.findAreasByParentAreaId(areaId);
     }
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

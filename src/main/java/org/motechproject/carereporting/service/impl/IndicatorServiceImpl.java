@@ -1,15 +1,17 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
-import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.service.AreaService;
@@ -20,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -48,6 +52,9 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Autowired
     private ComplexConditionService complexConditionService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public void setIndicatorDao(IndicatorDao indicatorDao) {
         this.indicatorDao = indicatorDao;
     }
@@ -68,6 +75,35 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional
     public Set<IndicatorEntity> findAllIndicators() {
         return indicatorDao.findAll();
+    }
+
+    private Set<AreaEntity> getAllChildEntities(AreaEntity areaEntity) {
+        Set<AreaEntity> areas = new LinkedHashSet<>();
+
+        areas.add(areaEntity);
+        for (AreaEntity area : areaEntity.getChildAreas()) {
+            areas.addAll(getAllChildEntities(area));
+        }
+
+        return areas;
+    }
+
+    @Transactional
+    @Override
+    public Set<IndicatorEntity> findAllIndicatorsUnderUserArea(Integer areaId) {
+        AreaEntity areaEntity = areaService.findAreaById(areaId);
+        Set<AreaEntity> areaEntities = getAllChildEntities(areaEntity);
+
+        List<Integer> areaIds = new ArrayList<>();
+        for (AreaEntity area : areaEntities) {
+            areaIds.add(area.getId());
+        }
+
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from IndicatorEntity where area.id in (:areaEntities)");
+        query.setParameterList("areaEntities", areaIds);
+
+        return new LinkedHashSet<IndicatorEntity>(query.list());
     }
 
     @Transactional
@@ -99,8 +135,8 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         return indicatorCategoryEntities;
     }
 
-    private LevelEntity findLevelEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        return areaService.findLevelById(indicatorFormObject.getLevel());
+    private AreaEntity findAreaEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
+        return areaService.findAreaById(indicatorFormObject.getArea());
     }
 
     private Set<UserEntity> findUserEntitiesFromFormObject(IndicatorFormObject indicatorFormObject) {
@@ -149,7 +185,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         IndicatorEntity indicatorEntity = new IndicatorEntity(
                 findIndicatorTypeEntityFromFormObject(indicatorFormObject),
                 findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject),
-                findLevelEntityFromFormObject(indicatorFormObject),
+                findAreaEntityFromFormObject(indicatorFormObject),
                 findUserEntitiesFromFormObject(indicatorFormObject),
                 findComplexConditionEntitiesFromFormObject(indicatorFormObject),
                 findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
@@ -172,7 +208,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
         indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setLevel(findLevelEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setArea(findAreaEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setOwners(findUserEntitiesFromFormObject(indicatorFormObject));
         indicatorEntity.setComplexConditions(findComplexConditionEntitiesFromFormObject(indicatorFormObject));
         indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));

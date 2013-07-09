@@ -1,11 +1,17 @@
-INSERT INTO level (name, hierarchy_depth) values ('City', 0);
+INSERT INTO level (name, hierarchy_depth) values ('State', 0);
 INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('District', 1, 1);
-INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('Street', 2, 2);
-
-INSERT INTO area (name, level_id) values ('Gdynia', 1), ('Gdańsk', 1);
-INSERT INTO area (name, level_id, parent_area_id) values ('Chylonia', 2, 1), ('Grabówek', 2, 1), ('Stogi', 2, 2), ('Osowa', 2, 2);
-INSERT INTO area (name, level_id, parent_area_id) values ('ul. Morska', 3, 3);
-
+INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('Block', 2, 2);
+INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('HSC', 3, 3);
+INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('AWC', 4, 4);
+INSERT INTO area (name, level_id) values ('State 1', 1), ('State 2', 1);
+INSERT INTO area (name, level_id, parent_area_id) values ('District 1', 2, 1), ('District 2', 2, 1),
+    ('District 3', 2, 2), ('District 4', 2, 2);
+INSERT INTO area (name, level_id, parent_area_id) values ('Block 1', 3, 3), ('Block 2', 3, 4),
+    ('Block 3', 3, 5), ('Block 4', 3, 6);
+INSERT INTO area (name, level_id, parent_area_id) values ('HSC 1', 4, 7), ('HSC 2', 4, 8),
+    ('HSC 3', 4, 9), ('HSC 4', 4, 10);
+INSERT INTO area (name, level_id, parent_area_id) values ('AWC 1', 5, 11), ('AWC 2', 5, 12),
+    ('AWC 3', 5, 13), ('AWC 4', 5, 14);
 
 INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
           VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 1, 'test', now(), now());

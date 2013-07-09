@@ -32,6 +32,6 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         AreaEntity [] areaEntities = {};
         areaEntities = areas.toArray(areaEntities);
         assertNotNull(areas);
-        assertEquals(8, areas.size());
+        assertEquals(19, areas.size());
     }
 }
