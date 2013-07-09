@@ -1,11 +1,14 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.dao.FormDao;
+import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.enums.FieldType;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Service
@@ -33,6 +37,9 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
 
     private static final String COLUMNS_IN_TABLE_SQL =
             "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema= ? AND TABLE_NAME = ?";
+
+    private static final String COLUMN_INFO_IN_TABLE =
+            "SELECT column_name, data_type FROM information_schema.COLUMNS WHERE table_schema = ? AND TABLE_NAME = ?";
 
     private static final String FOREIGN_KEY_FOR_TABLE =
             "SELECT ccu.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc " +
@@ -93,6 +100,33 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
         }
 
         return columnNames;
+    }
+
+    @Override
+    @Transactional
+    public Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity) {
+        Set<FieldEntity> fieldEntities = new LinkedHashSet<>();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        SqlRowSet columns = jdbcTemplate.queryForRowSet(COLUMN_INFO_IN_TABLE,
+                careSchemaName, formEntity.getTableName());
+
+        while (columns.next()) {
+            String columnName = columns.getString("column_name");
+            FieldType columnType = FieldType.getValueOf(columns.getString("data_type"));
+
+            if (columnName.equals("id") || columnName.endsWith("_id")) {
+                continue;
+            }
+
+            FieldEntity fieldEntity = new FieldEntity();
+            fieldEntity.setName(columnName);
+            fieldEntity.setType(columnType);
+            fieldEntity.setForm(formEntity);
+
+            fieldEntities.add(fieldEntity);
+        }
+
+        return fieldEntities;
     }
 
     @Override

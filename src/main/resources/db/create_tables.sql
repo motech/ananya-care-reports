@@ -160,7 +160,6 @@ CREATE TABLE IF NOT EXISTS reporting.complex_condition(
 	operator_type_id integer NOT NULL,
 	form_id integer NOT NULL,
 	comparison_symbol_id integer NOT NULL,
-	field character varying(100) NOT NULL,
 	comparison_value decimal(19,2) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
@@ -425,3 +424,33 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_complex_condition(
 	CONSTRAINT indicator_complex_condition_uk UNIQUE (indicator_id,complex_condition_id)
 );
 -- ddl-end --
+
+-- object: reporting.complex_condition | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.field(
+	field_id serial NOT NULL,
+	form_id integer NOT NULL,
+	name character varying(100) NOT NULL,
+	type character varying(50) NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT field_pk PRIMARY KEY (field_id),
+	CONSTRAINT field_form_id FOREIGN KEY (form_id)
+	REFERENCES reporting.form (form_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT field_uk UNIQUE (form_id,name)
+);
+-- ddl-end --
+
+-- object: reporting.role_permission | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.complex_condition_field(
+	complex_condition_id integer NOT NULL,
+	field_id integer NOT NULL,
+	CONSTRAINT complex_condition_field_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
+	REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT complex_condition_field_field_id_fk FOREIGN KEY (field_id)
+	REFERENCES reporting.field (field_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT complex_condition_field_uk UNIQUE (complex_condition_id,field_id)
+);
+-- ddl-end -

@@ -66,7 +66,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     @Transactional(readOnly = false)
     public void createNewComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
         ComplexConditionEntity complexConditionEntity = new ComplexConditionEntity(
-                complexConditionFormObject.getField(),
+                complexConditionFormObject.getFields(),
                 complexConditionFormObject.getComparisonValue(),
                 findOperatorTypeFromFormObject(complexConditionFormObject),
                 findFormEntityFromFormObject(complexConditionFormObject),
@@ -113,7 +113,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
 
         complexConditionEntity.setComparisonSymbol(findComparisonSymbolFromFormObject(complexConditionFormObject));
         complexConditionEntity.setComparisonValue(complexConditionFormObject.getComparisonValue());
-        complexConditionEntity.setField(complexConditionFormObject.getField());
+        complexConditionEntity.setFields(complexConditionFormObject.getFields());
         complexConditionEntity.setForm(findFormEntityFromFormObject(complexConditionFormObject));
         complexConditionEntity.setOperatorType(findOperatorTypeFromFormObject(complexConditionFormObject));
         complexConditionEntity.setIndicators(findIndicatorsFromFormObject(complexConditionFormObject));

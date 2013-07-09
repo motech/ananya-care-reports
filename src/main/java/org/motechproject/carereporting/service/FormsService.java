@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service;
 
+import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 
 import java.util.Set;
@@ -19,6 +20,8 @@ public interface FormsService {
    Set<String> getTables();
 
    Set<String> getTableColumns(String tableName);
+
+   Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity);
 
    String getForeignKeyForTable(String tableName);
 }

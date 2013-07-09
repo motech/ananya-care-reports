@@ -12,7 +12,7 @@
                             <ul class="unstyled">
                                 <li ng-repeat="item in users">
                                     <input id="indicatorOwner_{{item.id}}" type="checkbox" ng-model="selectedOwners[item.id]" value="{{item.id}}" ng-click="validateOwners()" />
-                                    <label class="inline" for="indicatorOwner_{{item.id}}">{{item.username}}</label>
+                                    <label class="inline" for="indicatorOwner_{{item.id}}">{{item.firstName}} {{item.lastName}}</label>
                                 </li>
                             </ul>
                         </div>
@@ -98,7 +98,7 @@
                     <tbody>
                         <tr ng-repeat="(key, item) in complexConditions">
                             <td class="span9">
-                                <span>{{item.operatorType.name+' &quot;'+item.field+'&quot; from &quot;'+item.form.displayName+'&quot; where '+item.comparisonSymbol.name+' '+item.comparisonValue}}</span>
+                                <span>{{item.id}}</span>
                             </td>
                             <td class="span3">
                                 <button class="span12 btn" ng-click="removeComplexCondition(key)">{{msg('remove')}}</button>
@@ -107,11 +107,11 @@
                     </tbody>
                 </table>
                 <label for="complexConditionsAdd">{{msg('indicators.form.complexConditions.list.label')}}:</label>
-                <select id="complexConditionsAdd" ng-model="selectedComplexCondition" ng-options="key as item.operatorType.name+' &quot;'+item.field+'&quot; from &quot;'+item.form.displayName+'&quot; where '+item.comparisonSymbol.name+' '+item.comparisonValue for (key, item) in listComplexConditions" class="input-block-level"></select>
+                <select id="complexConditionsAdd" ng-model="selectedComplexCondition" ng-options="key as item.id for (key, item) in listComplexConditions" class="input-block-level"></select>
                 <div class="text-right">
                     <button class="btn float-left" ng-click="launchDialog()">{{msg('indicators.form.createNewComplexCondition')}}</button>
                     <button class="btn" ng-click="addComplexCondition()" ng-disabled="addDimensionDisabled">{{msg('indicators.form.addDimension')}}</button>
-                    <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !conditionsValid || !typeValid">{{msg('indicators.form.submit')}}</button>
+                    <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !conditionsValid || !typeValid">{{msg('save')}}</button>
                 </div>
             </div>
         </div>

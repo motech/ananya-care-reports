@@ -7,6 +7,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -22,26 +23,28 @@ import java.util.Set;
 public class ComplexConditionEntity extends AbstractEntity {
 
     @NotNull
-    @Column(name = "field")
-    private String field;
+    @ManyToMany
+    @JoinTable(name = "complex_condition_field", joinColumns = { @JoinColumn(name = "complex_condition_id") },
+            inverseJoinColumns = { @JoinColumn(name = "field_id") })
+    private Set<FieldEntity> fields;
 
     @NotNull
-    @Column(name = "comparison_value")
+    @Column(name = "comparison_value", nullable = false)
     private BigDecimal comparisonValue;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "operator_type_id")
+    @JoinColumn(name = "operator_type_id", nullable = false)
     private OperatorTypeEntity operatorType;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "form_id")
+    @JoinColumn(name = "form_id", nullable = false)
     private FormEntity form;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "comparison_symbol_id")
+    @JoinColumn(name = "comparison_symbol_id", nullable = false)
     private ComparisonSymbolEntity comparisonSymbol;
 
     @ManyToMany(mappedBy = "complexConditions")
@@ -51,10 +54,10 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     }
 
-    public ComplexConditionEntity(String field, BigDecimal comparisonValue,
+    public ComplexConditionEntity(Set<FieldEntity> fields, BigDecimal comparisonValue,
             OperatorTypeEntity operatorType, FormEntity form,
             ComparisonSymbolEntity comparisonSymbol, Set<IndicatorEntity> indicators) {
-        this.field = field;
+        this.fields = fields;
         this.comparisonValue = comparisonValue;
         this.operatorType = operatorType;
         this.form = form;
@@ -62,12 +65,13 @@ public class ComplexConditionEntity extends AbstractEntity {
         this.indicators = indicators;
     }
 
-    public String getField() {
-        return field;
+    @JsonIgnore
+    public Set<FieldEntity> getFields() {
+        return fields;
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setFields(Set<FieldEntity> fields) {
+        this.fields = fields;
     }
 
     public BigDecimal getComparisonValue() {

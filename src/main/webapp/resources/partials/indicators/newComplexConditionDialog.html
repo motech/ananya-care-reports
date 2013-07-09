@@ -1,0 +1,41 @@
+<div ng:init="$root.pageTitle = title"></div>
+
+<form id="createComplexConditionForm" name="createForm" novalidate>
+<div class="modal-header">
+    <h3>Create New Condition</h3>
+</div>
+<div class="modal-body">
+    <label for="operatorType">{{msg('indicators.complexConditionDialog.label.operatorType')}}:</label>
+    <select id="operatorType" ng-model="newCondition.operatorType" ng-options="item.id as item.name for item in listOperatorTypes" class="input-block-level" required></select>
+    <label for="form">{{msg('indicators.complexConditionDialog.label.form')}}:</label>
+    <select id="form" ng-model="newCondition.form" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
+    <div class="well">
+        <table class="table table-highlight span12">
+            <thead>
+                <th colspan="2">{{msg('indicators.complexConditionDialog.fieldsHeader')}}:</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(key, item) in newCondition.fields | orderBy:'+item.name'">
+                    <td class="span9">
+                        {{item.name}}
+                    </td>
+                    <td class="span3">
+                        <button class="btn" ng-click="removeField(item.id)">{{msg('remove')}}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <label for="field">{{msg('indicators.complexConditionDialog.label.calculateBy')}}:</label>
+        <select id="field" type="text" ng-model="selectedField" ng-options="item.id as item.name for item in listFields" class="input-block-level"></select>
+        <button class="btn btn-primary" ng-click="addField()" ng-disabled="listFields.length <= 0">{{msg('indicators.complexConditionDialog.button.addField')}}</button>
+    </div>
+    <label for="comparisonSymbol">{{msg('indicators.complexConditionDialog.label.comparisonSymbol')}}:</label>
+    <select id="comparisonSymbol" ng-model="newCondition.comparisonSymbol" ng-options="item.id as item.name for item in listComparisonSymbols" class="input-block-level" required></select>
+    <label for="comparisonValue">{{msg('indicators.complexConditionDialog.label.comparisonValue')}}:</label>
+    <input id="comparisonValue" type="number" ng-model="newCondition.comparisonValue" required />
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="saveNewComplexCondition();dismiss()" ng-disabled="createForm.$invalid || newCondition.fields.length <= 0">{{msg('save')}}</button>
+    <button class="btn" ng-click="dismiss()">{{msg('cancel')}}</button>
+</div>
+</form>

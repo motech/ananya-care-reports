@@ -7,6 +7,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -29,6 +30,9 @@ public class FormEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private Set<ComplexConditionEntity> complexConditions;
+
+    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
+    private Set<FieldEntity> fields;
 
     public String getTableName() {
         return tableName;
@@ -53,5 +57,13 @@ public class FormEntity extends AbstractEntity {
 
     public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
         this.complexConditions = complexConditions;
+    }
+
+    public Set<FieldEntity> getFields() {
+        return fields;
+    }
+
+    public void setFields(Set<FieldEntity> fields) {
+        this.fields = fields;
     }
 }

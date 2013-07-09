@@ -59,16 +59,6 @@ public class FormsController {
         return formsService.getTables();
     }
 
-    @RequestMapping(value = "/{formId}/fields", method = RequestMethod.GET,
-            produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Set<String> getTableFields(@PathVariable Integer formId) {
-        FormEntity formEntity = formsService.findFormById(formId);
-
-        return formsService.getTableColumns(formEntity.getTableName());
-    }
-
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public void addForm(@RequestBody @Valid FormEntity form, BindingResult result) {

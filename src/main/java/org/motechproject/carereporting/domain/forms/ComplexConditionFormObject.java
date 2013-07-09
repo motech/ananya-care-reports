@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.domain.forms;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.FieldEntity;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,8 +14,7 @@ public class ComplexConditionFormObject implements Serializable {
     private Integer id;
 
     @NotNull
-    @NotEmpty
-    private String field;
+    private Set<FieldEntity> fields;
 
     @NotNull
     private BigDecimal comparisonValue;
@@ -35,10 +34,10 @@ public class ComplexConditionFormObject implements Serializable {
 
     }
 
-    public ComplexConditionFormObject(String field, BigDecimal comparisonValue,
+    public ComplexConditionFormObject(Set<FieldEntity> fields, BigDecimal comparisonValue,
             Integer operatorType, Integer form,
             Integer comparisonSymbol, Set<Integer> indicators) {
-        this.field = field;
+        this.fields = fields;
         this.comparisonValue = comparisonValue;
         this.operatorType = operatorType;
         this.form = form;
@@ -46,8 +45,8 @@ public class ComplexConditionFormObject implements Serializable {
         this.indicators = indicators;
     }
 
-    public String getField() {
-        return field;
+    public Set<FieldEntity> getFields() {
+        return fields;
     }
 
     public BigDecimal getComparisonValue() {
