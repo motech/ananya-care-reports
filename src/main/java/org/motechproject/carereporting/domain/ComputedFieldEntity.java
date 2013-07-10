@@ -1,12 +1,17 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.motechproject.carereporting.enums.FieldType;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,6 +29,16 @@ public class ComputedFieldEntity extends AbstractEntity {
     private String name;
 
     @NotNull
+    @Column(name = "type", columnDefinition = "character varying", length = 100)
+    @Enumerated(value = EnumType.STRING)
+    private FieldType type;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "form_id")
+    private FormEntity form;
+
+    @NotNull
     @OneToMany(mappedBy = "computedField", cascade = CascadeType.PERSIST)
     private Set<FieldOperationEntity> fieldOperations;
 
@@ -39,6 +54,23 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public FieldType getType() {
+        return type;
+    }
+
+    public void setType(FieldType type) {
+        this.type = type;
+    }
+
+    @JsonIgnore
+    public FormEntity getForm() {
+        return form;
+    }
+
+    public void setForm(FormEntity form) {
+        this.form = form;
     }
 
     public Set<FieldOperationEntity> getFieldOperations() {

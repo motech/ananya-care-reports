@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -25,6 +27,9 @@ public class FormEntity extends AbstractEntity {
     @Column (name = "display_name")
     private String displayName;
 
+    @OneToMany(mappedBy = "form", fetch = FetchType.LAZY)
+    private Set<ComputedFieldEntity> computedFields;
+
     @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
     private Set<FieldEntity> fields;
 
@@ -42,6 +47,15 @@ public class FormEntity extends AbstractEntity {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    @JsonIgnore
+    public Set<ComputedFieldEntity> getComputedFields() {
+        return computedFields;
+    }
+
+    public void setComputedFields(Set<ComputedFieldEntity> computedFields) {
+        this.computedFields = computedFields;
     }
 
     public Set<FieldEntity> getFields() {

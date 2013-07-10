@@ -268,10 +268,15 @@ CREATE TABLE IF NOT EXISTS reporting.role_permission(
 -- object: reporting.computed_field | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.computed_field(
 	computed_field_id serial NOT NULL,
-	name character varying NOT NULL,
+	form_id integer NOT NULL,
+	name character varying(100) NOT NULL,
+	type character varying(50) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT computed_field_pk PRIMARY KEY (computed_field_id),
+    CONSTRAINT computed_field_form_id_fk FOREIGN KEY (form_id)
+	REFERENCES reporting.form (form_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT computed_field_name_uk UNIQUE (name)
 );
 -- ddl-end --
