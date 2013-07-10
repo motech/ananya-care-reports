@@ -8,6 +8,7 @@ import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
@@ -17,6 +18,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
+import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
@@ -51,6 +53,9 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
     @Autowired
     private ComplexConditionService complexConditionService;
+
+    @Autowired
+    private ComputedFieldService computedFieldService;
 
     @Autowired
     private DashboardService dashboardService;
@@ -124,6 +129,48 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         indicatorDao.save(indicatorEntity);
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
+
+        IndicatorEntity indicatorEntity = new IndicatorEntity(
+                findIndicatorTypeEntityFromFormObject(indicatorFormObject),
+                findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject),
+                findAreaEntityFromFormObject(indicatorFormObject),
+                findUserEntitiesFromFormObject(indicatorFormObject),
+                findComputedFieldEntityFromFormObject(indicatorFormObject),
+                findComplexConditionEntityFromFormObject(indicatorFormObject),
+                findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
+                indicatorFormObject.getFrequency(),
+                indicatorFormObject.getName());
+
+        indicatorDao.save(indicatorEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateIndicator(IndicatorEntity indicatorEntity) {
+        indicatorDao.update(indicatorEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
+        IndicatorEntity indicatorEntity = this.findIndicatorById(indicatorFormObject.getId());
+
+        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setArea(findAreaEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setOwners(findUserEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setComputedField(findComputedFieldEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setComplexCondition(findComplexConditionEntityFromFormObject(indicatorFormObject));
+        indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
+        indicatorEntity.setName(indicatorFormObject.getName());
+
+        indicatorDao.update(indicatorEntity);
+    }
+
     private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
         return findIndicatorTypeById(indicatorFormObject.getIndicatorType());
     }
@@ -157,18 +204,14 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         return userEntities;
     }
 
-    private Set<ComplexConditionEntity> findComplexConditionEntitiesFromFormObject(
+    private ComputedFieldEntity findComputedFieldEntityFromFormObject(
             IndicatorFormObject indicatorFormObject) {
-        Set<ComplexConditionEntity> complexConditionEntities = new LinkedHashSet<>();
+        return computedFieldService.findComputedFieldById(indicatorFormObject.getComputedField());
+    }
 
-        for (Integer complexConditionId : indicatorFormObject.getComplexConditions()) {
-            ComplexConditionEntity complexConditionEntity = complexConditionService
-                    .findComplexConditionById(complexConditionId);
-
-            complexConditionEntities.add(complexConditionEntity);
-        }
-
-        return complexConditionEntities;
+    private ComplexConditionEntity findComplexConditionEntityFromFormObject(
+            IndicatorFormObject indicatorFormObject) {
+        return complexConditionService.findComplexConditionById(indicatorFormObject.getComplexCondition());
     }
 
     private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromFormObject(
@@ -182,46 +225,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         }
 
         return indicatorValueEntities;
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
-
-        IndicatorEntity indicatorEntity = new IndicatorEntity(
-                findIndicatorTypeEntityFromFormObject(indicatorFormObject),
-                findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject),
-                findAreaEntityFromFormObject(indicatorFormObject),
-                findUserEntitiesFromFormObject(indicatorFormObject),
-                findComplexConditionEntitiesFromFormObject(indicatorFormObject),
-                findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
-                indicatorFormObject.getFrequency(),
-                indicatorFormObject.getName());
-
-        indicatorDao.save(indicatorEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void updateIndicator(IndicatorEntity indicatorEntity) {
-        indicatorDao.update(indicatorEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
-        IndicatorEntity indicatorEntity = this.findIndicatorById(indicatorFormObject.getId());
-
-        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setArea(findAreaEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setOwners(findUserEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setComplexConditions(findComplexConditionEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
-        indicatorEntity.setName(indicatorFormObject.getName());
-
-        indicatorDao.update(indicatorEntity);
     }
 
     @Transactional(readOnly = false)

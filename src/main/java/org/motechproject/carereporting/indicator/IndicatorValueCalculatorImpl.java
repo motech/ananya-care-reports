@@ -1,28 +1,12 @@
 package org.motechproject.carereporting.indicator;
 
-import org.apache.log4j.Logger;
-import org.motechproject.carereporting.domain.AreaEntity;
-import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.IndicatorValueEntity;
-import org.motechproject.carereporting.service.AreaService;
-import org.motechproject.carereporting.service.IndicatorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
 
 @Component
 @Transactional
 public class IndicatorValueCalculatorImpl implements IndicatorValueCalculator {
-
+/*
     @Autowired
     private IndicatorService indicatorService;
 
@@ -47,6 +31,8 @@ public class IndicatorValueCalculatorImpl implements IndicatorValueCalculator {
         }
         return calculatedIndicatorsCount;
     }
+
+    // TODO: Adapt this methods to new entities
 
     private void calculateAndPersistIndicatorValues(IndicatorEntity indicator) {
         for (ComplexConditionEntity complexCondition: indicator.getComplexConditions()) {
@@ -88,5 +74,5 @@ public class IndicatorValueCalculatorImpl implements IndicatorValueCalculator {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         return jdbcTemplate.queryForObject(query.toString(), parameters, BigDecimal.class);
     }
-
+*/
 }

@@ -27,7 +27,9 @@ public class IndicatorFormObject implements Serializable {
     @NotNull
     private Set<Integer> owners;
 
-    private Set<Integer> complexConditions;
+    private Integer computedField;
+
+    private Integer complexCondition;
 
     private Set<Integer> values;
 
@@ -44,14 +46,15 @@ public class IndicatorFormObject implements Serializable {
     }
 
     public IndicatorFormObject(final Integer indicatorType, final Set<Integer> categories,
-            final Integer area, final Set<Integer> owners, final Set<Integer> complexConditions,
-            final Set<Integer> values, final Integer frequency,
+            final Integer area, final Set<Integer> owners, final Integer computedField,
+            final Integer complexCondition, final Set<Integer> values, final Integer frequency,
             final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;
         this.owners = owners;
-        this.complexConditions = complexConditions;
+        this.computedField = computedField;
+        this.complexCondition = complexCondition;
         this.values = values;
         this.frequency = frequency;
         this.name = name;
@@ -81,8 +84,12 @@ public class IndicatorFormObject implements Serializable {
         return owners;
     }
 
-    public Set<Integer> getComplexConditions() {
-        return complexConditions;
+    public Integer getComputedField() {
+        return computedField;
+    }
+
+    public Integer getComplexCondition() {
+        return complexCondition;
     }
 
     public Set<Integer> getValues() {

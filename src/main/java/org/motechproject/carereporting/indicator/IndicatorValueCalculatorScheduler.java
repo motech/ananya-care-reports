@@ -1,14 +1,11 @@
 package org.motechproject.carereporting.indicator;
 
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class IndicatorValueCalculatorScheduler {
 
-    private static final Logger LOG = Logger.getLogger(IndicatorValueCalculatorScheduler.class);
+    /*private static final Logger LOG = Logger.getLogger(IndicatorValueCalculatorScheduler.class);
 
     @Autowired
     private IndicatorValueCalculator indicatorValueCalculator;
@@ -21,5 +18,5 @@ public class IndicatorValueCalculatorScheduler {
 
         LOG.info("Scheduled indicator values calculation finished [total indicators values calculated = "
                 + totalIndicatorValuesCalculated + "].");
-    }
+    }*/
 }

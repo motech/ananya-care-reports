@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -39,6 +40,9 @@ public class DashboardEntity extends AbstractEntity {
     @NotNull
     @Column(name = "tab_position", unique = true)
     private Short tabPosition;
+
+    @OneToOne(mappedBy = "dashboard")
+    private IndicatorCategoryEntity indicatorCategory;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -70,6 +74,14 @@ public class DashboardEntity extends AbstractEntity {
 
     public void setTabPosition(Short tabPosition) {
         this.tabPosition = tabPosition;
+    }
+
+    public IndicatorCategoryEntity getIndicatorCategory() {
+        return indicatorCategory;
+    }
+
+    public void setIndicatorCategory(IndicatorCategoryEntity indicatorCategory) {
+        this.indicatorCategory = indicatorCategory;
     }
 
     @JsonIgnore

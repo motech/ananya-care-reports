@@ -24,7 +24,7 @@ public class OperatorTypeEntity extends AbstractEntity {
     private String name;
 
     @OneToMany(mappedBy = "operatorType", cascade = CascadeType.ALL)
-    private Set<ComplexConditionEntity> complexConditions;
+    private Set<FieldOperationEntity> fieldOperations;
 
     public OperatorTypeEntity() {
 
@@ -43,11 +43,11 @@ public class OperatorTypeEntity extends AbstractEntity {
     }
 
     @JsonIgnore
-    public Set<ComplexConditionEntity> getComplexConditions() {
-        return complexConditions;
+    public Set<FieldOperationEntity> getFieldOperations() {
+        return fieldOperations;
     }
 
-    public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
-        this.complexConditions = complexConditions;
+    public void setFieldOperations(Set<FieldOperationEntity> fieldOperations) {
+        this.fieldOperations = fieldOperations;
     }
 }

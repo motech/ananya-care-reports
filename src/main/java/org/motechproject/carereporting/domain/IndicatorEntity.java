@@ -44,16 +44,20 @@ public class IndicatorEntity extends AbstractEntity {
     private AreaEntity area;
 
     @NotNull
+    @ManyToOne
+    @JoinColumn(name = "computed_field_id")
+    private ComputedFieldEntity computedField;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "complex_condition_id")
+    private ComplexConditionEntity complexCondition;
+
+    @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<UserEntity> owners;
-
-    @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "indicator_complex_condition", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
-            inverseJoinColumns = { @JoinColumn(name = "complex_condition_id") })
-    private Set<ComplexConditionEntity> complexConditions;
 
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
     private Set<IndicatorValueEntity> values;
@@ -75,14 +79,16 @@ public class IndicatorEntity extends AbstractEntity {
         this.id = id;
     }
 
-    public IndicatorEntity(final IndicatorTypeEntity indicatorType, final Set<IndicatorCategoryEntity> categories,
-            final AreaEntity area, final Set<UserEntity> owners, final Set<ComplexConditionEntity> complexConditions,
-            final Set<IndicatorValueEntity> values, final Integer frequency, final String name) {
+    public IndicatorEntity(IndicatorTypeEntity indicatorType, Set<IndicatorCategoryEntity> categories,
+                           AreaEntity area, Set<UserEntity> owners, ComputedFieldEntity computedField,
+                           ComplexConditionEntity complexCondition, Set<IndicatorValueEntity> values,
+                           Integer frequency, String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;
         this.owners = owners;
-        this.complexConditions = complexConditions;
+        this.computedField = computedField;
+        this.complexCondition = complexCondition;
         this.values = values;
         this.frequency = frequency;
         this.name = name;
@@ -112,6 +118,23 @@ public class IndicatorEntity extends AbstractEntity {
         this.area = area;
     }
 
+    public ComputedFieldEntity getComputedField() {
+        return computedField;
+    }
+
+    public void setComputedField(ComputedFieldEntity computedField) {
+        this.computedField = computedField;
+    }
+
+    @JsonIgnore
+    public ComplexConditionEntity getComplexCondition() {
+        return complexCondition;
+    }
+
+    public void setComplexCondition(ComplexConditionEntity complexCondition) {
+        this.complexCondition = complexCondition;
+    }
+
     @JsonIgnore
     public Set<UserEntity> getOwners() {
         return owners;
@@ -119,14 +142,6 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setOwners(Set<UserEntity> owners) {
         this.owners = owners;
-    }
-
-    public Set<ComplexConditionEntity> getComplexConditions() {
-        return complexConditions;
-    }
-
-    public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
-        this.complexConditions = complexConditions;
     }
 
     @JsonIgnore

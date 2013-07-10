@@ -12,12 +12,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @Table(name = "field", uniqueConstraints = @UniqueConstraint(columnNames = { "form_id", "name" }))
@@ -40,9 +38,6 @@ public class FieldEntity extends AbstractEntity {
     @Column(name = "type", columnDefinition = "character varying", length = 50, nullable = false)
     @Enumerated(value = EnumType.STRING)
     private FieldType type;
-
-    @ManyToMany(mappedBy = "fields")
-    private Set<ComplexConditionEntity> conditions;
 
     public FieldEntity() {
 
@@ -73,12 +68,4 @@ public class FieldEntity extends AbstractEntity {
         this.type = type;
     }
 
-    @JsonIgnore
-    public Set<ComplexConditionEntity> getConditions() {
-        return conditions;
-    }
-
-    public void setConditions(Set<ComplexConditionEntity> conditions) {
-        this.conditions = conditions;
-    }
 }

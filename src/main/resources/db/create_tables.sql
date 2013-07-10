@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_type(
 -- object: reporting.indicator_category | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.indicator_category(
 	indicator_category_id serial NOT NULL,
+	dashboard_id integer NOT NULL,
 	name character varying(100) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
@@ -154,25 +155,30 @@ CREATE TABLE IF NOT EXISTS reporting.operator_type(
 
 -- ddl-end --
 
+-- object: reporting.condition | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.condition(
+	condition_id serial NOT NULL,
+	computed_field_id integer NOT NULL,
+	comparison_symbol_id integer NOT NULL,
+	value decimal(19,6) NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT condition_pk PRIMARY KEY (condition_id),
+    CONSTRAINT condition_comparison_symbol_id_fk FOREIGN KEY (comparison_symbol_id)
+    REFERENCES reporting.comparison_symbol (comparison_symbol_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT condition_uk UNIQUE (computed_field_id,comparison_symbol_id,value)
+);
+-- ddl-end --
+
 -- object: reporting.complex_condition | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.complex_condition(
 	complex_condition_id serial NOT NULL,
-	operator_type_id integer NOT NULL,
-	form_id integer NOT NULL,
-	comparison_symbol_id integer NOT NULL,
-	comparison_value decimal(19,2) NOT NULL,
+	name character varying(100) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT complex_condition_pk PRIMARY KEY (complex_condition_id),
-	CONSTRAINT complex_condition_operator_type_id FOREIGN KEY (operator_type_id)
-	REFERENCES reporting.operator_type (operator_type_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT complex_condition_form_id FOREIGN KEY (form_id)
-	REFERENCES reporting.form (form_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT complex_condition_comparison_symbol_id FOREIGN KEY (comparison_symbol_id)
-	REFERENCES reporting.comparison_symbol (comparison_symbol_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE
+	CONSTRAINT complex_condition_name_uk UNIQUE (name)
 );
 -- ddl-end --
 
@@ -259,11 +265,24 @@ CREATE TABLE IF NOT EXISTS reporting.role_permission(
 
 -- ddl-end --
 
+-- object: reporting.computed_field | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.computed_field(
+	computed_field_id serial NOT NULL,
+	name character varying NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT computed_field_pk PRIMARY KEY (computed_field_id),
+	CONSTRAINT computed_field_name_uk UNIQUE (name)
+);
+-- ddl-end --
+
 -- object: reporting.indicator | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.indicator(
 	indicator_id serial NOT NULL,
 	type_id integer NOT NULL,
 	area_id integer NOT NULL,
+	complex_condition_id integer,
+	computed_field_id integer NOT NULL,
 	frequency integer NOT NULL,
 	name character varying NOT NULL,
 	creation_date timestamp,
@@ -275,6 +294,12 @@ CREATE TABLE IF NOT EXISTS reporting.indicator(
 	CONSTRAINT indicator_area_id_fk FOREIGN KEY (area_id)
 	REFERENCES reporting.area (area_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT indicator_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
+    REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    CONSTRAINT indicator_computed_field_id_fk FOREIGN KEY (computed_field_id)
+    REFERENCES reporting.computed_field (computed_field_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_name_uk UNIQUE (name)
 );
 -- ddl-end --
@@ -305,11 +330,15 @@ CREATE TABLE IF NOT EXISTS reporting.report(
 -- object: reporting.dashboard | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.dashboard(
 	dashboard_id serial NOT NULL,
+	indicator_category_id integer,
 	name character varying(100) NOT NULL,
 	tab_position smallint NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT dashboard_pk PRIMARY KEY (dashboard_id),
+	CONSTRAINT dashboard_indicator_category_fk FOREIGN KEY (indicator_category_id)
+    REFERENCES reporting.indicator_category (indicator_category_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT dashboard_tab_position_uk UNIQUE (tab_position),
 	CONSTRAINT dashboard_name_uk UNIQUE (name)
 );
@@ -365,7 +394,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_value(
 	area_id integer NOT NULL,
 	condition_id integer NOT NULL,
 	date timestamp NOT NULL,
-	condition_value decimal(19,2) NOT NULL,
+	value decimal(19,6) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT indicator_value_pk PRIMARY KEY (indicator_value_id),
@@ -397,7 +426,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_indicator_category(
 );
 -- ddl-end --
 
--- object: reporting.indicator_indicator_category | type: TABLE --
+-- object: reporting.indicator_user | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.indicator_user(
 	indicator_id integer NOT NULL,
 	user_id integer NOT NULL,
@@ -411,21 +440,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_user(
 );
 -- ddl-end --
 
--- object: reporting.role_permission | type: TABLE --
-CREATE TABLE IF NOT EXISTS reporting.indicator_complex_condition(
-	indicator_id integer NOT NULL,
-	complex_condition_id integer NOT NULL,
-	CONSTRAINT indicator_complex_condition_indicator_id_fk FOREIGN KEY (indicator_id)
-	REFERENCES reporting.indicator (indicator_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_complex_condition_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
-	REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_complex_condition_uk UNIQUE (indicator_id,complex_condition_id)
-);
--- ddl-end --
-
--- object: reporting.complex_condition | type: TABLE --
+-- object: reporting.field | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.field(
 	field_id serial NOT NULL,
 	form_id integer NOT NULL,
@@ -441,7 +456,33 @@ CREATE TABLE IF NOT EXISTS reporting.field(
 );
 -- ddl-end --
 
--- object: reporting.role_permission | type: TABLE --
+-- object: reporting.field_operation | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.field_operation(
+	field_operation_id serial NOT NULL,
+	field_1_id integer NOT NULL,
+	field_2_id integer,
+	operator_type_id integer,
+	computed_field_id integer NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT field_operation_pk PRIMARY KEY (field_operation_id),
+	CONSTRAINT field_operation_field_1_id FOREIGN KEY (field_1_id)
+	REFERENCES reporting.field (field_id) MATCH FULL
+	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT field_operation_field_2_id FOREIGN KEY (field_2_id)
+    REFERENCES reporting.field (field_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    CONSTRAINT field_operation_operator_type_id FOREIGN KEY (operator_type_id)
+    REFERENCES reporting.operator_type (operator_type_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    CONSTRAINT field_operation_computed_field_id FOREIGN KEY (computed_field_id)
+    REFERENCES reporting.computed_field (computed_field_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT field_operation_uk UNIQUE (field_1_id,field_2_id,operator_type_id,computed_field_id)
+);
+-- ddl-end --
+
+-- object: reporting.complex_condition_field | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.complex_condition_field(
 	complex_condition_id integer NOT NULL,
 	field_id integer NOT NULL,
@@ -454,3 +495,14 @@ CREATE TABLE IF NOT EXISTS reporting.complex_condition_field(
 	CONSTRAINT complex_condition_field_uk UNIQUE (complex_condition_id,field_id)
 );
 -- ddl-end -
+
+-- CONSTRAINTS --
+ALTER TABLE reporting.indicator_category
+    ADD CONSTRAINT indicator_category_dashboard_id_fk FOREIGN KEY (dashboard_id)
+    REFERENCES reporting.dashboard (dashboard_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
+
+ALTER TABLE reporting.condition
+    ADD CONSTRAINT condition_computed_field_id_fk FOREIGN KEY (computed_field_id)
+    REFERENCES reporting.computed_field (computed_field_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
