@@ -50,6 +50,11 @@ public class DashboardEntity extends AbstractEntity {
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<UserEntity> owners;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "report_dashboard", joinColumns = { @JoinColumn(name = "dashboard_id") },
+            inverseJoinColumns = { @JoinColumn(name = "report_id") })
+    private Set<ReportEntity> reports;
+
     public DashboardEntity() {
 
     }
@@ -58,6 +63,14 @@ public class DashboardEntity extends AbstractEntity {
         this.name = name;
         this.tabPosition = tabPosition;
         this.owners = owners;
+    }
+
+    public Set<ReportEntity> getReports() {
+        return reports;
+    }
+
+    public void setReports(Set<ReportEntity> reports) {
+        this.reports = reports;
     }
 
     public String getName() {

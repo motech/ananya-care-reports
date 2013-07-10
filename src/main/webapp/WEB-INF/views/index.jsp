@@ -38,6 +38,10 @@
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>
     <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
+    <script src="resources/lib/flotr2.min.js"></script>
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="resources/lib/flashcanvas.js"></script>
+    <![endif]-->
 </head>
 <body>
     <div class="navbar" bs-navbar>
