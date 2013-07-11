@@ -86,7 +86,7 @@
                     </tbody>
                 </table>
                 <label for="category">{{msg('indicators.form.classifiedAs')}}: </label>
-                <select id="category" ng-model="selectedCategory" ng-options="key as item.name for (key, item) in listCategories | orderBy:'name'" class="input-block-level"></select>
+                <select id="category" ng-model="selectedCategory" ng-options="key as item.name for (key, item) in listCategories" class="input-block-level"></select>
                 <div class="text-right">
                     <button class="btn" ng-click="addCategory()" ng-disabled="addCategoryDisabled">{{msg('indicators.form.addCategory')}}</button>
                 </div>

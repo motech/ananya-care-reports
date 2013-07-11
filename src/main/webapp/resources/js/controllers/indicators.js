@@ -273,6 +273,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
                     if (Object.keys($scope.listCategories).length <= 0) {
                         $scope.addCategoryDisabled = true;
+                    } else {
+                        $scope.selectedCategory = "0";
                     }
                 }
             }
@@ -281,6 +283,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
     $scope.removeCategory = function(index) {
         $scope.listCategories.push($scope.categories[index]);
+        $scope.listCategories.sortByName();
+        $scope.selectedCategory = "0";
         $scope.categories.splice(index, 1);
         $scope.addCategoryDisabled = false;
 
@@ -643,9 +647,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
             method: "POST",
             data: $scope.newField,
             headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
-                //
-            }).error(function() {
+        }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotCreateNewComputedField'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
