@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.enums.FieldType;
 
 import javax.persistence.AttributeOverride;
@@ -25,6 +26,7 @@ import java.util.Set;
 public class ComputedFieldEntity extends AbstractEntity {
 
     @NotNull
+    @NotEmpty
     @Column(name = "name")
     private String name;
 
@@ -39,7 +41,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     private FormEntity form;
 
     @NotNull
-    @OneToMany(mappedBy = "computedField", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "computedField", cascade = CascadeType.ALL)
     private Set<FieldOperationEntity> fieldOperations;
 
     @OneToMany(mappedBy = "computedField")
@@ -47,6 +49,24 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "computedField")
     private Set<IndicatorEntity> indicators;
+
+    public ComputedFieldEntity() {
+
+    }
+
+    public ComputedFieldEntity(final String name, final FieldType type, final FormEntity form,
+            final Set<FieldOperationEntity> fieldOperations) {
+        this.name = name;
+        this.type = type;
+        this.form = form;
+        this.fieldOperations = fieldOperations;
+
+        for (FieldOperationEntity fieldOperationEntity : fieldOperations) {
+            if (fieldOperationEntity.getComputedField() == null) {
+                fieldOperationEntity.setComputedField(this);
+            }
+        }
+    }
 
     public String getName() {
         return name;

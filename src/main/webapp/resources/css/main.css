@@ -78,10 +78,6 @@ form#indicatorForm div#formButtons {
     background-color: #eeeeee;
 }
 
-.float-left {
-    float: left;
-}
-
 .popover {
     max-width: none;
 }

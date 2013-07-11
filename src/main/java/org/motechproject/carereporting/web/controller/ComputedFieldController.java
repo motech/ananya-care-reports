@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.forms.ComputedFieldFormObject;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,12 @@ public class ComputedFieldController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewComputedField(@RequestBody @Valid ComputedFieldEntity computedFieldEntity,
+    public void createNewComputedField(@RequestBody @Valid ComputedFieldFormObject computedFieldFormObject,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        computedFieldService.createNewComputedField(computedFieldEntity);
+        computedFieldService.createNewComputedFieldFromFormObject(computedFieldFormObject);
     }
 }

@@ -64,11 +64,12 @@ public class FormEntityInitializer {
             Set<FieldOperationEntity> fieldOperationEntities = new LinkedHashSet<>();
             fieldOperationEntities.add(new FieldOperationEntity(fieldEntity));
 
-            ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity();
-            computedFieldEntity.setName(fieldEntity.getName());
-            computedFieldEntity.setType(fieldEntity.getType());
-            computedFieldEntity.setForm(formEntity);
-            computedFieldEntity.setFieldOperations(fieldOperationEntities);
+            ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity(
+                    fieldEntity.getName(),
+                    fieldEntity.getType(),
+                    fieldEntity.getForm(),
+                    fieldOperationEntities
+            );
 
             computedFieldService.createNewComputedField(computedFieldEntity);
         }

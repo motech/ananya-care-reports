@@ -1,16 +1,16 @@
 package org.motechproject.carereporting.enums;
 
 public enum FieldType {
-    Integer, Numeric, SmallInt, Boolean, String, Date, Timestamp;
+    Number, Boolean, String, Date, Timestamp;
 
     public static FieldType getValueOf(String value) {
         switch (value) {
             case "integer":
-                return Integer;
-            case "numeric":
-                return Numeric;
+                return Number;
             case "smallint":
-                return SmallInt;
+                return Number;
+            case "numeric":
+                return Number;
             case "boolean":
                 return Boolean;
             case "character varying":

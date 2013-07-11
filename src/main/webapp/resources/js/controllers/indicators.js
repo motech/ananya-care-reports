@@ -45,7 +45,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     };
 });
 
-care.controller('createIndicatorController', function($scope, $http, $modal, $dialog, $filter, $location) {
+care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location) {
     $scope.title = $scope.msg('indicators.title');
 
     $scope.addCategoryDisabled = true;
@@ -396,6 +396,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
                 $scope.listForms = forms;
 
                 if (Object.keys($scope.listForms).length > 0) {
+                    $scope.selectedForm = $scope.listForms[0].id;
                     $scope.newCondition.form = $scope.listForms[0].id;
                     $scope.listFields = $scope.listForms[0].fields;
                 }
@@ -403,6 +404,7 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadFormList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
+    $scope.fetchForms();
 
     $scope.fetchComparisonSymbols = function() {
         $http.get('api/complexcondition/comparisonsymbol')
@@ -438,7 +440,6 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
 
     $scope.launchDialog = function() {
         $scope.fetchOperatorTypes();
-        $scope.fetchForms();
         $scope.fetchComparisonSymbols();
 
         var dialog = $modal({
@@ -508,4 +509,144 @@ care.controller('createIndicatorController', function($scope, $http, $modal, $di
         $scope.newCondition.fields = [];
         $scope.fetchFields();
     });
+
+    $scope.launchComputedFieldDialog = function() {
+        $rootScope.indicatorScope = $scope;
+
+        var dialog = $modal({
+            template: "resources/partials/indicators/newComputedFieldDialog.html",
+            persist: true,
+            show: true,
+            backdrop: "static"
+        });
+    };
+});
+
+care.controller('createComputedFieldController', function($rootScope, $scope, $http, $dialog) {
+    var indicatorScope = $rootScope.indicatorScope;
+    delete $rootScope.indicatorScope;
+
+    $scope.listOperators = [];
+    $scope.listFields = [];
+    $scope.selectedFields = [];
+    $scope.newField = {};
+    $scope.newField.type = "Number";
+
+    $scope.filterFieldsByNumberType = function(fieldList) {
+        var filteredFields = [];
+
+        for (var i = 0; i < fieldList.length; i++) {
+            if (fieldList[i].type === $scope.newField.type) {
+                filteredFields.push(fieldList[i]);
+            }
+        }
+
+        return filteredFields;
+    };
+
+    $scope.fetchOperators = function() {
+        $http.get('api/complexcondition/operatortype')
+            .success(function(operators) {
+                operators.sortByName();
+                $scope.listOperators = operators;
+
+                if (Object.keys($scope.listOperators).length > 0) {
+                    $scope.selectedOperator = $scope.listOperators[0];
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotLoadOperatorList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+    $scope.fetchOperators();
+
+    $scope.fetchFields = function() {
+        $http.get('api/forms/' + indicatorScope.selectedForm)
+            .success(function(form) {
+                form.fields.sortByName();
+                $scope.listFields = $scope.filterFieldsByNumberType(form.fields);
+
+                if (Object.keys($scope.listFields).length > 0) {
+                    $scope.selectedField = $scope.listFields[0].id;
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotLoadFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+    $scope.fetchFields();
+
+    $scope.addField = function() {
+        if (!$scope.selectedField) {
+            return;
+        }
+
+        var index = -1;
+        for (var i = 0; i < $scope.listFields.length; i++) {
+            if ($scope.listFields[i].id == $scope.selectedField) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            var field = {
+                operator: ($scope.selectedFields.length > 0) ? $scope.selectedOperator : null,
+                field: $scope.listFields[index]
+            };
+
+            $scope.selectedFields.push(field);
+            $scope.listFields.splice(index, 1);
+            if (Object.keys($scope.listFields).length > 0) {
+                $scope.selectedField = $scope.listFields[0].id;
+            }
+        }
+    };
+
+    $scope.removeField = function(key) {
+        $scope.listFields.push($scope.selectedFields[key].field);
+        $scope.listFields.sortByName();
+        $scope.selectedField = $scope.listFields[0].id;
+
+        $scope.selectedFields.splice(key, 1);
+
+        if (key == 0 && Object.keys($scope.selectedFields).length > 0) {
+            $scope.selectedFields[0].operator = null;
+        }
+    };
+
+    $scope.createFieldOperations = function() {
+        var fields = $scope.selectedFields;
+        var fieldOperations = [];
+
+        for (var i = 0; i < $scope.selectedFields.length; i++) {
+            if (fieldOperations.length > 1 && i >= $scope.selectedFields.length - 1) {
+                break;
+            }
+
+            var fieldOperation = {
+                field1: fields[i].field,
+                field2: (i + 1 < $scope.selectedFields.length) ? fields[i + 1].field : null,
+                operatorType: (i + 1 < $scope.selectedFields.length) ? fields[i + 1].operator : null,
+            };
+
+            fieldOperations.push(fieldOperation);
+        }
+
+        return fieldOperations;
+    };
+
+    $scope.saveNewComputedField = function() {
+        $scope.newField.form = indicatorScope.selectedForm;
+        $scope.newField.fieldOperations = $scope.createFieldOperations();
+
+        $http({
+            url: "api/computedfields",
+            method: "POST",
+            data: $scope.newField,
+            headers: { 'Content-Type': 'application/json' }
+        }).success(function() {
+                //
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotCreateNewComputedField'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+        });
+    };
 });

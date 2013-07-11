@@ -2,11 +2,15 @@ package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.forms.ComputedFieldFormObject;
 import org.motechproject.carereporting.service.ComputedFieldService;
+import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Service
@@ -15,6 +19,9 @@ public class ComputedFieldServiceImpl extends AbstractService implements Compute
 
     @Autowired
     private ComputedFieldDao computedFieldDao;
+
+    @Autowired
+    private FormsService formsService;
 
     @Transactional
     @Override
@@ -32,5 +39,20 @@ public class ComputedFieldServiceImpl extends AbstractService implements Compute
     @Override
     public void createNewComputedField(ComputedFieldEntity computedFieldEntity) {
         computedFieldDao.save(computedFieldEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void createNewComputedFieldFromFormObject(ComputedFieldFormObject computedFieldFormObject) {
+        computedFieldDao.save(new ComputedFieldEntity(
+                computedFieldFormObject.getName(),
+                computedFieldFormObject.getType(),
+                findFormEntityFromFormObject(computedFieldFormObject),
+                new LinkedHashSet<>(computedFieldFormObject.getFieldOperations())
+        ));
+    }
+
+    private FormEntity findFormEntityFromFormObject(ComputedFieldFormObject computedFieldFormObject) {
+        return formsService.findFormById(computedFieldFormObject.getForm());
     }
 }

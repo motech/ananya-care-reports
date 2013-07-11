@@ -27,7 +27,6 @@ public class FieldOperationEntity extends AbstractEntity {
     @JoinColumn(name = "field_2_id")
     private FieldEntity field2;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
     private ComputedFieldEntity computedField;

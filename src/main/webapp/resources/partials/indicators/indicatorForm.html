@@ -66,6 +66,8 @@
                 <input id="name" type="text" ng-model="indicator.name" class="input-block-level" placeholder="{{msg('indicators.form.name.placeholder')}}" required />
                 <label for="indicatorType">{{msg('indicators.form.definedAs')}}: </label>
                 <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for (key, item) in listIndicatorTypes | orderBy:'name'" class="input-block-level"></select>
+                <label for="form">{{msg('indicators.form.selectForm')}}: </label>
+                <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for (key, item) in listForms | orderBy:'displayName'" class="input-block-level" required></select>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -108,8 +110,9 @@
                 </table>
                 <label for="complexConditionsAdd">{{msg('indicators.form.complexConditions.list.label')}}:</label>
                 <select id="complexConditionsAdd" ng-model="selectedComplexCondition" ng-options="key as item.id for (key, item) in listComplexConditions" class="input-block-level"></select>
-                <div class="text-right">
-                    <button class="btn float-left" ng-click="launchDialog()">{{msg('indicators.form.createNewComplexCondition')}}</button>
+                <div class="btn-group pull-right">
+                    <button class="btn" ng-click="launchDialog()">{{msg('indicators.form.createNewComplexCondition')}}</button>
+                    <button class="btn" ng-click="launchComputedFieldDialog()">{{msg('indicators.form.createNewComputedField')}}</button>
                     <button class="btn" ng-click="addComplexCondition()" ng-disabled="addDimensionDisabled">{{msg('indicators.form.addDimension')}}</button>
                     <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !conditionsValid || !typeValid">{{msg('save')}}</button>
                 </div>
