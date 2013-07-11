@@ -34,11 +34,6 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "area_id")
     private AreaEntity area;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "condition_id")
-    private ComplexConditionEntity condition;
-
     @Column(name = "value")
     private BigDecimal value;
 
@@ -47,11 +42,10 @@ public class IndicatorValueEntity extends AbstractEntity {
     }
 
     public IndicatorValueEntity(Date date, IndicatorEntity indicator, AreaEntity area,
-                                ComplexConditionEntity condition, BigDecimal conditionValue) {
+                                BigDecimal conditionValue) {
         this.date = date;
         this.indicator = indicator;
         this.area = area;
-        this.condition = condition;
         this.value = conditionValue;
     }
 
@@ -87,19 +81,6 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     public void setArea(AreaEntity area) {
         this.area = area;
-    }
-
-    @JsonIgnore
-    public ComplexConditionEntity getCondition() {
-        return condition;
-    }
-
-    public Integer getConditionId() {
-        return condition.getId();
-    }
-
-    public void setCondition(ComplexConditionEntity condition) {
-        this.condition = condition;
     }
 
     public BigDecimal getValue() {

@@ -118,4 +118,16 @@ public class ComputedFieldEntity extends AbstractEntity {
     public void setIndicators(Set<IndicatorEntity> indicators) {
         this.indicators = indicators;
     }
+
+    public boolean isRegularField() {
+        return  fieldOperations.size() == 1 &&
+                fieldOperations.iterator().next().getField2() == null;
+    }
+
+    public FieldEntity getRegularField() {
+        if (!isRegularField()) {
+            return null;
+        }
+        return fieldOperations.iterator().next().getField1();
+    }
 }

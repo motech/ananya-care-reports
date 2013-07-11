@@ -397,7 +397,6 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_value(
 	indicator_value_id serial NOT NULL,
 	indicator_id integer NOT NULL,
 	area_id integer NOT NULL,
-	condition_id integer NOT NULL,
 	date timestamp NOT NULL,
 	value decimal(19,6) NOT NULL,
 	creation_date timestamp,
@@ -408,9 +407,6 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_value(
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_value_area_id_fk FOREIGN KEY (area_id)
 	REFERENCES reporting.area (area_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT indicator_value_condition_id_fk FOREIGN KEY (condition_id)
-	REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE
 );
 -- ddl-end --
