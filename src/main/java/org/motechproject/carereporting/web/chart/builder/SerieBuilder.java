@@ -1,4 +1,6 @@
-package org.motechproject.carereporting.web.chart;
+package org.motechproject.carereporting.web.chart.builder;
+
+import org.motechproject.carereporting.web.chart.Serie;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;

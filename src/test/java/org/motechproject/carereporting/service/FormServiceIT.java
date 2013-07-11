@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
-public class FormServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private FormsService formsService;

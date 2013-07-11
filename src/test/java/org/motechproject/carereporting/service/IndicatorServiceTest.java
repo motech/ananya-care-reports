@@ -4,8 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.service.impl.IndicatorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -20,23 +24,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:testContext.xml")
-public class IndicatorServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
+@RunWith(MockitoJUnitRunner.class)
+public class IndicatorServiceTest {
 
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
 
-    @Autowired
-    private IndicatorService indicatorService;
+    @Mock
+    private IndicatorDao indicatorDao;
 
-    private IndicatorDao indicatorDao = mock(IndicatorDao.class);
+    @InjectMocks
+    private IndicatorService indicatorService = new IndicatorServiceImpl();
 
     private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
-
-    @Before
-    public void setup() {
-        indicatorService.setIndicatorDao(indicatorDao);
-    }
 
     @Test
     public void testCreateNewIndicator() {

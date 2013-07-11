@@ -1,10 +1,15 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.web.chart.builder.AxisBuilder;
+import org.motechproject.carereporting.web.chart.builder.BarsBuilder;
 import org.motechproject.carereporting.web.chart.Chart;
-import org.motechproject.carereporting.web.chart.ChartBuilder;
+import org.motechproject.carereporting.web.chart.builder.ChartBuilder;
+import org.motechproject.carereporting.web.chart.builder.GridBuilder;
+import org.motechproject.carereporting.web.chart.builder.LegendBuilder;
+import org.motechproject.carereporting.web.chart.builder.MouseBuilder;
+import org.motechproject.carereporting.web.chart.builder.PieBuilder;
 import org.motechproject.carereporting.web.chart.Serie;
-import org.motechproject.carereporting.web.chart.SerieBuilder;
-import org.motechproject.carereporting.web.chart.SettingsBuilder;
+import org.motechproject.carereporting.web.chart.builder.SerieBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -40,17 +45,11 @@ public class ChartController {
     }
 
     private Chart createLineChartData(Integer indicatorId) {
-
-        return new ChartBuilder()
-            .param("title", "% mothers migrated out after first PNC")
-            .param("HtmlText", false)
-            .param("xaxis", new SettingsBuilder()
-                    .param("minorTickFreq", 4))
-            .param("grid", new SettingsBuilder()
-                    .param("minorVerticalLines", true))
-            .param("legend", new SettingsBuilder()
-                    .param("position", "se")
-                    .param("backgroundColor", "#D2E8FF"))
+        return createTemplateChart("% mothers migrated out after first PNC")
+            .xAxis(new AxisBuilder()
+                    .minorTickFreq(4))
+            .grid(new GridBuilder()
+                    .minorVerticalLines(true))
             .serie(createRandomSerie("Area 1"))
             .serie(createRandomSerie("Area 2"))
             .build();
@@ -68,24 +67,17 @@ public class ChartController {
 
     private Chart createPieChartData(Integer indicatorId) {
         Random random = new Random();
-        return new ChartBuilder()
-            .param("title", "% frontline workers visiting as scheduled")
-            .param("HtmlText", false)
-            .param("grid", new SettingsBuilder()
-                    .param("verticalLines", false)
-                    .param("horizontalLines", false))
-            .param("xaxis", new SettingsBuilder()
-                    .param("showLabels", false))
-            .param("yaxis", new SettingsBuilder()
-                    .param("showLabels", false))
-            .param("pie", new SettingsBuilder()
-                    .param("show", true)
-                    .param("explode", 6))
-            .param("mouse", new SettingsBuilder()
-                    .param("track", true))
-            .param("legend", new SettingsBuilder()
-                    .param("position", "se")
-                    .param("backgroundColor", "#D2E8FF"))
+        return createTemplateChart("% frontline workers visiting as scheduled")
+            .grid(new GridBuilder()
+                    .verticalLines(false)
+                    .horizontalLines(false))
+            .xAxis(new AxisBuilder()
+                    .showLabels(false))
+            .yAxis(new AxisBuilder()
+                    .showLabels(false))
+            .pie(new PieBuilder()
+                    .show(true)
+                    .explode(6))
             .serie(new SerieBuilder()
                     .label("Visiting as scheduled")
                     .point(0, random.nextInt(4) + 1))
@@ -98,32 +90,36 @@ public class ChartController {
     private Chart createBarChartData(Integer indicatorId) {
         double barWidth = .5;
         Random random = new Random();
-        return new ChartBuilder()
-            .param("title", "% of actual contacts vs scheduled contacts in the continuum of care")
-            .param("HtmlText", false)
-            .param("bars", new SettingsBuilder()
-                    .param("show", true)
-                    .param("horizontal", true)
-                    .param("shadowSize", 0)
-                    .param("barWidth", barWidth))
-            .param("mouse", new SettingsBuilder()
-                    .param("track", true)
-                    .param("relative", true))
-            .param("xaxis", new SettingsBuilder()
-                    .param("min", 0)
-                    .param("autoScaleMargin", 1))
-            .param("legend", new SettingsBuilder()
-                    .param("position", "se")
-                    .param("backgroundColor", "#D2E8FF"))
+        return createTemplateChart("% of actual contacts vs scheduled contacts in the continuum of care")
+            .bars(new BarsBuilder()
+                    .show(true)
+                    .horizontal(true)
+                    .shadowSize(0)
+                    .barWidth(barWidth))
+            .xAxis(new AxisBuilder()
+                    .min(0)
+                    .autoScaleMargin(1))
             .serie(new SerieBuilder()
                     .label("Actual")
                     .point(random.nextInt(50) + 11, 1)
                     .point(random.nextInt(50) + 11, 3))
             .serie(new SerieBuilder()
                     .label("Scheduled")
-                    .point(random.nextInt(50) + 11, 1+barWidth)
-                    .point(random.nextInt(50) + 11, 3+barWidth))
+                    .point(random.nextInt(50) + 11, 1 + barWidth)
+                    .point(random.nextInt(50) + 11, 3 + barWidth))
             .build();
+    }
+
+    private ChartBuilder createTemplateChart(String title) {
+        return new ChartBuilder()
+            .title(title)
+            .htmlText(false)
+            .legend(new LegendBuilder()
+                .position("se")
+                .backgroundColor("#D2E8FF"))
+            .mouse(new MouseBuilder()
+                .track(true)
+                .relative(true));
     }
 
 }

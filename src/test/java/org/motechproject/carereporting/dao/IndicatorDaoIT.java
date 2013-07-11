@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
-public class IndicatorDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class IndicatorDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private IndicatorDao indicatorDao;
