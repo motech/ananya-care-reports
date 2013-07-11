@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS reporting.computed_field(
     CONSTRAINT computed_field_form_id_fk FOREIGN KEY (form_id)
 	REFERENCES reporting.form (form_id) MATCH FULL
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT computed_field_name_uk UNIQUE (name)
+	CONSTRAINT computed_field_name_uk UNIQUE (form_id,name)
 );
 -- ddl-end --
 

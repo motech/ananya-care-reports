@@ -36,6 +36,14 @@ public class FieldOperationEntity extends AbstractEntity {
     @JoinColumn(name = "operator_type_id", nullable = false)
     private OperatorTypeEntity operatorType;
 
+    public FieldOperationEntity() {
+
+    }
+
+    public FieldOperationEntity(FieldEntity field1) {
+        this.field1 = field1;
+    }
+
     public FieldEntity getField1() {
         return field1;
     }

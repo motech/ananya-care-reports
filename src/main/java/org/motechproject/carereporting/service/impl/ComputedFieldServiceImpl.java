@@ -28,6 +28,7 @@ public class ComputedFieldServiceImpl extends AbstractService implements Compute
         return computedFieldDao.findById(computedFieldId);
     }
 
+    @Transactional(readOnly = false)
     @Override
     public void createNewComputedField(ComputedFieldEntity computedFieldEntity) {
         computedFieldDao.save(computedFieldEntity);
