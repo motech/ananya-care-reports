@@ -48,7 +48,6 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location) {
     $scope.title = $scope.msg('indicators.title');
 
-    $scope.addCategoryDisabled = true;
     $scope.addDimensionDisabled = true;
 
     $scope.indicator = {};
@@ -61,6 +60,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.categoriesValid = false;
     $scope.newCondition = {};
     $scope.listFields = [];
+    $scope.listReportTypes = [];
+    $scope.reportTypes = [];
+    $scope.listCategories = [];
 
     $scope.fetchUsers = function() {
         $http.get('api/users/')
@@ -181,6 +183,48 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             });
     };
     $scope.fetchIndicatorTypes();
+
+    $scope.fetchReportTypes = function() {
+        $http.get('api/report/type')
+            .success(function(reportTypes) {
+                reportTypes.sortByName();
+                $scope.listReportTypes = reportTypes;
+
+                if (Object.keys($scope.listReportTypes).length > 0) {
+                    $scope.selectedReportType = "0";
+                    $scope.addReportTypeDisabled = false;
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadCategoryList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+    $scope.fetchReportTypes();
+
+    $scope.addReportType = function() {
+        if ($scope.selectedReportType != null) {
+            var reportType = $scope.listReportTypes[$scope.selectedReportType];
+
+            if (reportType != null) {
+                $scope.reportTypes.push(reportType);
+
+                var index = $scope.listReportTypes.indexOf(reportType);
+                if (index != -1) {
+                    $scope.listReportTypes.splice(index, 1);
+
+                    if (Object.keys($scope.listReportTypes).length > 0) {
+                        $scope.selectedReportType = "0";
+                    }
+                }
+            }
+        }
+    };
+
+    $scope.removeReportType = function(index) {
+        $scope.listReportTypes.push($scope.reportTypes[index]);
+        $scope.listReportTypes.sortByName();
+        $scope.selectedReportType = "0";
+        $scope.reportTypes.splice(index, 1);
+    }
 
     $scope.fetchCategories = function() {
         $http.get('api/indicator/category')
@@ -308,11 +352,23 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     };
 
+    $scope.filterComputedFieldsByNumberType = function(computedFieldList) {
+            var filteredFields = [];
+
+            for (var i = 0; i < computedFieldList.length; i++) {
+                if (computedFieldList[i].type === "Number") {
+                    filteredFields.push(computedFieldList[i]);
+                }
+            }
+
+            return filteredFields;
+        };
+
     $scope.fetchComputedFields = function () {
         $http.get('api/forms/' + $scope.selectedForm)
             .success(function(form) {
                 form.computedFields.sortByName();
-                $scope.listComputedFields = form.computedFields;
+                $scope.listComputedFields = $scope.filterComputedFieldsByNumberType(form.computedFields);
 
                 if (Object.keys($scope.listComputedFields).length > 0) {
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;
@@ -328,10 +384,25 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     });
 
+    $scope.createReports = function() {
+        var reports = [];
+
+        for (var i = 0; i < $scope.reportTypes.length; i++) {
+            var report = {
+                reportType: $scope.reportTypes[i]
+            };
+
+            reports.push(report);
+        }
+
+        return reports;
+    };
+
     $scope.submit = function() {
         $scope.indicator.owners = $scope.getSelectedOwners();
         $scope.indicator.categories = $scope.getSelectedCategories();
         $scope.indicator.area = $scope.getSelectedArea();
+        $scope.indicator.reports = $scope.createReports();
 
         $http({
             url: "api/indicator",

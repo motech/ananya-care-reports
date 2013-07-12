@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.ReportEntity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,9 @@ public class IndicatorFormObject implements Serializable {
     private Set<Integer> values;
 
     @NotNull
+    private Set<ReportEntity> reports;
+
+    @NotNull
     @Min(1)
     private Integer frequency;
 
@@ -48,8 +52,8 @@ public class IndicatorFormObject implements Serializable {
 
     public IndicatorFormObject(final Integer indicatorType, final Set<Integer> categories,
             final Integer area, final Set<Integer> owners, final Integer computedField,
-            final Integer complexCondition, final Set<Integer> values, final Integer frequency,
-            final String name) {
+            final Integer complexCondition, final Set<Integer> values, Set<ReportEntity> reports,
+            final Integer frequency, final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;
@@ -57,6 +61,7 @@ public class IndicatorFormObject implements Serializable {
         this.computedField = computedField;
         this.complexCondition = complexCondition;
         this.values = values;
+        this.reports = reports;
         this.frequency = frequency;
         this.name = name;
     }
@@ -95,6 +100,10 @@ public class IndicatorFormObject implements Serializable {
 
     public Set<Integer> getValues() {
         return values;
+    }
+
+    public Set<ReportEntity> getReports() {
+        return reports;
     }
 
     public Integer getFrequency() {

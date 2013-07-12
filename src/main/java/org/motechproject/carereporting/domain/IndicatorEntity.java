@@ -64,6 +64,11 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<IndicatorValueEntity> values;
 
     @NotNull
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class })
+    private Set<ReportEntity> reports;
+
+    @NotNull
     @Column(name = "frequency", nullable = false)
     private Integer frequency;
 
@@ -84,7 +89,7 @@ public class IndicatorEntity extends AbstractEntity {
     public IndicatorEntity(IndicatorTypeEntity indicatorType, Set<IndicatorCategoryEntity> categories,
                            AreaEntity area, Set<UserEntity> owners, ComputedFieldEntity computedField,
                            ComplexConditionEntity complexCondition, Set<IndicatorValueEntity> values,
-                           Integer frequency, String name) {
+                           Set<ReportEntity> reports, Integer frequency, String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;
@@ -92,8 +97,15 @@ public class IndicatorEntity extends AbstractEntity {
         this.computedField = computedField;
         this.complexCondition = complexCondition;
         this.values = values;
+        this.reports = reports;
         this.frequency = frequency;
         this.name = name;
+
+        for (ReportEntity report : reports) {
+            if (report.getIndicator() == null) {
+                report.setIndicator(this);
+            }
+        }
     }
 
     public IndicatorTypeEntity getIndicatorType() {
@@ -153,6 +165,14 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setValues(Set<IndicatorValueEntity> values) {
         this.values = values;
+    }
+
+    public Set<ReportEntity> getReports() {
+        return reports;
+    }
+
+    public void setReports(Set<ReportEntity> reports) {
+        this.reports = reports;
     }
 
     public Integer getFrequency() {

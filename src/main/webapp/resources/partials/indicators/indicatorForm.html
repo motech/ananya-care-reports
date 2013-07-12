@@ -88,7 +88,7 @@
                 <label for="reportType">{{msg('indicators.form.label.reportType')}}: </label>
                 <select id="reportType" ng-model="selectedReportType" ng-options="key as item.name for (key, item) in listReportTypes" class="input-block-level"></select>
                 <div class="text-right">
-                    <button class="btn" ng-click="addReportType()" ng-disabled="addReportTypeDisabled">{{msg('indicators.form.addReportType')}}</button>
+                    <button class="btn" ng-click="addReportType()" ng-disabled="listReportTypes.length <= 0">{{msg('indicators.form.addReportType')}}</button>
                 </div>
                 <table class="table table-hover">
                     <thead>
@@ -110,7 +110,7 @@
                 <label for="category">{{msg('indicators.form.classifiedAs')}}: </label>
                 <select id="category" ng-model="selectedCategory" ng-options="key as item.name for (key, item) in listCategories" class="input-block-level"></select>
                 <div class="text-right">
-                    <button class="btn" ng-click="addCategory()" ng-disabled="addCategoryDisabled">{{msg('indicators.form.addCategory')}}</button>
+                    <button class="btn" ng-click="addCategory()" ng-disabled="listCategories.length <= 0">{{msg('indicators.form.addCategory')}}</button>
                 </div>
                 <label for="computedField">{{msg('indicators.form.label.computedField')}}:</label>
                 <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for (key, item) in listComputedFields" class="input-block-level" required></select>
@@ -121,7 +121,7 @@
                         <button class="btn pull-left" ng-click="launchDialog()">{{msg('indicators.form.createNewComplexCondition')}}</button>
                         <button class="btn" ng-click="launchComputedFieldDialog()">{{msg('indicators.form.createNewComputedField')}}</button>
                     </div>
-                    <button class="btn btn-primary pull-right" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid">{{msg('save')}}</button>
+                    <button class="btn btn-primary pull-right" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid || reportTypes.length <= 0">{{msg('save')}}</button>
                 </div>
             </div>
         </div>

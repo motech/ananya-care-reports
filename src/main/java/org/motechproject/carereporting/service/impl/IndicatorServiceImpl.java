@@ -141,6 +141,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
                 findComputedFieldEntityFromFormObject(indicatorFormObject),
                 findComplexConditionEntityFromFormObject(indicatorFormObject),
                 findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
+                indicatorFormObject.getReports(),
                 indicatorFormObject.getFrequency(),
                 indicatorFormObject.getName());
 
@@ -165,6 +166,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         indicatorEntity.setComputedField(findComputedFieldEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setComplexCondition(findComplexConditionEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
+        indicatorEntity.setReports(indicatorFormObject.getReports());
         indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
         indicatorEntity.setName(indicatorFormObject.getName());
 
