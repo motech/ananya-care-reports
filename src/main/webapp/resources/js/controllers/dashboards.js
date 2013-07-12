@@ -69,17 +69,26 @@ care.controller('dashboardController', function($scope, $http) {
     };
 
     $scope.drawCharts = function() {
-        var tr = $('#tab' + $scope.dashboard.id);
-        tr.html('');
+        var colCount = 0,
+            table = $('#tab' + $scope.dashboard.id),
+            tr = angular.element('<tr/>');
+        table.html('');
+        table.append(tr);
         if ($scope.dashboard.indicatorCategory != null) {
             for (indicatorId in $scope.dashboard.indicatorCategory.indicatorsIds) {
                 if ($scope.dashboard.indicatorCategory.indicatorsIds.hasOwnProperty(indicatorId)) {
                     var td = angular.element('<td/>'),
-                    div = angular.element('<div/>');
+                        div = angular.element('<div/>');
+                    if (colCount == 3) {
+                        tr = angular.element('<tr/>');
+                        table.append(tr);
+                        colCount=0;
+                    }
                     tr.append(td);
                     $(div).addClass('chart-container');
                     td.append(div);
                     $scope.loadChart(div, $scope.dashboard.indicatorCategory.indicatorsIds[indicatorId], "pie", $scope.areaId);
+                    colCount++;
                 }
             }
         }

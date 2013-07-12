@@ -7,8 +7,7 @@
 </select>
 <tabset>
     <tab select="tabChanged(dashboard)" ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
-        <table>
-            <tr id="tab{{dashboard.id}}"></tr>
+        <table id="tab{{dashboard.id}}">
         </table>
     </tab>
 </tabset>
