@@ -1,10 +1,10 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
@@ -31,7 +31,7 @@ import java.util.Set;
 
 @RequestMapping(value = "/api/users")
 @Controller
-public class UserController {
+public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
@@ -46,11 +46,13 @@ public class UserController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<IndicatorEntity> getIndicatorsInUserArea(Principal principal) {
+    public String getIndicatorsInUserArea(Principal principal) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 (UsernamePasswordAuthenticationToken)principal;
         UserEntity userEntity = (UserEntity)usernamePasswordAuthenticationToken.getPrincipal();
-        return indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId());
+
+        return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
+                indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
     }
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

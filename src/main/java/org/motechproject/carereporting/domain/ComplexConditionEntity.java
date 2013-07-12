@@ -22,11 +22,11 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private String name;
 
     @OneToMany(mappedBy = "complexCondition")
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private Set<ConditionEntity> conditions;
 
     @OneToMany(mappedBy = "complexCondition")

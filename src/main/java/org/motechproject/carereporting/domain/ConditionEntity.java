@@ -22,19 +22,19 @@ public class ConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "comparison_value", nullable = false)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private BigDecimal comparisonValue;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private ComparisonSymbolEntity comparisonSymbol;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private ComputedFieldEntity computedField;
 
     @NotNull

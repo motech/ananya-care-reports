@@ -37,7 +37,7 @@ public class FormsController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getForm(@PathVariable Integer formId) {
-        return writeAsString(IndicatorJsonView.IndicatorMainForm.class, formsService.findFormById(formId));
+        return writeAsString(IndicatorJsonView.IndicatorDetails.class, formsService.findFormById(formId));
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.DELETE)

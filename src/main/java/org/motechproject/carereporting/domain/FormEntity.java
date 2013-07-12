@@ -23,20 +23,20 @@ public class FormEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "table_name")
-    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListFormNames.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class })
     private String tableName;
 
     @NotNull
     @Column (name = "display_name")
-    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListFormNames.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class })
     private String displayName;
 
     @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private Set<ComputedFieldEntity> computedFields;
 
     @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private Set<FieldEntity> fields;
 
     public String getTableName() {

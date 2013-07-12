@@ -29,13 +29,13 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @NotEmpty
     @Column(name = "name")
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private String name;
 
     @NotNull
     @Column(name = "type", columnDefinition = "character varying", length = 100)
     @Enumerated(value = EnumType.STRING)
-    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListComputedFieldNames.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListComputedFieldNames.class })
     private FieldType type;
 
     @NotNull

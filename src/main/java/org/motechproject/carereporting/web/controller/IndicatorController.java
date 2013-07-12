@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import java.util.Set;
 
 @RequestMapping("api/indicator")
 @Controller
-public class IndicatorController {
+public class IndicatorController extends BaseController {
 
     @Autowired
     private IndicatorService indicatorService;
@@ -33,15 +34,17 @@ public class IndicatorController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<IndicatorEntity> getIndicatorList() {
-        return indicatorService.findAllIndicators();
+    public String getIndicatorList() {
+        return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
+                indicatorService.findAllIndicators());
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public IndicatorEntity getIndicator(@PathVariable Integer indicatorId) {
-        return indicatorService.findIndicatorById(indicatorId);
+    public String getIndicator(@PathVariable Integer indicatorId) {
+        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
+                indicatorService.findIndicatorById(indicatorId));
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },

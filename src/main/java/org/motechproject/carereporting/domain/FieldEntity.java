@@ -34,13 +34,13 @@ public class FieldEntity extends AbstractEntity {
     @NotNull
     @NotEmpty
     @Column(name = "name", nullable = false, length = 100)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private String name;
 
     @NotNull
     @Column(name = "type", columnDefinition = "character varying", length = 50, nullable = false)
     @Enumerated(value = EnumType.STRING)
-    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
+    @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private FieldType type;
 
     public FieldEntity() {
