@@ -6,10 +6,9 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Iterator;
-
-import javax.sql.DataSource;
 
 public abstract class AbstractIndicatorValueCalculator {
 

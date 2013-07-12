@@ -6,11 +6,14 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,7 +32,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JoinColumn(name = "dashboard_id")
     private DashboardEntity dashboard;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     private Set<IndicatorEntity> indicators;
 
     public IndicatorCategoryEntity() {
@@ -60,6 +63,14 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
+    }
+
+    public List<Integer> getIndicatorsIds() {
+        List<Integer> ids = new ArrayList<>();
+        for (IndicatorEntity indicator: indicators) {
+            ids.add(indicator.getId());
+        }
+        return ids;
     }
 
     public void setIndicators(Set<IndicatorEntity> indicators) {

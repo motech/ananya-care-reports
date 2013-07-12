@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -343,4 +344,12 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
         indicatorValueDao.remove(indicatorValueEntity);
     }
+
+    @Override
+    @Transactional
+    public List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
+        return indicatorValueDao.findIndicatorValuesForArea(indicatorId, areaId, earliestDate);
+    }
+
+
 }

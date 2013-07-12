@@ -1,7 +1,5 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.LevelDao;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -24,9 +22,6 @@ public class AreaServiceImpl extends AbstractService implements AreaService {
     @Autowired
     private LevelDao levelDao;
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
     @Override
     @Transactional
     public Set<AreaEntity> findAllAreas() {
@@ -35,20 +30,18 @@ public class AreaServiceImpl extends AbstractService implements AreaService {
 
     @Override
     public Set<AreaEntity> findAreasByLevelId(Integer levelId) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from AreaEntity where level.id = :levelId");
-        query.setParameter("levelId", levelId);
-
-        return new LinkedHashSet<AreaEntity>(query.list());
+        return new LinkedHashSet<AreaEntity>(areaDao.findAreasByLevelId(levelId));
     }
 
     @Override
     public Set<AreaEntity> findAreasByParentAreaId(Integer areaId) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from AreaEntity where parentArea.id = :areaId");
-        query.setParameter("areaId", areaId);
+        return new LinkedHashSet<AreaEntity>(areaDao.findDirectChildAreas(areaId));
+    }
 
-        return new LinkedHashSet<AreaEntity>(query.list());
+    @Override
+    @Transactional
+    public Set<AreaEntity> findAllChildAreasByParentAreaId(Integer areaId) {
+        return new LinkedHashSet<>(areaDao.findAllChildAreasByParentAreaId(areaId));
     }
 
     @Override

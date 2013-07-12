@@ -57,29 +57,4 @@
            };
         });
 
-    widgetModule.directive('flotrChart', function factory($http) {
-        return function postLink(scope, iElement, iAttrs) {
-            $(iElement).addClass('chart-container');
-            $http.get('api/chart?chartType=' + iAttrs.chartType  + '&indicatorId=' + iAttrs.indicatorId).success(function(chart) {
-                var graph, title, chart, wrapper, titleElement;
-                if (chart.settings.title != undefined) {
-                    title = chart.settings.title;
-                    delete chart.settings.title;
-                }
-                graph = Flotr.draw(iElement[0], chart.data, chart.settings);
-                if (title != undefined) {
-                    wrapper = $(angular.element("<div/>"));
-                    wrapper.addClass("chart-container-wrapper");
-                    chart = $(iElement[0]);
-                    chart.replaceWith(wrapper);
-                    chart.appendTo(wrapper);
-                    titleElement = $(angular.element("<p/>"));
-                    titleElement.html(title);
-                    titleElement.addClass("title");
-                    wrapper.append(titleElement);
-                }
-            });
-        }
-    });
-
 }());

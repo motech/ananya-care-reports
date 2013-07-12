@@ -2,20 +2,13 @@
         
 <h1 class="text-center">{{msg('dashboard.header')}}</h1>
 
+<select class="pull-right" ng-model="areaId">
+    <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="$index == 0" ng-repeat="area in areas">{{area.name}}</option>
+</select>
 <tabset>
-    <tab ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
+    <tab select="tabChanged(dashboard)" ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
+        <table>
+            <tr id="tab{{dashboard.id}}"></tr>
+        </table>
     </tab>
 </tabset>
-<table>
-    <tr>
-        <td>
-            <div flotr-chart data-indicator-id="2" data-chart-type="pie"></div>
-        </td>
-        <td>
-            <div flotr-chart data-indicator-id="2" data-chart-type="line"></div>
-        </td>
-        <td>
-            <div flotr-chart data-indicator-id="2" data-chart-type="bar"></div>
-        </td>
-    </tr>
-</table>

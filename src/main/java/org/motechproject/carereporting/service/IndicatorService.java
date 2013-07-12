@@ -10,6 +10,8 @@ import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface IndicatorService {
@@ -67,4 +69,6 @@ public interface IndicatorService {
     void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
+
+    List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
 }
