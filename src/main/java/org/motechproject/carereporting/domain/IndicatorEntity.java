@@ -48,7 +48,6 @@ public class IndicatorEntity extends AbstractEntity {
     @JoinColumn(name = "computed_field_id")
     private ComputedFieldEntity computedField;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "complex_condition_id")
     private ComplexConditionEntity complexCondition;

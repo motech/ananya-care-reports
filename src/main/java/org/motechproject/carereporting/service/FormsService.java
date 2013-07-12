@@ -7,22 +7,24 @@ import java.util.Set;
 
 public interface FormsService {
 
-   void addForm(FormEntity form);
+    void addForm(FormEntity form);
 
-   void updateForm(FormEntity form);
+    void updateForm(FormEntity form);
 
-   void deleteFormById(Integer id);
+    void deleteFormById(Integer id);
 
-   FormEntity findFormById(Integer formId);
+    FormEntity findFormById(Integer formId);
 
-   Set<FormEntity> findAllForms();
+    Set<FormEntity> findAllForms();
 
-   Set<String> getTables();
+    Set<String> getTables();
 
-   Set<String> getTableColumns(String tableName);
+    Set<String> getTableColumns(String tableName);
 
-   Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity);
+    Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity);
 
-   String getForeignKeyForTable(String tableName);
+    String getForeignKeyForTable(String tableName);
+
+
 }
 

@@ -9,6 +9,8 @@ public interface ComputedFieldService {
 
     Set<ComputedFieldEntity> findAllComputedFields();
 
+    Set<ComputedFieldEntity> findComputedFieldsByFormId(Integer formId);
+
     ComputedFieldEntity findComputedFieldById(Integer computedFieldId);
 
     void createNewComputedField(ComputedFieldEntity computedFieldEntity);

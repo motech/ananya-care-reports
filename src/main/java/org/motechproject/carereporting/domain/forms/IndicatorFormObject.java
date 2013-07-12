@@ -27,6 +27,7 @@ public class IndicatorFormObject implements Serializable {
     @NotNull
     private Set<Integer> owners;
 
+    @NotNull
     private Integer computedField;
 
     private Integer complexCondition;

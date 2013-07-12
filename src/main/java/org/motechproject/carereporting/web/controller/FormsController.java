@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/api/forms")
-public class FormsController {
+public class FormsController extends BaseController {
 
     @Autowired
     private FormsService formsService;
@@ -28,15 +29,15 @@ public class FormsController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<FormEntity> getAllForms() {
-        return formsService.findAllForms();
+    public String getAllForms() {
+        return this.writeAsString(IndicatorJsonView.ListFormNames.class, formsService.findAllForms());
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public FormEntity getForm(@PathVariable Integer formId) {
-        return formsService.findFormById(formId);
+    public String getForm(@PathVariable Integer formId) {
+        return writeAsString(IndicatorJsonView.IndicatorMainForm.class, formsService.findFormById(formId));
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.DELETE)

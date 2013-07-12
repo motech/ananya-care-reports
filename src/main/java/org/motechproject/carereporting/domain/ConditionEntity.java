@@ -1,5 +1,8 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -19,16 +22,19 @@ public class ConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "comparison_value", nullable = false)
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private BigDecimal comparisonValue;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private ComparisonSymbolEntity comparisonSymbol;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private ComputedFieldEntity computedField;
 
     @NotNull

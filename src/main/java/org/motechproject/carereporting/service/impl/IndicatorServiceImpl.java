@@ -211,6 +211,10 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
     private ComplexConditionEntity findComplexConditionEntityFromFormObject(
             IndicatorFormObject indicatorFormObject) {
+        if (indicatorFormObject.getComplexCondition() == null) {
+            return null;
+        }
+
         return complexConditionService.findComplexConditionById(indicatorFormObject.getComplexCondition());
     }
 

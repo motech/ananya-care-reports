@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,16 +23,20 @@ public class FormEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "table_name")
+    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListFormNames.class })
     private String tableName;
 
     @NotNull
     @Column (name = "display_name")
+    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListFormNames.class })
     private String displayName;
 
-    @OneToMany(mappedBy = "form", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private Set<ComputedFieldEntity> computedFields;
 
     @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private Set<FieldEntity> fields;
 
     public String getTableName() {

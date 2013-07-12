@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
@@ -23,10 +25,23 @@ public class ComputedFieldServiceImpl extends AbstractService implements Compute
     @Autowired
     private FormsService formsService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Transactional
     @Override
     public Set<ComputedFieldEntity> findAllComputedFields() {
         return computedFieldDao.findAll();
+    }
+
+    @Transactional
+    @Override
+    public Set<ComputedFieldEntity> findComputedFieldsByFormId(Integer formId) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from ComputedFieldEntity where form.id = :formId");
+        query.setParameter("formId", formId);
+
+        return new LinkedHashSet<ComputedFieldEntity>(query.list());
     }
 
     @Transactional

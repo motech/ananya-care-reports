@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -20,9 +22,11 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private String name;
 
     @OneToMany(mappedBy = "complexCondition")
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private Set<ConditionEntity> conditions;
 
     @OneToMany(mappedBy = "complexCondition")

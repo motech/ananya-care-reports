@@ -1,5 +1,8 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +19,7 @@ public abstract class AbstractEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonView(BaseView.class)
     protected Integer id;
 
     @Column(name = "creation_date")

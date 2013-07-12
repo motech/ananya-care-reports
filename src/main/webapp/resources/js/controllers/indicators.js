@@ -52,16 +52,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.addDimensionDisabled = true;
 
     $scope.indicator = {};
-    $scope.indicator.complexConditions = [];
     $scope.indicator.values = [];
-    $scope.complexConditions = [];
     $scope.categories = [];
     $scope.selectedOwners = {};
     $scope.condition = {};
     $scope.ownersValid = false;
     $scope.typeValid = false;
     $scope.categoriesValid = false;
-    $scope.conditionsValid = false;
     $scope.newCondition = {};
     $scope.listFields = [];
 
@@ -201,27 +198,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
     $scope.fetchCategories();
 
-    $scope.removeUsedConditions = function() {
-        var keyCount = Object.keys($scope.listComplexConditions).length;
-        for (var i = keyCount - 1; i >= 0; i--) {
-            var condition_value = $scope.listComplexConditions[i];
-            if (!$scope.listComplexConditions.hasOwnProperty(i)) {
-                continue;
-            }
-
-            for (var used_condition_key in $scope.complexConditions) {
-                var used_condition_value = $scope.complexConditions[used_condition_key];
-                if (!$scope.complexConditions.hasOwnProperty(used_condition_key)) {
-                    continue;
-                }
-
-                if (condition_value.id == used_condition_value.id) {
-                    $scope.listComplexConditions.splice(i, 1);
-                }
-            }
-        }
-    };
-
     $scope.fetchComplexConditions = function() {
         $http.get('api/complexcondition')
             .success(function(conditions) {
@@ -293,36 +269,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     }
 
-    $scope.addComplexCondition = function() {
-        if ($scope.selectedComplexCondition != null) {
-            var complexCondition = $scope.listComplexConditions[$scope.selectedComplexCondition];
-
-            if (complexCondition != null) {
-                $scope.complexConditions.push(complexCondition);
-                $scope.conditionsValid = true;
-
-                var index = $scope.listComplexConditions.indexOf(complexCondition);
-                if (index != -1) {
-                    $scope.listComplexConditions.splice(index, 1);
-
-                    if (Object.keys($scope.listComplexConditions).length <= 0) {
-                        $scope.addDimensionDisabled = true;
-                    }
-                }
-            }
-        }
-    };
-
-    $scope.removeComplexCondition = function(index) {
-        $scope.listComplexConditions.push($scope.complexConditions[index]);
-        $scope.complexConditions.splice(index, 1);
-        $scope.addDimensionDisabled = false;
-
-        if (Object.keys($scope.complexConditions).length <= 0) {
-            $scope.conditionsValid = false;
-        }
-    }
-
     $scope.getSelectedOwners = function() {
         var selectedOwners = [];
 
@@ -362,6 +308,26 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     };
 
+    $scope.fetchComputedFields = function () {
+        $http.get('api/forms/' + $scope.selectedForm)
+            .success(function(form) {
+                form.computedFields.sortByName();
+                $scope.listComputedFields = form.computedFields;
+
+                if (Object.keys($scope.listComputedFields).length > 0) {
+                    $scope.indicator.computedField = $scope.listComputedFields[0].id;
+                }
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComputedFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.$watch('selectedForm', function() {
+        if ($scope.selectedForm > 0) {
+            $scope.fetchComputedFields();
+        }
+    });
+
     $scope.submit = function() {
         $scope.indicator.owners = $scope.getSelectedOwners();
         $scope.indicator.categories = $scope.getSelectedCategories();
@@ -377,20 +343,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateIndicator'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
-    };
-
-    $scope.fetchOperatorTypes = function() {
-        $http.get('api/complexcondition/operatortype')
-            .success(function(operatorTypes) {
-                operatorTypes.sortByName();
-                $scope.listOperatorTypes = operatorTypes;
-
-                if (Object.keys($scope.listOperatorTypes).length > 0) {
-                    $scope.newCondition.operatorType = $scope.listOperatorTypes[0].id;
-                }
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadOperatorTypeList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-            });
     };
 
     $scope.fetchForms = function() {
@@ -410,38 +362,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
     $scope.fetchForms();
 
-    $scope.fetchComparisonSymbols = function() {
-        $http.get('api/complexcondition/comparisonsymbol')
-            .success(function(comparisonSymbols) {
-                comparisonSymbols.sortByName();
-                $scope.listComparisonSymbols = comparisonSymbols;
-
-                if (Object.keys($scope.listComparisonSymbols).length > 0) {
-                    $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0].id;
-                }
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComparisonSymbolList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-            });
-    };
-
-    $scope.fetchFields = function() {
-        if ($scope.newCondition.form == null) {
-            return;
-        }
-
-        $http.get('api/forms/' + $scope.newCondition.form)
-            .success(function(form) {
-                form.fields.sortByName();
-                $scope.listFields = form.fields;
-
-                if (Object.keys($scope.listFields).length > 0) {
-                    $scope.selectedField = $scope.listFields[0].id;
-                }
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-            });
-    };
-
     $scope.launchDialog = function() {
         $scope.fetchOperatorTypes();
         $scope.fetchComparisonSymbols();
@@ -455,64 +375,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         });
     };
 
-    $scope.newCondition.fields = [];
-    $scope.addField = function() {
-        var field = $scope.selectedField;
-        var index = -1;
-        for (var i = 0; i < $scope.listFields.length; i++) {
-            if ($scope.listFields[i].id == field) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            $scope.newCondition.fields.push($scope.listFields[index]);
-            $scope.newCondition.fields.sortByName();
-            $scope.listFields.splice(index, 1);
-
-            if (Object.keys($scope.listFields).length > 0) {
-                $scope.selectedField = $scope.listFields[0].id;
-            }
-        }
-    };
-
-    $scope.removeField = function(field) {
-        var index = -1;
-        for (var i = 0; i < $scope.newCondition.fields.length; i++) {
-            if ($scope.newCondition.fields[i].id == field) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            $scope.listFields.push($scope.newCondition.fields[index]);
-            $scope.listFields.sortByName();
-            $scope.selectedField = $scope.listFields[0].id;
-            $scope.newCondition.fields.splice(index, 1);
-        }
-    };
-
     $scope.saveNewComplexCondition = function() {
-        $scope.newCondition.indicators = [];
 
-        $http({
-            url: "api/complexcondition",
-            method: "POST",
-            data: $scope.newCondition,
-            headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
-                $scope.fetchComplexConditions();
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateNewComplexCondition'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-        });
     };
-
-    $scope.$watch('newCondition.form', function() {
-        $scope.newCondition.fields = [];
-        $scope.fetchFields();
-    });
 
     $scope.launchComputedFieldDialog = function() {
         $rootScope.indicatorScope = $scope;
@@ -521,7 +386,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             template: "resources/partials/indicators/newComputedFieldDialog.html",
             persist: true,
             show: true,
-            backdrop: "static"
+            backdrop: "static",
+            height: 500
         });
     };
 });

@@ -1,7 +1,8 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.enums.FieldType;
 
 import javax.persistence.AttributeOverride;
@@ -28,11 +29,13 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @NotEmpty
     @Column(name = "name")
+    @JsonView(IndicatorJsonView.IndicatorMainForm.class)
     private String name;
 
     @NotNull
     @Column(name = "type", columnDefinition = "character varying", length = 100)
     @Enumerated(value = EnumType.STRING)
+    @JsonView({ IndicatorJsonView.IndicatorMainForm.class, IndicatorJsonView.ListComputedFieldNames.class })
     private FieldType type;
 
     @NotNull
@@ -84,7 +87,6 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.type = type;
     }
 
-    @JsonIgnore
     public FormEntity getForm() {
         return form;
     }
@@ -101,7 +103,6 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.fieldOperations = fieldOperations;
     }
 
-    @JsonIgnore
     public Set<ConditionEntity> getConditions() {
         return conditions;
     }
@@ -110,7 +111,6 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.conditions = conditions;
     }
 
-    @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }
