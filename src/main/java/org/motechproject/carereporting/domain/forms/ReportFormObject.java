@@ -6,14 +6,11 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReportForm implements Serializable {
+public class ReportFormObject implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
     private Integer id;
-
-    @NotNull
-    private String name;
 
     @NotNull
     private Integer indicatorId;
@@ -27,14 +24,6 @@ public class ReportForm implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Integer getIndicatorId() {

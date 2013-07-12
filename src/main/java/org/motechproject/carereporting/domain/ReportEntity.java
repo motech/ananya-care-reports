@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.ReportJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -9,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "report")
@@ -17,11 +20,10 @@ import javax.persistence.Table;
 })
 public class ReportEntity extends AbstractEntity {
 
-    @Column(name = "name")
-    private String name;
-
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "report_type_id")
+    @JsonView(ReportJsonView.ReportDetails.class)
     private ReportTypeEntity reportType;
 
     @ManyToOne
@@ -36,15 +38,13 @@ public class ReportEntity extends AbstractEntity {
         this.id = id;
     }
 
-    public ReportEntity(String name, Integer indicatorId, Integer reportTypeId) {
-        this.name = name;
+    public ReportEntity(Integer indicatorId, Integer reportTypeId) {
         this.indicator = new IndicatorEntity(indicatorId);
         this.reportType = new ReportTypeEntity(reportTypeId);
 
     }
 
-    public ReportEntity(String name, ReportTypeEntity reportType) {
-        this.name = name;
+    public ReportEntity(ReportTypeEntity reportType) {
         this.reportType = reportType;
     }
 
@@ -63,14 +63,6 @@ public class ReportEntity extends AbstractEntity {
 
     public void setIndicator(IndicatorEntity indicator) {
         this.indicator = indicator;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ReportTypeEntity getReportType() {

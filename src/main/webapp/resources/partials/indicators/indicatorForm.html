@@ -71,6 +71,28 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
+                        <th colspan="2">{{msg('indicators.form.label.selectedReportTypes')}}:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="(key, item) in reportTypes">
+                        <td class="span9">
+                            <span>{{item.name}}</span>
+                        </td>
+                        <td class="span3">
+                            <button class="span12 btn" ng-click="removeReportType(key)">{{msg('remove')}}</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <label for="reportType">{{msg('indicators.form.label.reportType')}}: </label>
+                <select id="reportType" ng-model="selectedReportType" ng-options="key as item.name for (key, item) in listReportTypes" class="input-block-level"></select>
+                <div class="text-right">
+                    <button class="btn" ng-click="addReportType()" ng-disabled="addReportTypeDisabled">{{msg('indicators.form.addReportType')}}</button>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
                         <th colspan="2">{{msg('indicators.form.categories.label')}}:</th>
                     </tr>
                     </thead>

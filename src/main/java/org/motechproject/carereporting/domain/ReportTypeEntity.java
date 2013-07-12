@@ -1,15 +1,14 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.ReportJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,11 +23,8 @@ public class ReportTypeEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
+    @JsonView(ReportJsonView.ReportDetails.class)
     private String name;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name = "chart_type_id")
-    private ChartTypeEntity chartType;
 
     @OneToMany(mappedBy = "reportType", cascade = CascadeType.ALL)
     private Set<ReportEntity> reports;
@@ -51,19 +47,6 @@ public class ReportTypeEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @JsonIgnore
-    public ChartTypeEntity getChartType() {
-        return chartType;
-    }
-
-    public Integer getChartTypeId() {
-        return chartType != null ? chartType.getId() : null;
-    }
-
-    public void setChartType(ChartTypeEntity chartType) {
-        this.chartType = chartType;
     }
 
     @JsonIgnore

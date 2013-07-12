@@ -1,10 +1,8 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.motechproject.carereporting.dao.ChartTypeDao;
 import org.motechproject.carereporting.dao.DashboardDao;
 import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
-import org.motechproject.carereporting.domain.ChartTypeEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
@@ -24,9 +22,6 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Autowired
     private DashboardDao dashboardDao;
-
-    @Autowired
-    private ChartTypeDao chartTypeDao;
 
     @Autowired
     private ReportDao reportDao;
@@ -54,8 +49,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Override
     @Transactional(readOnly = false)
-    public ReportEntity createNewReport(String name, Integer indicatorId, Integer reportTypeId) {
-        ReportEntity reportEntity = new ReportEntity(name, indicatorId, reportTypeId);
+    public ReportEntity createNewReport(Integer indicatorId, Integer reportTypeId) {
+        ReportEntity reportEntity = new ReportEntity(indicatorId, reportTypeId);
         try {
             reportDao.save(reportEntity);
             return reportEntity;
@@ -66,8 +61,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Override
     @Transactional(readOnly = false)
-    public void updateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId) {
-        ReportEntity reportEntity = fetchAndUpdateReport(reportId, name, indicatorId, reportTypeId);
+    public void updateReport(Integer reportId, Integer indicatorId, Integer reportTypeId) {
+        ReportEntity reportEntity = fetchAndUpdateReport(reportId, indicatorId, reportTypeId);
         try {
         reportDao.update(reportEntity);
         } catch (DataIntegrityViolationException | org.hibernate.exception.ConstraintViolationException e) {
@@ -75,9 +70,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
     }
 
-    private ReportEntity fetchAndUpdateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId) {
+    private ReportEntity fetchAndUpdateReport(Integer reportId, Integer indicatorId, Integer reportTypeId) {
         ReportEntity reportEntity = reportDao.findById(reportId);
-        reportEntity.setName(name);
         IndicatorEntity indicatorEntity = new IndicatorEntity(indicatorId);
         reportEntity.setIndicator(indicatorEntity);
         ReportTypeEntity reportTypeEntity = new ReportTypeEntity(reportTypeId);
@@ -163,35 +157,4 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     public void deleteDashboard(DashboardEntity dashboardEntity) {
         dashboardDao.remove(dashboardEntity);
     }
-
-    @Override
-    @Transactional
-    public Set<ChartTypeEntity> findAllChartTypes() {
-        return chartTypeDao.findAll();
-    }
-
-    @Override
-    @Transactional
-    public ChartTypeEntity findChartTypeById(Integer id) {
-        return chartTypeDao.findById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void createNewChartType(ChartTypeEntity chartTypeEntity) {
-        chartTypeDao.save(chartTypeEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateChartType(ChartTypeEntity chartTypeEntity) {
-        chartTypeDao.update(chartTypeEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteChartType(ChartTypeEntity chartTypeEntity) {
-        chartTypeDao.remove(chartTypeEntity);
-    }
-
 }

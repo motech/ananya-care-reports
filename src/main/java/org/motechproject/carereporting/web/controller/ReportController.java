@@ -1,8 +1,8 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ReportEntity;
-import org.motechproject.carereporting.domain.ReportTypeEntity;
-import org.motechproject.carereporting.domain.forms.ReportForm;
+import org.motechproject.carereporting.domain.forms.ReportFormObject;
+import org.motechproject.carereporting.domain.views.ReportJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
@@ -23,7 +23,7 @@ import java.util.Set;
 
 @RequestMapping(value = "/api/report")
 @Controller
-public class ReportController {
+public class ReportController extends BaseController {
 
     @Autowired
     private ReportService reportService;
@@ -31,8 +31,9 @@ public class ReportController {
     @RequestMapping(value = "/type", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<ReportTypeEntity> getAllReportTypes() {
-        return reportService.findAllReportTypes();
+    public String getAllReportTypes() {
+        return this.writeAsString(ReportJsonView.ReportDetails.class,
+                reportService.findAllReportTypes());
     }
 
     @RequestMapping(value = "/{reportId}", method = RequestMethod.GET)
@@ -49,35 +50,36 @@ public class ReportController {
         return reportService.findAllReports();
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public void saveReport(@RequestBody @Valid ReportForm reportForm, BindingResult bindingResult) {
+    public void saveReport(@RequestBody @Valid ReportFormObject reportFormObject, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
         try {
             reportService.createNewReport(
-                    reportForm.getName(),
-                    reportForm.getIndicatorId(),
-                    reportForm.getReportTypeId());
+                    reportFormObject.getIndicatorId(),
+                    reportFormObject.getReportTypeId());
         } catch (EntityException e) {
             bindingResult.rejectValue("name", "Duplicate.reportForm.name");
             throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
         }
     }
 
-    @RequestMapping(value = "/{reportId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{reportId}", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public void updateReport(@PathVariable Integer reportId, @RequestBody @Valid ReportForm reportForm, BindingResult bindingResult) {
+    public void updateReport(@PathVariable Integer reportId, @RequestBody @Valid ReportFormObject reportFormObject, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
         try {
             reportService.updateReport(
                     reportId,
-                    reportForm.getName(),
-                    reportForm.getIndicatorId(),
-                    reportForm.getReportTypeId());
+                    reportFormObject.getIndicatorId(),
+                    reportFormObject.getReportTypeId());
         } catch (EntityException e) {
             bindingResult.rejectValue("name", "Duplicate.reportForm.name");
             throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);

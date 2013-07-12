@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.service;
 
-import org.motechproject.carereporting.domain.ChartTypeEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
@@ -20,10 +19,10 @@ public interface ReportService {
     void createNewReport(ReportEntity reportEntity);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
-    ReportEntity createNewReport(String name, Integer indicatorId, Integer reportTypeId);
+    ReportEntity createNewReport(Integer indicatorId, Integer reportTypeId);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
-    void updateReport(Integer reportId, String name, Integer indicatorId, Integer reportTypeId);
+    void updateReport(Integer reportId, Integer indicatorId, Integer reportTypeId);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void updateReport(ReportEntity reportEntity);
@@ -53,14 +52,4 @@ public interface ReportService {
     void updateDashboard(DashboardEntity dashboardEntity);
 
     void deleteDashboard(DashboardEntity dashboardEntity);
-
-    Set<ChartTypeEntity> findAllChartTypes();
-
-    ChartTypeEntity findChartTypeById(Integer id);
-
-    void createNewChartType(ChartTypeEntity chartTypeEntity);
-
-    void updateChartType(ChartTypeEntity chartTypeEntity);
-
-    void deleteChartType(ChartTypeEntity chartTypeEntity);
 }
