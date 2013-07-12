@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
@@ -119,11 +120,13 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.indicators = indicators;
     }
 
+    @JsonIgnore
     public boolean isRegularField() {
         return  fieldOperations.size() == 1 &&
                 fieldOperations.iterator().next().getField2() == null;
     }
 
+    @JsonIgnore
     public FieldEntity getRegularField() {
         if (!isRegularField()) {
             return null;
