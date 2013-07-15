@@ -51,14 +51,14 @@ public class ChartController {
 
     private Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
         switch (chartType) {
-            case "pie":
+            case "pie chart":
                 return ChartFactory.createPieChart(indicator, values);
-            case "bar":
+            case "bar chart":
                 return ChartFactory.createBarChart(indicator, values);
-            case "line":
+            case "line chart":
                 return ChartFactory.createLineChart(indicator, values);
         }
         throw new IllegalArgumentException("Chart type " + chartType +
-                "not supported");
+                " not supported");
     }
 }

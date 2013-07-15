@@ -3,6 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.UserService;
@@ -19,7 +20,7 @@ import java.util.Set;
 
 @RequestMapping("api/dashboards")
 @Controller
-public class DashboardController {
+public class DashboardController extends BaseController {
 
     @Autowired
     private DashboardService dashboardService;
@@ -33,8 +34,10 @@ public class DashboardController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<DashboardEntity> getAllDashboards() {
-        return dashboardService.findAllDashboards();
+    public String getAllDashboards() {
+        Set<DashboardEntity> dashboards = dashboardService.findAllDashboards();
+        return writeAsString(DashboardJsonView.class,
+                dashboards);
     }
 
     @RequestMapping(value = "/user-areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

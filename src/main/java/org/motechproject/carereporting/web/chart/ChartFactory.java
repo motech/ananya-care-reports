@@ -21,30 +21,31 @@ public final class ChartFactory {
     }
 
     public static Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        return createTemplateChart("% mothers migrated out after first PNC")
+        return createTemplateChart(indicator.getName())
                 .xAxis(new AxisBuilder()
-                        .minorTickFreq(4))
+                        .minorTickFreq(4)
+                        .mode(AxisBuilder.Mode.TIME)
+                        .timeformat("%m/%d/%y"))
                 .grid(new GridBuilder()
                         .minorVerticalLines(true))
-                .serie(createRandomSerie("Area 1"))
-                .serie(createRandomSerie("Area 2"))
+                .serie(createSerieForIndicatorValues(values))
                 .build();
     }
 
-    private static Serie createRandomSerie(String label) {
-        Random random = new Random();
-        SerieBuilder serieBuilder = new SerieBuilder()
-                .label(label);
-        for (int i = 0; i<20; i+=1) {
-            serieBuilder.point(i, i + random.nextInt(6) - 3);
+    private static Serie createSerieForIndicatorValues(List<IndicatorValueEntity> values) {
+        SerieBuilder serieBuilder = new SerieBuilder();
+
+        for (IndicatorValueEntity value: values) {
+            serieBuilder.point(BigDecimal.valueOf(value.getDate().getTime()), value.getValue());
         }
+
         return serieBuilder.build();
     }
 
     public static Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         double barWidth = .5;
         Random random = new Random();
-        return createTemplateChart("% of actual contacts vs scheduled contacts in the continuum of care")
+        return createTemplateChart(indicator.getName())
                 .bars(new BarsBuilder()
                         .show(true)
                         .horizontal(true)
@@ -65,13 +66,15 @@ public final class ChartFactory {
     }
 
     public static Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        BigDecimal average = BigDecimal.ZERO;
+        BigDecimal averageValueFromAllIndicatorValues = BigDecimal.ZERO;
 
         if (values.size() != 0) {
             for (IndicatorValueEntity value: values) {
-                average = average.add(value.getValue());
+                averageValueFromAllIndicatorValues =
+                        averageValueFromAllIndicatorValues.add(value.getValue());
             }
-            average = average.divide(BigDecimal.valueOf(values.size()));
+            averageValueFromAllIndicatorValues =
+                    averageValueFromAllIndicatorValues.divide(BigDecimal.valueOf(values.size()));
         }
         return createTemplateChart(indicator.getName())
                 .grid(new GridBuilder()
@@ -85,11 +88,11 @@ public final class ChartFactory {
                         .show(true)
                         .explode(6))
                 .serie(new SerieBuilder()
-                        .label("Visiting as scheduled")
-                        .point(BigDecimal.ZERO, average))
+                        .label("Option1")
+                        .point(BigDecimal.ZERO, averageValueFromAllIndicatorValues))
                 .serie(new SerieBuilder()
-                        .label("Not visiting as scheduled")
-                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(average)))
+                        .label("Option2")
+                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(averageValueFromAllIndicatorValues)))
                 .build();
     }
 
@@ -98,7 +101,7 @@ public final class ChartFactory {
                 .title(title)
                 .htmlText(false)
                 .legend(new LegendBuilder()
-                        .position("se")
+                        .position(LegendBuilder.Position.BOTTOM_LEFT)
                         .backgroundColor("#D2E8FF"))
                 .mouse(new MouseBuilder()
                         .track(true)

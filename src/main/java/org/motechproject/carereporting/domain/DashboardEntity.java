@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -35,13 +37,16 @@ public class DashboardEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "name", unique = true)
+    @JsonView({ DashboardJsonView.class })
     private String name;
 
     @NotNull
     @Column(name = "tab_position", unique = true)
+    @JsonView({ DashboardJsonView.class })
     private Short tabPosition;
 
     @OneToOne(mappedBy = "dashboard")
+    @JsonView({ DashboardJsonView.class })
     private IndicatorCategoryEntity indicatorCategory;
 
     @NotNull

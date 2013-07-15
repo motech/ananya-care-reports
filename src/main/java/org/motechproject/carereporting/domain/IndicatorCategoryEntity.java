@@ -1,6 +1,9 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -12,8 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,6 +26,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
     private String name;
 
     @NotNull
@@ -33,6 +35,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     private DashboardEntity dashboard;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
+    @JsonView({ DashboardJsonView.class })
     private Set<IndicatorEntity> indicators;
 
     public IndicatorCategoryEntity() {
@@ -65,13 +68,6 @@ public class IndicatorCategoryEntity extends AbstractEntity {
         return indicators;
     }
 
-    public List<Integer> getIndicatorsIds() {
-        List<Integer> ids = new ArrayList<>();
-        for (IndicatorEntity indicator: indicators) {
-            ids.add(indicator.getId());
-        }
-        return ids;
-    }
 
     public void setIndicators(Set<IndicatorEntity> indicators) {
         this.indicators = indicators;

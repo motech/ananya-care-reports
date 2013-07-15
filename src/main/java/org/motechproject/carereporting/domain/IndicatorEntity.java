@@ -3,6 +3,7 @@ package org.motechproject.carereporting.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -64,8 +65,8 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<IndicatorValueEntity> values;
 
     @NotNull
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class })
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
 
     @NotNull

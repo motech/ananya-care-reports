@@ -1,5 +1,9 @@
 var care = angular.module('care');
 
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
 care.controller('dashboardController', function($scope, $http) {
     $scope.title = $scope.msg('dashboard.title');
 
@@ -46,7 +50,6 @@ care.controller('dashboardController', function($scope, $http) {
         if (areaId != undefined) {
             url += "&areaId=" + areaId;
         }
-        console.log(container);
         $http.get(url).success(function(chart) {
             var graph, title, chart, wrapper, titleElement;
             if (chart.settings.title != undefined) {
@@ -75,20 +78,31 @@ care.controller('dashboardController', function($scope, $http) {
         table.html('');
         table.append(tr);
         if ($scope.dashboard.indicatorCategory != null) {
-            for (indicatorId in $scope.dashboard.indicatorCategory.indicatorsIds) {
-                if ($scope.dashboard.indicatorCategory.indicatorsIds.hasOwnProperty(indicatorId)) {
-                    var td = angular.element('<td/>'),
-                        div = angular.element('<div/>');
-                    if (colCount == 3) {
-                        tr = angular.element('<tr/>');
-                        table.append(tr);
-                        colCount=0;
+            for (var i in $scope.dashboard.indicatorCategory.indicators) {
+                var indicator = $scope.dashboard.indicatorCategory.indicators[i];
+                if (indicator.reports == undefined) {
+                    continue;
+                }
+                for (var r in indicator.reports) {
+                    if (!indicator.reports.hasOwnProperty(r)) {
+                        continue;
                     }
-                    tr.append(td);
-                    $(div).addClass('chart-container');
-                    td.append(div);
-                    $scope.loadChart(div, $scope.dashboard.indicatorCategory.indicatorsIds[indicatorId], "pie", $scope.areaId);
-                    colCount++;
+                    var report = indicator.reports[r], td, div;
+                    if (!report.reportType.name.toLowerCase().endsWith('chart')) {
+                        continue;
+                    }
+                    td = angular.element('<td/>');
+                    div = angular.element('<div/>');
+                     if (colCount == 3) {
+                         tr = angular.element('<tr/>');
+                         table.append(tr);
+                         colCount=0;
+                     }
+                     tr.append(td);
+                     $(div).addClass('chart-container');
+                     td.append(div);
+                     $scope.loadChart(div, indicator.id, report.reportType.name.toLowerCase(), $scope.areaId);
+                     colCount++;
                 }
             }
         }
@@ -106,7 +120,6 @@ care.controller('dashboardController', function($scope, $http) {
                 $scope.previousAreaId = $scope.areaId;
             }
         }, true);
-
     };
 
     $scope.fetchDashboards();

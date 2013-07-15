@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.ReportJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -23,10 +24,10 @@ public class ReportTypeEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView(ReportJsonView.ReportDetails.class)
+    @JsonView({DashboardJsonView.class, ReportJsonView.ReportDetails.class})
     private String name;
 
-    @OneToMany(mappedBy = "reportType", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reportType", cascade = CascadeType.PERSIST)
     private Set<ReportEntity> reports;
 
     public ReportTypeEntity() {

@@ -148,9 +148,10 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<IndicatorCategoryEntity> getIndicatorCategoryList() {
+    public String getIndicatorCategoryList() {
 
-        return indicatorService.findAllIndicatorCategories();
+        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
+                indicatorService.findAllIndicatorCategories());
     }
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.GET,
