@@ -1,9 +1,8 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.OperatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @RequestMapping("api/complexcondition")
 @Controller
-public class ComplexConditionController {
+public class ComplexConditionController extends BaseController {
 
     @Autowired
     private ComplexConditionService complexConditionService;
@@ -31,30 +29,34 @@ public class ComplexConditionController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<ComplexConditionEntity> getComplexConditionList() {
-        return complexConditionService.findAllComplexConditions();
+    public String getComplexConditionList() {
+        return this.writeAsString(ComplexConditionJsonView.ListComplexConditions.class,
+            complexConditionService.findAllComplexConditions());
     }
 
     @RequestMapping(value = "/operatortype", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<OperatorTypeEntity> getOperatorTypeList() {
-        return complexConditionService.findAllOperatorTypes();
+    public String getOperatorTypeList() {
+        return this.writeAsString(ComplexConditionJsonView.ListOperatorTypes.class,
+            complexConditionService.findAllOperatorTypes());
     }
 
     @RequestMapping(value = "/comparisonsymbol", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<ComparisonSymbolEntity> getComparisonSymbolList() {
-        return complexConditionService.findAllComparisonSymbols();
+    public String getComparisonSymbolList() {
+        return this.writeAsString(ComplexConditionJsonView.ListComparisonSymbols.class,
+            complexConditionService.findAllComparisonSymbols());
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ComplexConditionEntity getComplexCondition(@PathVariable Integer complexConditionId) {
-        return complexConditionService.findComplexConditionById(complexConditionId);
+    public String getComplexCondition(@PathVariable Integer complexConditionId) {
+        return this.writeAsString(ComplexConditionJsonView.ComplexConditionDetails.class,
+            complexConditionService.findComplexConditionById(complexConditionId));
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },

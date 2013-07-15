@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -11,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "condition")
@@ -22,31 +22,30 @@ public class ConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "comparison_value", nullable = false)
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
-    private BigDecimal comparisonValue;
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    private String comparisonValue;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private ComparisonSymbolEntity comparisonSymbol;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private ComputedFieldEntity computedField;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "complex_condition_id")
     private ComplexConditionEntity complexCondition;
 
-    public BigDecimal getComparisonValue() {
+    public String getComparisonValue() {
         return comparisonValue;
     }
 
-    public void setComparisonValue(BigDecimal comparisonValue) {
+    public void setComparisonValue(String comparisonValue) {
         this.comparisonValue = comparisonValue;
     }
 

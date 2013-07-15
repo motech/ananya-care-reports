@@ -140,22 +140,6 @@ CREATE TABLE IF NOT EXISTS reporting.operator_type(
 
 -- ddl-end --
 
--- object: reporting.condition | type: TABLE --
-CREATE TABLE IF NOT EXISTS reporting.condition(
-	condition_id serial NOT NULL,
-	computed_field_id integer NOT NULL,
-	comparison_symbol_id integer NOT NULL,
-	value decimal(19,6) NOT NULL,
-	creation_date timestamp,
-	modification_date timestamp,
-	CONSTRAINT condition_pk PRIMARY KEY (condition_id),
-    CONSTRAINT condition_comparison_symbol_id_fk FOREIGN KEY (comparison_symbol_id)
-    REFERENCES reporting.comparison_symbol (comparison_symbol_id) MATCH FULL
-    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT condition_uk UNIQUE (computed_field_id,comparison_symbol_id,value)
-);
--- ddl-end --
-
 -- object: reporting.complex_condition | type: TABLE --
 CREATE TABLE IF NOT EXISTS reporting.complex_condition(
 	complex_condition_id serial NOT NULL,
@@ -164,6 +148,26 @@ CREATE TABLE IF NOT EXISTS reporting.complex_condition(
 	modification_date timestamp,
 	CONSTRAINT complex_condition_pk PRIMARY KEY (complex_condition_id),
 	CONSTRAINT complex_condition_name_uk UNIQUE (name)
+);
+-- ddl-end --
+
+-- object: reporting.condition | type: TABLE --
+CREATE TABLE IF NOT EXISTS reporting.condition(
+	condition_id serial NOT NULL,
+	complex_condition_id integer NOT NULL,
+	computed_field_id integer NOT NULL,
+	comparison_symbol_id integer NOT NULL,
+	comparison_value character varying(50) NOT NULL,
+	creation_date timestamp,
+	modification_date timestamp,
+	CONSTRAINT condition_pk PRIMARY KEY (condition_id),
+	CONSTRAINT condition_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
+    REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    CONSTRAINT condition_comparison_symbol_id_fk FOREIGN KEY (comparison_symbol_id)
+    REFERENCES reporting.comparison_symbol (comparison_symbol_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	CONSTRAINT condition_uk UNIQUE (computed_field_id,comparison_symbol_id,comparison_value)
 );
 -- ddl-end --
 

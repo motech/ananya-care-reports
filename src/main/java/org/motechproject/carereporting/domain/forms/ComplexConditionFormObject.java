@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain.forms;
 
+import org.motechproject.carereporting.domain.ConditionEntity;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
@@ -14,13 +16,13 @@ public class ComplexConditionFormObject implements Serializable {
     private String name;
 
     @NotNull
-    private Set<Integer> conditions;
+    private Set<ConditionEntity> conditions;
 
     public ComplexConditionFormObject() {
 
     }
 
-    public ComplexConditionFormObject(String name, Set<Integer> conditions) {
+    public ComplexConditionFormObject(String name, Set<ConditionEntity> conditions) {
         this.name = name;
         this.conditions = conditions;
     }
@@ -41,11 +43,11 @@ public class ComplexConditionFormObject implements Serializable {
         this.name = name;
     }
 
-    public Set<Integer> getConditions() {
+    public Set<ConditionEntity> getConditions() {
         return conditions;
     }
 
-    public void setConditions(Set<Integer> conditions) {
+    public void setConditions(Set<ConditionEntity> conditions) {
         this.conditions = conditions;
     }
 }

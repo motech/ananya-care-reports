@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service;
 
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 
@@ -25,6 +26,6 @@ public interface FormsService {
 
     String getForeignKeyForTable(String tableName);
 
-
+    Set<ComputedFieldEntity> findAllComputedFieldsByFormId(Integer formId);
 }
 

@@ -2,10 +2,12 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -22,11 +24,13 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ListComplexConditions.class,
+        ComplexConditionJsonView.ComplexConditionDetails.class})
     private String name;
 
-    @OneToMany(mappedBy = "complexCondition")
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @NotNull
+    @OneToMany(mappedBy = "complexCondition", cascade = CascadeType.ALL)
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private Set<ConditionEntity> conditions;
 
     @OneToMany(mappedBy = "complexCondition")
@@ -39,6 +43,12 @@ public class ComplexConditionEntity extends AbstractEntity {
     public ComplexConditionEntity(String name, Set<ConditionEntity> conditions) {
         this.name = name;
         this.conditions = conditions;
+
+        for (ConditionEntity conditionEntity : conditions) {
+            if (conditionEntity.getComplexCondition() == null) {
+                conditionEntity.setComplexCondition(this);
+            }
+        }
     }
 
     public ComplexConditionEntity(String name) {

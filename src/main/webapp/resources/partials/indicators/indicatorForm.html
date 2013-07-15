@@ -67,7 +67,7 @@
                 <label for="indicatorType">{{msg('indicators.form.definedAs')}}: </label>
                 <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for (key, item) in listIndicatorTypes | orderBy:'name'" class="input-block-level"></select>
                 <label for="form">{{msg('indicators.form.selectForm')}}: </label>
-                <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for (key, item) in listForms | orderBy:'displayName'" class="input-block-level" required></select>
+                <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -115,10 +115,10 @@
                 <label for="computedField">{{msg('indicators.form.label.computedField')}}:</label>
                 <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for (key, item) in listComputedFields" class="input-block-level" required></select>
                 <label for="complexCondition">{{msg('indicators.form.label.complexCondition')}}:</label>
-                <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for (key, item) in listComplexConditions" class="input-block-level"></select>
+                <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in listComplexConditions" class="input-block-level"></select>
                 <div class="row-fluid" id="formButtons">
                     <div class="btn-group">
-                        <button class="btn pull-left" ng-click="launchDialog()">{{msg('indicators.form.createNewComplexCondition')}}</button>
+                        <button class="btn pull-left" ng-click="launchDialog()" ng-disabled="listForms.length <= 0">{{msg('indicators.form.createNewComplexCondition')}}</button>
                         <button class="btn" ng-click="launchComputedFieldDialog()">{{msg('indicators.form.createNewComputedField')}}</button>
                     </div>
                     <button class="btn btn-primary pull-right" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid || reportTypes.length <= 0">{{msg('save')}}</button>

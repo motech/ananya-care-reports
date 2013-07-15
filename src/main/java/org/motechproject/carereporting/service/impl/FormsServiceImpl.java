@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.dao.FormDao;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.enums.FieldType;
@@ -133,6 +134,11 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     public String getForeignKeyForTable(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return new String(jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_TABLE, String.class, tableName));
+    }
+
+    @Override
+    public Set<ComputedFieldEntity> findAllComputedFieldsByFormId(Integer formId) {
+        return formDao.findById(formId).getComputedFields();
     }
 }
 

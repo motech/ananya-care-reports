@@ -2,11 +2,9 @@ package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComplexConditionDao;
-import org.motechproject.carereporting.dao.ConditionDao;
 import org.motechproject.carereporting.dao.OperatorTypeDao;
 import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
 import org.motechproject.carereporting.service.ComplexConditionService;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Service
@@ -23,9 +20,6 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
 
     @Autowired
     private ComplexConditionDao complexConditionDao;
-
-    @Autowired
-    private ConditionDao conditionDao;
 
     @Autowired
     private OperatorTypeDao operatorTypeDao;
@@ -62,20 +56,10 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
     public void createNewComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
         ComplexConditionEntity complexConditionEntity = new ComplexConditionEntity(
                 complexConditionFormObject.getName(),
-                findConditionsFromFormObject(complexConditionFormObject)
+                complexConditionFormObject.getConditions()
         );
 
         complexConditionDao.save(complexConditionEntity);
-    }
-
-    private Set<ConditionEntity> findConditionsFromFormObject(ComplexConditionFormObject complexConditionFormObject) {
-        Set<ConditionEntity> conditions = new LinkedHashSet<>();
-
-        for(Integer conditionId : complexConditionFormObject.getConditions()) {
-            conditionDao.findById(conditionId);
-        }
-
-        return conditions;
     }
 
     @Override
@@ -90,7 +74,7 @@ public class ComplexConditionServiceImpl extends AbstractService implements Comp
         ComplexConditionEntity complexConditionEntity = this.findComplexConditionById(complexConditionFormObject.getId());
 
         complexConditionEntity.setName(complexConditionFormObject.getName());
-        complexConditionEntity.setConditions(findConditionsFromFormObject(complexConditionFormObject));
+        complexConditionEntity.setConditions(complexConditionFormObject.getConditions());
 
         complexConditionDao.update(complexConditionEntity);
     }

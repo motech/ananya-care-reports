@@ -1,8 +1,10 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
+import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ public class FormsController extends BaseController {
     @Autowired
     private FormsService formsService;
 
+    @Autowired
+    private ComputedFieldService computedFieldService;
+
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -38,6 +43,14 @@ public class FormsController extends BaseController {
     @ResponseBody
     public String getForm(@PathVariable Integer formId) {
         return writeAsString(IndicatorJsonView.IndicatorDetails.class, formsService.findFormById(formId));
+    }
+
+    @RequestMapping(value = "/{formId}/computedfields", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getComputedFieldsByFormId(@PathVariable Integer formId) {
+        return this.writeAsString(BaseView.class, computedFieldService.findComputedFieldsByFormId(formId));
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.DELETE)

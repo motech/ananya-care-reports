@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-datepicker.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
     <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
@@ -27,6 +28,8 @@
     <script src="resources/lib/angular/ui-bootstrap-tpls-0.4.0.js"></script>
     <script src="resources/lib/angular/angular-strap.min.js"></script>
     <script src="resources/lib/bootstrap-multiselect.js"></script>
+    <script src="resources/lib/bootstrap-datepicker.js"></script>
+    <script src="resources/lib/moment.min.js"></script>
     <script src="resources/js/localization.js"></script>
     <script src="resources/js/app.js" type="text/javascript"></script>
     <script src="resources/js/services.js" type="text/javascript"></script>

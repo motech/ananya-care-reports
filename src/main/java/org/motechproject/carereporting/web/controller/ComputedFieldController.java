@@ -2,7 +2,7 @@ package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.forms.ComputedFieldFormObject;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @RequestMapping("api/computedfields")
 @Controller
@@ -31,8 +30,7 @@ public class ComputedFieldController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getAllComputedFields() {
-        return this.writeAsString(IndicatorJsonView.ListComputedFieldNames.class,
-                computedFieldService.findAllComputedFields());
+        return this.writeAsString(BaseView.class, computedFieldService.findAllComputedFields());
     }
 
     @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.GET,
@@ -41,14 +39,6 @@ public class ComputedFieldController extends BaseController {
     @ResponseBody
     public ComputedFieldEntity getComputedField(@PathVariable Integer computedFieldId) {
         return computedFieldService.findComputedFieldById(computedFieldId);
-    }
-
-    @RequestMapping(value = "/form/{formId}", method = RequestMethod.GET,
-            produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Set<ComputedFieldEntity> getComputedFieldsByFormId(@PathVariable Integer formId) {
-        return computedFieldService.findComputedFieldsByFormId(formId);
     }
 
     @RequestMapping(method = RequestMethod.POST,

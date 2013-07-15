@@ -49,7 +49,7 @@ public abstract class AbstractIndicatorValueCalculator {
     private String buildConditionWhereClause(ConditionEntity condition) {
         String fieldName = getField();
         String comparisonSymbol = condition.getComparisonSymbol().getName();
-        BigDecimal value = condition.getComparisonValue();
+        String value = condition.getComparisonValue();
 
         return String.format(CONDITION_WHERE_CLAUSE, fieldName, comparisonSymbol, value);
     }

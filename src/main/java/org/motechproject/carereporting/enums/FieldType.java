@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.enums;
 
 public enum FieldType {
-    Number, Boolean, String, Date, Timestamp;
+    Number, Boolean, String, Date;
 
     public static FieldType getValueOf(String value) {
         switch (value) {
@@ -18,7 +18,7 @@ public enum FieldType {
             case "date":
                 return Date;
             case "timestamp with time zone":
-                return Timestamp;
+                return Date;
             default:
                 return null;
         }

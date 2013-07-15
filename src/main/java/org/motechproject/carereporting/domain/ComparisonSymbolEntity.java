@@ -2,7 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -23,7 +23,7 @@ public class ComparisonSymbolEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @JsonView(BaseView.class)
     private String name;
 
     @OneToMany(mappedBy = "comparisonSymbol", cascade = CascadeType.ALL)
