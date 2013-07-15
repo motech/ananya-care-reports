@@ -57,7 +57,6 @@
                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageReports')}}<b class="caret"></b></a>
                            <ul class="dropdown-menu">
                                <li><a href="#/report"><i class="icon-list"></i> {{msg('menu.manageReports.reportsList')}}</a></li>
-                               <li><a href="#/report/new"><i class="icon-plus-sign"></i> {{msg('menu.manageReports.defineReport')}}</a></li>
                            </ul>
                        </li>
                    </sec:authorize>
