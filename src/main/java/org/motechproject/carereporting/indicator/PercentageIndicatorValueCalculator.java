@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class PercentageIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
@@ -23,8 +24,8 @@ public class PercentageIndicatorValueCalculator extends AbstractIndicatorValueCa
 
         String queryWithConditions = String.format(
                 QUERY_WITH_CONDITIONS,
-                getTableName(),
                 getField(),
+                getTableName(),
                 buildWhereClause());
 
         String queryWithoutConditions = String.format(
@@ -39,7 +40,10 @@ public class PercentageIndicatorValueCalculator extends AbstractIndicatorValueCa
         BigDecimal resultWithConditions = executeQuery(queryWithConditions, params);
         BigDecimal resultWithoutConditions = executeQuery(queryWithoutConditions, params);
 
-        return resultWithConditions.divide(resultWithoutConditions);
+        if (resultWithoutConditions.equals(BigDecimal.ZERO)) {
+            return BigDecimal.ZERO;
+        }
+        return resultWithConditions.divide(resultWithoutConditions, 2, RoundingMode.HALF_UP);
     }
 
 }

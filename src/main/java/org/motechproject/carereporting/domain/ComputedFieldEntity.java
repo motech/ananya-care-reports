@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -45,7 +46,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     private FormEntity form;
 
     @NotNull
-    @OneToMany(mappedBy = "computedField", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "computedField", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<FieldOperationEntity> fieldOperations;
 
     @OneToMany(mappedBy = "computedField")

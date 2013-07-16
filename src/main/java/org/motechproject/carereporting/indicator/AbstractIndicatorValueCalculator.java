@@ -65,10 +65,7 @@ public abstract class AbstractIndicatorValueCalculator {
     }
 
     protected String getTableName() {
-        return addTableAlias(indicator.getComputedField().getForm().getTableName());
+        return indicator.getComputedField().getForm().getTableName();
     }
 
-    private String addTableAlias(String column) {
-        return TABLE_ALIAS + "." + column;
-    }
 }

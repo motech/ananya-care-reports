@@ -6,6 +6,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,7 @@ public class IndicatorValueCalculatorScheduler {
     @Autowired
     private IndicatorService indicatorService;
 
-    //TODO: check if indicator calculator implementations work and uncomment this annotation also change cron expr. (current is every minute)
-    //@Scheduled(cron = "${indicator.calculation.cronExpr}")
+    @Scheduled(cron = "${indicator.calculation.cronExpr}")
     public void calculateIndicatorValues() {
         LOG.info("Running scheduled indicator values calculation.");
         int totalIndicatorValuesCalculated = calculateAllIndicatorValues();

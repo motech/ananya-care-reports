@@ -15,9 +15,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "field", uniqueConstraints = @UniqueConstraint(columnNames = { "form_id", "name" }))
@@ -42,6 +44,12 @@ public class FieldEntity extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private FieldType type;
+
+    @OneToMany(mappedBy = "field1")
+    private Set<FieldOperationEntity> fieldOperationsAsField1;
+
+    @OneToMany(mappedBy = "field2")
+    private Set<FieldOperationEntity> fieldOperationsAsField2;
 
     public FieldEntity() {
 
@@ -72,4 +80,21 @@ public class FieldEntity extends AbstractEntity {
         this.type = type;
     }
 
+    @JsonIgnore
+    public Set<FieldOperationEntity> getFieldOperationsAsField1() {
+        return fieldOperationsAsField1;
+    }
+
+    public void setFieldOperationsAsField1(Set<FieldOperationEntity> fieldOperationsAsField1) {
+        this.fieldOperationsAsField1 = fieldOperationsAsField1;
+    }
+
+    @JsonIgnore
+    public Set<FieldOperationEntity> getFieldOperationsAsField2() {
+        return fieldOperationsAsField2;
+    }
+
+    public void setFieldOperationsAsField2(Set<FieldOperationEntity> fieldOperationsAsField2) {
+        this.fieldOperationsAsField2 = fieldOperationsAsField2;
+    }
 }
