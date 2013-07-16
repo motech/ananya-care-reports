@@ -635,6 +635,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
             data: $scope.complexCondition,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
+                indicatorScope.fetchComplexConditions();
                 $location.path( "/indicators" );
             }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateComplexCondition'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
@@ -763,6 +764,8 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
             method: "POST",
             data: $scope.newField,
             headers: { 'Content-Type': 'application/json' }
+        }).success(function() {
+            indicatorScope.fetchComputedFields();
         }).error(function() {
                 $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotCreateNewComputedField'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
