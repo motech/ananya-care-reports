@@ -53,4 +53,4 @@ insert into operator_type (name) values ('SUB');
 insert into operator_type (name) values ('MUL');
 insert into operator_type (name) values ('DIV');
 
-INSERT INTO report_type (name) VALUES ('Bar Chart'), ('Line Chart'), ('Pie Chart'), ('Map'), ('Performance');
+INSERT INTO report_type (name) VALUES ('Bar Chart'), ('Line Chart'), ('Pie Chart');
