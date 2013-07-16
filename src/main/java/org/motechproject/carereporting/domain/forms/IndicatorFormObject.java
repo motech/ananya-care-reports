@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.ReportEntity;
+import org.motechproject.carereporting.domain.TrendEntity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -46,6 +47,9 @@ public class IndicatorFormObject implements Serializable {
     @NotEmpty
     private String name;
 
+    @NotNull
+    private TrendEntity trend;
+
     public IndicatorFormObject() {
 
     }
@@ -64,6 +68,14 @@ public class IndicatorFormObject implements Serializable {
         this.reports = reports;
         this.frequency = frequency;
         this.name = name;
+    }
+
+    public TrendEntity getTrend() {
+        return trend;
+    }
+
+    public void setTrend(TrendEntity trend) {
+        this.trend = trend;
     }
 
     public Integer getId() {

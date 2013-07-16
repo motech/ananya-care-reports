@@ -104,3 +104,11 @@ form#indicatorForm div#formButtons {
     color: #333333;
     text-align: center;
 }
+
+.performance-summary-category {
+    font-weight: bold;
+}
+
+.performance-summary-category td {
+    background-color: #FFFF98 !important;
+}

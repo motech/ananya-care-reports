@@ -73,9 +73,11 @@ care.controller('dashboardController', function($scope, $http) {
 
     $scope.drawCharts = function() {
         var colCount = 0,
-            table = $('#tab' + $scope.dashboard.id),
+            div = $('#tab' + $scope.dashboard.id),
+            table = angular.element('<table/>'),
             tr = angular.element('<tr/>');
-        table.html('');
+        div.html('');
+        div.append(table);
         table.append(tr);
         if ($scope.dashboard.indicatorCategory != null) {
             for (var i in $scope.dashboard.indicatorCategory.indicators) {
@@ -112,7 +114,13 @@ care.controller('dashboardController', function($scope, $http) {
     $scope.tabChanged = function(dashboard) {
         $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
-        $scope.drawCharts();
+        if (dashboard.name === "Performance summary") {
+            //fetch trends...
+        } else if (dashboard.name === "Map report") {
+
+        } else {
+            $scope.drawCharts();
+        }
 
         $scope.$watch('areaId', function(newValue, oldValue) {
             if ($scope.previousAreaId != $scope.areaId) {
@@ -125,4 +133,25 @@ care.controller('dashboardController', function($scope, $http) {
     $scope.fetchDashboards();
     $scope.fetchAreas();
 
+    $scope.indicatorCategories = [
+        {name: "Category1",
+         indicators: [{
+            name: "indicator1",
+            trend: -1
+         }, {
+            name: "indicator2",
+            trend: 0
+         }]},
+         {name: "Category2",
+         indicators: [{
+            name: "indicator3",
+            trend: 1
+         }, {
+            name: "indicator4",
+            trend: 0
+         }, {
+            name: "indicator5",
+            trend: 1
+         }]}
+        ];
 });

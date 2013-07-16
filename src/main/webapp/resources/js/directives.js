@@ -57,4 +57,53 @@
            };
         });
 
+        widgetModule.directive('indicatorsTrend', function () {
+               return {
+                   restrict: 'A',
+                   link: function (scope, element, attrs) {
+                        var indicatorCategory, tr, spanTrend, indicator,
+                            trend, labelClass;
+                        for (var c in scope.indicatorCategories) {
+                            if (!scope.indicatorCategories.hasOwnProperty(c)) {
+                                continue;
+                            }
+                            indicatorCategory = scope.indicatorCategories[c];
+                            tr = angular.element("<tr/>").addClass("performance-summary-category").append(
+                                angular.element("<td/>").attr("colspan", "2").html(indicatorCategory.name));
+                            element.append(tr);
+
+                            for (var i in indicatorCategory.indicators) {
+                                if (!indicatorCategory.indicators.hasOwnProperty(i)) {
+                                    continue;
+                                }
+                                indicator = indicatorCategory.indicators[i];
+                                switch (indicator.trend) {
+                                case 0:
+                                    trend = scope.msg('trends.trend.neutral');
+                                    labelClass = "label-info";
+                                    break;
+                                case 1:
+                                    trend = scope.msg('trends.trend.positive');
+                                    labelClass = "label-success";
+                                    break;
+                                case -1:
+                                    trend = scope.msg('trends.trend.negative');
+                                    labelClass = "label-important";
+                                    break;
+                                }
+                                tr = angular.element("<tr/>").append(
+                                    angular.element("<td/>").html(indicator.name)
+                                ).append(
+                                    angular.element("<td/>").append(
+                                        angular.element("<span/>").html(trend).addClass("label").addClass(labelClass)
+                                    )
+                                );
+                                element.append(tr);
+                            }
+                        }
+
+                   }
+               };
+            });
+
 }());

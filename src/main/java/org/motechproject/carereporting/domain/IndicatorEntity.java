@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -79,6 +80,10 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.ListIndicatorNames.class })
     private String name;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "trend_id")
+    private TrendEntity trend;
+
     public IndicatorEntity() {
 
     }
@@ -107,6 +112,14 @@ public class IndicatorEntity extends AbstractEntity {
                 report.setIndicator(this);
             }
         }
+    }
+
+    public TrendEntity getTrend() {
+        return trend;
+    }
+
+    public void setTrend(TrendEntity trend) {
+        this.trend = trend;
     }
 
     public IndicatorTypeEntity getIndicatorType() {

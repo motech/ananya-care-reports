@@ -21,8 +21,16 @@ public class SerieBuilder {
         return this;
     }
 
+    public SerieBuilder point(BigDecimal x, double y) {
+        return point(x, BigDecimal.valueOf(y));
+    }
+
     public SerieBuilder point(double x, double y) {
         return point(BigDecimal.valueOf(x), BigDecimal.valueOf(y));
+    }
+
+    public SerieBuilder point(BigDecimal x, Integer y) {
+        return point(x, BigDecimal.valueOf(y));
     }
 
     public SerieBuilder point(Integer x, Integer y) {

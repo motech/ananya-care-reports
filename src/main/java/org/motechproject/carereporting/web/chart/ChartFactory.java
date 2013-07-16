@@ -13,7 +13,6 @@ import org.motechproject.carereporting.web.chart.builder.SerieBuilder;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Random;
 
 public final class ChartFactory {
 
@@ -44,7 +43,10 @@ public final class ChartFactory {
 
     public static Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         double barWidth = .5;
-        Random random = new Random();
+            BigDecimal latestIndicatorValue = values.size() != 0
+                    ? values.get(values.size()-1).getValue()
+                    : BigDecimal.ZERO;
+
         return createTemplateChart(indicator.getName())
                 .bars(new BarsBuilder()
                         .show(true)
@@ -56,26 +58,18 @@ public final class ChartFactory {
                         .autoScaleMargin(1))
                 .serie(new SerieBuilder()
                         .label("Actual")
-                        .point(random.nextInt(50) + 11, 1)
-                        .point(random.nextInt(50) + 11, 3))
+                        .point(latestIndicatorValue, BigDecimal.ONE))
                 .serie(new SerieBuilder()
                         .label("Scheduled")
-                        .point(random.nextInt(50) + 11, 1 + barWidth)
-                        .point(random.nextInt(50) + 11, 3 + barWidth))
+                        .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + barWidth))
                 .build();
     }
 
     public static Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        BigDecimal averageValueFromAllIndicatorValues = BigDecimal.ZERO;
+        BigDecimal latestIndicatorValue = values.size() != 0
+                ? values.get(values.size()-1).getValue()
+                : BigDecimal.ZERO;
 
-        if (values.size() != 0) {
-            for (IndicatorValueEntity value: values) {
-                averageValueFromAllIndicatorValues =
-                        averageValueFromAllIndicatorValues.add(value.getValue());
-            }
-            averageValueFromAllIndicatorValues =
-                    averageValueFromAllIndicatorValues.divide(BigDecimal.valueOf(values.size()));
-        }
         return createTemplateChart(indicator.getName())
                 .grid(new GridBuilder()
                         .verticalLines(false)
@@ -89,10 +83,10 @@ public final class ChartFactory {
                         .explode(6))
                 .serie(new SerieBuilder()
                         .label("Option1")
-                        .point(BigDecimal.ZERO, averageValueFromAllIndicatorValues))
+                        .point(BigDecimal.ZERO, latestIndicatorValue))
                 .serie(new SerieBuilder()
                         .label("Option2")
-                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(averageValueFromAllIndicatorValues)))
+                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(latestIndicatorValue)))
                 .build();
     }
 

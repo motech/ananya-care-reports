@@ -146,6 +146,7 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
                 indicatorFormObject.getFrequency(),
                 indicatorFormObject.getName());
 
+        indicatorEntity.setTrend(indicatorFormObject.getTrend());
         indicatorDao.save(indicatorEntity);
     }
 

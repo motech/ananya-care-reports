@@ -275,6 +275,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator(
 	indicator_id serial NOT NULL,
 	type_id integer NOT NULL,
 	area_id integer NOT NULL,
+	trend_id integer NOT NULL,
 	complex_condition_id integer,
 	computed_field_id integer NOT NULL,
 	frequency integer NOT NULL,
@@ -493,4 +494,18 @@ ALTER TABLE reporting.indicator_category
 ALTER TABLE reporting.condition
     ADD CONSTRAINT condition_computed_field_id_fk FOREIGN KEY (computed_field_id)
     REFERENCES reporting.computed_field (computed_field_id) MATCH FULL
+    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
+
+CREATE TABLE IF NOT EXISTS reporting.trend (
+    trend_id serial NOT NULL,
+    positive_diff decimal(19,6) NOT NULL,
+    negative_diff decimal(19,6) NOT NULL,
+    creation_date timestamp,
+    modification_date timestamp,
+    CONSTRAINT trend_pk PRIMARY KEY (trend_id)
+);
+
+ALTER TABLE reporting.indicator
+    ADD CONSTRAINT indicator_trend_id_fk FOREIGN KEY (trend_id)
+    REFERENCES reporting.trend (trend_id) MATCH FULL
     ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;

@@ -7,7 +7,17 @@
 </select>
 <tabset>
     <tab select="tabChanged(dashboard)" ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
-        <table id="tab{{dashboard.id}}">
+        <div id="tab{{dashboard.id}}">
+        </div>
+        <table id="performanceHistory" class="table table-bordered table-striped table-hover" ng-show="dashboard.name == 'Performance summary'">
+            <thead>
+                <tr>
+                    <th>{{msg('trends.indicator')}}</th>
+                    <th>{{msg('trends.trend')}}</th>
+                </tr>
+            </thead>
+            <tbody indicators-trend>
+            </tbody>
         </table>
     </tab>
 </tabset>

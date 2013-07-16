@@ -129,6 +129,16 @@
                     <label for="complexCondition">{{msg('indicators.form.label.complexCondition')}}:</label>
                     <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in listComplexConditions" class="input-block-level"></select>
                 </div>
+				<div class="nested-well">
+                    <fieldset>
+                        <legend>{{msg('indicators.form.trend')}}:</legend>
+                        <label for="trendPositive"><i class="icon-arrow-up"></i> {{msg('indicators.form.trendPositive.label')}}: </label>
+                        <input id="trendPositive" pattern="-?[0-9]+(.[0-9]+)?" type="text" ng-model="indicator.trend.positiveDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendPositive.placeholder')}}" required />
+                        <label for="trendNegative"><i class="icon-arrow-down"></i> {{msg('indicators.form.trendNegative.label')}}: </label>
+                        <input id="trendNegative" pattern="-?[0-9]+(.[0-9]+)?" type="text" ng-model="indicator.trend.negativeDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendNegative.placeholder')}}" required />
+                        <p class="text-info text-center"><span class="label label-info">?</span> Trend will remain neutral if change won't be significant enough.</p>
+                    </fieldset>
+                </div>
                 <div class="row-fluid" id="formButtons">
                     <div class="btn-group">
                         <button class="btn pull-left" ng-click="launchDialog()" ng-disabled="listForms.length <= 0">{{msg('indicators.form.createNewComplexCondition')}}</button>
