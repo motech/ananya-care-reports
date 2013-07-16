@@ -88,6 +88,8 @@ public class IndicatorValueCalculatorScheduler {
                 return new CountIndicatorValueCalculator(careDataSource, indicator);
             case "Percentage":
                 return new PercentageIndicatorValueCalculator(careDataSource, indicator);
+            case "Sum":
+                return new SumIndicatorValueCalculator(careDataSource, indicator);
         }
         throw new IllegalArgumentException("Indicator type " +
                 indicator.getIndicatorType().getName() + " not supported.");

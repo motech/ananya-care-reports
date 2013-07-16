@@ -45,12 +45,12 @@ public class DashboardEntity extends AbstractEntity {
     @JsonView({ DashboardJsonView.class })
     private Short tabPosition;
 
-    @OneToOne(mappedBy = "dashboard")
+    @OneToOne(mappedBy = "dashboard", cascade = CascadeType.ALL)
     @JsonView({ DashboardJsonView.class })
     private IndicatorCategoryEntity indicatorCategory;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "dashboard_user", joinColumns = { @JoinColumn(name = "dashboard_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<UserEntity> owners;

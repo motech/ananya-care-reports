@@ -7,6 +7,7 @@ import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,8 +30,11 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
     private String name;
 
-    @NotNull
-    @OneToOne
+    @Column (name = "short_code")
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
+    private String shortCode;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "dashboard_id")
     private DashboardEntity dashboard;
 
@@ -52,6 +56,14 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getShortCode() {
+        return shortCode;
+    }
+
+    public void setShortCode(String shortName) {
+        this.shortCode = shortName;
     }
 
     @JsonIgnore

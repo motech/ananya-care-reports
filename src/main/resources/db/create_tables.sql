@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_category(
 	indicator_category_id serial NOT NULL,
 	dashboard_id integer NOT NULL,
 	name character varying(100) NOT NULL,
+	short_code character varying(4) NOT NULL,
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT indicator_category_pk PRIMARY KEY (indicator_category_id),

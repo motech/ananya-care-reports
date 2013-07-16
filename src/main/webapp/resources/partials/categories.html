@@ -5,12 +5,14 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                <th>{{msg('category.shortcode')}}</th>
                 <th>{{msg('category.name')}}</th>
                 <th>{{msg('category.remove')}}</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="cat in category">
+                <td><a href="#/categories/{{cat.id}}">{{cat.shortCode}}</a></td>
                 <td><a href="#/categories/{{cat.id}}">{{cat.name}}</a></td>
                 <td><span class="btn btn-link"
                     ng-click="deleteCategory(cat);"><i

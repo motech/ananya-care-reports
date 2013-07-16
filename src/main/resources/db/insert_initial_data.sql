@@ -24,14 +24,15 @@ INSERT INTO care_user_role (user_id, role_id) VALUES (1, 1), (1, 2);
 insert into indicator_type (name) values ('Average');
 insert into indicator_type (name) values ('Count');
 insert into indicator_type (name) values ('Percentage');
+insert into indicator_type (name) values ('Sum');
 
 insert into dashboard (name, tab_position) values ('Performance summary', 0);
 insert into dashboard (name, tab_position) values ('Map report', 1);
 insert into dashboard (name, tab_position) values ('Birth preparedness plan', 2);
 insert into dashboard (name, tab_position) values ('IFA Tablets', 3);
 
-insert into indicator_category (name, dashboard_id) values ('Birth preparedness plan', 3);
-insert into indicator_category (name, dashboard_id) values ('IFA Tablets', 4);
+insert into indicator_category (name, short_code, dashboard_id) values ('Birth preparedness plan', 'BP', 3);
+insert into indicator_category (name, short_code, dashboard_id) values ('IFA Tablets', 'IFA', 4);
 
 update dashboard set indicator_category_id = 1 where dashboard_id = 3;
 update dashboard set indicator_category_id = 2 where dashboard_id = 4;

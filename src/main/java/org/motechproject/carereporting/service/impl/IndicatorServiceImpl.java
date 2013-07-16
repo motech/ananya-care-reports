@@ -290,21 +290,22 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
+        DashboardEntity dashboardForCategory = createDashboardForNewIndicatorCategory(indicatorCategoryEntity.getName());
+        indicatorCategoryEntity.setDashboard(dashboardForCategory);
         indicatorCategoryDao.save(indicatorCategoryEntity);
-        createDashboardForNewIndicatorCategory(indicatorCategoryEntity.getName());
     }
 
-    private void createDashboardForNewIndicatorCategory(String name) {
+    private DashboardEntity createDashboardForNewIndicatorCategory(String name) {
         Short newDashboardTabPosition = dashboardService.getTabPositionForNewDashboard();
         Set<UserEntity> dashboardOwners = new HashSet<UserEntity>();
         dashboardOwners.add(userService.findCurrentlyLoggedUser());
-        DashboardEntity dashboardEntity = new DashboardEntity(name, newDashboardTabPosition, dashboardOwners);
-        dashboardService.createNewDashboard(dashboardEntity);
+        return new DashboardEntity(name, newDashboardTabPosition, dashboardOwners);
     }
 
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
+        indicatorCategoryEntity.getDashboard().setName(indicatorCategoryEntity.getName());
         indicatorCategoryDao.update(indicatorCategoryEntity);
     }
 
