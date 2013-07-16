@@ -16,6 +16,8 @@ import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
+import org.motechproject.carereporting.domain.forms.IndicatorWithTrend;
+import org.motechproject.carereporting.domain.forms.TrendIndicatorCategory;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -36,6 +39,10 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl extends AbstractService implements IndicatorService {
+
+    private static final int TREND_NEUTRAL = 0;
+    private static final int TREND_NEGATIVE = -1;
+    private static final int TREND_POSITIVE = 1;
 
     @Autowired
     private IndicatorDao indicatorDao;
@@ -353,5 +360,42 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         return indicatorValueDao.findIndicatorValuesForArea(indicatorId, areaId, earliestDate);
     }
 
+    @Override
+    @Transactional
+    public Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate) {
+        Set<TrendIndicatorCategory> categories = new LinkedHashSet<>();
+        Set<IndicatorCategoryEntity> indicatorCategories = findAllIndicatorCategories();
+        for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
+            TrendIndicatorCategory trendCategory = new TrendIndicatorCategory(indicatorCategory.getName());
+            categories.add(trendCategory);
+            for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
+                if (indicator.getOwners().contains(user)) {
+                    IndicatorWithTrend trendIndicator = new IndicatorWithTrend(indicator,
+                            getTrendForIndicator(user.getArea(), indicator, startDate, endDate));
+                    trendCategory.getIndicators().add(trendIndicator);
+                }
+            }
+        }
+        return categories;
+    }
+
+    private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {
+
+        IndicatorValueEntity startValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, startDate);
+        IndicatorValueEntity endValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, endDate);
+
+        if (startValue == null || endValue == null) {
+            return TREND_NEUTRAL;
+        }
+
+        BigDecimal diff = endValue.getValue().subtract(startValue.getValue());
+
+        if (diff.compareTo(indicator.getTrend().getNegativeDiff()) < 0) {
+            return TREND_NEGATIVE;
+        } else if (diff.compareTo(indicator.getTrend().getPositiveDiff()) > 0) {
+            return TREND_POSITIVE;
+        }
+        return TREND_NEUTRAL;
+    }
 
 }

@@ -6,6 +6,7 @@ import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,5 +37,29 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
                 .add(Restrictions.gt("date", earliestDate))
                 .addOrder(Order.asc("date"));
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
+    }
+
+    public List<IndicatorValueEntity> findIndicatorValuesForAreaWithoutChildAreas(Integer indicatorId, Integer areaId) {
+        Criteria criteria = getCurrentSession()
+                .createCriteria(IndicatorValueEntity.class)
+                .add(Restrictions.eq("indicator.id", indicatorId))
+                .add(Restrictions.eq("area.id", areaId))
+                .addOrder(Order.asc("date"));
+        return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
+    }
+
+    @Override
+    public IndicatorValueEntity getIndicatorValueClosestToDate(AreaEntity area, IndicatorEntity indicator, Date date) {
+        List<IndicatorValueEntity> values = findIndicatorValuesForAreaWithoutChildAreas(indicator.getId(), area.getId());
+        Long minDiff = null;
+        IndicatorValueEntity value = null;
+        for (IndicatorValueEntity loopValue: values) {
+            long diff = Math.abs(date.getTime() - loopValue.getDate().getTime());
+            if (minDiff == null || diff < minDiff) {
+                minDiff = diff;
+                value = loopValue;
+            }
+        }
+        return value;
     }
 }

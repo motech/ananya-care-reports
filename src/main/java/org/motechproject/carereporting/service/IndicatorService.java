@@ -8,7 +8,9 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
+import org.motechproject.carereporting.domain.forms.TrendIndicatorCategory;
 
 import java.util.Date;
 import java.util.List;
@@ -71,4 +73,6 @@ public interface IndicatorService {
     void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
+
+    Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate);
 }

@@ -115,7 +115,7 @@ care.controller('dashboardController', function($scope, $http) {
         $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
         if (dashboard.name === "Performance summary") {
-            //fetch trends...
+            $scope.fetchTrends();
         } else if (dashboard.name === "Map report") {
 
         } else {
@@ -133,25 +133,53 @@ care.controller('dashboardController', function($scope, $http) {
     $scope.fetchDashboards();
     $scope.fetchAreas();
 
-    $scope.indicatorCategories = [
-        {name: "Category1",
-         indicators: [{
-            name: "indicator1",
-            trend: -1
-         }, {
-            name: "indicator2",
-            trend: 0
-         }]},
-         {name: "Category2",
-         indicators: [{
-            name: "indicator3",
-            trend: 1
-         }, {
-            name: "indicator4",
-            trend: 0
-         }, {
-            name: "indicator5",
-            trend: 1
-         }]}
-        ];
+    $scope.formatDate = function(date) {
+        var dd = date.getDate(),
+        mm = date.getMonth()+1,
+        yyyy = date.getFullYear();
+
+        if (dd<10) {
+            dd = '0' + dd
+        }
+        if (mm<10) {
+            mm = '0'+mm
+        }
+        date = dd + '-' + mm + '-' + yyyy;
+        return date;
+    }
+
+    $scope.getCurrentDateFormatted = function() {
+        return $scope.formatDate(new Date());
+    }
+
+    $scope.getPreviousMonthDateFormatted = function() {
+        var date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        return $scope.formatDate(date);
+    }
+
+    $scope.startDate = $scope.getPreviousMonthDateFormatted();
+    $scope.endDate = $scope.getCurrentDateFormatted();
+
+    $scope.fetchTrends = function() {
+        var startDate = $("#start-date input").val(),
+            endDate = $("#end-date input").val();
+        if (startDate == undefined) {
+            startDate = $scope.startDate;
+        }
+        if (endDate == undefined) {
+            endDate = $scope.endDate;
+        }
+        $http.get('api/trend?startDate=' + startDate + '&endDate=' + endDate)
+          .success(function(indicatorCategories) {
+            $scope.indicatorCategories = indicatorCategories;
+          });
+    };
+
+    $scope.analyze = function() {
+        $scope.fetchTrends();
+    }
+
+    $scope.fetchTrends();
+
 });

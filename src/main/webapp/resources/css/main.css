@@ -112,3 +112,7 @@ form#indicatorForm div#formButtons {
 .performance-summary-category td {
     background-color: #FFFF98 !important;
 }
+
+.date-label {
+    font-weight: bold !important;
+}

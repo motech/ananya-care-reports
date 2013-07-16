@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.TrendJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -27,7 +28,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class, TrendJsonView.class})
     private String name;
 
     @Column (name = "short_code")
@@ -39,7 +40,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     private DashboardEntity dashboard;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ DashboardJsonView.class, TrendJsonView.class })
     private Set<IndicatorEntity> indicators;
 
     public IndicatorCategoryEntity() {
