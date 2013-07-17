@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -19,9 +21,11 @@ import java.math.BigDecimal;
 public class TrendEntity extends AbstractEntity {
 
     @Column(name = "positive_diff")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private BigDecimal positiveDiff;
 
     @Column(name = "negative_diff")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private BigDecimal negativeDiff;
 
     @OneToOne(mappedBy = "trend")

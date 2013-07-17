@@ -105,13 +105,14 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope.indicator.frequency = indicator.frequency;
                 $scope.indicator.computedField=indicator.computedField.id;
                 $scope.indicator.reports=indicator.reports;
-                $scope.complexCondition = indicator.complexCondition;
+                $scope.indicator.complexCondition = indicator.complexCondition.id;
                 $scope.categories = indicator.categories;
                 $scope.indicator.indicatorType=indicator.indicatorType.id;
                 for(var i = 0 ; i< indicator.owners.length ; i++){
                     $scope.selectedOwners[indicator.owners[i].id]=true;
                 }
                 $scope.setAreas();
+                $scope.indicator.trend = indicator.trend;
                 $scope.setReportTypes(indicator);
                 $scope.removeUsedCategories();
                 $scope.selectedForm=indicator.computedField.form.id;

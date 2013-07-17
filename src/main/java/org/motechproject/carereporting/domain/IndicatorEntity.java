@@ -90,6 +90,7 @@ public class IndicatorEntity extends AbstractEntity {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "trend_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private TrendEntity trend;
 
     public IndicatorEntity() {
