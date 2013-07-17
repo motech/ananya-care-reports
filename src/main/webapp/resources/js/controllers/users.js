@@ -35,7 +35,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
 
 });
 
-care.controller('userController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('userController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.userId = $routeParams.userId;
@@ -128,7 +128,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/users" );
             }).error(function(response) {
-                $errorsDialogService.apiError($scope, response);
+                $errorService.apiError($scope, response);
             });
 
     };

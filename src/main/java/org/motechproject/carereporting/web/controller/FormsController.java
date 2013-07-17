@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.initializers.FormEntityInitializer;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
@@ -34,6 +35,9 @@ public class FormsController extends BaseController {
 
     @Autowired
     private FieldService fieldService;
+
+    @Autowired
+    private FormEntityInitializer formEntityInitializer;
 
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
@@ -105,5 +109,11 @@ public class FormsController extends BaseController {
         }
 
         formsService.updateForm(form);
+    }
+
+    @RequestMapping(value = "reload", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public void reloadFormEntitiesFromDB() {
+        formEntityInitializer.loadFormsFromDB();
     }
 }

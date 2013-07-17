@@ -7,10 +7,13 @@ import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.enums.FieldType;
 import org.motechproject.carereporting.service.FieldService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,17 +26,26 @@ public class FieldServiceImpl extends AbstractService implements FieldService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional
+    @Autowired
+    private DataSource dataSource;
+
+    @Override
+    public List<String> findAllFieldNamesByFormId(Integer formId) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        String query = String.format("select name from reporting.field where form_id = %s", formId);
+
+        return jdbcTemplate.queryForList(query, String.class);
+    }
+
     @Override
     public Set<FieldEntity> findAllFieldsByFormId(Integer formId) {
         Query query = sessionFactory.getCurrentSession()
-                .createQuery("from FieldEntity where form.id = :formId");
+            .createQuery("from FieldEntity where form.id = :formId");
         query.setParameter("formId", formId);
 
         return new LinkedHashSet<FieldEntity>(query.list());
     }
 
-    @Transactional
     @Override
     public Set<FieldEntity> findAllFieldsByType(FieldType fieldType) {
         Query query = sessionFactory.getCurrentSession()
@@ -43,7 +55,6 @@ public class FieldServiceImpl extends AbstractService implements FieldService {
         return new LinkedHashSet<FieldEntity>(query.list());
     }
 
-    @Transactional
     @Override
     public FieldEntity findFieldById(Integer fieldId) {
         return fieldDao.findById(fieldId);

@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.controller('formController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('formController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('forms.title');
 
     $scope.formId = $routeParams.formId;
@@ -11,7 +11,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(form) {
                 $scope.careForm = form;
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotLoadForm'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorService.genericError($scope, 'forms.form.error.cannotLoadForm');
             });
     };
 
@@ -21,7 +21,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
                 $scope.tables = tables;
             })
             .error(function() {
-                $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotLoadTables'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorService.genericError($scope, 'forms.form.error.cannotLoadTables');
             });
     };
 
@@ -31,7 +31,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/forms" );
             }).error(function(response) {
-                $dialog.messageBox("Error", $scope.msg('forms.form.error.submit'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorService.genericError($scope, 'forms.form.error.submit');
             });
     };
 
@@ -42,8 +42,14 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
     };
 });
 
-care.controller('formListController', function($scope, $http, $dialog) {
+care.controller('formListController', function($scope, $http, $dialog, $errorService, $simplifiedHttpService) {
     $scope.title = $scope.msg('forms.title');
+
+    var reloadMsg = $scope.msg('forms.list.reloadForms');
+    var loadingMsg = $scope.msg('forms.list.reloadForms.loading');
+
+    $scope.isListReloaded = false;
+    $scope.reloadButtonMessage = reloadMsg;
 
     $scope.fetchForms = function() {
         $http.get('api/forms').success(function(forms) {
@@ -67,30 +73,26 @@ care.controller('formListController', function($scope, $http, $dialog) {
                             }
                         })
                         .error(function(data, status, header, config) {
-                            $dialog.messageBox("Error", $scope.msg('forms.form.error.cannotReceiveForeignKey', forms[config.index].tableName), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                            $errorService.genericError($scope, 'forms.form.error.cannotReceiveForeignKey');
                         })
                 }
             }
+
             $scope.mother_forms = mother_forms;
             $scope.child_forms = child_forms;
             $scope.other_forms = other_forms;
+            $scope.isListReloaded = true;
+            $scope.reloadButtonMessage = reloadMsg;
         });
     };
 
-    $scope.deleteForm = function(form) {
-        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
-        $dialog.messageBox($scope.msg('forms.list.confirmDelete.header'), $scope.msg('forms.list.confirmDelete.message', form.displayName), btns)
-            .open()
-            .then(function(result) {
-                if (result === 'yes') {
-                    $http({method: 'DELETE', url: 'api/forms/' + form.id})
-                    .success(function(data, status, headers, config) {
-                        $scope.fetchForms();
-                    }).error(function(response) {
-                        $dialog.messageBox("Error", $scope.msg('forms.list.error.delete'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-                    });
-                }
-            });
+    $scope.reloadForms = function() {
+        $scope.isListReloaded = false;
+        $scope.reloadButtonMessage = loadingMsg;
+
+        $simplifiedHttpService.get($scope, 'api/forms/reload', 'forms.list.error.cannotReloadForms', function() {
+            $scope.fetchForms();
+        });
     };
 
     $scope.fetchForms();

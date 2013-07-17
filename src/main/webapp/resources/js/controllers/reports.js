@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 
-care.controller('reportController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('reportController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('reports.title');
 
     $scope.reportId = $routeParams.reportId;
@@ -43,7 +43,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
             .success(function(response) {
                 $location.path( "/report" );
             }).error(function(response) {
-                $errorsDialogService.apiError($scope, response);
+                $errorService.apiError($scope, response);
             });
     };
 

@@ -32,7 +32,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 
 });
 
-care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('users.title');
 
     var isEdit = ($routeParams.roleId !== undefined);
@@ -104,7 +104,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
         }).success(function(response) {
                 $location.path("/users/roles");
             }).error(function(response) {
-                $errorsDialogService.apiError($scope, response);
+                $errorService.apiError($scope, response);
         });
     };
 });

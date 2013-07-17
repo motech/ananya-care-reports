@@ -16,7 +16,7 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorsDialogService) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorService) {
     $scope.indicators = [];
     $scope.selectedCategory = null;
     $scope.category = {};
@@ -26,7 +26,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             .success(function(indicators) {
                 $scope.indicators = indicators;
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
+                $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
             });
     };
     $scope.fetchIndicators();
@@ -44,7 +44,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     .success(function(data, status, headers, config) {
                         $scope.selectedCategory=null;
                     }).error(function(response) {
-                        $errorsDialogService.genericError($scope, 'indicators.list.error.delete');
+                        $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
                 }
             });
@@ -104,7 +104,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             .success(function(users) {
                 $scope.users = users;
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadUserList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadUserList');
             });
     };
     $scope.fetchUsers();
@@ -201,7 +201,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.selectedState = $scope.listState[0].id;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadStateList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadStateList');
             });
     };
 
@@ -222,7 +222,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope[selectedItemName] = '-1';
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.' + msgAffix);
+                $errorService.genericError($scope, 'indicators.form.error.' + msgAffix);
             });
     };
 
@@ -286,7 +286,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.typeValid = true;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadIndicatorTypeList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadIndicatorTypeList');
             });
     };
     $scope.fetchIndicatorTypes();
@@ -302,7 +302,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.addReportTypeDisabled = false;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadReportTypeList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadReportTypeList');
             });
     };
     $scope.fetchReportTypes();
@@ -343,7 +343,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.selectedCategory = "0";
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadCategoryList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadCategoryList');
             });
     };
     $scope.fetchCategories();
@@ -372,7 +372,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.indicator.complexCondition = '-1';
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComplexConditionList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComplexConditionList');
             });
     }
     $scope.fetchComplexConditions();
@@ -492,7 +492,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
             });
     };
 
@@ -538,7 +538,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }).success(function() {
                 $location.path( "/indicators" );
             }).error(function(response) {
-                $errorsDialogService.apiError($scope, response);
+                $errorService.apiError($scope, response);
         });
     };
 
@@ -553,7 +553,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.newCondition.form = $scope.listForms[0].id;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadFormList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormList');
             });
     };
     $scope.fetchForms();
@@ -617,7 +617,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                     $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0];
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComparisonSymbolList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComparisonSymbolList');
             });
     };
     $scope.fetchComparisonSymbols();
@@ -648,7 +648,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                     $scope.newCondition.computedField = $scope.listComputedFields[0];
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
+                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
             });
     };
 
@@ -758,7 +758,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 indicatorScope.fetchComplexConditions();
                 $location.path( "/indicators" );
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotCreateComplexCondition');
+                $errorService.genericError($scope, 'indicators.form.error.cannotCreateComplexCondition');
         });
     };
 });
@@ -795,7 +795,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedOperator = $scope.listOperators[0];
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadOperatorList');
+                $errorService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadOperatorList');
             });
     };
     $scope.fetchOperators();
@@ -810,7 +810,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedField = $scope.listFields[0].id;
                 }
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadFieldList');
+                $errorService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadFieldList');
             });
     };
     $scope.fetchFields();
@@ -887,7 +887,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
         }).success(function() {
             indicatorScope.fetchComputedFields();
         }).error(function(response) {
-            $errorsDialogService.apiError($scope, response);
+            $errorService.apiError($scope, response);
         });
     };
 });

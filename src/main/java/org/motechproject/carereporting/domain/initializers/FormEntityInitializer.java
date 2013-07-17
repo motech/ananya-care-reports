@@ -12,7 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -31,18 +35,31 @@ public class FormEntityInitializer {
     @Transactional(readOnly = false)
     public void loadFormsFromDB() {
         Set<String> formTables = formsService.getTables();
-        Set<FormEntity> formEntities = formsService.findAllFormsWithFields("fields");
-
-        for (FormEntity formEntity : formEntities) {
-            if (formTables.contains(formEntity.getTableName())) {
-                formTables.remove(formEntity.getTableName());
-            }
-        }
+        Set<FormEntity> formEntities = formsService.findAllForms();
+        Map<String, FormEntity> newFormEntities = new HashMap<>();
 
         for (String formTable : formTables) {
             FormEntity formEntity = new FormEntity();
             formEntity.setTableName(formTable);
             formEntity.setDisplayName(formTable);
+            newFormEntities.put(formTable, formEntity);
+        }
+
+        for (FormEntity formEntity : formEntities) {
+            if (formTables.contains(formEntity.getTableName())) {
+                newFormEntities.remove(formEntity.getTableName());
+            }
+
+            createFields(formEntity);
+        }
+
+        Iterator<FormEntity> mapIterator = newFormEntities.values().iterator();
+        while (mapIterator.hasNext()) {
+            FormEntity formEntity = mapIterator.next();
+
+            if (formEntity == null) {
+                continue;
+            }
 
             formsService.addForm(formEntity);
             createFields(formEntity);
@@ -52,10 +69,10 @@ public class FormEntityInitializer {
     @Transactional(readOnly = false)
     private void createFields(FormEntity formEntity) {
         Set<FieldEntity> fieldEntities = formsService.getFieldsByFormEntity(formEntity);
-        Set<FieldEntity> existingEntities = fieldService.findAllFieldsByFormId(formEntity.getId());
+        List<String> existingEntities = fieldService.findAllFieldNamesByFormId(formEntity.getId());
 
         for (FieldEntity fieldEntity : fieldEntities) {
-            if (existingEntities.contains(fieldEntity)) {
+            if (existingEntities.contains(fieldEntity.getName())) {
                 continue;
             }
 

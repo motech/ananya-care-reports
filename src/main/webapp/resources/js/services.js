@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.factory('$errorsDialogService', function($dialog) {
+care.factory('$errorService', function($dialog) {
     return {
         apiError: function(scope, response) {
             var errors = "<ul>";
@@ -38,13 +38,13 @@ care.factory('$errorsDialogService', function($dialog) {
     }
 });
 
-care.factory('$simplifiedHttpService', function($http, $errorsDialogService) {
+care.factory('$simplifiedHttpService', function($http, $errorService) {
     return {
         get: function(scope, url, errorMessageCode, successFunction) {
             $http.get(url)
                 .success(successFunction)
                 .error(function() {
-                    $errorsDialogService.genericError(scope, errorMessageCode);
+                    $errorService.genericError(scope, errorMessageCode);
                 });
         }
     }
