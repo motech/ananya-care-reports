@@ -18,6 +18,8 @@ Array.prototype.notEmpty = function() {
 
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorsDialogService) {
     $scope.indicators = [];
+    $scope.selectedCategory = null;
+    $scope.category = {};
 
     $scope.fetchIndicators = function() {
         $http.get('api/users/indicators')
@@ -40,13 +42,40 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                         url: 'api/indicator/' + indicator.id
                     })
                     .success(function(data, status, headers, config) {
-                        $scope.fetchIndicators();
+                        $scope.selectedCategory=null;
                     }).error(function(response) {
                         $errorsDialogService.genericError($scope, 'indicators.list.error.delete');
                     });
                 }
             });
     };
+
+    $scope.fetchCategories = function() {
+        $http.get('api/indicator/category').success(function(category) {
+            $scope.category = category;
+        }).error(function(response) {
+            $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.load'), [{label: 'Ok', cssClass: 'btn'}]).open();
+        });
+    };
+
+    $scope.fetchCategories();
+
+    $scope.fetchIndicatorsByCategoryId = function() {
+        $http.get('api/indicator/filter/' + $scope.selectedCategory)
+            .success(function(indicators) {
+                $scope.indicators = indicators;
+            }).error(function() {
+                $errorsDialogService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
+            });
+    };
+
+    $scope.$watch('selectedCategory', function() {
+        if($scope.selectedCategory){
+            $scope.fetchIndicatorsByCategoryId();
+        } else {
+            $scope.fetchIndicators();
+        }
+        });
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams) {

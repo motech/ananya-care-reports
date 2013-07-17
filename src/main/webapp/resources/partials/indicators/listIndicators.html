@@ -1,26 +1,33 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<div ng-show="indicators.length > 0">
+<div>
     <h1 class="text-center">{{msg('indicators.list.header')}}</h1>
-
     <div class="span8 offset2 well">
-        <table class="table table-hover">
+        <div>
+            <b>Choose category:</b>
+            <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category">
+                <option value=""> All categories</option>
+            </select>
+        </div>
+        <table class="table table-hover" ng-show="indicators.length > 0">
             <thead>
-            <tr>
-                <th>{{msg('indicators.list.displayName')}}</th>
-                <th>{{msg('actions')}}</th>
-            </tr>
+                <tr>
+                    <th>{{msg('indicators.list.displayName')}}</th>
+                    <th>{{msg('actions')}}</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="item in indicators | orderBy:'+name'">
-                <td><a href="#/indicators/{{item.id}}">{{item.name}}</a></td>
-                <td><span class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
-            </tr>
+                <tr ng-repeat="item in indicators | orderBy:'+name'">
+                    <td><a href="#/indicators/{{item.id}}">{{item.name}}</a></td>
+                    <td><span class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
+                </tr>
             </tbody>
         </table>
+        <br ng-show="indicators.length == 0"/>
+        <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
     </div>
 </div>
 <p class="text-center">
-    <span class="text-info" ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></span>
+
     <a class="btn btn-primary" href="#/indicators/new">{{msg('indicators.list.addNew')}}</a>
 </p>

@@ -44,6 +44,15 @@ public class IndicatorController extends BaseController {
                 indicatorService.findAllIndicators());
     }
 
+    @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getIndicatorListByCategoryId(@PathVariable Integer categoryId) {
+        return this.writeAsString(BaseView.class,
+                indicatorService.getIndicatorsByCategoryId(categoryId));
+    }
+
+
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

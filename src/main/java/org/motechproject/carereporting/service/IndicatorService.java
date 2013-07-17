@@ -28,6 +28,8 @@ public interface IndicatorService {
 
     Set<IndicatorEntity> findAllIndicators();
 
+    Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId);
+
     Set<IndicatorEntity> findAllIndicatorsUnderUserArea(Integer userId);
 
     IndicatorEntity findIndicatorById(Integer id);

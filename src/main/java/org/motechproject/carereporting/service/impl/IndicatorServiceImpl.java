@@ -101,6 +101,12 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         return indicatorDao.findAll();
     }
 
+    @Transactional
+    @Override
+    public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
+        return indicatorDao.getIndicatorsByCategoryId(categoryId);
+    }
+
     private Set<AreaEntity> getAllChildEntities(AreaEntity areaEntity) {
         Set<AreaEntity> areas = new LinkedHashSet<>();
 
