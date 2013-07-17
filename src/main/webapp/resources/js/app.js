@@ -6,6 +6,7 @@
             .when('/', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'dashboardController' })
             .when('/indicators', { templateUrl: 'resources/partials/indicators/listIndicators.html', controller: 'indicatorListController' })
             .when('/indicators/new', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
+            .when('/indicators/recalculate', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'recalculateIndicatorsController' })
             .when('/indicators/:indicatorId', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
             .when('/forms', { templateUrl: 'resources/partials/forms/list.html', controller: 'formListController' })
             .when('/forms/new', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })

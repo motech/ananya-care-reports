@@ -862,3 +862,19 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
         });
     };
 });
+
+care.controller('recalculateIndicatorsController', function($scope, $http, $dialog, $location) {
+    $scope.recalculateIndicators = function() {
+        $http({
+            url: "api/indicator/recalculate",
+            method: "GET",
+            data: null,
+            headers: { 'Content-Type': 'application/json' }
+        }).error(function() {
+            $dialog.messageBox("Error", $scope.msg('dashboard.recalculate.error'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+        });
+    };
+
+    $location.path( "api/dashboards" );
+    $scope.recalculateIndicators();
+});

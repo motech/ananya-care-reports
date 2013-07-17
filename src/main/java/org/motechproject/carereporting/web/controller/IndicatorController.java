@@ -7,6 +7,7 @@ import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
+import org.motechproject.carereporting.indicator.IndicatorValueCalculatorScheduler;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private IndicatorService indicatorService;
+
+    @Autowired
+    private IndicatorValueCalculatorScheduler indicatorValueCalculatorScheduler;
 
     // IndicatorEntity
 
@@ -203,5 +207,14 @@ public class IndicatorController extends BaseController {
         IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
 
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
+    }
+
+    @RequestMapping(value = "/recalculate", method = RequestMethod.GET,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void recalculateAllIndicatorValues() {
+        indicatorValueCalculatorScheduler.calculateIndicatorValues();
     }
 }

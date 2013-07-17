@@ -103,6 +103,7 @@
                  </li>
              </ul>
              <div class="pull-right">
+                 <a href="#/indicators/recalculate" class="btn">{{msg('dashboard.recalculate')}}</a>
                  <a href="logout" class="btn btn-info">{{msg('menu.logout')}}</a>
              </div>
          </div>
