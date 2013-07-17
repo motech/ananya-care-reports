@@ -54,14 +54,7 @@
              <a class="brand" style="font-size: 13px;" href="#">{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</a>
              <ul class="nav">
                  <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
-                  <sec:authorize access="hasRole('CAN_MANAGE_REPORTS')">
-                       <li class="dropdown">
-                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageReports')}}<b class="caret"></b></a>
-                           <ul class="dropdown-menu">
-                               <li><a href="#/report"><i class="icon-list"></i> {{msg('menu.manageReports.reportsList')}}</a></li>
-                           </ul>
-                       </li>
-                   </sec:authorize>
+                 <!-- TODO: Add `Manage reports` menu option when this feature is implemented. -->
                  <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageIndicators')}}<b class="caret"></b></a>
                      <ul class="dropdown-menu">
