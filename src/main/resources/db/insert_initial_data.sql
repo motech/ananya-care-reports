@@ -54,3 +54,27 @@ insert into operator_type (name) values ('MUL');
 insert into operator_type (name) values ('DIV');
 
 INSERT INTO report_type (name) VALUES ('Bar Chart'), ('Line Chart'), ('Pie Chart');
+
+ALTER TABLE indicator DROP CONSTRAINT indicator_computed_field_id_fk;
+ALTER TABLE condition DROP CONSTRAINT condition_computed_field_id_fk;
+
+INSERT INTO trend (positive_diff, negative_diff, creation_date, modification_date)
+VALUES (5, -5, now(), now());
+
+INSERT INTO complex_condition(name, creation_date, modification_date)
+VALUES ('ifa tablets >= 90', now(), now());
+
+INSERT INTO condition(complex_condition_id, computed_field_id, comparison_symbol_id, comparison_value, creation_date, modification_date)
+VALUES (1, 453, 4, 90, now(), now());
+
+INSERT INTO indicator (type_id, area_id, trend_id, complex_condition_id, computed_field_id, frequency, name, creation_date, modification_date)
+VALUES (3, 1, 1, 1, 453, 30, '% of mothers who received at least 90 IFA tablets', now(), now());
+
+INSERT INTO indicator_indicator_category(indicator_id, indicator_category_id) VALUES (1, 2);
+
+INSERT INTO report (indicator_id, report_type_id, creation_date, modification_date)
+VALUES (1, 3, now(), now());
+
+INSERT INTO report_dashboard(report_id, dashboard_id) VALUES (1, 4);
+
+INSERT INTO indicator_user(indicator_id, user_id) values (1, 1);

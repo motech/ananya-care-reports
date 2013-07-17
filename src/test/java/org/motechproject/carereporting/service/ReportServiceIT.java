@@ -46,7 +46,7 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
 
         ReportEntity reportEntity = createReport();
 
-        assertEquals(1, reportService.findAllReports().size());
+        assertEquals(2, reportService.findAllReports().size());
 
         reportEntity = reportService.findReportById(reportEntity.getId());
         assertNotNull(reportEntity);
@@ -68,7 +68,7 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
     public void testDeleteReport() throws Exception {
         ReportEntity reportEntity = createReport();
         reportService.deleteReport(reportEntity);
-        assertEquals(0, reportService.findAllReports().size());
+        assertEquals(1, reportService.findAllReports().size());
     }
 
 }
