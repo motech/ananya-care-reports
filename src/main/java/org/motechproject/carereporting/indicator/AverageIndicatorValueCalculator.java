@@ -9,8 +9,9 @@ import java.math.BigDecimal;
 
 public class AverageIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
-    private static final String AVERAGE_QUERY = "SELECT avg(%s) FROM care.%s " + TABLE_ALIAS + " " + FLW_JOIN +
-            " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE + " AND %s";
+    private static final String AVERAGE_QUERY_WITHOUT_CONDITIONS = "SELECT avg(%s) FROM care.%s "
+            + TABLE_ALIAS + " " + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
+    private static final String AVERAGE_QUERY_WITH_CONDITIONS = AVERAGE_QUERY_WITHOUT_CONDITIONS + " AND %s";
 
     public AverageIndicatorValueCalculator(DataSource dataSource, IndicatorEntity indicator) {
         super(dataSource, indicator);
@@ -19,8 +20,7 @@ public class AverageIndicatorValueCalculator extends AbstractIndicatorValueCalcu
     @Override
     public BigDecimal calculateIndicatorValueForArea(AreaEntity area) {
 
-        String queryWithConditions = String.format(
-                AVERAGE_QUERY,
+        String averageQuery = prepareQuery(
                 getTableName(),
                 getField(),
                 buildWhereClause());
@@ -29,7 +29,13 @@ public class AverageIndicatorValueCalculator extends AbstractIndicatorValueCalcu
         params.addValue("areaName", area.getName());
         params.addValue("frequency", indicator.getFrequency());
 
-        return executeQuery(queryWithConditions, params);
+        return executeQuery(averageQuery, params);
     }
 
+    private String prepareQuery(String tableName, String fieldName, String conditionsWhereClause) {
+        if (conditionsWhereClause == null) {
+            return String.format(AVERAGE_QUERY_WITHOUT_CONDITIONS, fieldName, tableName, conditionsWhereClause);
+        }
+        return String.format(AVERAGE_QUERY_WITH_CONDITIONS, fieldName, tableName, conditionsWhereClause);
+    }
 }

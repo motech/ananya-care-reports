@@ -9,8 +9,9 @@ import java.math.BigDecimal;
 
 public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
-    private static final String COUNT_QUERY = "SELECT count(%s) FROM care.%s " + TABLE_ALIAS + " " + FLW_JOIN +
-            " WHERE " + AREA_WHERE_CLAUSE +" AND " + FREQUENCY_WHERE_CLAUSE + " AND (%s)";
+    private static final String COUNT_QUERY_WITHOUT_CONDITIONS = "SELECT count(%s) FROM care.%s "
+            + TABLE_ALIAS + " " + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE +" AND " + FREQUENCY_WHERE_CLAUSE;
+    private static final String COUNT_QUERY_WITH_CONDITIONS = COUNT_QUERY_WITHOUT_CONDITIONS + " AND (%s)";
 
     public CountIndicatorValueCalculator(DataSource dataSource, IndicatorEntity indicator) {
         super(dataSource, indicator);
@@ -32,8 +33,10 @@ public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalcula
     }
 
     private String prepareQuery(String tableName, String fieldName, String conditionsWhereClause) {
-        return String.format(COUNT_QUERY, fieldName,
-                tableName, conditionsWhereClause);
+        if (conditionsWhereClause == null) {
+            return String.format(COUNT_QUERY_WITHOUT_CONDITIONS, fieldName, tableName, conditionsWhereClause);
+        }
+        return String.format(COUNT_QUERY_WITH_CONDITIONS, fieldName, tableName, conditionsWhereClause);
     }
 
 }

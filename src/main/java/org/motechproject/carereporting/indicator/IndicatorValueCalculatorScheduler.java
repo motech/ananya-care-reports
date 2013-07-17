@@ -58,9 +58,11 @@ public class IndicatorValueCalculatorScheduler {
             AbstractIndicatorValueCalculator calculator = getIndicatorValueCalculator(indicator);
             BigDecimal indicatorValue = calculator.calculateIndicatorValueForArea(area);
 
-            IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(),
-                    indicator, area, indicatorValue);
-            indicatorService.createNewIndicatorValue(indicatorValueEntity);
+            if (indicatorValue != null) {
+                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(),
+                        indicator, area, indicatorValue);
+                indicatorService.createNewIndicatorValue(indicatorValueEntity);
+            }
         }
     }
 

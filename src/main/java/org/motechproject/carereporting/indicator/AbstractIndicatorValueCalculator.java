@@ -32,6 +32,10 @@ public abstract class AbstractIndicatorValueCalculator {
     protected String buildWhereClause() {
         StringBuilder sb = new StringBuilder();
 
+        if (indicator.getComplexCondition() == null) {
+            return null;
+        }
+
         Iterator<ConditionEntity> iterator =
                 indicator.getComplexCondition().getConditions().iterator();
         while (iterator.hasNext()) {

@@ -256,7 +256,7 @@ care.controller('chartDetailsController', function($rootScope, $scope, $http, $s
     $scope.fetchChartData();
 
     $scope.formatDate = function(date) {
-        return moment(date).format("LL");
+        return moment(date).format("LLL");
     };
 
     $scope.goBack = function() {
