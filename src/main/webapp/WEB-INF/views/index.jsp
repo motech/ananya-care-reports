@@ -15,10 +15,12 @@
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="resources/css/jquery-ui-1.10.3.custom.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
     <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
     <script src="resources/lib/jquery/jquery.i18n.properties-min-1.0.9.js"></script>
+    <script src="resources/lib/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="resources/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/angular.min.js" type="text/javascript"></script>
     <script src="resources/lib/angular/angular-resource.min.js" type="text/javascript"></script>

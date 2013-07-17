@@ -5,7 +5,7 @@
 <select class="pull-right" ng-model="areaId" ng-hide="dashboard.name == 'Performance summary'">
     <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="$index == 0" ng-repeat="area in areas">{{area.name}}</option>
 </select>
-<tabset>
+<tabset id="dashboards-tabs">
     <tab select="tabChanged(dashboard)" ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
         <div id="tab{{dashboard.id}}">
         </div>

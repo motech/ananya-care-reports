@@ -41,7 +41,7 @@ public class DashboardEntity extends AbstractEntity {
     private String name;
 
     @NotNull
-    @Column(name = "tab_position", unique = true)
+    @Column(name = "tab_position")
     @JsonView({ DashboardJsonView.class })
     private Short tabPosition;
 

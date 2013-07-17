@@ -333,7 +333,6 @@ CREATE TABLE IF NOT EXISTS reporting.dashboard(
 	CONSTRAINT dashboard_indicator_category_fk FOREIGN KEY (indicator_category_id)
     REFERENCES reporting.indicator_category (indicator_category_id) MATCH FULL
     ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
-	CONSTRAINT dashboard_tab_position_uk UNIQUE (tab_position),
 	CONSTRAINT dashboard_name_uk UNIQUE (name)
 );
 

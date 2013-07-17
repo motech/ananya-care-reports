@@ -48,6 +48,22 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/dashboards').success(function(dashboards) {
             dashboards.sort($scope.compareDashboardPositions);
             $scope.dashboards = dashboards;
+            $("#dashboards-tabs ul").sortable({update: function(event, ui) {
+
+                var tabsPositions = [],
+                    tabs = $("#dashboards-tabs").find("li"),
+                    len = tabs.length;
+
+                tabs.each(function(index) {
+                    tabsPositions.push({
+                        position: index,
+                        name: $(this).attr("heading")
+                    });
+                    if (index == len-1) {
+                        $http.post('/api/dashboards/save-positions', tabsPositions);
+                    }
+                });
+            }});
         });
     };
 
@@ -182,33 +198,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchDashboards();
     $scope.fetchAreas();
 
-    $scope.formatDate = function(date) {
-        var dd = date.getDate(),
-        mm = date.getMonth()+1,
-        yyyy = date.getFullYear();
-
-        if (dd<10) {
-            dd = '0' + dd
-        }
-        if (mm<10) {
-            mm = '0'+mm
-        }
-        date = dd + '-' + mm + '-' + yyyy;
-        return date;
-    }
-
-    $scope.getCurrentDateFormatted = function() {
-        return $scope.formatDate(new Date());
-    }
-
-    $scope.getPreviousMonthDateFormatted = function() {
-        var date = new Date();
-        date.setMonth(date.getMonth() - 1);
-        return $scope.formatDate(date);
-    }
-
-    $scope.startDate = $scope.getPreviousMonthDateFormatted();
-    $scope.endDate = $scope.getCurrentDateFormatted();
+    $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
+    $scope.endDate = moment().format('DD-MM-YYYY');
 
     $scope.fetchTrends = function() {
         var startDate = $("#start-date input").val(),
@@ -230,7 +221,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.fetchTrends();
-
 });
 
 care.controller('chartDetailsController', function($rootScope, $scope, $http, $simplifiedHttpService, $location) {
