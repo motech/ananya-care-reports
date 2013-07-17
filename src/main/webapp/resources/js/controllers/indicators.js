@@ -594,6 +594,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     $scope.listComparisonSymbols = [];
     $scope.listComputedFields = [];
     $scope.newConditions = [];
+    $scope.showForm = false;
     $scope.newCondition = {
         form: -1,
         comparisonSymbol: -1,
@@ -639,7 +640,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
 
     $scope.fetchComputedFields = function () {
-        $http.get('api/forms/' + $scope.newCondition.form.id + '/computedfields')
+        $http.get('api/forms/' + indicatorScope.selectedForm + '/computedfields')
             .success(function(computedFields) {
                 computedFields.sortByField('name');
                 $scope.listComputedFields = $scope.removeExistingComputedFields(computedFields);

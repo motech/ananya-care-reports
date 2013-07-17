@@ -4,9 +4,9 @@
     <h1 class="text-center">{{msg('indicators.list.header')}}</h1>
     <div class="span8 offset2 well">
         <div>
-            <b>Choose category:</b>
+            <b>{{msg('indicators.list.chooseCategory')}}</b>
             <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category">
-                <option value=""> All categories</option>
+                <option value="">{{msg('indicators.list.allCategories')}}</option>
             </select>
         </div>
         <table class="table table-hover" ng-show="indicators.length > 0">
