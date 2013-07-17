@@ -60,7 +60,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         name: $(this).attr("heading")
                     });
                     if (index == len-1) {
-                        $http.post('/api/dashboards/save-positions', tabsPositions);
+                        $http.post('api/dashboards/save-positions', tabsPositions);
                     }
                 });
             }});
@@ -234,13 +234,13 @@ care.controller('chartDetailsController', function($rootScope, $scope, $http, $s
     delete $rootScope.indicatorId;
     delete $rootScope.areaId;
 
-    var url = '/api/chart/data/?indicatorId=' + indicatorId;
+    var url = 'api/chart/data/?indicatorId=' + indicatorId;
     if (!isNaN(areaId) && isFinite(areaId)) {
         url += '&areaId=' + areaId;
     }
 
     $scope.fetchIndicator = function() {
-        $simplifiedHttpService.get($scope, '/api/indicator/' + indicatorId,
+        $simplifiedHttpService.get($scope, 'api/indicator/' + indicatorId,
                 'charts.details.cannotLoadIndicator', function(indicator) {
             $scope.indicator = indicator;
         });
