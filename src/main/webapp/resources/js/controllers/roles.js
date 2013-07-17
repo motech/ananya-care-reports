@@ -104,7 +104,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
         }).success(function(response) {
                 $location.path("/users/roles");
             }).error(function(response) {
-                $errorsDialogService($scope, response);
+                $errorsDialogService.apiError($scope, response);
         });
     };
 });

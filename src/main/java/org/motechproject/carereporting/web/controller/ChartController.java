@@ -49,6 +49,25 @@ public class ChartController {
         return prepareChart(indicator, chartType, indicatorValues);
     }
 
+    @RequestMapping(value = "/data", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<IndicatorValueEntity> getChartValues(@RequestParam Integer indicatorId,
+            @RequestParam(required = false) Integer areaId) {
+
+        Integer area = areaId != null ? areaId :
+                userService.findCurrentlyLoggedUser().getArea().getId();
+
+        IndicatorEntity indicator = indicatorService.findIndicatorById(indicatorId);
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_YEAR, -indicator.getFrequency());
+        List<IndicatorValueEntity> indicatorValues =
+                indicatorService.findIndicatorValuesForArea(indicatorId, area, c.getTime());
+
+        return indicatorValues;
+    }
+
     private Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
         switch (chartType) {
             case "pie chart":

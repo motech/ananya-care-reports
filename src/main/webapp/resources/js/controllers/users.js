@@ -128,7 +128,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/users" );
             }).error(function(response) {
-                $errorsDialogService($scope, response);
+                $errorsDialogService.apiError($scope, response);
             });
 
     };

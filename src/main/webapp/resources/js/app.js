@@ -3,7 +3,7 @@
 
     angular.module('care', ['ngResource', 'ui.bootstrap', 'localization', '$strap.directives']).config(['$routeProvider', function($routeProvider) {
         $routeProvider
-            .when('/', { templateUrl: 'resources/partials/dashboard.html', controller: 'dashboardController' })
+            .when('/', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'dashboardController' })
             .when('/indicators', { templateUrl: 'resources/partials/indicators/listIndicators.html', controller: 'indicatorListController' })
             .when('/indicators/new', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
             .when('/forms', { templateUrl: 'resources/partials/forms/list.html', controller: 'formListController' })

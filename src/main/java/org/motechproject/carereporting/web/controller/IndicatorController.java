@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -35,7 +36,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getIndicatorList() {
-        return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
+        return this.writeAsString(BaseView.class,
                 indicatorService.findAllIndicators());
     }
 

@@ -4,7 +4,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
@@ -51,7 +51,7 @@ public class UserController extends BaseController {
                 (UsernamePasswordAuthenticationToken)principal;
         UserEntity userEntity = (UserEntity)usernamePasswordAuthenticationToken.getPrincipal();
 
-        return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
+        return this.writeAsString(BaseView.class,
                 indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
     }
 

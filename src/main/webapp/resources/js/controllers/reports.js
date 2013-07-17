@@ -43,7 +43,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
             .success(function(response) {
                 $location.path( "/report" );
             }).error(function(response) {
-                $errorsDialogService($scope, response);
+                $errorsDialogService.apiError($scope, response);
             });
     };
 

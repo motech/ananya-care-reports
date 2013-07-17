@@ -87,9 +87,26 @@ form#indicatorForm div#formButtons {
     max-width: none;
 }
 
+td.chart-td {
+    margin: 0px;
+    padding: 0px;
+    min-width: 300px !important;
+    width: 300px !important;
+    max-width: 300px !important;
+    min-height: 300px !important;
+    height: 300px !important;
+    max-height: 300px !important;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
 .chart-container {
-    width: 300px;
-    height: 300px;
+    min-width: 300px !important;
+    width: 300px !important;
+    min-height: 300px !important;
+    height: 300px !important;
+    overflow: auto;
 }
 
 .chart-container-wrapper {
@@ -115,4 +132,12 @@ form#indicatorForm div#formButtons {
 
 .date-label {
     font-weight: bold !important;
+}
+
+.centered {
+    margin: 0 auto !important;
+    float: none !important;
+
+h5 {
+    margin: 15px;
 }

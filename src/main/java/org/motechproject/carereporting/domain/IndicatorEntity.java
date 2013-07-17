@@ -3,9 +3,9 @@ package org.motechproject.carereporting.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
-import org.motechproject.carereporting.domain.views.TrendJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -78,7 +78,7 @@ public class IndicatorEntity extends AbstractEntity {
     @NotNull
     @NotEmpty
     @Column(name = "name", unique = true, nullable = false)
-    @JsonView({ IndicatorJsonView.ListIndicatorNames.class, TrendJsonView.class })
+    @JsonView({ BaseView.class })
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

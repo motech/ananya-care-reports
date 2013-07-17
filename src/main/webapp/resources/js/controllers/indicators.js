@@ -16,7 +16,7 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorsDialogService) {
     $scope.indicators = [];
 
     $scope.fetchIndicators = function() {
@@ -24,7 +24,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             .success(function(indicators) {
                 $scope.indicators = indicators;
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotLoadIndicatorList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
             });
     };
     $scope.fetchIndicators();
@@ -42,7 +42,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     .success(function(data, status, headers, config) {
                         $scope.fetchIndicators();
                     }).error(function(response) {
-                        $dialog.messageBox("Error", $scope.msg('indicators.list.error.delete'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                        $errorsDialogService.genericError($scope, 'indicators.list.error.delete');
                     });
                 }
             });
@@ -73,7 +73,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             .success(function(users) {
                 $scope.users = users;
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadUserList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadUserList');
             });
     };
     $scope.fetchUsers();
@@ -103,7 +103,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.selectedState = $scope.listState[0].id;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadStateList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadStateList');
             });
     };
 
@@ -119,7 +119,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope[listName].unshift({ id: '-1', name: 'ALL' });
                 $scope[selectedItemName] = '-1';
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.' + msgAffix), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.' + msgAffix);
             });
     };
 
@@ -183,7 +183,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.typeValid = true;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadIndicatorTypeList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadIndicatorTypeList');
             });
     };
     $scope.fetchIndicatorTypes();
@@ -199,7 +199,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.addReportTypeDisabled = false;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadCategoryList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadReportTypeList');
             });
     };
     $scope.fetchReportTypes();
@@ -240,7 +240,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.selectedCategory = "0";
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadCategoryList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadCategoryList');
             });
     };
     $scope.fetchCategories();
@@ -258,7 +258,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.indicator.complexCondition = '-1';
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComplexConditionList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComplexConditionList');
             });
     }
     $scope.fetchComplexConditions();
@@ -378,7 +378,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComputedFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
             });
     };
 
@@ -419,8 +419,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
                 $location.path( "/indicators" );
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateIndicator'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            }).error(function(response) {
+                $errorsDialogService.apiError($scope, response);
         });
     };
 
@@ -436,7 +436,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                     $scope.listFields = $scope.listForms[0].fields;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadFormList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadFormList');
             });
     };
     $scope.fetchForms();
@@ -497,7 +497,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                     $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0];
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComparisonSymbolList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComparisonSymbolList');
             });
     };
     $scope.fetchComparisonSymbols();
@@ -528,7 +528,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                     $scope.newCondition.computedField = $scope.listComputedFields[0];
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadComputedFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
             });
     };
 
@@ -638,7 +638,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 indicatorScope.fetchComplexConditions();
                 $location.path( "/indicators" );
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotCreateComplexCondition'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.form.error.cannotCreateComplexCondition');
         });
     };
 });
@@ -675,7 +675,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedOperator = $scope.listOperators[0];
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotLoadOperatorList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadOperatorList');
             });
     };
     $scope.fetchOperators();
@@ -690,7 +690,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedField = $scope.listFields[0].id;
                 }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotLoadFieldList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadFieldList');
             });
     };
     $scope.fetchFields();
@@ -766,8 +766,8 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
             indicatorScope.fetchComputedFields();
-        }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.computedFieldDialog.error.cannotCreateNewComputedField'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+        }).error(function(response) {
+            $errorsDialogService.apiError($scope, response);
         });
     };
 });
