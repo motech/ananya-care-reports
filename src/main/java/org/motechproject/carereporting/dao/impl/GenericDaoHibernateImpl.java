@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.dao.impl;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,6 +47,18 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     }
 
     @Override
+    public Set<T> findAllWithFields(String... fieldNames) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+        if (fieldNames.length > 0) {
+            for (String fieldName : fieldNames) {
+                criteria = criteria.setFetchMode(fieldName, FetchMode.JOIN);
+            }
+        }
+
+        return new HashSet<T>(criteria.list());
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T findById(Integer id) {
         if (id == null) {
@@ -52,6 +66,28 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
         }
 
         T entity = (T) sessionFactory.getCurrentSession().get(type, id);
+
+        if (entity == null) {
+            throw new CareResourceNotFoundRuntimeException(type, id);
+        }
+
+        return entity;
+    }
+
+    @Override
+    public T findByIdWithFields(Integer id, String... fieldNames) {
+        if (id == null) {
+            throw new CareNullArgumentRuntimeException();
+        }
+
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+        if (fieldNames.length > 0) {
+            for (String fieldName : fieldNames) {
+                criteria = criteria.setFetchMode(fieldName, FetchMode.JOIN);
+            }
+        }
+
+        T entity = (T) criteria.list().get(0);
 
         if (entity == null) {
             throw new CareResourceNotFoundRuntimeException(type, id);

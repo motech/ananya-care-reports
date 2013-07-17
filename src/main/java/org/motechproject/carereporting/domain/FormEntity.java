@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
@@ -8,7 +7,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,12 +29,12 @@ public class FormEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class })
     private String displayName;
 
-    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "form")
     @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private Set<ComputedFieldEntity> computedFields;
 
-    @OneToMany(mappedBy = "form", fetch = FetchType.EAGER)
-    @JsonView(IndicatorJsonView.IndicatorDetails.class)
+    @OneToMany(mappedBy = "form")
+    @JsonView({ IndicatorJsonView.ListFormFields.class })
     private Set<FieldEntity> fields;
 
     public String getTableName() {
@@ -55,7 +53,6 @@ public class FormEntity extends AbstractEntity {
         this.displayName = displayName;
     }
 
-    @JsonIgnore
     public Set<ComputedFieldEntity> getComputedFields() {
         return computedFields;
     }

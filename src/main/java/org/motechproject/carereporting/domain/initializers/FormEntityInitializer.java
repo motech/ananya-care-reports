@@ -31,7 +31,7 @@ public class FormEntityInitializer {
     @Transactional(readOnly = false)
     public void loadFormsFromDB() {
         Set<String> formTables = formsService.getTables();
-        Set<FormEntity> formEntities = formsService.findAllForms();
+        Set<FormEntity> formEntities = formsService.findAllFormsWithFields("fields");
 
         for (FormEntity formEntity : formEntities) {
             if (formTables.contains(formEntity.getTableName())) {

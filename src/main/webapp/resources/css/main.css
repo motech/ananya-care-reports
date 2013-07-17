@@ -87,6 +87,10 @@ form#indicatorForm div#formButtons {
     max-width: none;
 }
 
+.tab-content {
+    overflow: visible !important;
+}
+
 td.chart-td {
     margin: 0px;
     padding: 0px;
@@ -111,6 +115,10 @@ td.chart-td {
 
 .chart-container-wrapper {
     margin: 5px;
+    min-width: 300px !important;
+    width: 300px !important;
+    min-height: 300px !important;
+    height: 300px !important;
 }
 
 .chart-container-wrapper .title {

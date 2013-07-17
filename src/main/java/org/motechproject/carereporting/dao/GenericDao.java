@@ -9,7 +9,11 @@ public interface GenericDao<T extends AbstractEntity> {
 
     Set<T> findAll();
 
+    Set<T> findAllWithFields(String... fieldNames);
+
     T findById(Integer id);
+
+    T findByIdWithFields(Integer id, String... fieldNames);
 
     void save(T entity);
 

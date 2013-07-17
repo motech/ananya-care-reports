@@ -16,7 +16,11 @@ public interface FormsService {
 
     FormEntity findFormById(Integer formId);
 
+    FormEntity findFormByIdWithFields(Integer formId, String... fieldNames);
+
     Set<FormEntity> findAllForms();
+
+    Set<FormEntity> findAllFormsWithFields(String... fieldNames);
 
     Set<String> getTables();
 

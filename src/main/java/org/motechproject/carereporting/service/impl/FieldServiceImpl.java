@@ -4,10 +4,8 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.FieldDao;
 import org.motechproject.carereporting.domain.FieldEntity;
-import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.enums.FieldType;
 import org.motechproject.carereporting.service.FieldService;
-import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +21,16 @@ public class FieldServiceImpl extends AbstractService implements FieldService {
     private FieldDao fieldDao;
 
     @Autowired
-    private FormsService formsService;
-
-    @Autowired
     private SessionFactory sessionFactory;
 
     @Transactional
     @Override
     public Set<FieldEntity> findAllFieldsByFormId(Integer formId) {
-        FormEntity formEntity = formsService.findFormById(formId);
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from FieldEntity where form.id = :formId");
+        query.setParameter("formId", formId);
 
-        return formEntity.getFields();
+        return new LinkedHashSet<FieldEntity>(query.list());
     }
 
     @Transactional

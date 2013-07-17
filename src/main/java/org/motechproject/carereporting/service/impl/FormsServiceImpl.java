@@ -73,8 +73,18 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
     }
 
     @Override
+    public FormEntity findFormByIdWithFields(Integer formId, String... fieldNames) {
+        return formDao.findByIdWithFields(formId, fieldNames);
+    }
+
+    @Override
     public Set<FormEntity> findAllForms() {
         return formDao.findAll();
+    }
+
+    @Override
+    public Set<FormEntity> findAllFormsWithFields(String... fieldNames) {
+        return formDao.findAllWithFields(fieldNames);
     }
 
     @Override
@@ -138,7 +148,7 @@ public class FormsServiceImpl extends AbstractService implements FormsService {
 
     @Override
     public Set<ComputedFieldEntity> findAllComputedFieldsByFormId(Integer formId) {
-        return formDao.findById(formId).getComputedFields();
+        return formDao.findByIdWithFields(formId, "computedFields").getComputedFields();
     }
 }
 

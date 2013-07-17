@@ -453,10 +453,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         };
 
     $scope.fetchComputedFields = function () {
-        $http.get('api/forms/' + $scope.selectedForm)
-            .success(function(form) {
-                form.computedFields.sortByField('name');
-                $scope.listComputedFields = $scope.filterComputedFieldsByNumberType(form.computedFields);
+        $http.get('api/forms/' + $scope.selectedForm + '/computedfields')
+            .success(function(computedFields) {
+                computedFields.sortByField('name');
+                $scope.listComputedFields = $scope.filterComputedFieldsByNumberType(computedFields);
 
                 if ($scope.listComputedFields.notEmpty() && !$routeParams.indicatorId) {
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;
@@ -521,7 +521,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 if ($scope.listForms.notEmpty() && !$routeParams.indicatorId) {
                     $scope.selectedForm = $scope.listForms[0].id;
                     $scope.newCondition.form = $scope.listForms[0].id;
-                    $scope.listFields = $scope.listForms[0].fields;
                 }
             }).error(function() {
                 $errorsDialogService.genericError($scope, 'indicators.form.error.cannotLoadFormList');
@@ -772,10 +771,10 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
     $scope.fetchOperators();
 
     $scope.fetchFields = function() {
-        $http.get('api/forms/' + indicatorScope.selectedForm)
-            .success(function(form) {
-                form.fields.sortByField('name');
-                $scope.listFields = $scope.filterFieldsByNumberType(form.fields);
+        $http.get('api/forms/' + indicatorScope.selectedForm + '/fields')
+            .success(function(fields) {
+                fields.sortByField('name');
+                $scope.listFields = $scope.filterFieldsByNumberType(fields);
 
                 if ($scope.listFields.notEmpty()) {
                     $scope.selectedField = $scope.listFields[0].id;

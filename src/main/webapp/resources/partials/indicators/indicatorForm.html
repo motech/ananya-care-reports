@@ -121,15 +121,15 @@
                 <div class="nested-well">
                     <legend>{{msg('indicators.form.defineDataForIndicator')}}:</legend>
                     <label for="indicatorType">{{msg('indicators.form.aggregationType')}}: </label>
-                    <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for (key, item) in listIndicatorTypes | orderBy:'name'" class="input-block-level"></select>
+                    <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for item in listIndicatorTypes" class="input-block-level"></select>
                     <label for="form">{{msg('indicators.form.selectForm')}}: </label>
                     <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
                     <label for="computedField">{{msg('indicators.form.label.aggregatedField')}}:</label>
-                    <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for (key, item) in listComputedFields" class="input-block-level" required></select>
+                    <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for item in listComputedFields" class="input-block-level" required></select>
                     <label for="complexCondition">{{msg('indicators.form.label.complexCondition')}}:</label>
                     <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in listComplexConditions" class="input-block-level"></select>
                 </div>
-				<div class="nested-well">
+                <div class="nested-well">
                     <fieldset>
                         <legend>{{msg('indicators.form.trend')}}:</legend>
                         <label for="trendPositive"><i class="icon-arrow-up"></i> {{msg('indicators.form.trendPositive.label')}}: </label>
