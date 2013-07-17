@@ -31,6 +31,9 @@ public interface ReportService {
     void deleteReport(ReportEntity reportEntity);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
+    void deleteReportSet(Set<ReportEntity> reportsEntity);
+
+    @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void deleteReportById(Integer reportId);
 
     Set<ReportTypeEntity> findAllReportTypes();

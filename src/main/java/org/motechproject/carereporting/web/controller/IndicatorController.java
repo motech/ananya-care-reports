@@ -44,11 +44,11 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getIndicator(@PathVariable Integer indicatorId) {
-        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
+        return this.writeAsString(IndicatorJsonView.IndicatorModificationDetails.class,
                 indicatorService.findIndicatorById(indicatorId));
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

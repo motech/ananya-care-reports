@@ -2,6 +2,8 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -30,10 +32,12 @@ public class AreaEntity extends AbstractEntity {
     @NotNull
     @ManyToOne(targetEntity = LevelEntity.class)
     @JoinColumn(name = "level_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private LevelEntity level;
 
     @ManyToOne
     @JoinColumn(name = "parent_area_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private AreaEntity parentArea;
 
     @OneToMany(mappedBy = "parentArea")

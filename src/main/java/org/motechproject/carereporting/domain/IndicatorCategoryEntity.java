@@ -28,7 +28,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class, TrendJsonView.class})
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class, TrendJsonView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private String name;
 
     @Column (name = "short_code")
@@ -80,7 +80,6 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }
-
 
     public void setIndicators(Set<IndicatorEntity> indicators) {
         this.indicators = indicators;

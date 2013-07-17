@@ -35,32 +35,38 @@ public class IndicatorEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "indicator_type_id", nullable = false)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private IndicatorTypeEntity indicatorType;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private Set<IndicatorCategoryEntity> categories;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "area_id", referencedColumnName = "area_id", nullable = false)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private AreaEntity area;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private ComputedFieldEntity computedField;
 
     @ManyToOne
     @JoinColumn(name = "complex_condition_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private ComplexConditionEntity complexCondition;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = INDICATOR_ID_COLUMN_NAME) },
             inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private Set<UserEntity> owners;
 
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
@@ -68,11 +74,12 @@ public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
 
     @NotNull
     @Column(name = "frequency", nullable = false)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private Integer frequency;
 
     @NotNull

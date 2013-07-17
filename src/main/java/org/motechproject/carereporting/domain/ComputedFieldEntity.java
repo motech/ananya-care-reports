@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.enums.FieldType;
 
 import javax.persistence.AttributeOverride;
@@ -43,6 +44,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "form_id")
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
     private FormEntity form;
 
     @NotNull

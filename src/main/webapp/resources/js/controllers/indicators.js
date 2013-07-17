@@ -49,9 +49,10 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     };
 });
 
-care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location) {
+care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams) {
     $scope.title = $scope.msg('indicators.title');
 
+    $scope.reportIds = [];
     $scope.indicator = {};
     $scope.indicator.values = [];
     $scope.categories = [];
@@ -67,6 +68,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.reportTypes = [];
     $scope.listCategories = [];
     $scope.listComplexCondition = [];
+	$scope.indicator.area={};
 
     $scope.fetchUsers = function() {
         $http.get('api/users/')
@@ -92,6 +94,72 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.selectedAWC = null;
     $scope.listAWC = [];
     $scope.showAWC = false;
+    $scope.area = {};
+
+    $scope.fetchIndicatorAndFillDetails = function() {
+        $http.get('api/indicator/' + $routeParams.indicatorId)
+            .success(function(indicator) {
+                $scope.indicator.id = indicator.id;
+                $scope.indicator.name = indicator.name;
+                $scope.indicator.area = indicator.area;
+                $scope.indicator.frequency = indicator.frequency;
+                $scope.indicator.computedField=indicator.computedField.id;
+                $scope.indicator.reports=indicator.reports;
+                $scope.complexCondition = indicator.complexCondition;
+                $scope.categories = indicator.categories;
+                $scope.indicator.indicatorType=indicator.indicatorType.id;
+                for(var i = 0 ; i< indicator.owners.length ; i++){
+                    $scope.selectedOwners[indicator.owners[i].id]=true;
+                }
+                $scope.setAreas();
+                $scope.setReportTypes(indicator);
+                $scope.removeUsedCategories();
+                $scope.selectedForm=indicator.computedField.form.id;
+                $scope.ownersValid = true;
+                $scope.categoriesValid=true;
+                $scope.typeValid = true;
+            }).error(function() {
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadIndicatorDetails'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+    };
+
+    $scope.setReportTypes = function(indicator) {
+        for(var i = 0 ; i< indicator.reports.length ; i++){
+            $scope.reportIds.push(indicator.reports[i].id);
+            $scope.reportTypes.push(indicator.reports[i].reportType);
+            for (var j = 0 ; j < $scope.listReportTypes.length; j++) {
+                var reportType = $scope.listReportTypes[j];
+                if(indicator.reports[i].reportType.id == reportType.id)
+                    $scope.listReportTypes.splice($scope.listReportTypes.indexOf(reportType),1);
+            }
+        }
+    }
+
+    $scope.setAreas = function() {
+        switch ($scope.indicator.area.level.id){
+            case 5: $scope.area["selectedState"] = $scope.indicator.area.parentArea.parentArea.parentArea.parentArea.id;
+                    $scope.area["selectedDistrict"] = $scope.indicator.area.parentArea.parentArea.parentArea.id;
+                    $scope.area["selectedBlock"] = $scope.indicator.area.parentArea.parentArea.id;
+                    $scope.area["selectedHSC"] = $scope.indicator.area.parentArea.id;
+                    $scope.area["selectedAWC"] = $scope.indicator.area.id;
+                    break;
+            case 4: $scope.area["selectedState"] = $scope.indicator.area.parentArea.parentArea.parentArea.id;
+                    $scope.area["selectedDistrict"] = $scope.indicator.area.parentArea.parentArea.id;
+                    $scope.area["selectedBlock"] = $scope.indicator.area.parentArea.id;
+                    $scope.area["selectedHSC"] = $scope.indicator.area.id;
+                    break;
+            case 3: $scope.area["selectedState"] = $scope.indicator.area.parentArea.parentArea.id;
+                    $scope.area["selectedDistrict"] = $scope.indicator.area.parentArea.id;
+                    $scope.area["selectedBlock"] = $scope.indicator.area.id;
+                    break;
+            case 2: $scope.area["selectedState"] = $scope.indicator.area.parentArea.id;
+                    $scope.area["selectedDistrict"] = $scope.indicator.area.id;
+                    break;
+            case 1: $scope.area["selectedState"] = $scope.indicator.area.id;
+                    break;
+        }
+        $scope.selectedState = $scope.area["selectedState"];
+    }
 
     $scope.fetchStates = function() {
         $http.get('api/users/areas/level/1')
@@ -99,7 +167,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 states.sortByField('name');
                 $scope.listState = states;
 
-                if ($scope.listState.notEmpty()) {
+                if ($scope.listState.notEmpty() && !$routeParams.indicatorId) {
                     $scope.selectedState = $scope.listState[0].id;
                 }
             }).error(function() {
@@ -117,7 +185,12 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 items.sortByField('name');
                 $scope[listName] = items;
                 $scope[listName].unshift({ id: '-1', name: 'ALL' });
-                $scope[selectedItemName] = '-1';
+                if($scope.area.hasOwnProperty(selectedItemName)) {
+                    $scope[selectedItemName] = $scope.area[selectedItemName];
+                    delete $scope.area[selectedItemName];
+                } else {
+                    $scope[selectedItemName] = '-1';
+                }
             }).error(function() {
                 $errorsDialogService.genericError($scope, 'indicators.form.error.' + msgAffix);
             });
@@ -244,6 +317,17 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             });
     };
     $scope.fetchCategories();
+
+    $scope.removeUsedCategories = function() {
+            for (var i = 0 ; i < $scope.categories.length; i++) {
+                for (var j = 0 ; j < $scope.listCategories.length; j++) {
+                    var used_category_value = $scope.listCategories[j];
+                    if(used_category_value.id == $scope.categories[i].id){
+                        $scope.listCategories.splice($scope.listCategories.indexOf(used_category_value),1);
+                    }
+                }
+            }
+        };
 
     $scope.fetchComplexConditions = function() {
         $http.get('api/complexcondition')
@@ -395,6 +479,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             var report = {
                 reportType: $scope.reportTypes[i]
             };
+            if($scope.reportIds){
+                report.id=$scope.reportIds[i];
+                $scope.reportIds.splice[i,1];
+            }
 
             reports.push(report);
         }
@@ -413,8 +501,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
 
         $http({
-            url: "api/indicator",
-            method: "POST",
+            url: "api/indicator" + ($scope.indicator.id ? ('/' + $scope.indicator.id) : ''),
+            method: "PUT",
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
@@ -461,6 +549,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             show: true,
             backdrop: "static"
         });
+    };
+	if ($routeParams.indicatorId) {
+        $scope.fetchIndicatorAndFillDetails();
     };
 });
 

@@ -14,6 +14,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
 import org.motechproject.carereporting.domain.forms.IndicatorWithTrend;
@@ -23,6 +24,7 @@ import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +72,9 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReportService reportService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -175,11 +180,33 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
         indicatorEntity.setComputedField(findComputedFieldEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setComplexCondition(findComplexConditionEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setReports(indicatorFormObject.getReports());
+        indicatorEntity.setReports(setUpdatedReports(indicatorFormObject.getReports(), indicatorEntity));
         indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
         indicatorEntity.setName(indicatorFormObject.getName());
-
         indicatorDao.update(indicatorEntity);
+    }
+
+
+    private Set<ReportEntity> setUpdatedReports(Set<ReportEntity> reportsFromFormObject, IndicatorEntity indicatorEntity) {
+        Set<ReportEntity> reportsUpdated = new HashSet<>();
+        Set<ReportEntity> reportsToUpdate = indicatorEntity.getReports();
+        for (ReportEntity reportForm : reportsFromFormObject) {
+            if(reportForm.getId() == null){
+                reportForm.setIndicator(indicatorEntity);
+                reportsUpdated.add(reportForm);
+                continue;
+            }
+            for (ReportEntity reportToUpdate : reportsToUpdate) {
+                if (reportForm.getId() != null && reportForm.getId().equals(reportToUpdate.getId())) {
+                    reportToUpdate.setReportType(reportForm.getReportType());
+                    reportsUpdated.add(reportToUpdate);
+                    break;
+                }
+            }
+        }
+        reportsToUpdate.removeAll(reportsUpdated);
+        reportService.deleteReportSet(reportsToUpdate);
+        return reportsUpdated;
     }
 
     private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {

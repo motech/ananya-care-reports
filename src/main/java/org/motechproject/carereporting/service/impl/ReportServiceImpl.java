@@ -93,6 +93,14 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Override
     @Transactional(readOnly = false)
+    public void deleteReportSet(Set<ReportEntity> reportsEntity) {
+        for(ReportEntity reportEntity : reportsEntity){
+            reportDao.remove(reportEntity);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void deleteReportById(Integer reportId) {
         ReportEntity reportEntity = new ReportEntity(reportId);
         reportDao.remove(reportEntity);
