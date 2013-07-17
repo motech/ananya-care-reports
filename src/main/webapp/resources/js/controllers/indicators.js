@@ -458,7 +458,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 form.computedFields.sortByField('name');
                 $scope.listComputedFields = $scope.filterComputedFieldsByNumberType(form.computedFields);
 
-                if ($scope.listComputedFields.notEmpty()) {
+                if ($scope.listComputedFields.notEmpty() && !$routeParams.indicatorId) {
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;
                 }
             }).error(function() {
@@ -518,7 +518,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 forms.sortByField('displayName');
                 $scope.listForms = forms;
 
-                if ($scope.listForms.notEmpty()) {
+                if ($scope.listForms.notEmpty() && !$routeParams.indicatorId) {
                     $scope.selectedForm = $scope.listForms[0].id;
                     $scope.newCondition.form = $scope.listForms[0].id;
                     $scope.listFields = $scope.listForms[0].fields;
