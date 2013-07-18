@@ -40,7 +40,7 @@
                     return $q.reject(response);
                 }
                 if (status == 302 || //user session expired
-                   (status == 0 && data == "")) { //the server is probably down
+                    status == 0) { //the server is probably down
                     document.location.reload(true);
                     return;
                 }

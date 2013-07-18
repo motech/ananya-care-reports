@@ -79,7 +79,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
         });
 });
 
-care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams) {
+care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams, $errorService) {
     $scope.title = $scope.msg('indicators.title');
 
     $scope.reportIds = [];

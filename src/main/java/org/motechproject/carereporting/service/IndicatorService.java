@@ -15,6 +15,7 @@ import java.util.Set;
 
 public interface IndicatorService {
 
+    String HAS_ROLE_CAN_CREATE_INDICATORS = "hasRole('CAN_CREATE_INDICATORS')";
     String HAS_ROLE_CAN_REMOVE_INDICATORS = "hasRole('CAN_REMOVE_INDICATORS')";
     String HAS_ROLE_CAN_EDIT_INDICATORS = "hasRole('CAN_EDIT_INDICATORS')";
     String HAS_ROLE_CAN_CREATE_CATEGORIES = "hasRole('CAN_CREATE_CATEGORIES')";
@@ -29,8 +30,10 @@ public interface IndicatorService {
 
     IndicatorEntity findIndicatorById(Integer id);
 
+    @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
+    @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
     void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
