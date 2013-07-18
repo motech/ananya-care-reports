@@ -18,27 +18,27 @@ public class ReportFormObject implements Serializable {
     @NotNull
     private Integer reportTypeId;
 
+    private String labelX;
+
+    private String labelY;
+
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Integer getIndicatorId() {
         return indicatorId;
     }
 
-    public void setIndicatorId(Integer indicatorId) {
-        this.indicatorId = indicatorId;
-    }
-
     public Integer getReportTypeId() {
         return reportTypeId;
     }
 
-    public void setReportTypeId(Integer reportTypeId) {
-        this.reportTypeId = reportTypeId;
+    public String getLabelX() {
+        return labelX;
+    }
+
+    public String getLabelY() {
+        return labelY;
     }
 }

@@ -37,7 +37,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
     };
 });
 
-care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('reports.title');
 
     $scope.fetchReports = function() {
@@ -45,6 +45,26 @@ care.controller('reportListController', function($scope, $http, $routeParams, $l
             $scope.reports = reports;
         });
     };
+<<<<<<< HEAD
+
+    $scope.deleteReport = function(report) {
+        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+        $dialog.messageBox($scope.msg('reports.list.confirmDelete.header'), $scope.msg('reports.list.confirmDelete.message', report.name), btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({method: 'DELETE', url: 'api/report/' + report.id})
+                    .success(function(data, status, headers, config) {
+                        $scope.fetchReports();
+                    }).error(function(response) {
+                        $errorService.apiError($scope, response);
+                    });
+                }
+            });
+    };
+
+=======
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
     $scope.fetchReports();
 
 });

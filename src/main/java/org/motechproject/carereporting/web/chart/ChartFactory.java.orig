@@ -25,14 +25,18 @@ public final class ChartFactory {
     private ChartFactory() {
     }
 
-    @Autowired
-    private ReportService reportService;
-
+<<<<<<< HEAD
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
     private static final double BAR_WIDTH = .5;
     private static final int EXPLOSION_NUMBER = 6;
 
+    public static Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+=======
+    @Autowired
+    private ReportService reportService;
+
     public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
         return createTemplateChart(indicator.getName())
                 .xAxis(new AxisBuilder()
                         .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
@@ -54,7 +58,12 @@ public final class ChartFactory {
         return serieBuilder.build();
     }
 
+<<<<<<< HEAD
+    public static Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+=======
     public Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+        double barWidth = .5;
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
             BigDecimal latestIndicatorValue = values.size() != 0
                     ? values.get(values.size() - 1).getValue()
                     : BigDecimal.ZERO;
@@ -77,8 +86,13 @@ public final class ChartFactory {
                         .label(labelX)
                         .point(latestIndicatorValue, BigDecimal.ONE))
                 .serie(new SerieBuilder()
-                        .label(labelY)
+<<<<<<< HEAD
+                        .label("Scheduled")
                         .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + BAR_WIDTH))
+=======
+                        .label(labelY)
+                        .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + barWidth))
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
                 .build();
     }
 

@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.DashboardDao;
 import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
@@ -7,6 +9,8 @@ import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.motechproject.carereporting.domain.forms.ReportFormObject;
+import org.motechproject.carereporting.enums.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,9 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportTypeDao reportTypeDao;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     @Transactional
     public Set<ReportEntity> findAllReports() {
@@ -42,6 +49,17 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public ReportEntity findReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from ReportEntity where reportType.id = :reportTypeId"
+                        + " and indicator.id = :indicatorId");
+        query.setParameter("reportTypeId", reportType.getValue());
+        query.setParameter("indicatorId", indicatorId);
+
+        return (ReportEntity)query.list().get(0);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void createNewReport(ReportEntity reportEntity) {
         reportDao.save(reportEntity);
@@ -51,6 +69,7 @@ public class ReportServiceImpl implements ReportService {
     @Transactional(readOnly = false)
     public ReportEntity createNewReport(Integer indicatorId, Integer reportTypeId) {
         ReportEntity reportEntity = new ReportEntity(indicatorId, reportTypeId);
+
         try {
             reportDao.save(reportEntity);
             return reportEntity;
@@ -61,21 +80,30 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateReport(Integer reportId, Integer indicatorId, Integer reportTypeId) {
-        ReportEntity reportEntity = fetchAndUpdateReport(reportId, indicatorId, reportTypeId);
+    public void updateReport(ReportFormObject reportFormObject) {
+        ReportEntity reportEntity = fetchAndUpdateReport(
+                reportFormObject.getId(),
+                reportFormObject.getIndicatorId(),
+                reportFormObject.getReportTypeId(),
+                reportFormObject.getLabelX(),
+                reportFormObject.getLabelY());
+
         try {
-        reportDao.update(reportEntity);
+            reportDao.update(reportEntity);
         } catch (DataIntegrityViolationException | org.hibernate.exception.ConstraintViolationException e) {
             throw new EntityException(e);
         }
     }
 
-    private ReportEntity fetchAndUpdateReport(Integer reportId, Integer indicatorId, Integer reportTypeId) {
+    private ReportEntity fetchAndUpdateReport(Integer reportId, Integer indicatorId, Integer reportTypeId,
+            String labelX, String labelY) {
         ReportEntity reportEntity = reportDao.findById(reportId);
         IndicatorEntity indicatorEntity = new IndicatorEntity(indicatorId);
         reportEntity.setIndicator(indicatorEntity);
         ReportTypeEntity reportTypeEntity = new ReportTypeEntity(reportTypeId);
         reportEntity.setReportType(reportTypeEntity);
+        reportEntity.setLabelX(labelX);
+        reportEntity.setLabelY(labelY);
         return reportEntity;
     }
 

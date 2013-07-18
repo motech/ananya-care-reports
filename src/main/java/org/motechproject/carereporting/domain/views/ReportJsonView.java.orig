@@ -1,6 +1,12 @@
 package org.motechproject.carereporting.domain.views;
 
 public class ReportJsonView {
+<<<<<<< HEAD
+    public static class ReportDetails extends BaseView {
+
+    }
+=======
     public static class ReportList extends BaseView { }
     public static class ReportDetails extends BaseView { }
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
 }

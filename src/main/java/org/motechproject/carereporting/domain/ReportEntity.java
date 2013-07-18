@@ -2,8 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
-import org.motechproject.carereporting.domain.views.DashboardJsonView;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.ReportJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -27,15 +26,24 @@ public class ReportEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "report_type_id")
-    @JsonView({ReportJsonView.ReportDetails.class, DashboardJsonView.class, IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ BaseView.class })
     private ReportTypeEntity reportType;
 
     @ManyToOne
     @JoinColumn(name = "indicator_id")
+    @JsonView({ ReportJsonView.ReportDetails.class })
     private IndicatorEntity indicator;
 
     @ManyToMany(mappedBy = "reports")
     private Set<DashboardEntity> dashboards;
+
+    @Column(name = "label_x")
+    @JsonView({ ReportJsonView.ReportDetails.class })
+    private String labelX;
+
+    @Column(name = "label_y")
+    @JsonView({ ReportJsonView.ReportDetails.class })
+    private String labelY;
 
     public ReportEntity() {
 
@@ -60,10 +68,12 @@ public class ReportEntity extends AbstractEntity {
         return indicator;
     }
 
+    @JsonView({ ReportJsonView.ReportList.class })
     public Integer getIndicatorId() {
         return indicator != null ? indicator.getId() : null;
     }
 
+    @JsonView({ ReportJsonView.ReportList.class })
     public String getIndicatorName() {
         return indicator != null ? indicator.getName() : null;
     }
@@ -72,6 +82,7 @@ public class ReportEntity extends AbstractEntity {
         this.indicator = indicator;
     }
 
+    @JsonIgnore
     public ReportTypeEntity getReportType() {
         return reportType;
     }
@@ -84,11 +95,28 @@ public class ReportEntity extends AbstractEntity {
         this.reportType = reportType;
     }
 
+    @JsonIgnore
     public Set<DashboardEntity> getDashboards() {
         return dashboards;
     }
 
     public void setDashboards(Set<DashboardEntity> dashboards) {
         this.dashboards = dashboards;
+    }
+
+    public String getLabelX() {
+        return labelX;
+    }
+
+    public void setLabelX(String labelX) {
+        this.labelX = labelX;
+    }
+
+    public String getLabelY() {
+        return labelY;
+    }
+
+    public void setLabelY(String labelY) {
+        this.labelY = labelY;
     }
 }

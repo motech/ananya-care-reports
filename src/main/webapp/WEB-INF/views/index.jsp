@@ -68,6 +68,12 @@
                                  <li><a href="#/categories/new"><i class="icon-plus-sign"></i> {{msg('menu.manageCategories.add')}}</a></li>
                              </ul>
                          </li>
+                         <li class="dropdown-submenu">
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.reports')}}</a>
+                             <ul class="dropdown-menu">
+                                 <li><a href="#/reports"><i class="icon-list"></i> {{msg('menu.manageReports.list')}}</a></li>
+                             </ul>
+                          </li>
                      </ul>
                  </li>
                  <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">

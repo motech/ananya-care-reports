@@ -307,6 +307,8 @@ CREATE TABLE IF NOT EXISTS reporting.report(
 	report_id serial NOT NULL,
 	indicator_id integer NOT NULL,
 	report_type_id integer NOT NULL,
+	label_x character varying(30),
+	label_y character varying(30),
 	creation_date timestamp,
 	modification_date timestamp,
 	CONSTRAINT report_pk PRIMARY KEY (report_id),

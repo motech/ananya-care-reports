@@ -3,6 +3,8 @@ package org.motechproject.carereporting.service;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.motechproject.carereporting.domain.forms.ReportFormObject;
+import org.motechproject.carereporting.enums.ReportType;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -15,6 +17,8 @@ public interface ReportService {
 
     ReportEntity findReportById(Integer id);
 
+    ReportEntity findReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId);
+
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void createNewReport(ReportEntity reportEntity);
 
@@ -22,7 +26,7 @@ public interface ReportService {
     ReportEntity createNewReport(Integer indicatorId, Integer reportTypeId);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
-    void updateReport(Integer reportId, Integer indicatorId, Integer reportTypeId);
+    void updateReport(ReportFormObject reportFormObject);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void updateReport(ReportEntity reportEntity);

@@ -218,7 +218,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
                 var category = $scope.indicatorCategories[c];
                 var key = 'category_' + category.name;
-                $('tabset').find('li[heading="' + category.name + '"]').find('a').addClass('alert alert-info trend');
+                $('tabset').find('li[heading="' + category.name + '"]').find('a').addClass('alert alert-info tab-trend');
 
                 for (var i = 0; i < category.indicators.length; i++) {
                     if ($scope.trendPerCategory[key] === undefined) {

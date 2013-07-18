@@ -19,8 +19,8 @@
             .when('/categories', { templateUrl: 'resources/partials/categories.html', controller: 'categoriesListController'})
             .when('/categories/new', { templateUrl: 'resources/partials/addCategory.html', controller: 'categoriesController'})
             .when('/categories/:categoryId', { templateUrl: 'resources/partials/addCategory.html', controller: 'categoriesController'})
-            .when('/report/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
-            .when('/report', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
+            .when('/reports/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
+            .when('/reports', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
             .otherwise({ redirectTo: '/' });
 
 

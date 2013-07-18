@@ -78,9 +78,13 @@ public class ChartController {
             case "bar chart":
                 return chartFactory.createBarChart(indicator, values);
             case "line chart":
-                return chartFactory.createLineChart(indicator, values);
+<<<<<<< HEAD
+                return ChartFactory.createLineChart(indicator, values);
             default: throw new IllegalArgumentException("Chart type " + chartType +
                     " not supported");
+=======
+                return chartFactory.createLineChart(indicator, values);
+>>>>>>> CARE #41: Add the ability to modify report labels; updated report list view; updated chart label display
         }
     }
 }

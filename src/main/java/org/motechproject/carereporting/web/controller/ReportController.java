@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.forms.ReportFormObject;
 import org.motechproject.carereporting.domain.views.ReportJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @RequestMapping(value = "/api/report")
 @Controller
@@ -39,15 +37,17 @@ public class ReportController extends BaseController {
     @RequestMapping(value = "/{reportId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ReportEntity getReportById(@PathVariable Integer reportId) {
-        return reportService.findReportById(reportId);
+    public String getReportById(@PathVariable Integer reportId) {
+        return this.writeAsString(ReportJsonView.ReportDetails.class,
+                reportService.findReportById(reportId));
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<ReportEntity> getAllReports() {
-        return reportService.findAllReports();
+    public String getAllReports() {
+        return this.writeAsString(ReportJsonView.ReportList.class,
+                reportService.findAllReports());
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -75,15 +75,8 @@ public class ReportController extends BaseController {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
-        try {
-            reportService.updateReport(
-                    reportId,
-                    reportFormObject.getIndicatorId(),
-                    reportFormObject.getReportTypeId());
-        } catch (EntityException e) {
-            bindingResult.rejectValue("name", "Duplicate.reportForm.name");
-            throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
-        }
+
+        reportService.updateReport(reportFormObject);
     }
 
     @RequestMapping(value = "/{reportId}", method = RequestMethod.DELETE)
