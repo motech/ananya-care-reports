@@ -25,7 +25,7 @@ public class ComplexConditionEntity extends AbstractEntity {
     @NotNull
     @Column (name = "name")
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ListComplexConditions.class,
-        ComplexConditionJsonView.ComplexConditionDetails.class})
+        ComplexConditionJsonView.ComplexConditionDetails.class })
     private String name;
 
     @NotNull

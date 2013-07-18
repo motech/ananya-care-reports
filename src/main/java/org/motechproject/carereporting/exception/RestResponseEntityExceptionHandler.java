@@ -58,8 +58,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     private static class RestFormErrorResponse implements Serializable {
         protected static final long serialVersionUID = 0L;
 
-        final private String field;
-        final private String message;
+        private final String field;
+        private final String message;
 
         public RestFormErrorResponse(String field, String message) {
             this.field = field;

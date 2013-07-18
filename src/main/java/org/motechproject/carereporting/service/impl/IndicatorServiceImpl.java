@@ -182,7 +182,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<ReportEntity> reportsUpdated = new HashSet<>();
         Set<ReportEntity> reportsToUpdate = indicatorEntity.getReports();
         for (ReportEntity reportForm : reportsFromFormObject) {
-            if(reportForm.getId() == null){
+            if (reportForm.getId() == null) {
                 reportForm.setIndicator(indicatorEntity);
                 reportsUpdated.add(reportForm);
                 continue;

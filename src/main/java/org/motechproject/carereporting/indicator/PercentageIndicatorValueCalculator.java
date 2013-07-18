@@ -11,7 +11,7 @@ import java.math.RoundingMode;
 public class PercentageIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
     private static final String QUERY_WITHOUT_CONDITIONS = "SELECT count(%s) FROM care.%s " + TABLE_ALIAS + " " + FLW_JOIN +
-                                                            " WHERE " + AREA_WHERE_CLAUSE + " AND "+ FREQUENCY_WHERE_CLAUSE;
+                                                            " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
 
     private static final String QUERY_WITH_CONDITIONS = QUERY_WITHOUT_CONDITIONS + " AND (%s)";
 

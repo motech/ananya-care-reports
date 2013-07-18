@@ -105,7 +105,7 @@ public class FormsServiceImpl implements FormsService {
         while (iterator.hasNext()) {
             String columnName = iterator.next();
 
-            if (columnName.equals("id") || columnName.endsWith("_id")) {
+            if (("id").equals(columnName) || columnName.endsWith("_id")) {
                 iterator.remove();
             }
         }
@@ -125,7 +125,7 @@ public class FormsServiceImpl implements FormsService {
             String columnName = columns.getString("column_name");
             FieldType columnType = FieldType.getValueOf(columns.getString("data_type"));
 
-            if (columnName.equals("id") || columnName.endsWith("_id")) {
+            if (("id").equals(columnName) || columnName.endsWith("_id")) {
                 continue;
             }
 

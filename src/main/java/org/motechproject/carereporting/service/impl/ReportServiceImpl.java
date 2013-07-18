@@ -94,7 +94,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional(readOnly = false)
     public void deleteReportSet(Set<ReportEntity> reportsEntity) {
-        for(ReportEntity reportEntity : reportsEntity){
+        for (ReportEntity reportEntity : reportsEntity) {
             reportDao.remove(reportEntity);
         }
     }
