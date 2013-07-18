@@ -29,6 +29,8 @@ import java.util.Set;
 })
 public class ComputedFieldEntity extends AbstractEntity {
 
+    private static final int TYPE_LENGTH = 50;
+
     @NotNull
     @NotEmpty
     @Column(name = "name")
@@ -36,7 +38,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     private String name;
 
     @NotNull
-    @Column(name = "type", columnDefinition = "character varying", length = 100)
+    @Column(name = "type", columnDefinition = "character varying", length = TYPE_LENGTH)
     @Enumerated(value = EnumType.STRING)
     @JsonView({ BaseView.class })
     private FieldType type;
@@ -44,7 +46,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "form_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
 
     @NotNull

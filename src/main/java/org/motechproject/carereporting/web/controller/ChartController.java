@@ -76,8 +76,8 @@ public class ChartController {
                 return ChartFactory.createBarChart(indicator, values);
             case "line chart":
                 return ChartFactory.createLineChart(indicator, values);
+            default: throw new IllegalArgumentException("Chart type " + chartType +
+                    " not supported");
         }
-        throw new IllegalArgumentException("Chart type " + chartType +
-                " not supported");
     }
 }

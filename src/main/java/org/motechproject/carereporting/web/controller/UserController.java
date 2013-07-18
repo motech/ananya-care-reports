@@ -48,8 +48,8 @@ public class UserController extends BaseController {
     @ResponseBody
     public String getIndicatorsInUserArea(Principal principal) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                (UsernamePasswordAuthenticationToken)principal;
-        UserEntity userEntity = (UserEntity)usernamePasswordAuthenticationToken.getPrincipal();
+                (UsernamePasswordAuthenticationToken) principal;
+        UserEntity userEntity = (UserEntity) usernamePasswordAuthenticationToken.getPrincipal();
 
         return this.writeAsString(BaseView.class,
                 indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId()));

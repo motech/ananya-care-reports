@@ -19,10 +19,14 @@ public final class ChartFactory {
     private ChartFactory() {
     }
 
+    private static final int CREATE_LINE_CHART_VARIABLE = 4;
+    private static final double BAR_WIDTH = .5;
+    private static final int EXPLOSION_NUMBER = 6;
+
     public static Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         return createTemplateChart(indicator.getName())
                 .xAxis(new AxisBuilder()
-                        .minorTickFreq(4)
+                        .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
                         .mode(AxisBuilder.Mode.TIME)
                         .timeformat("%m/%d/%y"))
                 .grid(new GridBuilder()
@@ -42,9 +46,8 @@ public final class ChartFactory {
     }
 
     public static Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        double barWidth = .5;
             BigDecimal latestIndicatorValue = values.size() != 0
-                    ? values.get(values.size()-1).getValue()
+                    ? values.get(values.size() - 1).getValue()
                     : BigDecimal.ZERO;
 
         return createTemplateChart(indicator.getName())
@@ -52,7 +55,7 @@ public final class ChartFactory {
                         .show(true)
                         .horizontal(true)
                         .shadowSize(0)
-                        .barWidth(barWidth))
+                        .barWidth(BAR_WIDTH))
                 .xAxis(new AxisBuilder()
                         .min(0)
                         .autoScaleMargin(1))
@@ -61,13 +64,13 @@ public final class ChartFactory {
                         .point(latestIndicatorValue, BigDecimal.ONE))
                 .serie(new SerieBuilder()
                         .label("Scheduled")
-                        .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + barWidth))
+                        .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + BAR_WIDTH))
                 .build();
     }
 
     public static Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         BigDecimal latestIndicatorValue = values.size() != 0
-                ? values.get(values.size()-1).getValue()
+                ? values.get(values.size() - 1).getValue()
                 : BigDecimal.ZERO;
 
         return createTemplateChart(indicator.getName())
@@ -80,7 +83,7 @@ public final class ChartFactory {
                         .showLabels(false))
                 .pie(new PieBuilder()
                         .show(true)
-                        .explode(6))
+                        .explode(EXPLOSION_NUMBER))
                 .serie(new SerieBuilder()
                         .label("Option1")
                         .point(BigDecimal.ZERO, latestIndicatorValue))

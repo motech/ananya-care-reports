@@ -10,7 +10,6 @@ import java.util.Set;
 public class ComplexConditionDaoHibernateImpl
         extends GenericDaoHibernateImpl<ComplexConditionEntity> implements ComplexConditionDao {
 
-    // TODO: Implement finding all complex conditions by indicator id
     @Override
     public Set<ComplexConditionEntity> getAllByIndicatorId(Integer indicatorId) {
         throw new UnsupportedOperationException();

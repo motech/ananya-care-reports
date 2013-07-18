@@ -28,6 +28,9 @@ import java.util.Set;
 })
 public class FieldEntity extends AbstractEntity {
 
+    private static final int NAME_LENGTH = 100;
+    private static final int TYPE_LENGTH = 50;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id", nullable = false)
@@ -35,12 +38,12 @@ public class FieldEntity extends AbstractEntity {
 
     @NotNull
     @NotEmpty
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = NAME_LENGTH)
     @JsonView(BaseView.class)
     private String name;
 
     @NotNull
-    @Column(name = "type", columnDefinition = "character varying", length = 50, nullable = false)
+    @Column(name = "type", columnDefinition = "character varying", length = TYPE_LENGTH, nullable = false)
     @Enumerated(value = EnumType.STRING)
     @JsonView(BaseView.class)
     private FieldType type;

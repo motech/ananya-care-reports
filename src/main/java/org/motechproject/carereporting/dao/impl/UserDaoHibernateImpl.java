@@ -16,7 +16,7 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> im
             .add(Restrictions.eq("password", password))
             .uniqueResult();
 
-        if(user == null) {
+        if (user == null) {
             throw new EntityException("Bad username or password");
         }
 
