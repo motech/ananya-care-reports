@@ -20,3 +20,4 @@ Error_log/
 test-output/
 felix-cache/
 *.tmp
+*.orig
