@@ -75,6 +75,8 @@ INSERT INTO indicator_indicator_category(indicator_id, indicator_category_id) VA
 INSERT INTO report (indicator_id, report_type_id, creation_date, modification_date)
 VALUES (1, 3, now(), now());
 
+INSERT INTO indicator_report (indicator_id, report_id) VALUES (1, 1);
+
 INSERT INTO report_dashboard(report_id, dashboard_id) VALUES (1, 4);
 
 INSERT INTO indicator_user(indicator_id, user_id) values (1, 1);

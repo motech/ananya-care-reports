@@ -145,7 +145,12 @@ td.chart-td {
 .centered {
     margin: 0 auto !important;
     float: none !important;
+}
 
 h5 {
     margin: 15px;
+}
+
+.tab-trend {
+    margin-bottom: 0px !important;
 }

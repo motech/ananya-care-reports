@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.DashboardDao;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.forms.DashboardPosition;
@@ -18,9 +20,21 @@ public class DashboardServiceImpl extends AbstractService implements DashboardSe
     @Autowired
     private DashboardDao dashboardDao;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Set<DashboardEntity> findAllDashboards() {
         return dashboardDao.findAll();
+    }
+
+    @Override
+    public void removeAllDashboardsByReportId(Integer reportId) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("delete DashboardEntity d join fetch d.reports r where r.id = :reportId");
+        query.setParameter("reportId", reportId);
+
+        query.executeUpdate();
     }
 
     @Override

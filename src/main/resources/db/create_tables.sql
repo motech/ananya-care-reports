@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS reporting.report(
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_id_fk FOREIGN KEY (indicator_id)
     REFERENCES reporting.indicator (indicator_id) MATCH FULL
-    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE
+    ON DELETE CASCADE ON UPDATE NO ACTION NOT DEFERRABLE
 );
 -- ddl-end --
 
@@ -354,10 +354,10 @@ CREATE TABLE IF NOT EXISTS reporting.report_dashboard(
 	dashboard_id integer NOT NULL,
 	CONSTRAINT report_dashboard_report_fk FOREIGN KEY (report_id)
 	REFERENCES reporting.report (report_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	ON DELETE CASCADE ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT report_dashboard_dashboard_id_fk FOREIGN KEY (dashboard_id)
 	REFERENCES reporting.dashboard (dashboard_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	ON DELETE CASCADE ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT report_dashboard_uk UNIQUE (report_id,dashboard_id)
 );
 -- ddl-end --
@@ -370,10 +370,10 @@ CREATE TABLE IF NOT EXISTS reporting.indicator_report(
 	report_id integer NOT NULL,
 	CONSTRAINT indicator_report_indicator_id FOREIGN KEY (indicator_id)
 	REFERENCES reporting.indicator (indicator_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	ON DELETE CASCADE ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_report_report_id_fk FOREIGN KEY (report_id)
 	REFERENCES reporting.report (report_id) MATCH FULL
-	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+	ON DELETE CASCADE ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_report_uk UNIQUE (indicator_id,report_id)
 );
 -- ddl-end --

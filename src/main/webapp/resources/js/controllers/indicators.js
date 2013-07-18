@@ -43,6 +43,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     })
                     .success(function(data, status, headers, config) {
                         $scope.selectedCategory=null;
+                        $scope.fetchIndicators();
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });

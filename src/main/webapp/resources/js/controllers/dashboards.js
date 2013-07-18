@@ -80,11 +80,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
             graph = Flotr.draw(container[0], chart.data, chart.settings);
             if (title != undefined) {
-                //wrapper = $(angular.element("<div/>"));
-                //wrapper.addClass("chart-container-wrapper");
-                //chart = $(container);
-                //chart.replaceWith(wrapper);
-                //chart.appendTo(wrapper);
                 titleElement = $(angular.element("<p/>"));
                 titleElement.html(title);
                 titleElement.addClass("title");
@@ -201,6 +196,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
     $scope.endDate = moment().format('DD-MM-YYYY');
 
+    $scope.trendPerCategory = {};
+
     $scope.fetchTrends = function() {
         var startDate = $("#start-date input").val(),
             endDate = $("#end-date input").val();
@@ -211,9 +208,46 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             endDate = $scope.endDate;
         }
         $http.get('api/trend?startDate=' + startDate + '&endDate=' + endDate)
-          .success(function(indicatorCategories) {
+                .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;
-          });
+
+            for (var c = 0; c < $scope.indicatorCategories.length; c++) {
+                if (!$scope.indicatorCategories.hasOwnProperty(c)) {
+                    continue;
+                }
+
+                var category = $scope.indicatorCategories[c];
+                var key = 'category_' + category.name;
+                $('tabset').find('li[heading="' + category.name + '"]').find('a').addClass('alert alert-info trend');
+
+                for (var i = 0; i < category.indicators.length; i++) {
+                    if ($scope.trendPerCategory[key] === undefined) {
+                        $scope.trendPerCategory[key] = {
+                            negative: 0,
+                            positive: 0
+                        };
+                    }
+
+                    var trend = category.indicators[i].trend;
+                    if (trend < 0) {
+                        $scope.trendPerCategory[key].negative++;
+                    } else if (trend > 0) {
+                        $scope.trendPerCategory[key].positive++;
+                    }
+                }
+
+                var trend = $scope.trendPerCategory[key];
+                if (trend !== undefined) {
+                    if (trend.positive > trend.negative) {
+                        $('tabset').find('li[heading="' + category.name + '"]').find('a')
+                            .removeClass('alert-info').addClass('alert-success');
+                    } else if (trend.positive < trend.negative) {
+                        $('tabset').find('li[heading="' + category.name + '"]').find('a')
+                            .removeClass('alert-info').addClass('alert-danger');
+                    }
+                }
+            }
+        });
     };
 
     $scope.analyze = function() {

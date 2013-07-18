@@ -10,6 +10,8 @@ public interface DashboardService {
 
     Set<DashboardEntity> findAllDashboards();
 
+    void removeAllDashboardsByReportId(Integer reportId);
+
     DashboardEntity findDashboardByName(String dashboardName);
 
     void createNewDashboard(DashboardEntity dashboardEntity);
