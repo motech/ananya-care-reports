@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.fetchRoles = function() {
@@ -21,7 +21,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchRoles();
                     }).error(function(response) {
-                        $errorsDialogService.apiError($scope, response);
+                        $errorService.apiError($scope, response);
                     });
                 }
             });

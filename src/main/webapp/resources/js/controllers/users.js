@@ -6,7 +6,7 @@ care.controller('errorsDialogController', function($scope, dialog) {
   };
 });
 
-care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.fetchUsers = function() {
@@ -25,7 +25,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchUsers();
                     }).error(function(response) {
-                        $errorsDialogService.apiError($scope, response);
+                        $errorService.apiError($scope, response);
                     });
                 }
             });

@@ -55,7 +55,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
     };
 });
 
-care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
+care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
     $scope.title = $scope.msg('reports.title');
 
     $scope.fetchReports = function() {
@@ -74,7 +74,7 @@ care.controller('reportListController', function($scope, $http, $routeParams, $l
                     .success(function(data, status, headers, config) {
                         $scope.fetchReports();
                     }).error(function(response) {
-                        $errorsDialogService.apiError($scope, response);
+                        $errorService.apiError($scope, response);
                     });
                 }
             });

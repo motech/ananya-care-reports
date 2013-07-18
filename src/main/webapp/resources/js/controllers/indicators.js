@@ -66,7 +66,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             .success(function(indicators) {
                 $scope.indicators = indicators;
             }).error(function() {
-                $errorsDialogService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
+                $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
             });
     };
 
@@ -79,7 +79,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
         });
 });
 
-care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams, $errorsDialogService) {
+care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams) {
     $scope.title = $scope.msg('indicators.title');
 
     $scope.reportIds = [];
@@ -585,7 +585,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 });
 
-care.controller('createComplexConditionController', function($rootScope, $scope, $http, $dialog, $errorsDialogService) {
+care.controller('createComplexConditionController', function($rootScope, $scope, $http, $dialog) {
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
@@ -765,7 +765,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
 });
 
-care.controller('createComputedFieldController', function($rootScope, $scope, $http, $dialog, $errorsDialogService) {
+care.controller('createComputedFieldController', function($rootScope, $scope, $http, $dialog) {
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
