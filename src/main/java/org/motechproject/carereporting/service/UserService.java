@@ -11,6 +11,9 @@ import java.util.Set;
 public interface UserService {
 
     String HAS_ROLE_MANAGE_SYSTEM_USERS = "hasRole('CAN_MANAGE_SYSTEM_USERS')";
+    String HAS_ROLE_CAN_CREATE_ROLE = "hasRole('CAN_CREATE_ROLE')";
+    String HAS_ROLE_CAN_EDIT_ROLE = "hasRole('CAN_EDIT_ROLE')";
+    String HAS_ROLE_CAN_REMOVE_ROLE = "hasRole('CAN_REMOVE_ROLE')";
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     Set<UserEntity> findAllUsers();
@@ -53,10 +56,13 @@ public interface UserService {
 
     void deletePermission(PermissionEntity permissionEntity);
 
+    @PreAuthorize(HAS_ROLE_CAN_CREATE_ROLE)
     void createNewRole(RoleEntity roleEntity);
 
+    @PreAuthorize(HAS_ROLE_CAN_EDIT_ROLE)
     void updateRole(RoleEntity roleEntity);
 
+    @PreAuthorize(HAS_ROLE_CAN_REMOVE_ROLE)
     void removeRoleById(Integer id);
 }
 

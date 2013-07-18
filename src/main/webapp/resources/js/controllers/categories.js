@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.controller('categoriesController', function($scope, $http, $dialog, $routeParams, $location) {
+care.controller('categoriesController', function($scope, $http, $dialog, $routeParams, $location, $errorsDialogService) {
     $scope.title = $scope.msg('category.title');
 
     $scope.categoryId = $routeParams.categoryId;
@@ -20,7 +20,7 @@ care.controller('categoriesController', function($scope, $http, $dialog, $routeP
             .success(function(response) {
                 $location.path( "/categories" );
             }).error(function(response) {
-                $dialog.messageBox("Error", $scope.msg('category.error.edit'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $errorsDialogService.apiError($scope, response);
             });
     };
 
@@ -55,7 +55,7 @@ care.controller('categoriesListController', function($scope, $http, $dialog, $ro
                 .success(function(response) {
                     $scope.fetchCategories();
                 }).error(function(response) {
-                    $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.delete'), [{label: 'Ok', cssClass: 'btn'}]).open();
+                    $errorsDialogService.apiError($scope, response);
                 });
             }
         });

@@ -55,7 +55,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
     };
 });
 
-care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
     $scope.title = $scope.msg('reports.title');
 
     $scope.fetchReports = function() {
@@ -74,7 +74,7 @@ care.controller('reportListController', function($scope, $http, $routeParams, $l
                     .success(function(data, status, headers, config) {
                         $scope.fetchReports();
                     }).error(function(response) {
-                        $dialog.messageBox($scope.msg('error'), $scope.msg('reports.list.error.deleteReport'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                        $errorsDialogService.apiError($scope, response);
                     });
                 }
             });

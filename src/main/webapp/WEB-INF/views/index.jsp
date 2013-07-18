@@ -81,7 +81,9 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers.roles')}}</a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/users/roles"><i class="icon-list"></i> {{msg('menu.manageSystemUsers.rolesList')}}</a></li>
-                                    <li><a href="#/users/roles/new"><i class="icon-plus-sign"></i> {{msg('menu.manageSystemUsers.addNewRole')}}</a></li>
+                                    <sec:authorize access="hasRole('CAN_CREATE_ROLE')">
+                                        <li><a href="#/users/roles/new"><i class="icon-plus-sign"></i> {{msg('menu.manageSystemUsers.addNewRole')}}</a></li>
+                                    </sec:authorize>
                                 </ul>
                              </li>
                          </ul>

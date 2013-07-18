@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('care', ['ngResource', 'ui.bootstrap', 'localization', '$strap.directives']).config(['$routeProvider', function($routeProvider) {
+    angular.module('care', ['ngResource', 'ui.bootstrap', 'localization', '$strap.directives']).config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
         $routeProvider
             .when('/', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'dashboardController' })
             .when('/indicators', { templateUrl: 'resources/partials/indicators/listIndicators.html', controller: 'indicatorListController' })
@@ -22,6 +22,38 @@
             .when('/report/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
             .when('/report', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
             .otherwise({ redirectTo: '/' });
+
+
+        var interceptor = ['$rootScope', '$q', 'i18nService', function (scope, $q, i18nService) {
+
+            function success(response) {
+                return response;
+            }
+
+            function error(response) {
+                var status = response.status;
+
+                if (status == 403) {
+                    response.data = [{
+                        field: i18nService.getMessage('unauthorized.title'),
+                        message: i18nService.getMessage('unauthorized.message')}];
+                    return $q.reject(response);
+                }
+                if (status == 302 || //user session expired
+                   (status == 0 && data == "")) { //the server is probably down
+                    document.location.reload(true);
+                    return;
+                }
+                return response;
+            }
+
+            return function (promise) {
+                return promise.then(success, error);
+            }
+        }];
+
+        $httpProvider.responseInterceptors.push(interceptor);
+
     }]).run(function($rootScope, i18nService) {
         $rootScope.msg = function(key, params) {
             return i18nService.getMessage(key, params);

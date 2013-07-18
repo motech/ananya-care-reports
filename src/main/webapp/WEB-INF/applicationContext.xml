@@ -75,6 +75,7 @@
     <mvc:view-controller path="/" view-name="index"/>
     <mvc:view-controller path="/login" view-name="login"/>
     <mvc:view-controller path="/error" view-name="error"/>
+    <mvc:view-controller path="/403" view-name="403"/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/" />

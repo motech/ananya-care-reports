@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class ComplexConditionServiceImpl extends AbstractService implements ComplexConditionService {
+public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Autowired
     private ComplexConditionDao complexConditionDao;

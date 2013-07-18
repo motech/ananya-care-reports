@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class ComputedFieldServiceImpl extends AbstractService implements ComputedFieldService {
+public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Autowired
     private ComputedFieldDao computedFieldDao;

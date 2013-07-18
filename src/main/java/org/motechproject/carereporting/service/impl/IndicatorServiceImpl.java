@@ -40,7 +40,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class IndicatorServiceImpl extends AbstractService implements IndicatorService {
+public class IndicatorServiceImpl implements IndicatorService {
 
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
@@ -78,23 +78,6 @@ public class IndicatorServiceImpl extends AbstractService implements IndicatorSe
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    public void setIndicatorDao(IndicatorDao indicatorDao) {
-        this.indicatorDao = indicatorDao;
-    }
-
-    public void setIndicatorTypeDao(IndicatorTypeDao indicatorTypeDao) {
-        this.indicatorTypeDao = indicatorTypeDao;
-    }
-
-    public void setIndicatorCategoryDao(IndicatorCategoryDao indicatorCategoryDao) {
-        this.indicatorCategoryDao = indicatorCategoryDao;
-    }
-
-    public void setIndicatorValueDao(IndicatorValueDao indicatorValueDao) {
-        this.indicatorValueDao = indicatorValueDao;
-    }
-// IndicatorEntity
 
     @Transactional
     public Set<IndicatorEntity> findAllIndicators() {

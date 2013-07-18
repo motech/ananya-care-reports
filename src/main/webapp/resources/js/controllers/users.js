@@ -6,7 +6,7 @@ care.controller('errorsDialogController', function($scope, dialog) {
   };
 });
 
-care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.fetchUsers = function() {
@@ -25,7 +25,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchUsers();
                     }).error(function(response) {
-                        $dialog.messageBox($scope.msg('error'), $scope.msg('users.list.error.deleteUser'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                        $errorsDialogService.apiError($scope, response);
                     });
                 }
             });

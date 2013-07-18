@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class ConditionServiceImpl extends AbstractService implements ConditionService {
+public class ConditionServiceImpl implements ConditionService {
 
     @Autowired
     private ConditionDao conditionDao;

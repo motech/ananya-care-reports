@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class AreaServiceImpl extends AbstractService implements AreaService {
+public class AreaServiceImpl implements AreaService {
 
     @Autowired
     private AreaDao areaDao;

@@ -16,9 +16,28 @@ INSERT INTO area (name, level_id, parent_area_id) values ('AWC 1', 5, 11), ('AWC
 INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
           VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 1, 'test', now(), now());
 INSERT INTO role (name) VALUES ('Admin'), ('Manager');
-INSERT INTO permission(name, display_name) VALUES ('CAN_CREATE_INDICATORS', 'Can create indicators'),
-    ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users'), ('CAN_MANAGE_REPORTS', 'Can manage reports');
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2), (1, 3);
+INSERT INTO permission(name, display_name) VALUES
+    ('CAN_CREATE_INDICATORS', 'Can create indicators'),
+    ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users'),
+    ('CAN_MANAGE_REPORTS', 'Can manage reports'),
+    ('CAN_VIEW_PERFORMANCE_SUMMARY', 'Can view performance summary'),
+    ('CAN_VIEW_MAP_REPORT', 'Can view map report'),
+    ('CAN_CREATE_COMPLEX_CONDITIONS', 'Can create complex conditions'),
+    ('CAN_CREATE_COMPUTED_FIELDS', 'Can create computed fields'),
+    ('CAN_EDIT_INDICATORS', 'Can edit indicators'),
+    ('CAN_REMOVE_INDICATORS', 'Can remove indicators'),
+    ('CAN_VIEW_CATEGORIES', 'Can view categories'),
+    ('CAN_CREATE_CATEGORIES', 'Can create categories'),
+    ('CAN_EDIT_CATEGORIES', 'Can edit categories'),
+    ('CAN_REMOVE_CATEGORIES', 'Can remove categories'),
+    ('CAN_CREATE_ROLE', 'Can create role'),
+    ('CAN_EDIT_ROLE', 'Can edit role'),
+    ('CAN_REMOVE_ROLE', 'Can remove role'),
+    ('CAN_EDIT_FORM_NAMES', 'Can edit form names'),
+    ('CAN_DELETE_FORMS', 'Can delete forms');
+
+INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11),
+ (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (1, 18);
 INSERT INTO care_user_role (user_id, role_id) VALUES (1, 1), (1, 2);
 
 insert into indicator_type (name) values ('Average');

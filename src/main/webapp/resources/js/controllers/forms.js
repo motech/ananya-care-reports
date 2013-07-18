@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.controller('formController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
+care.controller('formController', function($scope, $http, $routeParams, $location, $dialog, $errorService, $errorsDialogService) {
     $scope.title = $scope.msg('forms.title');
 
     $scope.formId = $routeParams.formId;
@@ -31,7 +31,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/forms" );
             }).error(function(response) {
-                $errorService.genericError($scope, 'forms.form.error.submit');
+                $errorsDialogService.apiError($scope, response);
             });
     };
 

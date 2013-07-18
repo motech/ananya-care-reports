@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class FieldServiceImpl extends AbstractService implements FieldService {
+public class FieldServiceImpl implements FieldService {
 
     @Autowired
     private FieldDao fieldDao;

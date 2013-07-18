@@ -25,7 +25,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl extends AbstractService implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;

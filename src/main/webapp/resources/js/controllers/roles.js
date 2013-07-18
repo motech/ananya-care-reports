@@ -1,6 +1,6 @@
 var care = angular.module('care');
 
-care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog) {
+care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog, $errorsDialogService) {
     $scope.title = $scope.msg('users.title');
 
     $scope.fetchRoles = function() {
@@ -21,8 +21,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
                     .success(function(data, status, headers, config) {
                         $scope.fetchRoles();
                     }).error(function(response) {
-                        $dialog.messageBox($scope.msg('Error'), $scope.msg('users.roles.list.error.delete'),
-                                            [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                        $errorsDialogService.apiError($scope, response);
                     });
                 }
             });

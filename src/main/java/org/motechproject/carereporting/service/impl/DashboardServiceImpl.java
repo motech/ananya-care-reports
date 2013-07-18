@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class DashboardServiceImpl extends AbstractService implements DashboardService {
+public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private DashboardDao dashboardDao;

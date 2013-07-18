@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-public class FormsServiceImpl extends AbstractService implements FormsService {
+public class FormsServiceImpl implements FormsService {
 
     @Resource(name = "careDataSource")
     private DataSource dataSource;

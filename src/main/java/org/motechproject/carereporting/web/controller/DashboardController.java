@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -37,10 +39,31 @@ public class DashboardController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getAllDashboards() {
+    public String getAllDashboards(HttpServletRequest request) {
         Set<DashboardEntity> dashboards = dashboardService.findAllDashboards();
+        filterDashboardsByUserRoles(request, dashboards);
         return writeAsString(DashboardJsonView.class,
                 dashboards);
+    }
+
+    private void filterDashboardsByUserRoles(HttpServletRequest request, Set<DashboardEntity> dashboards) {
+        if (!request.isUserInRole("CAN_VIEW_MAP_REPORT")) {
+            removeFromDashboardsByName(dashboards, "Map report");
+        }
+        if (!request.isUserInRole("CAN_VIEW_PERFORMANCE_SUMMARY")) {
+            removeFromDashboardsByName(dashboards, "Performance summary");
+        }
+    }
+
+    private void removeFromDashboardsByName(Set<DashboardEntity> dashboards, String name) {
+        Iterator<DashboardEntity> iter = dashboards.iterator();
+        while (iter.hasNext()) {
+            DashboardEntity dashboard = iter.next();
+            if (name.equals(dashboard.getName())) {
+                iter.remove();
+                return;
+            }
+        }
     }
 
     @RequestMapping(value = "/user-areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
