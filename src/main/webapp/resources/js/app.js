@@ -9,7 +9,6 @@
             .when('/indicators/recalculate', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'recalculateIndicatorsController' })
             .when('/indicators/:indicatorId', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
             .when('/forms', { templateUrl: 'resources/partials/forms/list.html', controller: 'formListController' })
-            .when('/forms/new', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })
             .when('/forms/:formId', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })
             .when('/users', {templateUrl: 'resources/partials/users/listUsers.html', controller: 'userListController'})
             .when('/users/roles', {templateUrl: 'resources/partials/users/listRoles.html', controller: 'roleListController'})
