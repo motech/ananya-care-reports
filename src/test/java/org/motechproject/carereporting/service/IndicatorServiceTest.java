@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorServiceTest {
 
+    private final static String TEST_INDICATOR_NAME = "TEST_INDICATOR_1";
+    private final static Integer TEST_INDICATOR_ID = 1;
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
 
     @Mock
@@ -72,19 +74,17 @@ public class IndicatorServiceTest {
 
     @Test
     public void testFindIndicatorById() {
-        String name = "qwertyuiop";
-        Integer id = 1;
         IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorEntity.setId(id);
-        indicatorEntity.setName(name);
+        indicatorEntity.setId(TEST_INDICATOR_ID);
+        indicatorEntity.setName(TEST_INDICATOR_NAME);
 
-        when(indicatorDao.findById(id)).thenReturn(indicatorEntity);
-        IndicatorEntity returnedIndicator = indicatorService.findIndicatorById(id);
+        when(indicatorDao.findById(TEST_INDICATOR_ID)).thenReturn(indicatorEntity);
+        IndicatorEntity returnedIndicator = indicatorService.findIndicatorById(TEST_INDICATOR_ID);
 
-        verify(indicatorDao).findById(id);
+        verify(indicatorDao).findById(TEST_INDICATOR_ID);
 
-        assertEquals(id, returnedIndicator.getId());
-        assertEquals(name, returnedIndicator.getName());
+        assertEquals(TEST_INDICATOR_ID, returnedIndicator.getId());
+        assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());
     }
 
     @Test

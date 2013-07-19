@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS reporting.condition(
 	CONSTRAINT condition_pk PRIMARY KEY (condition_id),
 	CONSTRAINT condition_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
     REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
-    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    ON DELETE CASCADE ON UPDATE CASCADE NOT DEFERRABLE,
     CONSTRAINT condition_comparison_symbol_id_fk FOREIGN KEY (comparison_symbol_id)
     REFERENCES reporting.comparison_symbol (comparison_symbol_id) MATCH FULL
     ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
@@ -292,7 +292,7 @@ CREATE TABLE IF NOT EXISTS reporting.indicator(
 	ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
 	CONSTRAINT indicator_complex_condition_id_fk FOREIGN KEY (complex_condition_id)
     REFERENCES reporting.complex_condition (complex_condition_id) MATCH FULL
-    ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+    ON DELETE SET NULL ON UPDATE NO ACTION NOT DEFERRABLE,
     CONSTRAINT indicator_computed_field_id_fk FOREIGN KEY (computed_field_id)
     REFERENCES reporting.computed_field (computed_field_id) MATCH FULL
     ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,

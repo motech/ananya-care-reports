@@ -40,12 +40,6 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
     }
 
     @Override
-    @Transactional
-    public Set<ComplexConditionEntity> findComplexConditionsByIndicatorId(Integer indicatorId) {
-        return complexConditionDao.getAllByIndicatorId(indicatorId);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public void createNewComplexCondition(ComplexConditionEntity complexCondition) {
         complexConditionDao.save(complexCondition);
@@ -98,24 +92,6 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void createNewOperatorType(OperatorTypeEntity operatorType) {
-        operatorTypeDao.save(operatorType);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateOperatorType(OperatorTypeEntity operatorTypeEntity) {
-        operatorTypeDao.update(operatorTypeEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteOperatorType(OperatorTypeEntity operatorTypeEntity) {
-        operatorTypeDao.remove(operatorTypeEntity);
-    }
-
-    @Override
     @Transactional
     public Set<ComparisonSymbolEntity> findAllComparisonSymbols() {
         return comparisonSymbolDao.findAll();
@@ -125,24 +101,6 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
     @Transactional
     public ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId) {
         return comparisonSymbolDao.findById(comparisonSymbolId);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void createNewComparisonSymbol(ComparisonSymbolEntity comparisonSymbol) {
-        comparisonSymbolDao.save(comparisonSymbol);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity) {
-        comparisonSymbolDao.update(comparisonSymbolEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity) {
-        comparisonSymbolDao.remove(comparisonSymbolEntity);
     }
 
 }

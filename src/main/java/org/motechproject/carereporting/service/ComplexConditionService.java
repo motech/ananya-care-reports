@@ -16,8 +16,6 @@ public interface ComplexConditionService {
 
     ComplexConditionEntity findComplexConditionById(Integer complexConditionId);
 
-    Set<ComplexConditionEntity> findComplexConditionsByIndicatorId(Integer indicatorId);
-
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPLEX_CONDITIONS)
     void createNewComplexCondition(ComplexConditionEntity complexCondition);
 
@@ -34,20 +32,8 @@ public interface ComplexConditionService {
 
     OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId);
 
-    void createNewOperatorType(OperatorTypeEntity operatorType);
-
-    void updateOperatorType(OperatorTypeEntity operatorTypeEntity);
-
-    void deleteOperatorType(OperatorTypeEntity operatorTypeEntity);
-
     Set<ComparisonSymbolEntity> findAllComparisonSymbols();
 
     ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId);
-
-    void createNewComparisonSymbol(ComparisonSymbolEntity comparisonSymbol);
-
-    void updateComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity);
-
-    void deleteComparisonSymbol(ComparisonSymbolEntity comparisonSymbolEntity);
 
 }
