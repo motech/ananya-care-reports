@@ -16,9 +16,9 @@ import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.domain.dto.IndicatorFormObject;
-import org.motechproject.carereporting.domain.dto.IndicatorWithTrend;
-import org.motechproject.carereporting.domain.dto.TrendIndicatorCategory;
+import org.motechproject.carereporting.domain.dto.IndicatorDto;
+import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
+import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
@@ -133,21 +133,21 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
+    public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
 
         IndicatorEntity indicatorEntity = new IndicatorEntity(
-                findIndicatorTypeEntityFromFormObject(indicatorFormObject),
-                findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject),
-                findAreaEntityFromFormObject(indicatorFormObject),
-                findUserEntitiesFromFormObject(indicatorFormObject),
-                findComputedFieldEntityFromFormObject(indicatorFormObject),
-                findComplexConditionEntityFromFormObject(indicatorFormObject),
-                findIndicatorValueEntitiesFromFormObject(indicatorFormObject),
-                indicatorFormObject.getReports(),
-                indicatorFormObject.getFrequency(),
-                indicatorFormObject.getName());
+                findIndicatorTypeEntityFromDto(indicatorDto),
+                findIndicatorCategoryEntitiesFromDto(indicatorDto),
+                findAreaEntityFromDto(indicatorDto),
+                findUserEntitiesFromDto(indicatorDto),
+                findComputedFieldEntityFromDto(indicatorDto),
+                findComplexConditionEntityFromDto(indicatorDto),
+                findIndicatorValueEntitiesFromDto(indicatorDto),
+                indicatorDto.getReports(),
+                indicatorDto.getFrequency(),
+                indicatorDto.getName());
 
-        indicatorEntity.setTrend(indicatorFormObject.getTrend());
+        indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorDao.save(indicatorEntity);
     }
 
@@ -159,29 +159,29 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
-        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorFormObject.getId());
+    public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
+        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorDto.getId());
 
-        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setArea(findAreaEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setOwners(findUserEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.setComputedField(findComputedFieldEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setComplexCondition(findComplexConditionEntityFromFormObject(indicatorFormObject));
-        indicatorEntity.setValues(findIndicatorValueEntitiesFromFormObject(indicatorFormObject));
-        indicatorEntity.getTrend().setPositiveDiff(indicatorFormObject.getTrend().getPositiveDiff());
-        indicatorEntity.getTrend().setNegativeDiff(indicatorFormObject.getTrend().getNegativeDiff());
-        indicatorEntity.setReports(setUpdatedReports(indicatorFormObject.getReports(), indicatorEntity));
-        indicatorEntity.setFrequency(indicatorFormObject.getFrequency());
-        indicatorEntity.setName(indicatorFormObject.getName());
+        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromDto(indicatorDto));
+        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
+        indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
+        indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto));
+        indicatorEntity.setComputedField(findComputedFieldEntityFromDto(indicatorDto));
+        indicatorEntity.setComplexCondition(findComplexConditionEntityFromDto(indicatorDto));
+        indicatorEntity.setValues(findIndicatorValueEntitiesFromDto(indicatorDto));
+        indicatorEntity.getTrend().setPositiveDiff(indicatorDto.getTrend().getPositiveDiff());
+        indicatorEntity.getTrend().setNegativeDiff(indicatorDto.getTrend().getNegativeDiff());
+        indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
+        indicatorEntity.setFrequency(indicatorDto.getFrequency());
+        indicatorEntity.setName(indicatorDto.getName());
         indicatorDao.update(indicatorEntity);
     }
 
 
-    private Set<ReportEntity> setUpdatedReports(Set<ReportEntity> reportsFromFormObject, IndicatorEntity indicatorEntity) {
+    private Set<ReportEntity> setUpdatedReports(Set<ReportEntity> reportsFromDto, IndicatorEntity indicatorEntity) {
         Set<ReportEntity> reportsUpdated = new HashSet<>();
         Set<ReportEntity> reportsToUpdate = indicatorEntity.getReports();
-        for (ReportEntity reportForm : reportsFromFormObject) {
+        for (ReportEntity reportForm : reportsFromDto) {
             if (reportForm.getId() == null) {
                 reportForm.setIndicator(indicatorEntity);
                 reportsUpdated.add(reportForm);
@@ -200,15 +200,15 @@ public class IndicatorServiceImpl implements IndicatorService {
         return reportsUpdated;
     }
 
-    private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        return getIndicatorTypeById(indicatorFormObject.getIndicatorType());
+    private IndicatorTypeEntity findIndicatorTypeEntityFromDto(IndicatorDto indicatorDto) {
+        return getIndicatorTypeById(indicatorDto.getIndicatorType());
     }
 
-    private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromFormObject(
-            IndicatorFormObject indicatorFormObject) {
+    private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromDto(
+            IndicatorDto indicatorDto) {
         Set<IndicatorCategoryEntity> indicatorCategoryEntities = new LinkedHashSet<>();
 
-        for (Integer indicatorCategoryId : indicatorFormObject.getCategories()) {
+        for (Integer indicatorCategoryId : indicatorDto.getCategories()) {
             IndicatorCategoryEntity indicatorCategoryEntity = this.getIndicatorCategoryById(indicatorCategoryId);
 
             indicatorCategoryEntities.add(indicatorCategoryEntity);
@@ -217,14 +217,14 @@ public class IndicatorServiceImpl implements IndicatorService {
         return indicatorCategoryEntities;
     }
 
-    private AreaEntity findAreaEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        return areaService.getAreaById(indicatorFormObject.getArea());
+    private AreaEntity findAreaEntityFromDto(IndicatorDto indicatorDto) {
+        return areaService.getAreaById(indicatorDto.getArea());
     }
 
-    private Set<UserEntity> findUserEntitiesFromFormObject(IndicatorFormObject indicatorFormObject) {
+    private Set<UserEntity> findUserEntitiesFromDto(IndicatorDto indicatorDto) {
         Set<UserEntity> userEntities = new LinkedHashSet<>();
 
-        for (Integer ownerId : indicatorFormObject.getOwners()) {
+        for (Integer ownerId : indicatorDto.getOwners()) {
             UserEntity userEntity = userService.getUserById(ownerId);
 
             userEntities.add(userEntity);
@@ -233,25 +233,25 @@ public class IndicatorServiceImpl implements IndicatorService {
         return userEntities;
     }
 
-    private ComputedFieldEntity findComputedFieldEntityFromFormObject(
-            IndicatorFormObject indicatorFormObject) {
-        return computedFieldService.getComputedFieldById(indicatorFormObject.getComputedField());
+    private ComputedFieldEntity findComputedFieldEntityFromDto(
+            IndicatorDto indicatorDto) {
+        return computedFieldService.getComputedFieldById(indicatorDto.getComputedField());
     }
 
-    private ComplexConditionEntity findComplexConditionEntityFromFormObject(
-            IndicatorFormObject indicatorFormObject) {
-        if (indicatorFormObject.getComplexCondition() == null) {
+    private ComplexConditionEntity findComplexConditionEntityFromDto(
+            IndicatorDto indicatorDto) {
+        if (indicatorDto.getComplexCondition() == null) {
             return null;
         }
 
-        return complexConditionService.getComplexConditionById(indicatorFormObject.getComplexCondition());
+        return complexConditionService.getComplexConditionById(indicatorDto.getComplexCondition());
     }
 
-    private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromFormObject(
-            IndicatorFormObject indicatorFormObject) {
+    private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromDto(
+            IndicatorDto indicatorDto) {
         Set<IndicatorValueEntity> indicatorValueEntities = new LinkedHashSet<>();
 
-        for (Integer valueId : indicatorFormObject.getValues()) {
+        for (Integer valueId : indicatorDto.getValues()) {
             IndicatorValueEntity indicatorValueEntity = this.getIndicatorValueById(valueId);
 
             indicatorValueEntities.add(indicatorValueEntity);
@@ -380,15 +380,15 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate) {
-        Set<TrendIndicatorCategory> categories = new LinkedHashSet<>();
+    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate) {
+        Set<TrendIndicatorCategoryDto> categories = new LinkedHashSet<>();
         Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
         for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
-            TrendIndicatorCategory trendCategory = new TrendIndicatorCategory(indicatorCategory.getName());
+            TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
                 if (indicator.getOwners().contains(user)) {
-                    IndicatorWithTrend trendIndicator = new IndicatorWithTrend(indicator,
+                    IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
                             getTrendForIndicator(user.getArea(), indicator, startDate, endDate));
                     trendCategory.getIndicators().add(trendIndicator);
                 }

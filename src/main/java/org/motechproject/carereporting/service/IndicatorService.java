@@ -5,8 +5,8 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.domain.dto.IndicatorFormObject;
-import org.motechproject.carereporting.domain.dto.TrendIndicatorCategory;
+import org.motechproject.carereporting.domain.dto.IndicatorDto;
+import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Date;
@@ -34,13 +34,13 @@ public interface IndicatorService {
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
-    void createNewIndicatorFromFormObject(IndicatorFormObject indicatorFormObject);
+    void createNewIndicatorFromDto(IndicatorDto indicatorDto);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicator(IndicatorEntity indicatorEntity);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
-    void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject);
+    void updateIndicatorFromDto(IndicatorDto indicatorDto);
 
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);
@@ -80,5 +80,5 @@ public interface IndicatorService {
 
     List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
 
-    Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate);
+    Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate);
 }

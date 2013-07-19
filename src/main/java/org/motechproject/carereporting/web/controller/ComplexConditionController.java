@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionDto;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComplexConditionService;
@@ -63,13 +63,13 @@ public class ComplexConditionController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
+    public void createNewComplexCondition(@RequestBody @Valid ComplexConditionDto complexConditionDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        complexConditionService.createNewComplexCondition(complexConditionFormObject);
+        complexConditionService.createNewComplexCondition(complexConditionDto);
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.PUT,
@@ -77,14 +77,14 @@ public class ComplexConditionController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateComplexCondition(@RequestBody @Valid ComplexConditionFormObject complexConditionFormObject,
+    public void updateComplexCondition(@RequestBody @Valid ComplexConditionDto complexConditionDto,
             BindingResult bindingResult, @PathVariable Integer complexConditionId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        complexConditionFormObject.setId(complexConditionId);
-        complexConditionService.updateComplexCondition(complexConditionFormObject);
+        complexConditionDto.setId(complexConditionId);
+        complexConditionService.updateComplexCondition(complexConditionDto);
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.DELETE,

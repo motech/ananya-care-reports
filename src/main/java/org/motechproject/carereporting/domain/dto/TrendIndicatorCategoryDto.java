@@ -7,21 +7,21 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrendIndicatorCategory implements Serializable {
+public class TrendIndicatorCategoryDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
     @JsonView(TrendJsonView.class)
-    private final Set<IndicatorWithTrend> indicators = new HashSet<>();
+    private final Set<IndicatorWithTrendDto> indicators = new HashSet<>();
 
     @JsonView(TrendJsonView.class)
     private final String name;
 
-    public TrendIndicatorCategory(String name) {
+    public TrendIndicatorCategoryDto(String name) {
         this.name = name;
     }
 
-    public Set<IndicatorWithTrend> getIndicators() {
+    public Set<IndicatorWithTrendDto> getIndicators() {
         return indicators;
     }
 

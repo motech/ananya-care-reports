@@ -9,7 +9,7 @@ import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
-import org.motechproject.carereporting.domain.dto.ReportFormObject;
+import org.motechproject.carereporting.domain.dto.ReportDto;
 import org.motechproject.carereporting.enums.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
@@ -80,13 +80,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateReport(ReportFormObject reportFormObject) {
+    public void updateReport(ReportDto reportDto) {
         ReportEntity reportEntity = fetchAndUpdateReport(
-                reportFormObject.getId(),
-                reportFormObject.getIndicatorId(),
-                reportFormObject.getReportTypeId(),
-                reportFormObject.getLabelX(),
-                reportFormObject.getLabelY());
+                reportDto.getId(),
+                reportDto.getIndicatorId(),
+                reportDto.getReportTypeId(),
+                reportDto.getLabelX(),
+                reportDto.getLabelY());
 
         try {
             reportDao.update(reportEntity);

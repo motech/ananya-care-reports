@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
 
-public class ComplexConditionFormObject implements Serializable {
+public class ComplexConditionDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
@@ -18,11 +18,11 @@ public class ComplexConditionFormObject implements Serializable {
     @NotNull
     private Set<ConditionEntity> conditions;
 
-    public ComplexConditionFormObject() {
+    public ComplexConditionDto() {
 
     }
 
-    public ComplexConditionFormObject(String name, Set<ConditionEntity> conditions) {
+    public ComplexConditionDto(String name, Set<ConditionEntity> conditions) {
         this.name = name;
         this.conditions = conditions;
     }

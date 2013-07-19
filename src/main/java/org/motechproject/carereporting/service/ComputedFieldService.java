@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.dto.ComputedFieldFormObject;
+import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -20,5 +20,5 @@ public interface ComputedFieldService {
     void createNewComputedField(ComputedFieldEntity computedFieldEntity);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
-    void createNewComputedFieldFromFormObject(ComputedFieldFormObject computedFieldFormObject);
+    void createNewComputedFieldFromDto(ComputedFieldDto computedFieldDto);
 }

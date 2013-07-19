@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReportFormObject implements Serializable {
+public class ReportDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 

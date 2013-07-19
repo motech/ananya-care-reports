@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
 
-public class IndicatorFormObject implements Serializable {
+public class IndicatorDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
@@ -50,14 +50,14 @@ public class IndicatorFormObject implements Serializable {
     @NotNull
     private TrendEntity trend;
 
-    public IndicatorFormObject() {
+    public IndicatorDto() {
 
     }
 
-    public IndicatorFormObject(final Integer indicatorType, final Set<Integer> categories,
-            final Integer area, final Set<Integer> owners, final Integer computedField,
-            final Integer complexCondition, final Set<Integer> values, Set<ReportEntity> reports,
-            final Integer frequency, final String name) {
+    public IndicatorDto(final Integer indicatorType, final Set<Integer> categories,
+                        final Integer area, final Set<Integer> owners, final Integer computedField,
+                        final Integer complexCondition, final Set<Integer> values, Set<ReportEntity> reports,
+                        final Integer frequency, final String name) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;

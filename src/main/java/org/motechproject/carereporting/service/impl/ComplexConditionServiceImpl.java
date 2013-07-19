@@ -6,7 +6,7 @@ import org.motechproject.carereporting.dao.OperatorTypeDao;
 import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
-import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionDto;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,10 +47,10 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional(readOnly = false)
-    public void createNewComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
+    public void createNewComplexCondition(ComplexConditionDto complexConditionDto) {
         ComplexConditionEntity complexConditionEntity = new ComplexConditionEntity(
-                complexConditionFormObject.getName(),
-                complexConditionFormObject.getConditions()
+                complexConditionDto.getName(),
+                complexConditionDto.getConditions()
         );
 
         complexConditionDao.save(complexConditionEntity);
@@ -64,11 +64,11 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
-        ComplexConditionEntity complexConditionEntity = this.getComplexConditionById(complexConditionFormObject.getId());
+    public void updateComplexCondition(ComplexConditionDto complexConditionDto) {
+        ComplexConditionEntity complexConditionEntity = this.getComplexConditionById(complexConditionDto.getId());
 
-        complexConditionEntity.setName(complexConditionFormObject.getName());
-        complexConditionEntity.setConditions(complexConditionFormObject.getConditions());
+        complexConditionEntity.setName(complexConditionDto.getName());
+        complexConditionEntity.setConditions(complexConditionDto.getConditions());
 
         complexConditionDao.update(complexConditionEntity);
     }

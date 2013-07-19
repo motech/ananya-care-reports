@@ -11,7 +11,7 @@ import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
-import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionDto;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -118,10 +118,10 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void testCreateNewComplexConditionFromFormObject() {
-        ComplexConditionFormObject complexConditionFormObject = getNewComplexConditionFormObject();
+    public void testCreateNewComplexConditionFromDto() {
+        ComplexConditionDto complexConditionDto = getNewComplexConditionDto();
 
-        complexConditionService.createNewComplexCondition(complexConditionFormObject);
+        complexConditionService.createNewComplexCondition(complexConditionDto);
 
         ComplexConditionEntity complexConditionEntity = null;
         Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.getAllComplexConditions();
@@ -158,9 +158,9 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void testUpdateComplexConditionFromFormObject() {
+    public void testUpdateComplexConditionFromDto() {
         createComplexCondition();
-        ComplexConditionFormObject complexConditionFormObject = getNewComplexConditionFormObject();
+        ComplexConditionDto complexConditionDto = getNewComplexConditionDto();
 
         ComplexConditionEntity complexConditionEntity = complexConditionService
                 .getComplexConditionById(newComplexConditionId);
@@ -169,9 +169,9 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
         assertEquals(COMPLEX_CONDITION_NAME, complexConditionEntity.getName());
 
-        complexConditionFormObject.setId(newComplexConditionId);
-        complexConditionFormObject.setName(COMPLEX_CONDITION_UPDATED_NAME);
-        complexConditionService.updateComplexCondition(complexConditionFormObject);
+        complexConditionDto.setId(newComplexConditionId);
+        complexConditionDto.setName(COMPLEX_CONDITION_UPDATED_NAME);
+        complexConditionService.updateComplexCondition(complexConditionDto);
 
         complexConditionEntity = complexConditionService.getComplexConditionById(newComplexConditionId);
 
@@ -220,7 +220,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         return complexConditionEntity;
     }
 
-    private ComplexConditionFormObject getNewComplexConditionFormObject() {
+    private ComplexConditionDto getNewComplexConditionDto() {
         ConditionEntity conditionEntity = conditionService.getConditionEntityById(CONDITION_ID);
         assertNotNull(conditionEntity);
         assertEquals(CONDITION_ID, conditionEntity.getId());
@@ -228,13 +228,13 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         Set<ConditionEntity> conditionEntities = new LinkedHashSet<>();
         conditionEntities.add(conditionEntity);
 
-        ComplexConditionFormObject complexConditionFormObject = new ComplexConditionFormObject(
+        ComplexConditionDto complexConditionDto = new ComplexConditionDto(
                 COMPLEX_CONDITION_NAME, conditionEntities);
 
-        assertNotNull(complexConditionFormObject);
-        assertEquals(COMPLEX_CONDITION_NAME, complexConditionFormObject.getName());
+        assertNotNull(complexConditionDto);
+        assertEquals(COMPLEX_CONDITION_NAME, complexConditionDto.getName());
 
-        return complexConditionFormObject;
+        return complexConditionDto;
     }
 
     @Test

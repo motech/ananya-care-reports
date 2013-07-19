@@ -3,7 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
-import org.motechproject.carereporting.domain.dto.IndicatorFormObject;
+import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
@@ -65,27 +65,27 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
+    public void createNewIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorService.createNewIndicatorFromFormObject(indicatorFormObject);
+        indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateIndicator(@RequestBody @Valid IndicatorFormObject indicatorFormObject,
+    public void updateIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
             BindingResult bindingResult, @PathVariable Integer indicatorId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorFormObject.setId(indicatorId);
-        indicatorService.updateIndicatorFromFormObject(indicatorFormObject);
+        indicatorDto.setId(indicatorId);
+        indicatorService.updateIndicatorFromDto(indicatorDto);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE,

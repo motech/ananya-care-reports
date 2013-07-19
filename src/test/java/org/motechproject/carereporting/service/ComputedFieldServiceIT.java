@@ -10,7 +10,7 @@ import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.dto.ComputedFieldFormObject;
+import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
 import org.motechproject.carereporting.enums.FieldType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -110,9 +110,9 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void testCreateNewComputedFieldFromFormObject() {
-        ComputedFieldFormObject computedFieldFormObject = createComputedFieldFormObject();
-        computedFieldService.createNewComputedFieldFromFormObject(computedFieldFormObject);
+    public void testCreateNewComputedFieldFromDto() {
+        ComputedFieldDto computedFieldDto = createComputedFieldDto();
+        computedFieldService.createNewComputedFieldFromDto(computedFieldDto);
 
         ComputedFieldEntity computedFieldEntity = null;
         Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
@@ -150,14 +150,14 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
         return computedFieldEntity;
     }
 
-    private ComputedFieldFormObject createComputedFieldFormObject() {
+    private ComputedFieldDto createComputedFieldDto() {
         FieldEntity fieldEntity = getFieldEntity();
         List<FieldOperationEntity> fieldOperationEntities = createFieldOperationEntities(fieldEntity);
 
-        ComputedFieldFormObject computedFieldFormObject = new ComputedFieldFormObject(
+        ComputedFieldDto computedFieldDto = new ComputedFieldDto(
                 COMPUTED_FIELD_NAME, COMPUTED_FIELD_TYPE, FORM_ID, fieldOperationEntities);
 
-        return computedFieldFormObject;
+        return computedFieldDto;
     }
 
     private FieldEntity getFieldEntity() {

@@ -6,7 +6,7 @@ import org.motechproject.carereporting.domain.views.TrendJsonView;
 
 import java.io.Serializable;
 
-public class IndicatorWithTrend implements Serializable {
+public class IndicatorWithTrendDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
@@ -16,10 +16,10 @@ public class IndicatorWithTrend implements Serializable {
     @JsonView(TrendJsonView.class)
     private int trend;
 
-    public IndicatorWithTrend() {
+    public IndicatorWithTrendDto() {
     }
 
-    public IndicatorWithTrend(IndicatorEntity indicator, int trend) {
+    public IndicatorWithTrendDto(IndicatorEntity indicator, int trend) {
         this.indicator = indicator;
         this.trend = trend;
     }

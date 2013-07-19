@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.dto.ComputedFieldFormObject;
+import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,16 +58,16 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional(readOnly = false)
     @Override
-    public void createNewComputedFieldFromFormObject(ComputedFieldFormObject computedFieldFormObject) {
+    public void createNewComputedFieldFromDto(ComputedFieldDto computedFieldDto) {
         computedFieldDao.save(new ComputedFieldEntity(
-                computedFieldFormObject.getName(),
-                computedFieldFormObject.getType(),
-                findFormEntityFromFormObject(computedFieldFormObject),
-                new LinkedHashSet<>(computedFieldFormObject.getFieldOperations())
+                computedFieldDto.getName(),
+                computedFieldDto.getType(),
+                findFormEntityFromDto(computedFieldDto),
+                new LinkedHashSet<>(computedFieldDto.getFieldOperations())
         ));
     }
 
-    private FormEntity findFormEntityFromFormObject(ComputedFieldFormObject computedFieldFormObject) {
-        return formsService.getFormById(computedFieldFormObject.getForm());
+    private FormEntity findFormEntityFromDto(ComputedFieldDto computedFieldDto) {
+        return formsService.getFormById(computedFieldDto.getForm());
     }
 }

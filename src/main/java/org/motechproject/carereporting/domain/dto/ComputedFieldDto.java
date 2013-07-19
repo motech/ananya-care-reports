@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public class ComputedFieldFormObject implements Serializable {
+public class ComputedFieldDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
@@ -30,12 +30,12 @@ public class ComputedFieldFormObject implements Serializable {
     @NotNull
     private List<FieldOperationEntity> fieldOperations;
 
-    public ComputedFieldFormObject() {
+    public ComputedFieldDto() {
 
     }
 
-    public ComputedFieldFormObject(final String name, final FieldType type,
-            final Integer form, final List<FieldOperationEntity> fieldOperations) {
+    public ComputedFieldDto(final String name, final FieldType type,
+                            final Integer form, final List<FieldOperationEntity> fieldOperations) {
         this.name = name;
         this.type = type;
         this.form = form;
