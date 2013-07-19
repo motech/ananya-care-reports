@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Set;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
@@ -21,17 +21,117 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Autowired
     private AreaService areaService;
 
+    private final int EXPECTED_AREAS_ALL = 18;
+    private final Integer LEVEL_ID = 1;
+    private final int EXPECTED_AREAS_BY_LEVEL_ID = 2;
+    private final int PARENT_AREA_ID = 1;
+    private final int EXPECTED_AREAS_BY_PARENT_AREA_ID = 2;
+    private final int EXPECTED_AREAS_DIRECT_CHILD_BY_PARENT_AREA_ID = 8;
+    private final Integer AREA_ID = 1;
+    private final int EXPECTED_LEVELS_ALL = 5;
+    private final String CREATE_AREA_NAME = "AREA_SERVICE_IT_TEST_AREA";
+    private final String CREATE_LEVEL_NAME = "AREA_SERVICE_IT_TEST_LEVEL";
+    private final String UPDATE_AREA_NAME = "AREA_SERVICE_IT_TEST_AREA_2";
+
     @Test
-    public void testGetAllAreas() {
-        LevelEntity level = new LevelEntity("newLevel", null);
-        level.setHierarchyDepth(0);
-        areaService.createNewLevel(level);
-        AreaEntity area = new AreaEntity("newArea", level);
-        areaService.createNewArea(area);
-        Set<AreaEntity> areas = areaService.findAllAreas();
-        AreaEntity [] areaEntities = {};
-        areaEntities = areas.toArray(areaEntities);
-        assertNotNull(areas);
-        assertEquals(19, areas.size());
+    public void testFindAllAreas() {
+        Set<AreaEntity> areaEntities = areaService.findAllAreas();
+
+        assertNotNull(areaEntities);
+        assertEquals(EXPECTED_AREAS_ALL, areaEntities.size());
+    }
+
+    @Test
+    public void testFindAreasByLevelId() {
+        Set<AreaEntity> areaEntities = areaService.findAreasByLevelId(LEVEL_ID);
+
+        assertNotNull(areaEntities);
+        assertEquals(EXPECTED_AREAS_BY_LEVEL_ID, areaEntities.size());
+    }
+
+    @Test
+    public void testFindAreasByParentAreaId() {
+        Set<AreaEntity> areaEntities = areaService.findAreasByParentAreaId(PARENT_AREA_ID);
+
+        assertNotNull(areaEntities);
+        assertEquals(EXPECTED_AREAS_BY_PARENT_AREA_ID, areaEntities.size());
+    }
+
+    @Test
+    public void testFindAllChildAreasByParentAreaId() {
+        Set<AreaEntity> areaEntities = areaService.findAllChildAreasByParentAreaId(PARENT_AREA_ID);
+
+        assertNotNull(areaEntities);
+        assertEquals(EXPECTED_AREAS_DIRECT_CHILD_BY_PARENT_AREA_ID, areaEntities.size());
+    }
+
+    @Test
+    public void testFindAreaById() {
+        AreaEntity areaEntity = areaService.findAreaById(AREA_ID);
+
+        assertNotNull(areaEntity);
+        assertEquals(AREA_ID, areaEntity.getId());
+    }
+
+    @Test
+    public void testFindAllLevels() {
+        Set<LevelEntity> levelEntities = areaService.findAllLevels();
+
+        assertNotNull(levelEntities);
+        assertEquals(EXPECTED_LEVELS_ALL, levelEntities.size());
+    }
+
+    @Test
+    public void testFindLevelById() {
+        LevelEntity levelEntity = areaService.findLevelById(LEVEL_ID);
+
+        assertNotNull(levelEntity);
+        assertEquals(LEVEL_ID, levelEntity.getId());
+    }
+
+    @Test
+    public void testCreateNewArea() {
+        LevelEntity levelEntity = areaService.findLevelById(LEVEL_ID);
+        assertNotNull(levelEntity);
+        assertEquals(LEVEL_ID, levelEntity.getId());
+
+        AreaEntity areaEntity = new AreaEntity();
+        areaEntity.setName(CREATE_AREA_NAME);
+        areaEntity.setLevel(levelEntity);
+
+        areaService.createNewArea(areaEntity);
+
+        Integer areaId = areaEntity.getId();
+        assertNotNull(areaId);
+
+        areaEntity = areaService.findAreaById(areaId);
+
+        assertNotNull(areaEntity);
+        assertEquals(areaId, areaEntity.getId());
+    }
+
+    @Test
+    public void testUpdateArea() {
+        AreaEntity areaEntity = areaService.findAreaById(AREA_ID);
+        assertNotNull(areaEntity);
+
+        areaEntity.setName(UPDATE_AREA_NAME);
+
+        areaService.updateArea(areaEntity);
+
+        areaEntity = areaService.findAreaById(AREA_ID);
+        assertNotNull(areaEntity);
+        assertEquals(UPDATE_AREA_NAME, areaEntity.getName());
+    }
+
+    @Test
+    public void testCreateNewLevel() {
+        LevelEntity levelEntity = new LevelEntity();
+        levelEntity.setName(CREATE_LEVEL_NAME);
+        levelEntity.setHierarchyDepth(0);
+        levelEntity.setParentLevel(null);
+        levelEntity.setAreas(null);
+
+        areaService.createNewLevel(levelEntity);
     }
 }
