@@ -26,7 +26,7 @@ public class AxisBuilderTest {
 
         axisBuilder.showLabels(labels);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(labels, params.get(PARAM_SHOW_LABELS));
     }
 
@@ -36,7 +36,7 @@ public class AxisBuilderTest {
 
         axisBuilder.minorTickFreq(tickFreq);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(tickFreq, params.get(PARAM_MINOR_TICK_FREQ));
     }
 
@@ -46,7 +46,7 @@ public class AxisBuilderTest {
 
         axisBuilder.min(min);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(min, params.get(PARAM_MIN));
     }
 
@@ -56,7 +56,7 @@ public class AxisBuilderTest {
 
         axisBuilder.autoScaleMargin(margin);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(margin, params.get(PARAM_AUTO_SCALE_MARGIN));
     }
 
@@ -66,7 +66,7 @@ public class AxisBuilderTest {
 
         axisBuilder.mode(mode);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(mode.getValue(), params.get(PARAM_MODE));
     }
 
@@ -76,7 +76,7 @@ public class AxisBuilderTest {
 
         axisBuilder.timeformat(timeformat);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(timeformat, params.get(PARAM_TIMEFORMAT).toString());
     }
 
@@ -86,7 +86,7 @@ public class AxisBuilderTest {
 
         axisBuilder.scaling(scaling);
 
-        Map<String, Object> params = (Map<String, Object>) axisBuilder .build();
+        Map<String, Object> params = (Map<String, Object>) axisBuilder.build();
         assertEquals(scaling.getValue(), params.get(PARAM_SCALING));
     }
 }
