@@ -293,7 +293,7 @@
                     <reload>manual</reload>
                     <connectors>
                         <connector implementation="org.eclipse.jetty.server.bio.SocketConnector">
-                            <port>8080</port>
+                            <port>8089</port>
                         </connector>
                     </connectors>
                 </configuration>
@@ -389,11 +389,11 @@
                             <reload>manual</reload>
                             <connectors>
                                 <connector implementation="org.eclipse.jetty.server.bio.SocketConnector">
-                                    <port>8080</port>
+                                    <port>8089</port>
                                 </connector>
                             </connectors>
                             <scanIntervalSeconds>10</scanIntervalSeconds>
-                            <stopPort>8005</stopPort>
+                            <stopPort>8010</stopPort>
                             <stopKey>STOP</stopKey>
                         </configuration>
                         <executions>
