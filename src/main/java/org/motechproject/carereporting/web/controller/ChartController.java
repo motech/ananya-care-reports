@@ -3,9 +3,9 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.web.chart.Chart;
-import org.motechproject.carereporting.web.chart.ChartFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,10 +29,10 @@ public class ChartController {
     private IndicatorService indicatorService;
 
     @Autowired
-    private UserService userService;
+    private ReportService reportService;
 
     @Autowired
-    private ChartFactory chartFactory;
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
@@ -49,7 +49,7 @@ public class ChartController {
         List<IndicatorValueEntity> indicatorValues =
                 indicatorService.getIndicatorValuesForArea(indicatorId, area, c.getTime());
 
-        return prepareChart(indicator, chartType, indicatorValues);
+        return reportService.prepareChart(indicator, chartType, indicatorValues);
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -71,16 +71,4 @@ public class ChartController {
         return indicatorValues;
     }
 
-    private Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
-        switch (chartType) {
-            case "pie chart":
-                return chartFactory.createPieChart(indicator, values);
-            case "bar chart":
-                return chartFactory.createBarChart(indicator, values);
-            case "line chart":
-                return chartFactory.createLineChart(indicator, values);
-            default: throw new IllegalArgumentException("Chart type " + chartType +
-                    " not supported");
-        }
-    }
 }

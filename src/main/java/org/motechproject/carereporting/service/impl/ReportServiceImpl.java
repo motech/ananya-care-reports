@@ -2,30 +2,29 @@ package org.motechproject.carereporting.service.impl;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.motechproject.carereporting.dao.DashboardDao;
 import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
-import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.dto.ReportDto;
 import org.motechproject.carereporting.enums.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
+import org.motechproject.carereporting.web.chart.Chart;
+import org.motechproject.carereporting.web.chart.ChartFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
 public class ReportServiceImpl implements ReportService {
-
-    @Autowired
-    private DashboardDao dashboardDao;
 
     @Autowired
     private ReportDao reportDao;
@@ -35,6 +34,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private ChartFactory chartFactory;
 
     @Override
     @Transactional
@@ -165,32 +167,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    @Transactional
-    public Set<DashboardEntity> getAllDashboards() {
-        return dashboardDao.getAll();
-    }
-
-    @Override
-    @Transactional
-    public DashboardEntity getDashboardById(Integer id) {
-        return dashboardDao.getById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void createNewDashboard(DashboardEntity dashboardEntity) {
-        dashboardDao.save(dashboardEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateDashboard(DashboardEntity dashboardEntity) {
-        dashboardDao.update(dashboardEntity);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteDashboard(DashboardEntity dashboardEntity) {
-        dashboardDao.remove(dashboardEntity);
+    public Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
+        switch (chartType) {
+            case "pie chart":
+                return chartFactory.createPieChart(indicator, values);
+            case "bar chart":
+                return chartFactory.createBarChart(indicator, values);
+            case "line chart":
+                return chartFactory.createLineChart(indicator, values);
+            default: throw new IllegalArgumentException("Chart type " + chartType +
+                    " not supported");
+        }
     }
 }

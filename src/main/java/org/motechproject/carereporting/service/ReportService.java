@@ -1,12 +1,15 @@
 package org.motechproject.carereporting.service;
 
-import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.dto.ReportDto;
 import org.motechproject.carereporting.enums.ReportType;
+import org.motechproject.carereporting.web.chart.Chart;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ReportService {
@@ -50,13 +53,5 @@ public interface ReportService {
 
     void deleteReportType(ReportTypeEntity reportTypeEntity);
 
-    Set<DashboardEntity> getAllDashboards();
-
-    DashboardEntity getDashboardById(Integer id);
-
-    void createNewDashboard(DashboardEntity dashboardEntity);
-
-    void updateDashboard(DashboardEntity dashboardEntity);
-
-    void deleteDashboard(DashboardEntity dashboardEntity);
+    Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values);
 }
