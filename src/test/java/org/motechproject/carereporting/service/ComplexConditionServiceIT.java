@@ -57,9 +57,9 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     private final static String COMPLEX_CONDITION_NAME = "TEST_COMPLEX_CONDITION_1";
     private final static String COMPLEX_CONDITION_UPDATED_NAME = "TEST_COMPLEX_CONDITION_UPDATED_1";
     private final static Integer OPERATOR_TYPE_ID = 1;
-    private static final int EXPECTED_OPERATOR_TYPES_ALL = 4;
-    private static final Integer COMPARISON_SYMBOL_ID = 1;
-    private static final int EXPECTED_COMPARISON_SYMBOLS_ALL = 5;
+    private final static int EXPECTED_OPERATOR_TYPES_ALL = 4;
+    private final static Integer COMPARISON_SYMBOL_ID = 1;
+    private final static int EXPECTED_COMPARISON_SYMBOLS_ALL = 5;
 
     private static Integer newComplexConditionId;
 
