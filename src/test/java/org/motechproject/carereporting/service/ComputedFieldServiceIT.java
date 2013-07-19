@@ -81,7 +81,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void testgetAllComputedFields() {
+    public void testGetAllComputedFields() {
         Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
 
         assertNotNull(computedFieldEntities);
@@ -89,7 +89,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void testgetComputedFieldsByFormId() {
+    public void testGetComputedFieldsByFormId() {
         Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getComputedFieldsByFormId(FORM_ID);
 
         assertNotNull(computedFieldEntities);
@@ -97,7 +97,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void testgetComputedFieldById() {
+    public void testGetComputedFieldById() {
         ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldById(COMPUTED_FIELD_ID);
 
         assertNotNull(computedFieldEntity);
