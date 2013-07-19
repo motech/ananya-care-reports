@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="CARE #43" author="Łukasz Gąsior">
+        <sql>
+            insert into reporting.dashboard (name, tab_position) values ('Mortality', 4);
+            insert into reporting.indicator_category (name, short_code, dashboard_id) values ('Mortality', 'MRT', (select dashboard_id from reporting.dashboard where name = 'Mortality'));
+            update reporting.dashboard set indicator_category_id = 3 where dashboard_id = (select dashboard_id from reporting.dashboard where name = 'Mortality');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
