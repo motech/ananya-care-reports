@@ -113,49 +113,6 @@ public class IndicatorController extends BaseController {
     public IndicatorTypeEntity getIndicatorType(@PathVariable Integer indicatorTypeId) {
         return indicatorService.getIndicatorTypeById(indicatorTypeId);
     }
-
-    @RequestMapping(value = "/type", method = RequestMethod.POST,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public void createNewIndicatorType(@RequestBody @Valid IndicatorTypeEntity indicatorTypeEntity,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
-        }
-
-        indicatorService.createNewIndicatorType(indicatorTypeEntity);
-    }
-
-    @RequestMapping(value = "/type/{indicatorTypeId}", method = RequestMethod.PUT,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public void updateIndicatorType(@RequestBody @Valid IndicatorTypeEntity indicatorTypeEntity,
-            BindingResult bindingResult, @PathVariable Integer indicatorTypeId) {
-        if (bindingResult.hasErrors()) {
-            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
-        }
-
-        IndicatorTypeEntity foundIndicatorTypeEntity = indicatorService.getIndicatorTypeById(indicatorTypeId);
-
-        foundIndicatorTypeEntity.setName(indicatorTypeEntity.getName());
-        indicatorService.updateIndicatorType(foundIndicatorTypeEntity);
-    }
-
-    @RequestMapping(value = "/type/{indicatorTypeId}", method = RequestMethod.DELETE,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public void deleteIndicatorType(@PathVariable Integer indicatorTypeId) {
-        IndicatorTypeEntity indicatorTypeEntity = indicatorService.getIndicatorTypeById(indicatorTypeId);
-
-        indicatorService.deleteIndicatorType(indicatorTypeEntity);
-    }
-
     // IndicatorCategoryEntity
 
     @RequestMapping(value = "/category", method = RequestMethod.GET,
@@ -208,7 +165,6 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.DELETE,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
