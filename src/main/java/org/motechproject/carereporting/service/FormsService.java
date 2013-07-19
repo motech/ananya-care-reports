@@ -20,13 +20,13 @@ public interface FormsService {
     @PreAuthorize(HAS_ROLE_CAN_DELETE_FORMS)
     void deleteFormById(Integer id);
 
-    FormEntity findFormById(Integer formId);
+    FormEntity getFormById(Integer formId);
 
-    FormEntity findFormByIdWithFields(Integer formId, String... fieldNames);
+    FormEntity getFormByIdWithFields(Integer formId, String... fieldNames);
 
-    Set<FormEntity> findAllForms();
+    Set<FormEntity> getAllForms();
 
-    Set<FormEntity> findAllFormsWithFields(String... fieldNames);
+    Set<FormEntity> getAllFormsWithFields(String... fieldNames);
 
     Set<String> getTables();
 
@@ -36,6 +36,6 @@ public interface FormsService {
 
     String getForeignKeyForTable(String tableName);
 
-    Set<ComputedFieldEntity> findAllComputedFieldsByFormId(Integer formId);
+    Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId);
 }
 

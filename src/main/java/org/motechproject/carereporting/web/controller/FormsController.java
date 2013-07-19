@@ -43,7 +43,7 @@ public class FormsController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getAllForms() {
-        return this.writeAsString(IndicatorJsonView.ListFormNames.class, formsService.findAllForms());
+        return this.writeAsString(IndicatorJsonView.ListFormNames.class, formsService.getAllForms());
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.GET)
@@ -51,7 +51,7 @@ public class FormsController extends BaseController {
     @ResponseBody
     public String getForm(@PathVariable Integer formId) {
         return writeAsString(IndicatorJsonView.IndicatorDetails.class,
-                formsService.findFormByIdWithFields(formId, "computedFields", "fields"));
+                formsService.getFormByIdWithFields(formId, "computedFields", "fields"));
     }
 
     @RequestMapping(value = "/{formId}/computedfields", method = RequestMethod.GET,
@@ -59,7 +59,7 @@ public class FormsController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getComputedFieldsByFormId(@PathVariable Integer formId) {
-        return this.writeAsString(BaseView.class, computedFieldService.findComputedFieldsByFormId(formId));
+        return this.writeAsString(BaseView.class, computedFieldService.getComputedFieldsByFormId(formId));
     }
 
     @RequestMapping(value = "/{formId}/fields", method = RequestMethod.GET,
@@ -68,7 +68,7 @@ public class FormsController extends BaseController {
     @ResponseBody
     public String getFieldsByFormId(@PathVariable Integer formId) {
         return this.writeAsString(IndicatorJsonView.ListFormFields.class,
-                fieldService.findAllFieldsByFormId(formId));
+                fieldService.getAllFieldsByFormId(formId));
     }
 
     @RequestMapping(value = "/{formId}", method = RequestMethod.DELETE)

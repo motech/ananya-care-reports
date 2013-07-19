@@ -52,14 +52,14 @@ public class UserController extends BaseController {
         UserEntity userEntity = (UserEntity) usernamePasswordAuthenticationToken.getPrincipal();
 
         return this.writeAsString(BaseView.class,
-                indicatorService.findAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
+                indicatorService.getAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
     }
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<AreaEntity> getAllAreas() {
-        return areaService.findAllAreas();
+        return areaService.getAllAreas();
     }
 
     @RequestMapping(value = "/areas/{areaId}", method = RequestMethod.GET,
@@ -67,7 +67,7 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public AreaEntity getArea(@PathVariable Integer areaId) {
-        return areaService.findAreaById(areaId);
+        return areaService.getAreaById(areaId);
     }
 
     @RequestMapping(value = "/areas/level/{levelId}", method = RequestMethod.GET,
@@ -75,7 +75,7 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<AreaEntity> getAreasByLevelId(@PathVariable Integer levelId) {
-        return areaService.findAreasByLevelId(levelId);
+        return areaService.getAreasByLevelId(levelId);
     }
 
     @RequestMapping(value = "/areas/{areaId}/list", method = RequestMethod.GET,
@@ -83,7 +83,7 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<AreaEntity> getAreasByParentAreaId(@PathVariable Integer areaId) {
-        return areaService.findAreasByParentAreaId(areaId);
+        return areaService.getAreasByParentAreaId(areaId);
     }
 
     @RequestMapping(value = "/roles", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -98,14 +98,14 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public RoleEntity getRole(@PathVariable Integer roleId) {
-        return userService.findRoleById(roleId);
+        return userService.getRoleById(roleId);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<UserEntity> getAllUsers() {
-        return userService.findAllUsers();
+        return userService.getAllUsers();
     }
 
     @RequestMapping(value = "/roles", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -148,14 +148,14 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<PermissionEntity> getAllPermissions() {
-        return userService.findAllPermissions();
+        return userService.getAllPermissions();
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserEntity getUserById(@PathVariable Integer userId) {
-        return userService.findUserById(userId);
+        return userService.getUserById(userId);
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)

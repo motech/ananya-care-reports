@@ -18,12 +18,12 @@ public class IndicatorDaoIT extends AbstractTransactionalJUnit4SpringContextTest
 
     @Test(expected = CareNullArgumentRuntimeException.class)
     public void shouldThrowCareNullArgumentExceptionWhenEntityIdIsNull() {
-        indicatorDao.findById(null);
+        indicatorDao.getById(null);
     }
 
     @Test(expected = CareResourceNotFoundRuntimeException.class)
     public void shouldThrowCareResourceNotFoundExceptionWhenEntityDoesNotExistsInDatabase() {
-        indicatorDao.findById(99);
+        indicatorDao.getById(99);
     }
 
 }

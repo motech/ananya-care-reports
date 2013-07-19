@@ -38,18 +38,18 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public Set<ReportEntity> findAllReports() {
-        return reportDao.findAll();
+    public Set<ReportEntity> getAllReports() {
+        return reportDao.getAll();
     }
 
     @Override
     @Transactional
-    public ReportEntity findReportById(Integer id) {
-        return reportDao.findById(id);
+    public ReportEntity getReportById(Integer id) {
+        return reportDao.getById(id);
     }
 
     @Override
-    public ReportEntity findReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId) {
+    public ReportEntity getReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from ReportEntity where reportType.id = :reportTypeId"
                         + " and indicator.id = :indicatorId");
@@ -97,7 +97,7 @@ public class ReportServiceImpl implements ReportService {
 
     private ReportEntity fetchAndUpdateReport(Integer reportId, Integer indicatorId, Integer reportTypeId,
             String labelX, String labelY) {
-        ReportEntity reportEntity = reportDao.findById(reportId);
+        ReportEntity reportEntity = reportDao.getById(reportId);
         IndicatorEntity indicatorEntity = new IndicatorEntity(indicatorId);
         reportEntity.setIndicator(indicatorEntity);
         ReportTypeEntity reportTypeEntity = new ReportTypeEntity(reportTypeId);
@@ -136,14 +136,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public Set<ReportTypeEntity> findAllReportTypes() {
-        return reportTypeDao.findAll();
+    public Set<ReportTypeEntity> getAllReportTypes() {
+        return reportTypeDao.getAll();
     }
 
     @Override
     @Transactional
-    public ReportTypeEntity findReportTypeById(Integer id) {
-        return reportTypeDao.findById(id);
+    public ReportTypeEntity getReportTypeById(Integer id) {
+        return reportTypeDao.getById(id);
     }
 
     @Override
@@ -166,14 +166,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public Set<DashboardEntity> findAllDashboards() {
-        return dashboardDao.findAll();
+    public Set<DashboardEntity> getAllDashboards() {
+        return dashboardDao.getAll();
     }
 
     @Override
     @Transactional
-    public DashboardEntity findDashboardById(Integer id) {
-        return dashboardDao.findById(id);
+    public DashboardEntity getDashboardById(Integer id) {
+        return dashboardDao.getById(id);
     }
 
     @Override

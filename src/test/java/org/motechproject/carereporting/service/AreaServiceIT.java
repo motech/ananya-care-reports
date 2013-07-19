@@ -35,7 +35,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAllAreas() {
-        Set<AreaEntity> areaEntities = areaService.findAllAreas();
+        Set<AreaEntity> areaEntities = areaService.getAllAreas();
 
         assertNotNull(areaEntities);
         assertEquals(EXPECTED_AREAS_ALL, areaEntities.size());
@@ -43,7 +43,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAreasByLevelId() {
-        Set<AreaEntity> areaEntities = areaService.findAreasByLevelId(LEVEL_ID);
+        Set<AreaEntity> areaEntities = areaService.getAreasByLevelId(LEVEL_ID);
 
         assertNotNull(areaEntities);
         assertEquals(EXPECTED_AREAS_BY_LEVEL_ID, areaEntities.size());
@@ -51,7 +51,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAreasByParentAreaId() {
-        Set<AreaEntity> areaEntities = areaService.findAreasByParentAreaId(PARENT_AREA_ID);
+        Set<AreaEntity> areaEntities = areaService.getAreasByParentAreaId(PARENT_AREA_ID);
 
         assertNotNull(areaEntities);
         assertEquals(EXPECTED_AREAS_BY_PARENT_AREA_ID, areaEntities.size());
@@ -59,7 +59,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAllChildAreasByParentAreaId() {
-        Set<AreaEntity> areaEntities = areaService.findAllChildAreasByParentAreaId(PARENT_AREA_ID);
+        Set<AreaEntity> areaEntities = areaService.getAllChildAreasByParentAreaId(PARENT_AREA_ID);
 
         assertNotNull(areaEntities);
         assertEquals(EXPECTED_AREAS_DIRECT_CHILD_BY_PARENT_AREA_ID, areaEntities.size());
@@ -67,7 +67,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAreaById() {
-        AreaEntity areaEntity = areaService.findAreaById(AREA_ID);
+        AreaEntity areaEntity = areaService.getAreaById(AREA_ID);
 
         assertNotNull(areaEntity);
         assertEquals(AREA_ID, areaEntity.getId());
@@ -75,7 +75,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindAllLevels() {
-        Set<LevelEntity> levelEntities = areaService.findAllLevels();
+        Set<LevelEntity> levelEntities = areaService.getAllLevels();
 
         assertNotNull(levelEntities);
         assertEquals(EXPECTED_LEVELS_ALL, levelEntities.size());
@@ -83,7 +83,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testFindLevelById() {
-        LevelEntity levelEntity = areaService.findLevelById(LEVEL_ID);
+        LevelEntity levelEntity = areaService.getLevelById(LEVEL_ID);
 
         assertNotNull(levelEntity);
         assertEquals(LEVEL_ID, levelEntity.getId());
@@ -91,7 +91,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testCreateNewArea() {
-        LevelEntity levelEntity = areaService.findLevelById(LEVEL_ID);
+        LevelEntity levelEntity = areaService.getLevelById(LEVEL_ID);
         assertNotNull(levelEntity);
         assertEquals(LEVEL_ID, levelEntity.getId());
 
@@ -104,7 +104,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         Integer areaId = areaEntity.getId();
         assertNotNull(areaId);
 
-        areaEntity = areaService.findAreaById(areaId);
+        areaEntity = areaService.getAreaById(areaId);
 
         assertNotNull(areaEntity);
         assertEquals(areaId, areaEntity.getId());
@@ -112,14 +112,14 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testUpdateArea() {
-        AreaEntity areaEntity = areaService.findAreaById(AREA_ID);
+        AreaEntity areaEntity = areaService.getAreaById(AREA_ID);
         assertNotNull(areaEntity);
 
         areaEntity.setName(UPDATE_AREA_NAME);
 
         areaService.updateArea(areaEntity);
 
-        areaEntity = areaService.findAreaById(AREA_ID);
+        areaEntity = areaService.getAreaById(AREA_ID);
         assertNotNull(areaEntity);
         assertEquals(UPDATE_AREA_NAME, areaEntity.getName());
     }

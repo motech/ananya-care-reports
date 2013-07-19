@@ -30,7 +30,7 @@ public class ComputedFieldController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getAllComputedFields() {
-        return this.writeAsString(BaseView.class, computedFieldService.findAllComputedFields());
+        return this.writeAsString(BaseView.class, computedFieldService.getAllComputedFields());
     }
 
     @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.GET,
@@ -38,7 +38,7 @@ public class ComputedFieldController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ComputedFieldEntity getComputedField(@PathVariable Integer computedFieldId) {
-        return computedFieldService.findComputedFieldById(computedFieldId);
+        return computedFieldService.getComputedFieldById(computedFieldId);
     }
 
     @RequestMapping(method = RequestMethod.POST,

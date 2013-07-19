@@ -22,13 +22,13 @@ public interface IndicatorService {
     String HAS_ROLE_CAN_EDIT_CATEGORIES = "hasRole('CAN_EDIT_CATEGORIES')";
     String HAS_ROLE_CAN_REMOVE_CATEGORIES = "hasRole('CAN_REMOVE_CATEGORIES')";
 
-    Set<IndicatorEntity> findAllIndicators();
+    Set<IndicatorEntity> getAllIndicators();
 
     Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId);
 
-    Set<IndicatorEntity> findAllIndicatorsUnderUserArea(Integer userId);
+    Set<IndicatorEntity> getAllIndicatorsUnderUserArea(Integer userId);
 
-    IndicatorEntity findIndicatorById(Integer id);
+    IndicatorEntity getIndicatorById(Integer id);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
     void createNewIndicator(IndicatorEntity indicatorEntity);
@@ -45,9 +45,9 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);
 
-    Set<IndicatorTypeEntity> findAllIndicatorTypes();
+    Set<IndicatorTypeEntity> getAllIndicatorTypes();
 
-    IndicatorTypeEntity findIndicatorTypeById(Integer id);
+    IndicatorTypeEntity getIndicatorTypeById(Integer id);
 
     void createNewIndicatorType(IndicatorTypeEntity indicatorTypeEntity);
 
@@ -55,9 +55,9 @@ public interface IndicatorService {
 
     void deleteIndicatorType(IndicatorTypeEntity indicatorTypeEntity);
 
-    Set<IndicatorCategoryEntity> findAllIndicatorCategories();
+    Set<IndicatorCategoryEntity> getAllIndicatorCategories();
 
-    IndicatorCategoryEntity findIndicatorCategoryById(Integer id);
+    IndicatorCategoryEntity getIndicatorCategoryById(Integer id);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_CATEGORIES)
     void createNewIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity);
@@ -68,9 +68,9 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_CATEGORIES)
     void deleteIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity);
 
-    Set<IndicatorValueEntity> findAllIndicatorValues();
+    Set<IndicatorValueEntity> getAllIndicatorValues();
 
-    IndicatorValueEntity findIndicatorValueById(Integer id);
+    IndicatorValueEntity getIndicatorValueById(Integer id);
 
     void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
@@ -78,7 +78,7 @@ public interface IndicatorService {
 
     void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
-    List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
+    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
 
     Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate);
 }

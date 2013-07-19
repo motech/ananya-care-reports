@@ -80,8 +80,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     private SessionFactory sessionFactory;
 
     @Transactional
-    public Set<IndicatorEntity> findAllIndicators() {
-        return indicatorDao.findAll();
+    public Set<IndicatorEntity> getAllIndicators() {
+        return indicatorDao.getAll();
     }
 
     @Transactional
@@ -103,8 +103,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public Set<IndicatorEntity> findAllIndicatorsUnderUserArea(Integer areaId) {
-        AreaEntity areaEntity = areaService.findAreaById(areaId);
+    public Set<IndicatorEntity> getAllIndicatorsUnderUserArea(Integer areaId) {
+        AreaEntity areaEntity = areaService.getAreaById(areaId);
         Set<AreaEntity> areaEntities = getAllChildEntities(areaEntity);
 
         List<Integer> areaIds = new ArrayList<>();
@@ -121,8 +121,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public IndicatorEntity findIndicatorById(Integer id) {
-        return indicatorDao.findById(id);
+    public IndicatorEntity getIndicatorById(Integer id) {
+        return indicatorDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -160,7 +160,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorFromFormObject(IndicatorFormObject indicatorFormObject) {
-        IndicatorEntity indicatorEntity = this.findIndicatorById(indicatorFormObject.getId());
+        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorFormObject.getId());
 
         indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromFormObject(indicatorFormObject));
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromFormObject(indicatorFormObject));
@@ -201,7 +201,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     private IndicatorTypeEntity findIndicatorTypeEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        return findIndicatorTypeById(indicatorFormObject.getIndicatorType());
+        return getIndicatorTypeById(indicatorFormObject.getIndicatorType());
     }
 
     private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromFormObject(
@@ -209,7 +209,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<IndicatorCategoryEntity> indicatorCategoryEntities = new LinkedHashSet<>();
 
         for (Integer indicatorCategoryId : indicatorFormObject.getCategories()) {
-            IndicatorCategoryEntity indicatorCategoryEntity = this.findIndicatorCategoryById(indicatorCategoryId);
+            IndicatorCategoryEntity indicatorCategoryEntity = this.getIndicatorCategoryById(indicatorCategoryId);
 
             indicatorCategoryEntities.add(indicatorCategoryEntity);
         }
@@ -218,14 +218,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     private AreaEntity findAreaEntityFromFormObject(IndicatorFormObject indicatorFormObject) {
-        return areaService.findAreaById(indicatorFormObject.getArea());
+        return areaService.getAreaById(indicatorFormObject.getArea());
     }
 
     private Set<UserEntity> findUserEntitiesFromFormObject(IndicatorFormObject indicatorFormObject) {
         Set<UserEntity> userEntities = new LinkedHashSet<>();
 
         for (Integer ownerId : indicatorFormObject.getOwners()) {
-            UserEntity userEntity = userService.findUserById(ownerId);
+            UserEntity userEntity = userService.getUserById(ownerId);
 
             userEntities.add(userEntity);
         }
@@ -235,7 +235,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ComputedFieldEntity findComputedFieldEntityFromFormObject(
             IndicatorFormObject indicatorFormObject) {
-        return computedFieldService.findComputedFieldById(indicatorFormObject.getComputedField());
+        return computedFieldService.getComputedFieldById(indicatorFormObject.getComputedField());
     }
 
     private ComplexConditionEntity findComplexConditionEntityFromFormObject(
@@ -244,7 +244,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             return null;
         }
 
-        return complexConditionService.findComplexConditionById(indicatorFormObject.getComplexCondition());
+        return complexConditionService.getComplexConditionById(indicatorFormObject.getComplexCondition());
     }
 
     private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromFormObject(
@@ -252,7 +252,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<IndicatorValueEntity> indicatorValueEntities = new LinkedHashSet<>();
 
         for (Integer valueId : indicatorFormObject.getValues()) {
-            IndicatorValueEntity indicatorValueEntity = this.findIndicatorValueById(valueId);
+            IndicatorValueEntity indicatorValueEntity = this.getIndicatorValueById(valueId);
 
             indicatorValueEntities.add(indicatorValueEntity);
         }
@@ -270,14 +270,14 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public Set<IndicatorTypeEntity> findAllIndicatorTypes() {
-        return indicatorTypeDao.findAll();
+    public Set<IndicatorTypeEntity> getAllIndicatorTypes() {
+        return indicatorTypeDao.getAll();
     }
 
     @Transactional
     @Override
-    public IndicatorTypeEntity findIndicatorTypeById(Integer id) {
-        return indicatorTypeDao.findById(id);
+    public IndicatorTypeEntity getIndicatorTypeById(Integer id) {
+        return indicatorTypeDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -302,14 +302,14 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public Set<IndicatorCategoryEntity> findAllIndicatorCategories() {
-        return indicatorCategoryDao.findAll();
+    public Set<IndicatorCategoryEntity> getAllIndicatorCategories() {
+        return indicatorCategoryDao.getAll();
     }
 
     @Transactional
     @Override
-    public IndicatorCategoryEntity findIndicatorCategoryById(Integer id) {
-        return indicatorCategoryDao.findById(id);
+    public IndicatorCategoryEntity getIndicatorCategoryById(Integer id) {
+        return indicatorCategoryDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -323,7 +323,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private DashboardEntity createDashboardForNewIndicatorCategory(String name) {
         Short newDashboardTabPosition = dashboardService.getTabPositionForNewDashboard();
         Set<UserEntity> dashboardOwners = new HashSet<UserEntity>();
-        dashboardOwners.add(userService.findCurrentlyLoggedUser());
+        dashboardOwners.add(userService.getCurrentlyLoggedUser());
         return new DashboardEntity(name, newDashboardTabPosition, dashboardOwners);
     }
 
@@ -342,16 +342,16 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public Set<IndicatorValueEntity> findAllIndicatorValues() {
-        return indicatorValueDao.findAll();
+    public Set<IndicatorValueEntity> getAllIndicatorValues() {
+        return indicatorValueDao.getAll();
     }
 
     // IndicatorValueEntity
 
     @Transactional
     @Override
-    public IndicatorValueEntity findIndicatorValueById(Integer id) {
-        return indicatorValueDao.findById(id);
+    public IndicatorValueEntity getIndicatorValueById(Integer id) {
+        return indicatorValueDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -374,15 +374,15 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
-        return indicatorValueDao.findIndicatorValuesForArea(indicatorId, areaId, earliestDate);
+    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
+        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, earliestDate);
     }
 
     @Override
     @Transactional
     public Set<TrendIndicatorCategory> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate) {
         Set<TrendIndicatorCategory> categories = new LinkedHashSet<>();
-        Set<IndicatorCategoryEntity> indicatorCategories = findAllIndicatorCategories();
+        Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
         for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
             TrendIndicatorCategory trendCategory = new TrendIndicatorCategory(indicatorCategory.getName());
             categories.add(trendCategory);

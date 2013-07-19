@@ -38,13 +38,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Set<UserEntity> findAllUsers() {
-        return userDao.findAll();
+    public Set<UserEntity> getAllUsers() {
+        return userDao.getAll();
     }
 
     @Override
-    public UserEntity findUserById(Integer id) {
-        return userDao.findById(id);
+    public UserEntity getUserById(Integer id) {
+        return userDao.getById(id);
     }
 
     @Override
@@ -60,12 +60,12 @@ public class UserServiceImpl implements UserService {
     public UserEntity login(String username, String password) {
         String salt = userDao.getSaltForUser(username);
         String encodedPassword = encodePasswordWithSalt(password, salt);
-        return userDao.findByUsernameAndPassword(username, encodedPassword);
+        return userDao.getByUsernameAndPassword(username, encodedPassword);
     }
 
     @Transactional
     @Override
-    public UserEntity findCurrentlyLoggedUser() {
+    public UserEntity getCurrentlyLoggedUser() {
         return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserEntity user) {
         try {
-            UserEntity userToUpdate = findUserById(user.getId());
+            UserEntity userToUpdate = getUserById(user.getId());
             userToUpdate.setUsername(user.getUsername());
             userToUpdate.setFirstName(user.getFirstName());
             userToUpdate.setLastName(user.getLastName());
@@ -144,13 +144,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public Set<RoleEntity> findAllRoles() {
-        return roleDao.findAll();
+        return roleDao.getAll();
     }
 
     @Transactional
     @Override
-    public RoleEntity findRoleById(Integer id) {
-        return roleDao.findById(id);
+    public RoleEntity getRoleById(Integer id) {
+        return roleDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -163,14 +163,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Set<PermissionEntity> findAllPermissions() {
-        return permissionDao.findAll();
+    public Set<PermissionEntity> getAllPermissions() {
+        return permissionDao.getAll();
     }
 
     @Transactional
     @Override
-    public PermissionEntity findPermissionById(Integer id) {
-        return permissionDao.findById(id);
+    public PermissionEntity getPermissionById(Integer id) {
+        return permissionDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     @Override
     public void removeRoleById(Integer id) {
-        RoleEntity roleEntity = this.findRoleById(id);
+        RoleEntity roleEntity = this.getRoleById(id);
 
         for (UserEntity userEntity : roleEntity.getUsers()) {
             userEntity.getRoles().remove(roleEntity);

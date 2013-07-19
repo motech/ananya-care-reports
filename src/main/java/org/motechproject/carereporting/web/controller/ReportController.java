@@ -31,7 +31,7 @@ public class ReportController extends BaseController {
     @ResponseBody
     public String getAllReportTypes() {
         return this.writeAsString(ReportJsonView.ReportDetails.class,
-                reportService.findAllReportTypes());
+                reportService.getAllReportTypes());
     }
 
     @RequestMapping(value = "/{reportId}", method = RequestMethod.GET)
@@ -39,7 +39,7 @@ public class ReportController extends BaseController {
     @ResponseBody
     public String getReportById(@PathVariable Integer reportId) {
         return this.writeAsString(ReportJsonView.ReportDetails.class,
-                reportService.findReportById(reportId));
+                reportService.getReportById(reportId));
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -47,7 +47,7 @@ public class ReportController extends BaseController {
     @ResponseBody
     public String getAllReports() {
         return this.writeAsString(ReportJsonView.ReportList.class,
-                reportService.findAllReports());
+                reportService.getAllReports());
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },

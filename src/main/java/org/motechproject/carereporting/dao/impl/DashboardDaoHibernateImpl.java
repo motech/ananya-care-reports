@@ -19,10 +19,10 @@ public class DashboardDaoHibernateImpl extends GenericDaoHibernateImpl<Dashboard
     }
 
     @Override
-    public DashboardEntity findDashboardByName(String name) {
+    public DashboardEntity getDashboardByName(String name) {
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put("name", name);
-        return (DashboardEntity) executeNamedQueryWithUniqueResult("dashboardEntity.findDashboardByName", queryParams);
+        return (DashboardEntity) executeNamedQueryWithUniqueResult("dashboardEntity.getDashboardByName", queryParams);
     }
 
 }

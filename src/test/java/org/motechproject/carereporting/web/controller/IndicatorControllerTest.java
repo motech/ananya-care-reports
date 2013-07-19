@@ -47,14 +47,14 @@ public class IndicatorControllerTest {
         indicator.setName(indicatorName);
         indicator.setId(indicatorId);
         indicators.add(indicator);
-        Mockito.when(indicatorService.findAllIndicators()).thenReturn(indicators);
+        Mockito.when(indicatorService.getAllIndicators()).thenReturn(indicators);
 
         mockMvc.perform(get("/api/indicator"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(indicatorName))
                 .andExpect(jsonPath("$[0].id").value(indicatorId));
 
-        verify(indicatorService, times(1)).findAllIndicators();
+        verify(indicatorService, times(1)).getAllIndicators();
     }
 
     @Test
@@ -86,14 +86,14 @@ public class IndicatorControllerTest {
         IndicatorEntity indicator = new IndicatorEntity();
         indicator.setName(indicatorName);
         indicator.setId(indicatorId);
-        Mockito.when(indicatorService.findIndicatorById(indicatorId)).thenReturn(indicator);
+        Mockito.when(indicatorService.getIndicatorById(indicatorId)).thenReturn(indicator);
 
         mockMvc.perform(get("/api/indicator/" + indicatorId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(indicatorName))
                 .andExpect(jsonPath("$.id").value(indicatorId));
 
-        verify(indicatorService, times(1)).findIndicatorById(indicatorId);
+        verify(indicatorService, times(1)).getIndicatorById(indicatorId);
     }
 
 }

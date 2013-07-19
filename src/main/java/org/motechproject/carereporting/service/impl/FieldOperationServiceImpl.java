@@ -18,13 +18,13 @@ public class FieldOperationServiceImpl implements FieldOperationService {
 
     @Transactional
     @Override
-    public Set<FieldOperationEntity> findAllFieldOperationServices() {
-        return fieldOperationDao.findAll();
+    public Set<FieldOperationEntity> getAllFieldOperationServices() {
+        return fieldOperationDao.getAll();
     }
 
     @Transactional
     @Override
-    public FieldOperationEntity findFieldOperationEntityById(Integer fieldOperationEntityId) {
-        return fieldOperationDao.findById(fieldOperationEntityId);
+    public FieldOperationEntity getFieldOperationEntityById(Integer fieldOperationEntityId) {
+        return fieldOperationDao.getById(fieldOperationEntityId);
     }
 }

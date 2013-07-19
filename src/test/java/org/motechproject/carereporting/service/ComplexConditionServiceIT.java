@@ -91,7 +91,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindAllComplexConditions() {
-        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.findAllComplexConditions();
+        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.getAllComplexConditions();
 
         assertNotNull(complexConditionEntities);
         assertEquals(EXPECTED_COMPLEX_CONDITIONS_ALL, complexConditionEntities.size());
@@ -100,7 +100,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     @Test
     public void testFindComplexConditionById() {
         ComplexConditionEntity complexConditionEntity =
-                complexConditionService.findComplexConditionById(COMPLEX_CONDITION_ID);
+                complexConditionService.getComplexConditionById(COMPLEX_CONDITION_ID);
 
         assertNotNull(complexConditionEntity);
         assertEquals(COMPLEX_CONDITION_ID, complexConditionEntity.getId());
@@ -111,7 +111,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         createComplexCondition();
 
         ComplexConditionEntity complexConditionEntity = complexConditionService
-                .findComplexConditionById(newComplexConditionId);
+                .getComplexConditionById(newComplexConditionId);
 
         assertNotNull(complexConditionEntity);
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
@@ -124,7 +124,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         complexConditionService.createNewComplexCondition(complexConditionFormObject);
 
         ComplexConditionEntity complexConditionEntity = null;
-        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.findAllComplexConditions();
+        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.getAllComplexConditions();
         for (ComplexConditionEntity complexCondition : complexConditionEntities) {
             if (COMPLEX_CONDITION_NAME == complexCondition.getName()) {
                 complexConditionEntity = complexCondition;
@@ -141,7 +141,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         createComplexCondition();
 
         ComplexConditionEntity complexConditionEntity = complexConditionService
-                .findComplexConditionById(newComplexConditionId);
+                .getComplexConditionById(newComplexConditionId);
 
         assertNotNull(complexConditionEntity);
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
@@ -150,7 +150,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         complexConditionEntity.setName(COMPLEX_CONDITION_UPDATED_NAME);
         complexConditionService.updateComplexCondition(complexConditionEntity);
 
-        complexConditionEntity = complexConditionService.findComplexConditionById(newComplexConditionId);
+        complexConditionEntity = complexConditionService.getComplexConditionById(newComplexConditionId);
 
         assertNotNull(complexConditionEntity);
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
@@ -163,7 +163,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         ComplexConditionFormObject complexConditionFormObject = getNewComplexConditionFormObject();
 
         ComplexConditionEntity complexConditionEntity = complexConditionService
-                .findComplexConditionById(newComplexConditionId);
+                .getComplexConditionById(newComplexConditionId);
 
         assertNotNull(complexConditionEntity);
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
@@ -173,7 +173,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
         complexConditionFormObject.setName(COMPLEX_CONDITION_UPDATED_NAME);
         complexConditionService.updateComplexCondition(complexConditionFormObject);
 
-        complexConditionEntity = complexConditionService.findComplexConditionById(newComplexConditionId);
+        complexConditionEntity = complexConditionService.getComplexConditionById(newComplexConditionId);
 
         assertNotNull(complexConditionEntity);
         assertEquals(newComplexConditionId, complexConditionEntity.getId());
@@ -189,20 +189,20 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
         complexConditionService.deleteComplexCondition(complexConditionEntity);
 
-        complexConditionEntity = complexConditionService.findComplexConditionById(newComplexConditionId);
+        complexConditionEntity = complexConditionService.getComplexConditionById(newComplexConditionId);
 
         assertNull(complexConditionEntity);
     }
 
     private ComplexConditionEntity createComplexCondition() {
-        IndicatorEntity indicatorEntity = indicatorService.findIndicatorById(INDICATOR_ID);
+        IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(INDICATOR_ID);
         assertNotNull(indicatorEntity);
         assertEquals(INDICATOR_ID, indicatorEntity.getId());
 
         Set<IndicatorEntity> indicatorEntities = new LinkedHashSet<>();
         indicatorEntities.add(indicatorEntity);
 
-        ConditionEntity conditionEntity = conditionService.findConditionEntityById(CONDITION_ID);
+        ConditionEntity conditionEntity = conditionService.getConditionEntityById(CONDITION_ID);
         assertNotNull(conditionEntity);
         assertEquals(CONDITION_ID, conditionEntity.getId());
 
@@ -221,7 +221,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     }
 
     private ComplexConditionFormObject getNewComplexConditionFormObject() {
-        ConditionEntity conditionEntity = conditionService.findConditionEntityById(CONDITION_ID);
+        ConditionEntity conditionEntity = conditionService.getConditionEntityById(CONDITION_ID);
         assertNotNull(conditionEntity);
         assertEquals(CONDITION_ID, conditionEntity.getId());
 
@@ -239,7 +239,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindAllOperatorTypes() {
-        Set<OperatorTypeEntity> operatorTypeEntities = complexConditionService.findAllOperatorTypes();
+        Set<OperatorTypeEntity> operatorTypeEntities = complexConditionService.getAllOperatorTypes();
         
         assertNotNull(operatorTypeEntities);
         assertEquals(EXPECTED_OPERATOR_TYPES_ALL, operatorTypeEntities.size());
@@ -247,7 +247,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindOperatorTypeById() {
-        OperatorTypeEntity operatorTypeEntity = complexConditionService.findOperatorTypeById(OPERATOR_TYPE_ID);
+        OperatorTypeEntity operatorTypeEntity = complexConditionService.getOperatorTypeById(OPERATOR_TYPE_ID);
 
         assertNotNull(operatorTypeEntity);
         assertEquals(OPERATOR_TYPE_ID, operatorTypeEntity.getId());
@@ -255,7 +255,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindAllComparisonSymbols() {
-        Set<ComparisonSymbolEntity> comparisonSymbolEntities = complexConditionService.findAllComparisonSymbols();
+        Set<ComparisonSymbolEntity> comparisonSymbolEntities = complexConditionService.getAllComparisonSymbols();
 
         assertNotNull(comparisonSymbolEntities);
         assertEquals(EXPECTED_COMPARISON_SYMBOLS_ALL, comparisonSymbolEntities.size());
@@ -263,7 +263,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindComparisonSymbolById() {
-        ComparisonSymbolEntity ComparisonSymbolEntity = complexConditionService.findComparisonSymbolById(
+        ComparisonSymbolEntity ComparisonSymbolEntity = complexConditionService.getComparisonSymbolById(
                 COMPARISON_SYMBOL_ID);
 
         assertNotNull(ComparisonSymbolEntity);

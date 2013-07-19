@@ -41,7 +41,7 @@ public class IndicatorValueCalculatorScheduler {
     @Transactional(readOnly = false)
     private int calculateAllIndicatorValues() {
         int calculatedIndicatorsCount = 0;
-        Set<IndicatorEntity> indicators = indicatorService.findAllIndicators();
+        Set<IndicatorEntity> indicators = indicatorService.getAllIndicators();
         for (IndicatorEntity indicator: indicators) {
             LOG.info("Calculating values for indicator: " + indicator.getName());
             calculateAndPersistIndicatorValues(indicator);

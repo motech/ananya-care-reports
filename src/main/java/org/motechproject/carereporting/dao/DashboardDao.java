@@ -6,5 +6,5 @@ public interface DashboardDao extends GenericDao<DashboardEntity> {
 
     Short getTabPositionForNewDashboard();
 
-    DashboardEntity findDashboardByName(String name);
+    DashboardEntity getDashboardByName(String name);
 }

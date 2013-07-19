@@ -8,6 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface IndicatorValueDao extends GenericDao<IndicatorValueEntity> {
-    List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
+    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate);
     IndicatorValueEntity getIndicatorValueClosestToDate(AreaEntity area, IndicatorEntity indicator, Date date);
 }

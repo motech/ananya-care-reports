@@ -12,17 +12,17 @@ import java.util.List;
 public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> implements AreaDao {
 
     @Override
-    public List<AreaEntity> findAllChildAreasByParentAreaId(Integer parentAreaId) {
+    public List<AreaEntity> getAllChildAreasByParentAreaId(Integer parentAreaId) {
         List<AreaEntity> areas = new ArrayList<>();
-        for (AreaEntity area: findDirectChildAreas(parentAreaId)) {
+        for (AreaEntity area: getDirectChildAreas(parentAreaId)) {
             areas.add(area);
-            areas.addAll(findAllChildAreasByParentAreaId(area.getId()));
+            areas.addAll(getAllChildAreasByParentAreaId(area.getId()));
         }
         return areas;
     }
 
     @Override
-    public List<AreaEntity> findDirectChildAreas(Integer parentAreaId) {
+    public List<AreaEntity> getDirectChildAreas(Integer parentAreaId) {
         return getCurrentSession()
                 .createCriteria(AreaEntity.class)
                 .add(Restrictions.eq("parentArea.id", parentAreaId))
@@ -30,7 +30,7 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
     }
 
     @Override
-    public List<AreaEntity> findAreasByLevelId(Integer levelId) {
+    public List<AreaEntity> getAreasByLevelId(Integer levelId) {
         return getCurrentSession()
                 .createQuery("from AreaEntity where level.id = :levelId")
                 .setParameter("levelId", levelId)

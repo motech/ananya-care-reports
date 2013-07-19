@@ -31,7 +31,7 @@ public class ComplexConditionController extends BaseController {
     @ResponseBody
     public String getComplexConditionList() {
         return this.writeAsString(ComplexConditionJsonView.ListComplexConditions.class,
-            complexConditionService.findAllComplexConditions());
+            complexConditionService.getAllComplexConditions());
     }
 
     @RequestMapping(value = "/operatortype", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -39,7 +39,7 @@ public class ComplexConditionController extends BaseController {
     @ResponseBody
     public String getOperatorTypeList() {
         return this.writeAsString(ComplexConditionJsonView.ListOperatorTypes.class,
-            complexConditionService.findAllOperatorTypes());
+            complexConditionService.getAllOperatorTypes());
     }
 
     @RequestMapping(value = "/comparisonsymbol", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -47,7 +47,7 @@ public class ComplexConditionController extends BaseController {
     @ResponseBody
     public String getComparisonSymbolList() {
         return this.writeAsString(ComplexConditionJsonView.ListComparisonSymbols.class,
-            complexConditionService.findAllComparisonSymbols());
+            complexConditionService.getAllComparisonSymbols());
     }
 
     @RequestMapping(value = "/{complexConditionId}", method = RequestMethod.GET,
@@ -56,7 +56,7 @@ public class ComplexConditionController extends BaseController {
     @ResponseBody
     public String getComplexCondition(@PathVariable Integer complexConditionId) {
         return this.writeAsString(ComplexConditionJsonView.ComplexConditionDetails.class,
-            complexConditionService.findComplexConditionById(complexConditionId));
+            complexConditionService.getComplexConditionById(complexConditionId));
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -93,7 +93,7 @@ public class ComplexConditionController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteComplexCondition(@PathVariable Integer complexConditionId) {
-        ComplexConditionEntity complexConditionEntity = complexConditionService.findComplexConditionById(complexConditionId);
+        ComplexConditionEntity complexConditionEntity = complexConditionService.getComplexConditionById(complexConditionId);
         complexConditionService.deleteComplexCondition(complexConditionEntity);
     }
 }

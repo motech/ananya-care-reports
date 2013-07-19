@@ -40,7 +40,7 @@ public class DashboardController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getAllDashboards(HttpServletRequest request) {
-        Set<DashboardEntity> dashboards = dashboardService.findAllDashboards();
+        Set<DashboardEntity> dashboards = dashboardService.getAllDashboards();
         filterDashboardsByUserRoles(request, dashboards);
         return writeAsString(DashboardJsonView.class,
                 dashboards);
@@ -70,8 +70,8 @@ public class DashboardController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<AreaEntity> getCurrentUserAvailableAreas() {
-        UserEntity user = userService.findCurrentlyLoggedUser();
-        Set<AreaEntity> userAreas = areaService.findAllChildAreasByParentAreaId(user.getArea().getId());
+        UserEntity user = userService.getCurrentlyLoggedUser();
+        Set<AreaEntity> userAreas = areaService.getAllChildAreasByParentAreaId(user.getArea().getId());
         userAreas.add(user.getArea());
         return userAreas;
     }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<UserEntity> implements UserDao {
 
     @Override
-    public UserEntity findByUsernameAndPassword(String username, String password) {
+    public UserEntity getByUsernameAndPassword(String username, String password) {
         UserEntity user = (UserEntity) getSessionFactory().getCurrentSession().createCriteria(UserEntity.class)
             .add(Restrictions.eq("username", username))
             .add(Restrictions.eq("password", password))

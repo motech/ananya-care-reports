@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface AreaDao extends GenericDao<AreaEntity> {
 
-    List<AreaEntity> findAllChildAreasByParentAreaId(Integer parentAreaId);
-    List<AreaEntity> findDirectChildAreas(Integer parentAreaId);
-    List<AreaEntity> findAreasByLevelId(Integer levelId);
+    List<AreaEntity> getAllChildAreasByParentAreaId(Integer parentAreaId);
+    List<AreaEntity> getDirectChildAreas(Integer parentAreaId);
+    List<AreaEntity> getAreasByLevelId(Integer levelId);
 
 }

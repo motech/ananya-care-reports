@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface ConditionService {
 
-    Set<ConditionEntity> findAllConditions();
+    Set<ConditionEntity> getAllConditions();
 
-    ConditionEntity findConditionEntityById(Integer conditionEntityId);
+    ConditionEntity getConditionEntityById(Integer conditionEntityId);
 }

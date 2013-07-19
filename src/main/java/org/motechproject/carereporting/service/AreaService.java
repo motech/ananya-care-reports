@@ -7,19 +7,19 @@ import java.util.Set;
 
 public interface AreaService {
 
-    Set<AreaEntity> findAllAreas();
+    Set<AreaEntity> getAllAreas();
 
-    Set<AreaEntity> findAreasByLevelId(Integer levelId);
+    Set<AreaEntity> getAreasByLevelId(Integer levelId);
 
-    Set<AreaEntity> findAreasByParentAreaId(Integer areaId);
+    Set<AreaEntity> getAreasByParentAreaId(Integer areaId);
 
-    Set<AreaEntity> findAllChildAreasByParentAreaId(Integer areaId);
+    Set<AreaEntity> getAllChildAreasByParentAreaId(Integer areaId);
 
-    AreaEntity findAreaById(Integer areaId);
+    AreaEntity getAreaById(Integer areaId);
 
-    Set<LevelEntity> findAllLevels();
+    Set<LevelEntity> getAllLevels();
 
-    LevelEntity findLevelById(Integer levelId);
+    LevelEntity getLevelById(Integer levelId);
 
     void createNewArea(AreaEntity areaEntity);
 

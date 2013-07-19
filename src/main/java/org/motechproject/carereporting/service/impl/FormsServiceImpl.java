@@ -68,23 +68,23 @@ public class FormsServiceImpl implements FormsService {
     }
 
     @Override
-    public FormEntity findFormById(Integer formId) {
-        return formDao.findById(formId);
+    public FormEntity getFormById(Integer formId) {
+        return formDao.getById(formId);
     }
 
     @Override
-    public FormEntity findFormByIdWithFields(Integer formId, String... fieldNames) {
-        return formDao.findByIdWithFields(formId, fieldNames);
+    public FormEntity getFormByIdWithFields(Integer formId, String... fieldNames) {
+        return formDao.getByIdWithFields(formId, fieldNames);
     }
 
     @Override
-    public Set<FormEntity> findAllForms() {
-        return formDao.findAll();
+    public Set<FormEntity> getAllForms() {
+        return formDao.getAll();
     }
 
     @Override
-    public Set<FormEntity> findAllFormsWithFields(String... fieldNames) {
-        return formDao.findAllWithFields(fieldNames);
+    public Set<FormEntity> getAllFormsWithFields(String... fieldNames) {
+        return formDao.getAllWithFields(fieldNames);
     }
 
     @Override
@@ -147,8 +147,8 @@ public class FormsServiceImpl implements FormsService {
     }
 
     @Override
-    public Set<ComputedFieldEntity> findAllComputedFieldsByFormId(Integer formId) {
-        return formDao.findByIdWithFields(formId, "computedFields").getComputedFields();
+    public Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId) {
+        return formDao.getByIdWithFields(formId, "computedFields").getComputedFields();
     }
 }
 

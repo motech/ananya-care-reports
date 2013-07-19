@@ -24,8 +24,8 @@ public class DashboardServiceImpl implements DashboardService {
     private SessionFactory sessionFactory;
 
     @Override
-    public Set<DashboardEntity> findAllDashboards() {
-        return dashboardDao.findAll();
+    public Set<DashboardEntity> getAllDashboards() {
+        return dashboardDao.getAll();
     }
 
     @Override
@@ -52,15 +52,15 @@ public class DashboardServiceImpl implements DashboardService {
     @Transactional(readOnly = false)
     public void saveDashboardsPositions(List<DashboardPosition> dashboardsPositions) {
         for (DashboardPosition dashboardPosition: dashboardsPositions) {
-            DashboardEntity dashboard = findDashboardByName(dashboardPosition.getName());
+            DashboardEntity dashboard = getDashboardByName(dashboardPosition.getName());
             dashboard.setTabPosition(dashboardPosition.getPosition().shortValue());
             dashboardDao.save(dashboard);
         }
     }
 
     @Override
-    public DashboardEntity findDashboardByName(String dashboardName) {
-        return dashboardDao.findDashboardByName(dashboardName);
+    public DashboardEntity getDashboardByName(String dashboardName) {
+        return dashboardDao.getDashboardByName(dashboardName);
     }
 
 }

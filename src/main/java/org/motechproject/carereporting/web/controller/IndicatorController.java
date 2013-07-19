@@ -41,7 +41,7 @@ public class IndicatorController extends BaseController {
     @ResponseBody
     public String getIndicatorList() {
         return this.writeAsString(BaseView.class,
-                indicatorService.findAllIndicators());
+                indicatorService.getAllIndicators());
     }
 
     @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -58,7 +58,7 @@ public class IndicatorController extends BaseController {
     @ResponseBody
     public String getIndicator(@PathVariable Integer indicatorId) {
         return this.writeAsString(IndicatorJsonView.IndicatorModificationDetails.class,
-                indicatorService.findIndicatorById(indicatorId));
+                indicatorService.getIndicatorById(indicatorId));
     }
 
     @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -93,7 +93,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteIndicator(@PathVariable Integer indicatorId) {
-        IndicatorEntity indicatorEntity = indicatorService.findIndicatorById(indicatorId);
+        IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
         indicatorService.deleteIndicator(indicatorEntity);
     }
 
@@ -103,7 +103,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<IndicatorTypeEntity> getIndicatorTypeList() {
-        return indicatorService.findAllIndicatorTypes();
+        return indicatorService.getAllIndicatorTypes();
     }
 
     @RequestMapping(value = "/type/{indicatorTypeId}", method = RequestMethod.GET,
@@ -111,7 +111,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorTypeEntity getIndicatorType(@PathVariable Integer indicatorTypeId) {
-        return indicatorService.findIndicatorTypeById(indicatorTypeId);
+        return indicatorService.getIndicatorTypeById(indicatorTypeId);
     }
 
     @RequestMapping(value = "/type", method = RequestMethod.POST,
@@ -139,7 +139,7 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        IndicatorTypeEntity foundIndicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
+        IndicatorTypeEntity foundIndicatorTypeEntity = indicatorService.getIndicatorTypeById(indicatorTypeId);
 
         foundIndicatorTypeEntity.setName(indicatorTypeEntity.getName());
         indicatorService.updateIndicatorType(foundIndicatorTypeEntity);
@@ -151,7 +151,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteIndicatorType(@PathVariable Integer indicatorTypeId) {
-        IndicatorTypeEntity indicatorTypeEntity = indicatorService.findIndicatorTypeById(indicatorTypeId);
+        IndicatorTypeEntity indicatorTypeEntity = indicatorService.getIndicatorTypeById(indicatorTypeId);
 
         indicatorService.deleteIndicatorType(indicatorTypeEntity);
     }
@@ -165,7 +165,7 @@ public class IndicatorController extends BaseController {
     public String getIndicatorCategoryList() {
 
         return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
-                indicatorService.findAllIndicatorCategories());
+                indicatorService.getAllIndicatorCategories());
     }
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.GET,
@@ -173,7 +173,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public IndicatorCategoryEntity getIndicatoryCategory(@PathVariable Integer indicatorCategoryId) {
-        return indicatorService.findIndicatorCategoryById(indicatorCategoryId);
+        return indicatorService.getIndicatorCategoryById(indicatorCategoryId);
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.PUT,
@@ -201,7 +201,7 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
+        IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 
         foundIndicatorCategoryEntity.setName(indicatorCategoryEntity.getName());
         indicatorService.updateIndicatorCategory(foundIndicatorCategoryEntity);
@@ -213,7 +213,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteIndicatorCategory(@PathVariable Integer indicatorCategoryId) {
-        IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.findIndicatorCategoryById(indicatorCategoryId);
+        IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
     }

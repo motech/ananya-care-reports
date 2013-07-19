@@ -29,7 +29,7 @@ import java.util.Set;
         @NamedQuery(name = "dashboardEntity.getTabPositionForNewDashboard",
             query = "select max(tabPosition) + 1 from DashboardEntity dashboardEntity"
         ),
-        @NamedQuery(name = "dashboardEntity.findDashboardByName",
+        @NamedQuery(name = "dashboardEntity.getDashboardByName",
             query = "from DashboardEntity d where d.name=:name"
         )
 })

@@ -55,7 +55,7 @@ public class UserControllerTest {
         userEntity.setUsername(username);
         userEntity.setRoles(new HashSet<RoleEntity>());
 
-        when(userService.findUserById(userId)).thenReturn(userEntity);
+        when(userService.getUserById(userId)).thenReturn(userEntity);
 
         mockMvc.perform(get("/api/users/" + userId)
                 .accept(MediaType.APPLICATION_JSON))

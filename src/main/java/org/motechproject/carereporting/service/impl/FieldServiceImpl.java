@@ -30,7 +30,7 @@ public class FieldServiceImpl implements FieldService {
     private DataSource dataSource;
 
     @Override
-    public List<String> findAllFieldNamesByFormId(Integer formId) {
+    public List<String> getAllFieldNamesByFormId(Integer formId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         String query = String.format("select name from reporting.field where form_id = %s", formId);
 
@@ -38,7 +38,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public Set<FieldEntity> findAllFieldsByFormId(Integer formId) {
+    public Set<FieldEntity> getAllFieldsByFormId(Integer formId) {
         Query query = sessionFactory.getCurrentSession()
             .createQuery("from FieldEntity where form.id = :formId");
         query.setParameter("formId", formId);
@@ -47,7 +47,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public Set<FieldEntity> findAllFieldsByType(FieldType fieldType) {
+    public Set<FieldEntity> getAllFieldsByType(FieldType fieldType) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from FieldEntity where type = :fieldType");
         query.setParameter("fieldType", fieldType);
@@ -56,8 +56,8 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public FieldEntity findFieldById(Integer fieldId) {
-        return fieldDao.findById(fieldId);
+    public FieldEntity getFieldById(Integer fieldId) {
+        return fieldDao.getById(fieldId);
     }
 
     @Transactional(readOnly = false)

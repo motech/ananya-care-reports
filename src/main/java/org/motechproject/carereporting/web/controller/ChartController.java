@@ -40,14 +40,14 @@ public class ChartController {
     public Chart getChartData(@RequestParam Integer indicatorId, @RequestParam(required = false) Integer areaId, @RequestParam String chartType) {
 
         Integer area = areaId != null ? areaId :
-                userService.findCurrentlyLoggedUser().getArea().getId();
+                userService.getCurrentlyLoggedUser().getArea().getId();
 
-        IndicatorEntity indicator = indicatorService.findIndicatorById(indicatorId);
+        IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.DAY_OF_YEAR, -indicator.getFrequency());
         List<IndicatorValueEntity> indicatorValues =
-                indicatorService.findIndicatorValuesForArea(indicatorId, area, c.getTime());
+                indicatorService.getIndicatorValuesForArea(indicatorId, area, c.getTime());
 
         return prepareChart(indicator, chartType, indicatorValues);
     }
@@ -59,14 +59,14 @@ public class ChartController {
             @RequestParam(required = false) Integer areaId) {
 
         Integer area = areaId != null ? areaId :
-                userService.findCurrentlyLoggedUser().getArea().getId();
+                userService.getCurrentlyLoggedUser().getArea().getId();
 
-        IndicatorEntity indicator = indicatorService.findIndicatorById(indicatorId);
+        IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.DAY_OF_YEAR, -indicator.getFrequency());
         List<IndicatorValueEntity> indicatorValues =
-                indicatorService.findIndicatorValuesForArea(indicatorId, area, c.getTime());
+                indicatorService.getIndicatorValuesForArea(indicatorId, area, c.getTime());
 
         return indicatorValues;
     }

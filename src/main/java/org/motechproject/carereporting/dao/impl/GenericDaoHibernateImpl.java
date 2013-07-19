@@ -41,13 +41,13 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<T> findAll() {
+    public Set<T> getAll() {
         return new HashSet<T>(sessionFactory.getCurrentSession()
                 .createCriteria(type).list());
     }
 
     @Override
-    public Set<T> findAllWithFields(String... fieldNames) {
+    public Set<T> getAllWithFields(String... fieldNames) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
         if (fieldNames.length > 0) {
             for (String fieldName : fieldNames) {
@@ -60,7 +60,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findById(Integer id) {
+    public T getById(Integer id) {
         if (id == null) {
             throw new CareNullArgumentRuntimeException();
         }
@@ -75,7 +75,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     }
 
     @Override
-    public T findByIdWithFields(Integer id, String... fieldNames) {
+    public T getByIdWithFields(Integer id, String... fieldNames) {
         if (id == null) {
             throw new CareNullArgumentRuntimeException();
         }

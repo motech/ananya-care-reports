@@ -13,11 +13,11 @@ public interface ReportService {
 
     String HAS_ROLE_MANAGE_REPORTS = "hasRole('CAN_MANAGE_REPORTS')";
 
-    Set<ReportEntity> findAllReports();
+    Set<ReportEntity> getAllReports();
 
-    ReportEntity findReportById(Integer id);
+    ReportEntity getReportById(Integer id);
 
-    ReportEntity findReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId);
+    ReportEntity getReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId);
 
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void createNewReport(ReportEntity reportEntity);
@@ -40,9 +40,9 @@ public interface ReportService {
     @PreAuthorize(HAS_ROLE_MANAGE_REPORTS)
     void deleteReportById(Integer reportId);
 
-    Set<ReportTypeEntity> findAllReportTypes();
+    Set<ReportTypeEntity> getAllReportTypes();
 
-    ReportTypeEntity findReportTypeById(Integer id);
+    ReportTypeEntity getReportTypeById(Integer id);
 
     void createNewReportType(ReportTypeEntity reportTypeEntity);
 
@@ -50,9 +50,9 @@ public interface ReportService {
 
     void deleteReportType(ReportTypeEntity reportTypeEntity);
 
-    Set<DashboardEntity> findAllDashboards();
+    Set<DashboardEntity> getAllDashboards();
 
-    DashboardEntity findDashboardById(Integer id);
+    DashboardEntity getDashboardById(Integer id);
 
     void createNewDashboard(DashboardEntity dashboardEntity);
 

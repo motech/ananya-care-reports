@@ -30,13 +30,13 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional
     @Override
-    public Set<ComputedFieldEntity> findAllComputedFields() {
-        return computedFieldDao.findAll();
+    public Set<ComputedFieldEntity> getAllComputedFields() {
+        return computedFieldDao.getAll();
     }
 
     @Transactional
     @Override
-    public Set<ComputedFieldEntity> findComputedFieldsByFormId(Integer formId) {
+    public Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from ComputedFieldEntity where form.id = :formId");
         query.setParameter("formId", formId);
@@ -46,8 +46,8 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional
     @Override
-    public ComputedFieldEntity findComputedFieldById(Integer computedFieldId) {
-        return computedFieldDao.findById(computedFieldId);
+    public ComputedFieldEntity getComputedFieldById(Integer computedFieldId) {
+        return computedFieldDao.getById(computedFieldId);
     }
 
     @Transactional(readOnly = false)
@@ -68,6 +68,6 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     }
 
     private FormEntity findFormEntityFromFormObject(ComputedFieldFormObject computedFieldFormObject) {
-        return formsService.findFormById(computedFieldFormObject.getForm());
+        return formsService.getFormById(computedFieldFormObject.getForm());
     }
 }

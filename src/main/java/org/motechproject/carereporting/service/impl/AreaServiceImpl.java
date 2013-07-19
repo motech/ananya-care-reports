@@ -24,42 +24,42 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional
-    public Set<AreaEntity> findAllAreas() {
-        return areaDao.findAll();
+    public Set<AreaEntity> getAllAreas() {
+        return areaDao.getAll();
     }
 
     @Override
-    public Set<AreaEntity> findAreasByLevelId(Integer levelId) {
-        return new LinkedHashSet<AreaEntity>(areaDao.findAreasByLevelId(levelId));
+    public Set<AreaEntity> getAreasByLevelId(Integer levelId) {
+        return new LinkedHashSet<AreaEntity>(areaDao.getAreasByLevelId(levelId));
     }
 
     @Override
-    public Set<AreaEntity> findAreasByParentAreaId(Integer areaId) {
-        return new LinkedHashSet<AreaEntity>(areaDao.findDirectChildAreas(areaId));
-    }
-
-    @Override
-    @Transactional
-    public Set<AreaEntity> findAllChildAreasByParentAreaId(Integer areaId) {
-        return new LinkedHashSet<>(areaDao.findAllChildAreasByParentAreaId(areaId));
+    public Set<AreaEntity> getAreasByParentAreaId(Integer areaId) {
+        return new LinkedHashSet<AreaEntity>(areaDao.getDirectChildAreas(areaId));
     }
 
     @Override
     @Transactional
-    public AreaEntity findAreaById(Integer areaId) {
-        return areaDao.findById(areaId);
+    public Set<AreaEntity> getAllChildAreasByParentAreaId(Integer areaId) {
+        return new LinkedHashSet<>(areaDao.getAllChildAreasByParentAreaId(areaId));
     }
 
     @Override
     @Transactional
-    public Set<LevelEntity> findAllLevels() {
-        return levelDao.findAll();
+    public AreaEntity getAreaById(Integer areaId) {
+        return areaDao.getById(areaId);
     }
 
     @Override
     @Transactional
-    public LevelEntity findLevelById(Integer levelId) {
-        return levelDao.findById(levelId);
+    public Set<LevelEntity> getAllLevels() {
+        return levelDao.getAll();
+    }
+
+    @Override
+    @Transactional
+    public LevelEntity getLevelById(Integer levelId) {
+        return levelDao.getById(levelId);
     }
 
     @Override

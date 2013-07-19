@@ -19,7 +19,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
         implements IndicatorValueDao {
 
     @Override
-    public List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
+    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorValueEntity.class)
                 .add(Restrictions.eq("indicator.id", indicatorId))

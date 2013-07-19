@@ -7,13 +7,13 @@ import java.util.Set;
 
 public interface GenericDao<T extends AbstractEntity> {
 
-    Set<T> findAll();
+    Set<T> getAll();
 
-    Set<T> findAllWithFields(String... fieldNames);
+    Set<T> getAllWithFields(String... fieldNames);
 
-    T findById(Integer id);
+    T getById(Integer id);
 
-    T findByIdWithFields(Integer id, String... fieldNames);
+    T getByIdWithFields(Integer id, String... fieldNames);
 
     void save(T entity);
 

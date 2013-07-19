@@ -8,13 +8,13 @@ import java.util.Set;
 
 public interface FieldService {
 
-    List<String> findAllFieldNamesByFormId(Integer formId);
+    List<String> getAllFieldNamesByFormId(Integer formId);
 
-    Set<FieldEntity> findAllFieldsByFormId(Integer formId);
+    Set<FieldEntity> getAllFieldsByFormId(Integer formId);
 
-    Set<FieldEntity> findAllFieldsByType(FieldType fieldType);
+    Set<FieldEntity> getAllFieldsByType(FieldType fieldType);
 
-    FieldEntity findFieldById(Integer fieldId);
+    FieldEntity getFieldById(Integer fieldId);
 
     void createNewField(FieldEntity fieldEntity);
 }

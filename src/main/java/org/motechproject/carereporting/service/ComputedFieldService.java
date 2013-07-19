@@ -10,11 +10,11 @@ public interface ComputedFieldService {
 
     String HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS = "hasRole('CAN_CREATE_COMPUTED_FIELDS')";
 
-    Set<ComputedFieldEntity> findAllComputedFields();
+    Set<ComputedFieldEntity> getAllComputedFields();
 
-    Set<ComputedFieldEntity> findComputedFieldsByFormId(Integer formId);
+    Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId);
 
-    ComputedFieldEntity findComputedFieldById(Integer computedFieldId);
+    ComputedFieldEntity getComputedFieldById(Integer computedFieldId);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
     void createNewComputedField(ComputedFieldEntity computedFieldEntity);

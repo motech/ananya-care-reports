@@ -16,11 +16,11 @@ public interface UserService {
     String HAS_ROLE_CAN_REMOVE_ROLE = "hasRole('CAN_REMOVE_ROLE')";
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
-    Set<UserEntity> findAllUsers();
+    Set<UserEntity> getAllUsers();
 
     UserEntity login(String username, String password);
 
-    UserEntity findCurrentlyLoggedUser();
+    UserEntity getCurrentlyLoggedUser();
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles);
@@ -35,20 +35,20 @@ public interface UserService {
     Set<RoleEntity> findAllRoles();
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
-    RoleEntity findRoleById(Integer id);
+    RoleEntity getRoleById(Integer id);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void addRole(String roleName);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
-    UserEntity findUserById(Integer id);
+    UserEntity getUserById(Integer id);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void removeUserById(Integer userId);
 
-    Set<PermissionEntity> findAllPermissions();
+    Set<PermissionEntity> getAllPermissions();
 
-    PermissionEntity findPermissionById(Integer id);
+    PermissionEntity getPermissionById(Integer id);
 
     void createNewPermission(PermissionEntity permissionEntity);
 

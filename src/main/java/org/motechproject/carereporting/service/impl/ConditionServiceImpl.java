@@ -17,12 +17,12 @@ public class ConditionServiceImpl implements ConditionService {
     private ConditionDao conditionDao;
 
     @Override
-    public Set<ConditionEntity> findAllConditions() {
-        return conditionDao.findAll();
+    public Set<ConditionEntity> getAllConditions() {
+        return conditionDao.getAll();
     }
 
     @Override
-    public ConditionEntity findConditionEntityById(Integer conditionEntityId) {
-        return conditionDao.findById(conditionEntityId);
+    public ConditionEntity getConditionEntityById(Integer conditionEntityId) {
+        return conditionDao.getById(conditionEntityId);
     }
 }

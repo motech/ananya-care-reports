@@ -29,14 +29,14 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public Set<ComplexConditionEntity> findAllComplexConditions() {
-        return complexConditionDao.findAll();
+    public Set<ComplexConditionEntity> getAllComplexConditions() {
+        return complexConditionDao.getAll();
     }
 
     @Override
     @Transactional
-    public ComplexConditionEntity findComplexConditionById(Integer complexConditionId) {
-        return complexConditionDao.findById(complexConditionId);
+    public ComplexConditionEntity getComplexConditionById(Integer complexConditionId) {
+        return complexConditionDao.getById(complexConditionId);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
     @Override
     @Transactional(readOnly = false)
     public void updateComplexCondition(ComplexConditionFormObject complexConditionFormObject) {
-        ComplexConditionEntity complexConditionEntity = this.findComplexConditionById(complexConditionFormObject.getId());
+        ComplexConditionEntity complexConditionEntity = this.getComplexConditionById(complexConditionFormObject.getId());
 
         complexConditionEntity.setName(complexConditionFormObject.getName());
         complexConditionEntity.setConditions(complexConditionFormObject.getConditions());
@@ -81,26 +81,26 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
 
     @Override
     @Transactional
-    public Set<OperatorTypeEntity> findAllOperatorTypes() {
-        return operatorTypeDao.findAll();
+    public Set<OperatorTypeEntity> getAllOperatorTypes() {
+        return operatorTypeDao.getAll();
     }
 
     @Override
     @Transactional
-    public OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId) {
-        return operatorTypeDao.findById(operatorTypeId);
+    public OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId) {
+        return operatorTypeDao.getById(operatorTypeId);
     }
 
     @Override
     @Transactional
-    public Set<ComparisonSymbolEntity> findAllComparisonSymbols() {
-        return comparisonSymbolDao.findAll();
+    public Set<ComparisonSymbolEntity> getAllComparisonSymbols() {
+        return comparisonSymbolDao.getAll();
     }
 
     @Override
     @Transactional
-    public ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId) {
-        return comparisonSymbolDao.findById(comparisonSymbolId);
+    public ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId) {
+        return comparisonSymbolDao.getById(comparisonSymbolId);
     }
 
 }

@@ -8,11 +8,11 @@ import java.util.Set;
 
 public interface DashboardService {
 
-    Set<DashboardEntity> findAllDashboards();
+    Set<DashboardEntity> getAllDashboards();
 
     void removeAllDashboardsByReportId(Integer reportId);
 
-    DashboardEntity findDashboardByName(String dashboardName);
+    DashboardEntity getDashboardByName(String dashboardName);
 
     void createNewDashboard(DashboardEntity dashboardEntity);
 

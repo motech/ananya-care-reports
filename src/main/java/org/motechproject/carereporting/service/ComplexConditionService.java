@@ -12,9 +12,9 @@ public interface ComplexConditionService {
 
     String HAS_ROLE_CAN_CREATE_COMPLEX_CONDITIONS = "hasRole('CAN_CREATE_COMPLEX_CONDITIONS')";
 
-    Set<ComplexConditionEntity> findAllComplexConditions();
+    Set<ComplexConditionEntity> getAllComplexConditions();
 
-    ComplexConditionEntity findComplexConditionById(Integer complexConditionId);
+    ComplexConditionEntity getComplexConditionById(Integer complexConditionId);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPLEX_CONDITIONS)
     void createNewComplexCondition(ComplexConditionEntity complexCondition);
@@ -28,12 +28,12 @@ public interface ComplexConditionService {
 
     void deleteComplexCondition(ComplexConditionEntity complexConditionEntity);
 
-    Set<OperatorTypeEntity> findAllOperatorTypes();
+    Set<OperatorTypeEntity> getAllOperatorTypes();
 
-    OperatorTypeEntity findOperatorTypeById(Integer operatorTypeId);
+    OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId);
 
-    Set<ComparisonSymbolEntity> findAllComparisonSymbols();
+    Set<ComparisonSymbolEntity> getAllComparisonSymbols();
 
-    ComparisonSymbolEntity findComparisonSymbolById(Integer comparisonSymbolId);
+    ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId);
 
 }

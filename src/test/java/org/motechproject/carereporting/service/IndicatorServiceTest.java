@@ -64,10 +64,10 @@ public class IndicatorServiceTest {
     public void testFindAllIndicators() {
         Set <IndicatorEntity> indicatorEntities = new HashSet<>();
         indicatorEntities.add(new IndicatorEntity());
-        when(indicatorDao.findAll()).thenReturn(indicatorEntities);
-        Set<IndicatorEntity> indicatorList = indicatorService.findAllIndicators();
+        when(indicatorDao.getAll()).thenReturn(indicatorEntities);
+        Set<IndicatorEntity> indicatorList = indicatorService.getAllIndicators();
 
-        verify(indicatorDao).findAll();
+        verify(indicatorDao).getAll();
 
         assertEquals(1, indicatorList.size());
     }
@@ -78,10 +78,10 @@ public class IndicatorServiceTest {
         indicatorEntity.setId(TEST_INDICATOR_ID);
         indicatorEntity.setName(TEST_INDICATOR_NAME);
 
-        when(indicatorDao.findById(TEST_INDICATOR_ID)).thenReturn(indicatorEntity);
-        IndicatorEntity returnedIndicator = indicatorService.findIndicatorById(TEST_INDICATOR_ID);
+        when(indicatorDao.getById(TEST_INDICATOR_ID)).thenReturn(indicatorEntity);
+        IndicatorEntity returnedIndicator = indicatorService.getIndicatorById(TEST_INDICATOR_ID);
 
-        verify(indicatorDao).findById(TEST_INDICATOR_ID);
+        verify(indicatorDao).getById(TEST_INDICATOR_ID);
 
         assertEquals(TEST_INDICATOR_ID, returnedIndicator.getId());
         assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());

@@ -59,7 +59,7 @@ public final class ChartFactory {
                     ? values.get(values.size() - 1).getValue()
                     : BigDecimal.ZERO;
 
-        ReportEntity reportEntity = reportService.findReportByTypeAndIndicatorId(
+        ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
                 ReportType.BarChart, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
         String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();
@@ -87,7 +87,7 @@ public final class ChartFactory {
                 ? values.get(values.size() - 1).getValue()
                 : BigDecimal.ZERO;
 
-        ReportEntity reportEntity = reportService.findReportByTypeAndIndicatorId(
+        ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
                 ReportType.PieChart, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
         String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();

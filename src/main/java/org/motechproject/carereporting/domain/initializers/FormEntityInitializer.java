@@ -40,7 +40,7 @@ public class FormEntityInitializer {
     @Transactional(readOnly = false)
     public void loadFormsFromDB() {
         Set<String> formTables = formsService.getTables();
-        Set<FormEntity> formEntities = formsService.findAllForms();
+        Set<FormEntity> formEntities = formsService.getAllForms();
         Map<String, FormEntity> newFormEntities = new HashMap<>();
 
         for (String formTable : formTables) {
@@ -74,7 +74,7 @@ public class FormEntityInitializer {
     @Transactional(readOnly = false)
     private void createFields(FormEntity formEntity) {
         Set<FieldEntity> fieldEntities = formsService.getFieldsByFormEntity(formEntity);
-        List<String> existingEntities = fieldService.findAllFieldNamesByFormId(formEntity.getId());
+        List<String> existingEntities = fieldService.getAllFieldNamesByFormId(formEntity.getId());
 
         for (FieldEntity fieldEntity : fieldEntities) {
             if (existingEntities.contains(fieldEntity.getName())) {
