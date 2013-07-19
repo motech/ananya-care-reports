@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.title');
+    $scope.title = $scope.msg('users.roles.title');
 
     $scope.fetchRoles = function() {
         $http.get('api/users/roles').success(function(roles) {
@@ -32,7 +32,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 });
 
 care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.title');
+    $scope.title = $scope.msg('users.roles.title');
 
     var isEdit = ($routeParams.roleId !== undefined);
     $scope.selectedPermissions = [];

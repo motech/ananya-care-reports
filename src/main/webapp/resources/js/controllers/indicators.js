@@ -17,6 +17,8 @@ Array.prototype.notEmpty = function() {
 };
 
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorService) {
+    $scope.title = $scope.msg('indicators.title');
+
     $scope.indicators = [];
     $scope.selectedCategory = null;
     $scope.category = {};
@@ -589,6 +591,8 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
+    $rootScope.pageTitle = $scope.msg('indicators.title');
+
     $scope.complexCondition = {};
     $scope.complexCondition.conditions = [];
     $scope.listConditions = [];
@@ -768,6 +772,8 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 care.controller('createComputedFieldController', function($rootScope, $scope, $http, $dialog) {
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
+
+    $rootScope.pageTitle = $scope.msg('indicators.title');
 
     $scope.listOperators = [];
     $scope.listFields = [];
