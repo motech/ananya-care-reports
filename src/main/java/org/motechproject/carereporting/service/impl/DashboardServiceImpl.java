@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.DashboardDao;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
@@ -18,9 +17,6 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     private DashboardDao dashboardDao;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Override
     public Set<DashboardEntity> getAllDashboards() {

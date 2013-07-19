@@ -16,13 +16,11 @@ public class FieldOperationServiceImpl implements FieldOperationService {
     @Autowired
     private FieldOperationDao fieldOperationDao;
 
-    @Transactional
     @Override
-    public Set<FieldOperationEntity> getAllFieldOperationServices() {
+    public Set<FieldOperationEntity> getAllFieldOperations() {
         return fieldOperationDao.getAll();
     }
 
-    @Transactional
     @Override
     public FieldOperationEntity getFieldOperationEntityById(Integer fieldOperationEntityId) {
         return fieldOperationDao.getById(fieldOperationEntityId);

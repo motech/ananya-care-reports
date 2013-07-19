@@ -10,7 +10,6 @@ import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
-import org.motechproject.carereporting.enums.ReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,13 +43,13 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Autowired
     private SessionFactory sessionFactory;
 
-    private final static int EXPECTED_DASHBOARDS_ALL = 4;
+    private final static int EXPECTED_DASHBOARDS_ALL = 5;
     private final static String DASHBOARD_NAME = "DASHBOARD_TEST_1";
     private final static Short DASHBOARD_TAB_POSITION = 99;
     private final static Short DASHBOARD_NEW_TAB_POSITION = 98;
     private final static Integer REPORT_ID = 1;
     private final static Integer USER_ID = 1;
-    private final static Short EXPECTED_TAB_POSITION = 4;
+    private final static Short EXPECTED_TAB_POSITION = 5;
 
     private static Integer newDashboardId;
 

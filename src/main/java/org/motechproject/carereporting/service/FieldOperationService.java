@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface FieldOperationService {
 
-    Set<FieldOperationEntity> getAllFieldOperationServices();
+    Set<FieldOperationEntity> getAllFieldOperations();
 
     FieldOperationEntity getFieldOperationEntityById(Integer fieldOperationEntityId);
 }

@@ -32,7 +32,7 @@ public class FieldOperationEntity extends AbstractEntity {
     private ComputedFieldEntity computedField;
 
     @ManyToOne
-    @JoinColumn(name = "operator_type_id", nullable = false)
+    @JoinColumn(name = "operator_type_id")
     private OperatorTypeEntity operatorType;
 
     public FieldOperationEntity() {
