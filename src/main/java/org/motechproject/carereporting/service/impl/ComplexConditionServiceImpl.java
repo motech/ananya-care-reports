@@ -6,7 +6,7 @@ import org.motechproject.carereporting.dao.OperatorTypeDao;
 import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
-import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.domain.forms;
+package org.motechproject.carereporting.domain.dto;
 
 import org.motechproject.carereporting.domain.ConditionEntity;
 

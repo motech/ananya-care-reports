@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.DashboardEntity;
-import org.motechproject.carereporting.domain.forms.DashboardPosition;
+import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
 
 import java.util.List;
 import java.util.Set;
@@ -18,5 +18,5 @@ public interface DashboardService {
 
     Short getTabPositionForNewDashboard();
 
-    void saveDashboardsPositions(List<DashboardPosition> dashboardsPositions);
+    void saveDashboardsPositions(List<DashboardPositionDto> dashboardsPositions);
 }

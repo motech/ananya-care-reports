@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComplexConditionService;

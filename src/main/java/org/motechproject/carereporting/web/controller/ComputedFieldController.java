@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.forms.ComputedFieldFormObject;
+import org.motechproject.carereporting.domain.dto.ComputedFieldFormObject;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;

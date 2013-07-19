@@ -5,8 +5,8 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
-import org.motechproject.carereporting.domain.forms.TrendIndicatorCategory;
+import org.motechproject.carereporting.domain.dto.IndicatorFormObject;
+import org.motechproject.carereporting.domain.dto.TrendIndicatorCategory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Date;

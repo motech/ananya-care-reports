@@ -9,7 +9,7 @@ import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
-import org.motechproject.carereporting.domain.forms.ReportFormObject;
+import org.motechproject.carereporting.domain.dto.ReportFormObject;
 import org.motechproject.carereporting.enums.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;

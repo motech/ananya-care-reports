@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.forms.ComputedFieldFormObject;
+import org.motechproject.carereporting.domain.dto.ComputedFieldFormObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;

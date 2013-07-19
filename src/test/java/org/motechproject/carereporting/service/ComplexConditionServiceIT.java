@@ -11,7 +11,7 @@ import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.OperatorTypeEntity;
-import org.motechproject.carereporting.domain.forms.ComplexConditionFormObject;
+import org.motechproject.carereporting.domain.dto.ComplexConditionFormObject;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

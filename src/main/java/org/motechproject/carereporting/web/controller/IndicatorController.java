@@ -3,7 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
-import org.motechproject.carereporting.domain.forms.IndicatorFormObject;
+import org.motechproject.carereporting.domain.dto.IndicatorFormObject;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;

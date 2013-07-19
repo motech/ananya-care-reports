@@ -1,6 +1,6 @@
-package org.motechproject.carereporting.domain.forms;
+package org.motechproject.carereporting.domain.dto;
 
-public class DashboardPosition {
+public class DashboardPositionDto {
 
     private String name;
     private Integer position;

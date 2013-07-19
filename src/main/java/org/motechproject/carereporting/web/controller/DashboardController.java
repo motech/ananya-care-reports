@@ -3,7 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.domain.forms.DashboardPosition;
+import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
@@ -78,7 +78,7 @@ public class DashboardController extends BaseController {
 
     @RequestMapping(value = "/save-positions", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void saveDashboardsPositions(@RequestBody List<DashboardPosition> dashboardsPositions) {
+    public void saveDashboardsPositions(@RequestBody List<DashboardPositionDto> dashboardsPositions) {
         dashboardService.saveDashboardsPositions(dashboardsPositions);
     }
 

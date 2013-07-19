@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.motechproject.carereporting.domain.forms.ReportFormObject;
+import org.motechproject.carereporting.domain.dto.ReportFormObject;
 import org.motechproject.carereporting.domain.views.ReportJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
