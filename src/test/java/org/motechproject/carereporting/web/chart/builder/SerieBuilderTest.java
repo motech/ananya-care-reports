@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:testContext.xml")
 public class SerieBuilderTest {
 
     private static double delta = 1e-15;

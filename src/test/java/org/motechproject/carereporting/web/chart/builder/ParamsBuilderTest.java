@@ -8,7 +8,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@ContextConfiguration(locations = "classpath:testContext.xml")
 public class ParamsBuilderTest {
 
     @Test

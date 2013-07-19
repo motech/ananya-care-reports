@@ -7,7 +7,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:testContext.xml")
 public class MouseBuilderTest {
 
     private static final String PARAM_TRACK = "track";

@@ -39,6 +39,9 @@ public class IndicatorControllerTest {
 
     private static final String CREATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"name\":\"name\",\"computedField\":399,\"trend\":{\"positiveDiff\":\"5\",\"negativeDiff\":\"-5\"},\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
     private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":{\"positiveDiff\":\"5\",\"negativeDiff\":\"-5\"},\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":{\"id\":1,\"positiveDiff\":5,\"negativeDiff\":-5},\"owners\":[1],\"categories\":[2]}";
+    private static final String CREATE_CATEGORY_JSON = "{\"name\":\"Name\",\"shortCode\":\"Code\"}";
+    private static final String UPDATE_CATEGORY_JSON = "{\"name\":\"New name\",\"shortCode\":\"Code\"}";
 
     @Mock
     private IndicatorService indicatorService;
@@ -219,6 +222,41 @@ public class IndicatorControllerTest {
         mockMvc.perform(delete("/api/indicator/category/" + categoryId))
                 .andExpect(status().isOk());
         verify(indicatorService, times(1)).deleteIndicatorCategory((IndicatorCategoryEntity) anyObject());
+    }
+
+    @Test
+    public void testUpdateIndicator() throws Exception {
+        Integer indicatorId = 1;
+        mockMvc.perform(put("/api/indicator/" + indicatorId)
+            .content(UPDATE_INDICATOR_JSON)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        verify(indicatorService, times(1)).updateIndicatorFromDto((IndicatorDto) anyObject());
+    }
+
+    @Test
+    public void testCreateIndicatorCategory() throws Exception {
+        mockMvc.perform(put("/api/indicator/category")
+                .content(CREATE_CATEGORY_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(indicatorService, times(1)).createNewIndicatorCategory((IndicatorCategoryEntity) anyObject());
+    }
+
+    @Test
+    public void testUpdateIndicatorCategory() throws Exception {
+        Integer categoryId = 1;
+        String categoryName = "name";
+        IndicatorCategoryEntity indicatorCategory = new IndicatorCategoryEntity(categoryName);
+        Mockito.when(indicatorService.getIndicatorCategoryById(categoryId)).thenReturn(indicatorCategory);
+        mockMvc.perform(put("/api/indicator/category/" + categoryId)
+                .content(UPDATE_CATEGORY_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(indicatorService, times(1)).updateIndicatorCategory(indicatorCategory);
     }
 
 }

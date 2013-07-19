@@ -7,7 +7,6 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:testContext.xml")
 public class GridBuilderTest {
 
     private static final String PARAM_VERTICAL_LINES = "verticalLines";

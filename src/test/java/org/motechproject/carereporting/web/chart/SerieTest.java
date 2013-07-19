@@ -9,7 +9,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:testContext.xml")
 public class SerieTest {
 
     @Test
