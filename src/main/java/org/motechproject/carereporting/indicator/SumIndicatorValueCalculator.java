@@ -12,8 +12,8 @@ public class SumIndicatorValueCalculator extends AbstractIndicatorValueCalculato
 
     private static final Logger LOGGER = Logger.getLogger(SumIndicatorValueCalculator.class);
 
-    private static final String SUM_QUERY_WITHOUT_CONDITIONS = "SELECT sum(%s) FROM care.%s " + TABLE_ALIAS + " "
-            + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
+    private static final String SUM_QUERY_WITHOUT_CONDITIONS = "SELECT sum(%s) FROM " + REPORT_DB_NAME +
+            ".%s " + TABLE_ALIAS + " " + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
     private static final String SUM_QUERY_WITH_CONDITIONS = SUM_QUERY_WITHOUT_CONDITIONS + " AND (%s)";
 
     public SumIndicatorValueCalculator(DataSource dataSource, IndicatorEntity indicator) {

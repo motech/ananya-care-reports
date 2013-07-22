@@ -13,9 +13,10 @@ import java.util.Iterator;
 public abstract class AbstractIndicatorValueCalculator {
 
     private static final String CONDITION_WHERE_CLAUSE = "(t.%s %s %s)";
+    protected static final String REPORT_DB_NAME = "report";
     protected static final String AREA_WHERE_CLAUSE = "(flw.block = :areaName OR flw.district = :areaName OR flw.village = :areaName)";
     protected static final String FREQUENCY_WHERE_CLAUSE = "(DATE_PART('day', now() - t.time_end) < :frequency)";
-    protected static final String FLW_JOIN = "INNER JOIN care.flw flw ON t.user_id = flw.id";
+    protected static final String FLW_JOIN = "INNER JOIN " + REPORT_DB_NAME + ".flw flw ON t.user_id = flw.id";
     protected static final String TABLE_ALIAS = "t";
 
     private final DataSource dataSource;

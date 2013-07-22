@@ -7,9 +7,9 @@
 
     <changeSet id="CARE #43" author="Łukasz Gąsior">
         <sql>
-            insert into reporting.dashboard (name, tab_position) values ('Mortality', 4);
-            insert into reporting.indicator_category (name, short_code, dashboard_id) values ('Mortality', 'MRT', (select dashboard_id from reporting.dashboard where name = 'Mortality'));
-            update reporting.dashboard set indicator_category_id = 3 where dashboard_id = (select dashboard_id from reporting.dashboard where name = 'Mortality');
+            insert into dashboard_app.dashboard (name, tab_position) values ('Mortality', 4);
+            insert into dashboard_app.indicator_category (name, short_code, dashboard_id) values ('Mortality', 'MRT', (select dashboard_id from dashboard_app.dashboard where name = 'Mortality'));
+            update dashboard_app.dashboard set indicator_category_id = 3 where dashboard_id = (select dashboard_id from dashboard_app.dashboard where name = 'Mortality');
         </sql>
     </changeSet>
 

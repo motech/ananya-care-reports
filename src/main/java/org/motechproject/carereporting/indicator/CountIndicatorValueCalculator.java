@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
-    private static final String COUNT_QUERY_WITHOUT_CONDITIONS = "SELECT count(%s) FROM care.%s "
+    private static final String COUNT_QUERY_WITHOUT_CONDITIONS = "SELECT count(%s) FROM " + REPORT_DB_NAME + ".%s "
             + TABLE_ALIAS + " " + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
     private static final String COUNT_QUERY_WITH_CONDITIONS = COUNT_QUERY_WITHOUT_CONDITIONS + " AND (%s)";
 

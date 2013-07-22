@@ -32,7 +32,7 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public List<String> getAllFieldNamesByFormId(Integer formId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        String query = String.format("select name from reporting.field where form_id = %s", formId);
+        String query = String.format("select name from dashboard_app.field where form_id = %s", formId);
 
         return jdbcTemplate.queryForList(query, String.class);
     }

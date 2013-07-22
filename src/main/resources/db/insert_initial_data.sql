@@ -83,10 +83,10 @@ INSERT INTO complex_condition(name, creation_date, modification_date)
 VALUES ('ifa tablets >= 90', now(), now());
 
 INSERT INTO condition(complex_condition_id, computed_field_id, comparison_symbol_id, comparison_value, creation_date, modification_date)
-VALUES (1, 453, 4, 90, now(), now());
+VALUES (1, 471, 4, 90, now(), now());
 
 INSERT INTO indicator (type_id, area_id, trend_id, complex_condition_id, computed_field_id, frequency, name, creation_date, modification_date)
-VALUES (3, 1, 1, 1, 453, 30, '% of mothers who received at least 90 IFA tablets', now(), now());
+VALUES (3, 1, 1, 1, 471, 30, '% of mothers who received at least 90 IFA tablets', now(), now());
 
 INSERT INTO indicator_indicator_category(indicator_id, indicator_category_id) VALUES (1, 2);
 

@@ -20,7 +20,7 @@ public class FieldOperationServiceIT extends AbstractTransactionalJUnit4SpringCo
     @Autowired
     private FieldOperationService fieldOperationService;
 
-    private final static int EXPECTED_FIELD_OPERATIONS_ALL = 817;
+    private final static int EXPECTED_FIELD_OPERATIONS_ALL = 856;
     private final static Integer FIELD_OPERATION_ID = 1;
 
     @Test

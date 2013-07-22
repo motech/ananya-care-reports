@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class AverageIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
-    private static final String AVERAGE_QUERY_WITHOUT_CONDITIONS = "SELECT avg(%s) FROM care.%s "
+    private static final String AVERAGE_QUERY_WITHOUT_CONDITIONS = "SELECT avg(%s) FROM " + REPORT_DB_NAME + ".%s "
             + TABLE_ALIAS + " " + FLW_JOIN + " WHERE " + AREA_WHERE_CLAUSE + " AND " + FREQUENCY_WHERE_CLAUSE;
     private static final String AVERAGE_QUERY_WITH_CONDITIONS = AVERAGE_QUERY_WITHOUT_CONDITIONS + " AND %s";
 

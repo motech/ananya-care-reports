@@ -67,6 +67,7 @@
         <property ref="dataSource" name="dataSource" />
         <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
         <property name="contexts" value="test, production" />
+        <property name="defaultSchema" value="${test.jdbc.schema}" />
     </bean>
 
 </beans>

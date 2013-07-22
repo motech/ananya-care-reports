@@ -46,8 +46,8 @@
         <jdbc.username>postgres</jdbc.username>
         <jdbc.password>postgres</jdbc.password>
         <care.database>carereporting</care.database>
-        <care.schema>care</care.schema>
-        <care.reporting.schema>reporting</care.reporting.schema>
+        <care.schema>report</care.schema>
+        <care.reporting.schema>dashboard_app</care.reporting.schema>
     </properties>
     <dependencies>
         <dependency>
@@ -486,10 +486,10 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
+                                    <url>${jdbc.url}/${care.database}</url>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>
-                                        DROP DATABASE IF EXISTS ${care.database};
-                                        CREATE DATABASE ${care.database};
+                                        DROP SCHEMA IF EXISTS ${care.reporting.schema} CASCADE;
                                     </sqlCommand>
                                 </configuration>
                             </execution>

@@ -57,7 +57,7 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testGetTableColumns() {
         String tableName = "abort_form";
-        int columnsNumber = 7;
+        int columnsNumber = 9;
         String[] tab = new String[] {
                 "date_aborted",
                 "birth_status",
