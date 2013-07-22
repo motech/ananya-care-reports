@@ -90,7 +90,7 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Set<RoleEntity> getAllRoles() {
-        return userService.findAllRoles();
+        return userService.getAllRoles();
     }
 
     @RequestMapping(value = "/roles/{roleId}", method = RequestMethod.GET,
@@ -139,7 +139,7 @@ public class UserController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateRole(@PathVariable Integer roleId) {
+    public void deleteRole(@PathVariable Integer roleId) {
         userService.removeRoleById(roleId);
     }
 

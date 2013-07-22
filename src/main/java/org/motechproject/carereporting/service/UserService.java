@@ -32,7 +32,7 @@ public interface UserService {
     void updateUser(UserEntity user);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
-    Set<RoleEntity> findAllRoles();
+    Set<RoleEntity> getAllRoles();
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     RoleEntity getRoleById(Integer id);

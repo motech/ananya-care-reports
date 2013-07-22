@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Set<RoleEntity> findAllRoles() {
+    public Set<RoleEntity> getAllRoles() {
         return roleDao.getAll();
     }
 

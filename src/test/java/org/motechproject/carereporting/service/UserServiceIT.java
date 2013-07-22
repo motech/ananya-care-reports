@@ -64,7 +64,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testAddRoles() throws Exception {
         addRoles("ROLE1", "ROLE2");
-        assertEquals(4, userService.findAllRoles().size());
+        assertEquals(4, userService.getAllRoles().size());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password2";
         AreaEntity area = new AreaEntity();
         area.setId(1);
-        userService.register(username, password, "firstName", "lastName", area, userService.findAllRoles());
+        userService.register(username, password, "firstName", "lastName", area, userService.getAllRoles());
         UserEntity user = userService.login(username, password);
         assertEquals(2, user.getRoles().size());
     }
