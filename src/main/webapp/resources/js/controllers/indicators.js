@@ -16,7 +16,7 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $location, $errorService) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService) {
     $scope.title = $scope.msg('indicators.title');
 
     $scope.indicators = [];
@@ -78,7 +78,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
         } else {
             $scope.fetchIndicators();
         }
-        });
+    });
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams, $errorService) {

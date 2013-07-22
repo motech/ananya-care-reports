@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <form id="indicatorForm" name="form" novalidate>
         <div class="row-fluid">
-            <div class="span3 well">
+            <div class="span4 well">
                 <div class="nested-well">
                     <fieldset>
                         <legend>{{msg('indicators.form.defineOwner')}}:</legend>
@@ -90,7 +90,7 @@
                     </fieldset>
                 </div>
             </div>
-            <div class="span5 well">
+            <div class="span4 well">
                 <div class="nested-well">
                     <legend>{{msg('indicators.form.defineIndicatorDescription')}}:</legend>
                     <label for="name">{{msg('indicators.form.name.label')}}: </label>
@@ -167,8 +167,13 @@
                         </tr>
                         </tbody>
                     </table>
-                    <br ng-show="indicators.length == 0"/>
-                    <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
+                    <div class="row-fluid">
+                        <br ng-show="indicators.length == 0"/>
+                        <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
+                    </div>
+                    <div class="row-fluid">
+                        <a href="#/indicators/new" class="btn btn-primary">{{msg('indicators.list.addNew')}}</a>
+                    </div>
                 </div>
             </div>
         </div>

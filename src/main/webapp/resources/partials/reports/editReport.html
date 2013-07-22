@@ -1,34 +1,36 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<h1 class="text-center">{{msg('reports.form.header')}}</h1>
-<div class="well span9 offset1">
-    <form class="form-horizontal" name="reportDto">
-        <div class="control-group">
-            <label class="control-label" for="indicator">{{msg('reports.form.indicator')}}: </label>
-            <div class="controls">
-                <input type="text" class="input-block-level" id="indicator" readonly="readonly" ng-model="report.indicator.name"/>
+<div class="container">
+    <h1 class="text-center">{{msg('reports.form.header')}}</h1>
+    <div class="well span9 offset1">
+        <form class="form-horizontal" name="reportDto">
+            <div class="control-group">
+                <label class="control-label" for="indicator">{{msg('reports.form.indicator')}}: </label>
+                <div class="controls">
+                    <input type="text" class="input-block-level" id="indicator" readonly="readonly" ng-model="report.indicator.name"/>
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="reportType">{{msg('reports.form.reportType')}}: </label>
-            <div class="controls">
-                <input type="text" class="input-block-level" id="reportType" readonly="readonly" ng-model="report.reportType.name"/>
+            <div class="control-group">
+                <label class="control-label" for="reportType">{{msg('reports.form.reportType')}}: </label>
+                <div class="controls">
+                    <input type="text" class="input-block-level" id="reportType" readonly="readonly" ng-model="report.reportType.name"/>
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="labelX">{{msg('reports.form.labelX')}}: </label>
-            <div class="controls">
-                <input type="text" class="input-block-level" id="labelX" ng-model="report.labelX"/>
+            <div class="control-group">
+                <label class="control-label" for="labelX">{{msg('reports.form.labelX')}}: </label>
+                <div class="controls">
+                    <input type="text" class="input-block-level" id="labelX" ng-model="report.labelX"/>
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="labelY">{{msg('reports.form.labelY')}}: </label>
-            <div class="controls">
-                <input type="text" class="input-block-level" id="labelY" ng-model="report.labelY"/>
+            <div class="control-group">
+                <label class="control-label" for="labelY">{{msg('reports.form.labelY')}}: </label>
+                <div class="controls">
+                    <input type="text" class="input-block-level" id="labelY" ng-model="report.labelY"/>
+                </div>
             </div>
+        </form>
+        <div class="row-fluid text-center">
+            <button type="submit" class="btn btn-primary" ng-click="submitReport(report)" ng-disabled="reportDto.$invalid">{{msg('reports.form.submit')}}</button>
         </div>
-    </form>
-    <div class="row-fluid text-center">
-        <button type="submit" class="btn btn-primary" ng-click="submitReport(report)" ng-disabled="reportDto.$invalid">{{msg('reports.form.submit')}}</button>
     </div>
 </div>
