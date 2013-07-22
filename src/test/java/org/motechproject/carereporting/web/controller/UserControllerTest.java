@@ -61,6 +61,8 @@ public class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username").value(username));
+
+        verify(userService).getUserById(userId);
     }
 
     @Test
