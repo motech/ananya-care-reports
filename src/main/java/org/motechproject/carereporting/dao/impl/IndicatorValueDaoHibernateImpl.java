@@ -19,6 +19,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
         implements IndicatorValueDao {
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorValueEntity.class)
@@ -29,6 +30,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
     }
 
+    @SuppressWarnings("unchecked")
     public List<IndicatorValueEntity> findIndicatorValuesForArea(Integer indicatorId, Integer areaId) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorValueEntity.class)

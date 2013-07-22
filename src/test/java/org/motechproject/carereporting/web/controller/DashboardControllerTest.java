@@ -54,6 +54,7 @@ public class DashboardControllerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSaveDashboardPositions() throws Exception {
         mockMvc.perform(post("/api/dashboards/save-positions")
                 .content(SAVE_POSITIONS_JSON)

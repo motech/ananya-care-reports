@@ -38,6 +38,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<FieldEntity> getAllFieldsByFormId(Integer formId) {
         Query query = sessionFactory.getCurrentSession()
             .createQuery("from FieldEntity where form.id = :formId");
@@ -47,6 +48,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<FieldEntity> getAllFieldsByType(FieldType fieldType) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from FieldEntity where type = :fieldType");

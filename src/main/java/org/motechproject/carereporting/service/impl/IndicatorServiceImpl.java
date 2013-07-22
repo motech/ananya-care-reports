@@ -103,6 +103,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
+    @SuppressWarnings("unchecked")
     public Set<IndicatorEntity> getAllIndicatorsUnderUserArea(Integer areaId) {
         AreaEntity areaEntity = areaService.getAreaById(areaId);
         Set<AreaEntity> areaEntities = getAllChildEntities(areaEntity);

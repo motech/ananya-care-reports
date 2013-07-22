@@ -70,6 +70,7 @@ public class ChartBuilder extends ParamsBuilder {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Chart build() {
         return new Chart(data, (Map<String, Object>) super.build());
     }

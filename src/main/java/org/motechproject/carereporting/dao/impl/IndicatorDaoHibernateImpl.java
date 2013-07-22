@@ -15,6 +15,7 @@ import java.util.Set;
 public class IndicatorDaoHibernateImpl extends GenericDaoHibernateImpl<IndicatorEntity> implements IndicatorDao {
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorEntity.class)

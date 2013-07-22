@@ -6,6 +6,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class LegendBuilderTest {
 
     private static final String PARAM_POSITION = "position";

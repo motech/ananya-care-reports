@@ -36,6 +36,7 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional
     @Override
+    @SuppressWarnings("unchecked")
     public Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from ComputedFieldEntity where form.id = :formId");

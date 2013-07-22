@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implements GenericDao<T> {
 
     @Autowired
@@ -32,7 +33,6 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
         return sessionFactory.getCurrentSession();
     }
 
-    @SuppressWarnings("unchecked")
     public GenericDaoHibernateImpl() {
         type = (Class<T>) ((ParameterizedType)
                 getClass().getGenericSuperclass())
@@ -40,7 +40,6 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Set<T> getAll() {
         return new HashSet<T>(sessionFactory.getCurrentSession()
                 .createCriteria(type).list());
@@ -59,7 +58,6 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T getById(Integer id) {
         if (id == null) {
             throw new CareNullArgumentRuntimeException();

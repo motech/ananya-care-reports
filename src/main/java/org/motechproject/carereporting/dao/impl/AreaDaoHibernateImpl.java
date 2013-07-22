@@ -22,6 +22,7 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<AreaEntity> getDirectChildAreas(Integer parentAreaId) {
         return getCurrentSession()
                 .createCriteria(AreaEntity.class)
@@ -30,6 +31,7 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<AreaEntity> getAreasByLevelId(Integer levelId) {
         return getCurrentSession()
                 .createQuery("from AreaEntity where level.id = :levelId")

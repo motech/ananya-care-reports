@@ -6,6 +6,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class GridBuilderTest {
 
     private static final String PARAM_VERTICAL_LINES = "verticalLines";
