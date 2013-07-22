@@ -58,9 +58,8 @@
                  <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageIndicators')}}<b class="caret"></b></a>
                      <ul class="dropdown-menu">
-                        <li><a href="#/indicators"><i class="icon-list"></i> {{msg('menu.manageIndicators.indicatorList')}}</a></li>
                         <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
-                            <li><a href="#/indicators/new"><i class="icon-plus-sign"></i> {{msg('menu.manageIndicators.addNewIndicator')}}</a></li>
+                            <li><a href="#/indicators/new"><i class="icon-list"></i> {{msg('menu.manageIndicators.indicatorsManager')}}</a></li>
                         </sec:authorize>
                         <li class="divider"></li>
                         <li class="dropdown-submenu">
