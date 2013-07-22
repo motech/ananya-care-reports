@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.FieldEntity;
-import org.motechproject.carereporting.enums.FieldType;
+import org.motechproject.carereporting.domain.FieldType;
 
 import java.util.List;
 import java.util.Set;

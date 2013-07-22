@@ -11,7 +11,7 @@ import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
-import org.motechproject.carereporting.enums.FieldType;
+import org.motechproject.carereporting.domain.FieldType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

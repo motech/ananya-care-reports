@@ -4,7 +4,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.FieldDao;
 import org.motechproject.carereporting.domain.FieldEntity;
-import org.motechproject.carereporting.enums.FieldType;
+import org.motechproject.carereporting.domain.FieldType;
 import org.motechproject.carereporting.service.FieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

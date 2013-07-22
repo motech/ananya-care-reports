@@ -4,7 +4,7 @@ import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.enums.FieldType;
+import org.motechproject.carereporting.domain.FieldType;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

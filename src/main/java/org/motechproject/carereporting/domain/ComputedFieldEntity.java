@@ -5,7 +5,6 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
-import org.motechproject.carereporting.enums.FieldType;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
