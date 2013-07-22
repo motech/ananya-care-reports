@@ -2,7 +2,6 @@ package org.motechproject.carereporting.web.chart.builder;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 

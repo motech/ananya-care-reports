@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.web.chart;
 
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

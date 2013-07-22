@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.web.chart.builder;
 
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Map;
 
