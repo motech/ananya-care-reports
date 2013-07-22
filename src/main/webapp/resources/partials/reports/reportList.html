@@ -1,24 +1,26 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<h1 class="text-center">{{msg('reports.list.header')}}</h1>
-<div class="span9 offset1 well">
-    <table class="table table-hover" ng-show="reports.length > 0">
-        <thead>
-        <tr>
-            <th>{{msg('reports.list.indicator')}}</th>
-            <th>{{msg('reports.list.reportType')}}</th>
-            <th>{{msg('actions')}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="report in reports | orderBy:'+indicatorId' | orderBy:'+id'">
-            <td><a href="#/indicators/{{report.indicatorId}}">{{report.indicatorName}}</a></td>
-            <td>{{report.reportType.name}}</td>
-            <td><a class="btn btn-link" href="#/reports/{{report.id}}">{{msg('edit')}}</a></td>
-        </tr>
-        </tbody>
-    </table>
-    <p class="text-center">
-        <span class="text-info" ng-show="reports.length == 0">{{msg('reports.list.empty')}}<br /><br /></span>
-    </p>
+<div class="container">
+    <h1 class="text-center">{{msg('reports.list.header')}}</h1>
+    <div class="span9 offset1 well">
+        <table class="table table-hover" ng-show="reports.length > 0">
+            <thead>
+            <tr>
+                <th>{{msg('reports.list.indicator')}}</th>
+                <th>{{msg('reports.list.reportType')}}</th>
+                <th>{{msg('actions')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="report in reports | orderBy:'+indicatorId' | orderBy:'+id'">
+                <td><a href="#/indicators/{{report.indicatorId}}">{{report.indicatorName}}</a></td>
+                <td>{{report.reportType.name}}</td>
+                <td><a class="btn btn-link" href="#/reports/{{report.id}}">{{msg('edit')}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="text-center">
+            <span class="text-info" ng-show="reports.length == 0">{{msg('reports.list.empty')}}<br /><br /></span>
+        </p>
+    </div>
 </div>

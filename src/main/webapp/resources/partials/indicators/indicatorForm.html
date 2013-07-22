@@ -1,10 +1,10 @@
 <div ng:init="$root.pageTitle = title"></div>
 
 <h1 class="text-center">{{msg('indicators.form.header')}}</h1>
-<div class="container">
+<div class="container-fluid">
     <form id="indicatorForm" name="form" novalidate>
         <div class="row-fluid">
-            <div class="span6 well">
+            <div class="span3 well">
                 <div class="nested-well">
                     <fieldset>
                         <legend>{{msg('indicators.form.defineOwner')}}:</legend>
@@ -90,7 +90,7 @@
                     </fieldset>
                 </div>
             </div>
-            <div class="span6 well">
+            <div class="span5 well">
                 <div class="nested-well">
                     <legend>{{msg('indicators.form.defineIndicatorDescription')}}:</legend>
                     <label for="name">{{msg('indicators.form.name.label')}}: </label>
@@ -145,6 +145,30 @@
                         <button class="btn" ng-click="launchComputedFieldDialog()">{{msg('indicators.form.createNewComputedField')}}</button>
                     </div>
                     <button class="btn btn-primary pull-right" ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid || reportTypes.length <= 0">{{msg('save')}}</button>
+                </div>
+            </div>
+            <div class="span4" ng-controller="indicatorListController">
+                <div class="span12 well">
+                    <div>
+                        <label for="categoryName">{{msg('indicators.list.chooseCategory')}}</label>
+                        <select id="categoryName" class="input-block-level" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category">
+                            <option value="">{{msg('indicators.list.allCategories')}}</option>
+                        </select>
+                    </div>
+                    <table class="table table-hover" ng-show="indicators.length > 0">
+                        <thead>
+                        <tr>
+                            <th>{{msg('indicators.list.displayName')}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in indicators | orderBy:'+name'">
+                            <td><a href="#/indicators/{{item.id}}">{{item.name}}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <br ng-show="indicators.length == 0"/>
+                    <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
                 </div>
             </div>
         </div>

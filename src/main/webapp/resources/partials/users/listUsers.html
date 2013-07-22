@@ -1,31 +1,33 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<h1 class="text-center">{{msg('users.list.header')}}</h1>
-<div class="span9 offset1 well">
-    <table class="table table-hover" ng-show="users.length > 0">
-        <thead>
-        <tr>
-            <th>{{msg('users.list.userName')}}</th>
-            <th>{{msg('users.list.firstName')}}</th>
-            <th>{{msg('users.list.lastName')}}</th>
-            <th>{{msg('users.list.email')}}</th>
-            <th>{{msg('users.list.area')}}</th>
-            <th>{{msg('users.list.actions')}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="user in users" user-popover>
-            <td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.area.name}}</td>
-            <td><span class="btn btn-link" ng-click="deleteUser(user);"><i class="icon-remove"></i></span></td>
-        </tr>
-        </tbody>
-    </table>
-    <p class="text-center">
-        <span class="text-info" ng-show="users.length == 0">{{msg('users.list.empty')}}<br /><br /></span>
-        <a class="btn btn-primary" href="#/users/new">{{msg('users.list.addUser')}}</a>
-    </p>
+<div class="container">
+    <h1 class="text-center">{{msg('users.list.header')}}</h1>
+    <div class="span9 offset1 well">
+        <table class="table table-hover" ng-show="users.length > 0">
+            <thead>
+            <tr>
+                <th>{{msg('users.list.userName')}}</th>
+                <th>{{msg('users.list.firstName')}}</th>
+                <th>{{msg('users.list.lastName')}}</th>
+                <th>{{msg('users.list.email')}}</th>
+                <th>{{msg('users.list.area')}}</th>
+                <th>{{msg('users.list.actions')}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in users" user-popover>
+                <td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.area.name}}</td>
+                <td><span class="btn btn-link" ng-click="deleteUser(user);"><i class="icon-remove"></i></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="text-center">
+            <span class="text-info" ng-show="users.length == 0">{{msg('users.list.empty')}}<br /><br /></span>
+            <a class="btn btn-primary" href="#/users/new">{{msg('users.list.addUser')}}</a>
+        </p>
+    </div>
 </div>

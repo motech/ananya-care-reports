@@ -1,74 +1,76 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<div class="row">
-    <div ng-show="mother_forms.length > 0">
-        <h1 class="text-center">{{msg('forms.list.header.mother')}}</h1>
+<div class="container">
+    <div class="row">
+        <div ng-show="mother_forms.length > 0">
+            <h1 class="text-center">{{msg('forms.list.header.mother')}}</h1>
 
-        <div class="span9 offset1 well">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>{{msg('forms.list.displayName')}}</th>
-                    <th>{{msg('forms.list.tableName')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="form in mother_forms | orderBy:'+displayName'">
-                    <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
-                    <td>{{form.tableName}}</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="span9 offset1 well">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{{msg('forms.list.displayName')}}</th>
+                        <th>{{msg('forms.list.tableName')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="form in mother_forms | orderBy:'+displayName'">
+                        <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                        <td>{{form.tableName}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div ng-show="child_forms.length > 0">
-        <h1 class="text-center">{{msg('forms.list.header.child')}}</h1>
+    <div class="row">
+        <div ng-show="child_forms.length > 0">
+            <h1 class="text-center">{{msg('forms.list.header.child')}}</h1>
 
-        <div class="span9 offset1 well">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>{{msg('forms.list.displayName')}}</th>
-                    <th>{{msg('forms.list.tableName')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="form in child_forms | orderBy:'+displayName'">
-                    <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
-                    <td>{{form.tableName}}</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="span9 offset1 well">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{{msg('forms.list.displayName')}}</th>
+                        <th>{{msg('forms.list.tableName')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="form in child_forms | orderBy:'+displayName'">
+                        <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                        <td>{{form.tableName}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div ng-show="other_forms.length > 0">
-        <h1 class="text-center">{{msg('forms.list.header.other')}}</h1>
+    <div class="row">
+        <div ng-show="other_forms.length > 0">
+            <h1 class="text-center">{{msg('forms.list.header.other')}}</h1>
 
-        <div class="span9 offset1 well">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>{{msg('forms.list.displayName')}}</th>
-                    <th>{{msg('forms.list.tableName')}}</th>
-                    <th>{{msg('actions')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="form in other_forms | orderBy:'+displayName'">
-                    <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
-                    <td>{{form.tableName}}</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="span9 offset1 well">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{{msg('forms.list.displayName')}}</th>
+                        <th>{{msg('forms.list.tableName')}}</th>
+                        <th>{{msg('actions')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="form in other_forms | orderBy:'+displayName'">
+                        <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                        <td>{{form.tableName}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <p class="text-center">
-        <button type="button" class="btn btn-primary" ng-click="reloadForms()" ng-disabled="!isListReloaded">{{reloadButtonMessage}}</button>
-    </p>
+    <div class="row">
+        <p class="text-center">
+            <button type="button" class="btn btn-primary" ng-click="reloadForms()" ng-disabled="!isListReloaded">{{reloadButtonMessage}}</button>
+        </p>
+    </div>
 </div>

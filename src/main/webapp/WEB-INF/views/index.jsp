@@ -112,8 +112,8 @@
              </div>
          </div>
      </div>
-    <div id="dashboard-container" class="container">
-        <div class="container dashboard" ng-view>
+    <div id="dashboard-container" class="container-fluid">
+        <div class="container-fluid dashboard" ng-view>
         </div>
     </div>
 </body>

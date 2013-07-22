@@ -1,70 +1,72 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<h1 class="text-center">{{msg('users.form.header')}}</h1>
-<div class="well span6 offset3">
-    <form class="form-horizontal" name="careUserForm">
-        <div class="control-group">
-            <label class="control-label" for="username">{{msg('users.form.username.label')}}: </label>
-            <div class="controls">
-                <div class="input-append">
-                    <input ng-model="careUser.username" type="text" id="username" name="username" placeholder="{{msg('users.form.username.placeholder')}}" required>
-                    <span class="add-on"><i class="icon-user"></i></span>
+<div class="container">
+    <h1 class="text-center">{{msg('users.form.header')}}</h1>
+    <div class="well span7 offset2">
+        <form class="form-horizontal" name="careUserForm">
+            <div class="control-group">
+                <label class="control-label" for="username">{{msg('users.form.username.label')}}: </label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input ng-model="careUser.username" type="text" id="username" name="username" placeholder="{{msg('users.form.username.placeholder')}}" required>
+                        <span class="add-on"><i class="icon-user"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="firstName">{{msg('users.form.firstName.label')}}: </label>
-            <div class="controls">
-                <div class="input-append">
-                    <input ng-model="careUser.firstName" type="text" id="firstName" name="firstName" placeholder="{{msg('users.form.firstName.placeholder')}}" required>
-                    <span class="add-on"><i class="icon-tag"></i></span>
+            <div class="control-group">
+                <label class="control-label" for="firstName">{{msg('users.form.firstName.label')}}: </label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input ng-model="careUser.firstName" type="text" id="firstName" name="firstName" placeholder="{{msg('users.form.firstName.placeholder')}}" required>
+                        <span class="add-on"><i class="icon-tag"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="lastName">{{msg('users.form.lastName.label')}}: </label>
-            <div class="controls">
-                <div class="input-append">
-                    <input ng-model="careUser.lastName" type="text" id="lastName" name="lastName" placeholder="{{msg('users.form.lastName.placeholder')}}" required>
-                    <span class="add-on"><i class="icon-tags"></i></span>
+            <div class="control-group">
+                <label class="control-label" for="lastName">{{msg('users.form.lastName.label')}}: </label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input ng-model="careUser.lastName" type="text" id="lastName" name="lastName" placeholder="{{msg('users.form.lastName.placeholder')}}" required>
+                        <span class="add-on"><i class="icon-tags"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="email">{{msg('users.form.email.label')}}: </label>
-            <div class="controls">
-                <div class="input-append">
-                    <input ng-model="careUser.email" type="email" id="email" name="email" placeholder="{{msg('users.form.email.placeholder')}}">
-                    <span class="add-on"><i class="icon-envelope"></i></span>
+            <div class="control-group">
+                <label class="control-label" for="email">{{msg('users.form.email.label')}}: </label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input ng-model="careUser.email" type="email" id="email" name="email" placeholder="{{msg('users.form.email.placeholder')}}">
+                        <span class="add-on"><i class="icon-envelope"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="password">{{msg('users.form.password.label')}}: </label>
-            <div class="controls">
-                <div class="input-append">
-                    <input ng-model="careUser.password" type="password" id="password" name="password"
-                           placeholder="{{{true: msg('users.form.password.changePlaceholder'), false: msg('users.form.password.enterPlaceholder')}[isEditing()]}}" ng-required="!isEditing()">
-                    <span class="add-on"><i class="icon-lock"></i></span>
+            <div class="control-group">
+                <label class="control-label" for="password">{{msg('users.form.password.label')}}: </label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input ng-model="careUser.password" type="password" id="password" name="password"
+                               placeholder="{{{true: msg('users.form.password.changePlaceholder'), false: msg('users.form.password.enterPlaceholder')}[isEditing()]}}" ng-required="!isEditing()">
+                        <span class="add-on"><i class="icon-lock"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="roles">{{msg('users.form.roles')}}: </label>
-            <div class="controls">
-                <select multiple="multiple" id="roles" name="roles" ng-model="careUser.roles" ng-options="role as role.name for role in roles" />
+            <div class="control-group">
+                <label class="control-label" for="roles">{{msg('users.form.roles')}}: </label>
+                <div class="controls">
+                    <select multiple="multiple" id="roles" name="roles" ng-model="careUser.roles" ng-options="role as role.name for role in roles" />
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="area">{{msg('users.form.area')}}: </label>
-            <div class="controls">
-                <select id="area" name="area" ng-model="careUser.area.id">
-                    <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="careUser.area.id == area.id" ng-repeat="area in areas">{{area.name}}</option>
-                </select>
+            <div class="control-group">
+                <label class="control-label" for="area">{{msg('users.form.area')}}: </label>
+                <div class="controls">
+                    <select id="area" name="area" ng-model="careUser.area.id">
+                        <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="careUser.area.id == area.id" ng-repeat="area in areas">{{area.name}}</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)" ng-disabled="careUserForm.$invalid">{{msg('users.form.submit')}}</button>
-        </div>
-    </form>
+            <div class="control-group">
+                <button type="submit" class="btn btn-primary offset2" ng-click="submitUser(careUser)" ng-disabled="careUserForm.$invalid">{{msg('users.form.submit')}}</button>
+            </div>
+        </form>
+    </div>
 </div>
