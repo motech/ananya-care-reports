@@ -91,7 +91,7 @@ public class FormsController extends BaseController {
         return formsService.getTables();
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public void addForm(@RequestBody @Valid FormEntity form, BindingResult result) {
         if (result.hasErrors()) {
@@ -111,7 +111,7 @@ public class FormsController extends BaseController {
         formsService.updateForm(form);
     }
 
-    @RequestMapping(value = "reload", method = RequestMethod.GET)
+    @RequestMapping(value = "/reload", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void reloadFormEntitiesFromDB() {
         formEntityInitializer.loadFormsFromDB();

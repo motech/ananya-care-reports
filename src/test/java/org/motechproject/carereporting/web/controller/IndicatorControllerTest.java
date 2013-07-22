@@ -12,23 +12,18 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.service.IndicatorService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,7 +56,7 @@ public class IndicatorControllerTest {
         String indicatorName = "test indicator";
         Integer indicatorId = 1;
 
-        Set<IndicatorEntity> indicators = new HashSet<IndicatorEntity>();
+        Set<IndicatorEntity> indicators = new LinkedHashSet<IndicatorEntity>();
         IndicatorEntity indicator = new IndicatorEntity();
         indicator.setName(indicatorName);
         indicator.setId(indicatorId);
@@ -82,7 +77,7 @@ public class IndicatorControllerTest {
         Integer indicatorId = 1;
         Integer categoryId = 1;
 
-        Set<IndicatorEntity> indicators = new HashSet<IndicatorEntity>();
+        Set<IndicatorEntity> indicators = new LinkedHashSet<IndicatorEntity>();
         IndicatorEntity indicator = new IndicatorEntity();
         indicator.setName(indicatorName);
         indicator.setId(indicatorId);
@@ -117,7 +112,7 @@ public class IndicatorControllerTest {
 
     @Test
     public void testCreateIndicator() throws Exception {
-        mockMvc.perform(put("/api/indicator")
+        mockMvc.perform(post("/api/indicator")
                 .content(CREATE_INDICATOR_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -127,7 +122,7 @@ public class IndicatorControllerTest {
 
     @Test
     public void testCreateIndicatorWithoutNameValidation() throws Exception {
-        mockMvc.perform(put("/api/indicator")
+        mockMvc.perform(post("/api/indicator")
                 .content(CREATE_INDICATOR_JSON_NO_NAME)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -148,7 +143,7 @@ public class IndicatorControllerTest {
         String indicatorTypeName = "test indicator";
         Integer indicatorTypeId = 1;
 
-        Set<IndicatorTypeEntity> indicatorTypes = new HashSet<>();
+        Set<IndicatorTypeEntity> indicatorTypes = new LinkedHashSet<>();
         IndicatorTypeEntity indicatorType = new IndicatorTypeEntity(indicatorTypeName);
         indicatorType.setId(indicatorTypeId);
         indicatorTypes.add(indicatorType);
@@ -185,7 +180,7 @@ public class IndicatorControllerTest {
         String categoryName = "indicator category";
         Integer categoryId = 1;
 
-        Set<IndicatorCategoryEntity> categories = new HashSet<>();
+        Set<IndicatorCategoryEntity> categories = new LinkedHashSet<>();
         IndicatorCategoryEntity category = new IndicatorCategoryEntity(categoryName);
         category.setId(categoryId);
         categories.add(category);
