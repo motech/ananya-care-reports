@@ -5,8 +5,10 @@ import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
+import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.exception.CareNullArgumentRuntimeException;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
@@ -84,6 +86,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
                 criteria = criteria.setFetchMode(fieldName, FetchMode.JOIN);
             }
         }
+        criteria.add(Restrictions.eq("id", id));
 
         T entity = (T) criteria.list().get(0);
 
