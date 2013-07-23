@@ -2,8 +2,10 @@ package org.motechproject.carereporting.service;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,10 +24,13 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     private static final Integer INDICATOR_ID = 1;
     private static final Integer REPORT_TYPE_ID = 1;
+    private static final int EXPECTED_REPORTS_DELETE = 3;
+    private static final int EXPECTED_REPORTS_DEFINE = 4;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -46,7 +51,7 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
 
         ReportEntity reportEntity = createReport();
 
-        assertEquals(2, reportService.getAllReports().size());
+        assertEquals(EXPECTED_REPORTS_DEFINE, reportService.getAllReports().size());
 
         reportEntity = reportService.getReportById(reportEntity.getId());
         assertNotNull(reportEntity);
@@ -68,7 +73,7 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
     public void testDeleteReport() throws Exception {
         ReportEntity reportEntity = createReport();
         reportService.deleteReport(reportEntity);
-        assertEquals(1, reportService.getAllReports().size());
+        assertEquals(EXPECTED_REPORTS_DELETE, reportService.getAllReports().size());
     }
 
 }

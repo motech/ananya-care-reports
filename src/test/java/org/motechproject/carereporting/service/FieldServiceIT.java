@@ -33,10 +33,10 @@ public class FieldServiceIT extends AbstractTransactionalJUnit4SpringContextTest
     private SessionFactory sessionFactory;
 
     private final static Integer FORM_ID = 1;
-    private final static int EXPECTED_FIELD_NAMES_BY_FORM_ID = 9;
-    private final static int EXPECTED_FIELDS_BY_FORM_ID = 9;
+    private final static int EXPECTED_FIELD_NAMES_BY_FORM_ID = 1;
+    private final static int EXPECTED_FIELDS_BY_FORM_ID = 1;
     private final static FieldType FIELD_TYPE = FieldType.String;
-    private final static int EXPECTED_FIELDS_BY_TYPE = 144;
+    private final static int EXPECTED_FIELDS_BY_TYPE = 1;
     private final static Integer FIELD_ID = 1;
     private final static String FIELD_NAME = "FIELD_TEST_1";
 

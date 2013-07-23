@@ -20,7 +20,7 @@ public class ConditionServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Autowired
     private ConditionService conditionService;
 
-    private final static int EXPECTED_CONDITION_ENTITIES_ALL = 1;
+    private final static int EXPECTED_CONDITION_ENTITIES_ALL = 2;
     private final static Integer CONDITION_ID = 1;
 
     @Test

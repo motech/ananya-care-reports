@@ -96,4 +96,6 @@
         <property name="defaultSchema" value="${jdbc.schema}" />
     </bean>
 
+    <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.FormEntityInitializer" init-method="loadFormsFromDB" />
+
 </beans>

@@ -12,10 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 public class FormEntityInitializer {
 
     @Autowired
@@ -36,7 +33,6 @@ public class FormEntityInitializer {
     @Autowired
     private ComputedFieldService computedFieldService;
 
-    @PostConstruct
     @Transactional(readOnly = false)
     public void loadFormsFromDB() {
         Set<String> formTables = formsService.getTables();
