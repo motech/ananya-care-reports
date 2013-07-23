@@ -37,23 +37,23 @@
                         <div id="defineArea">
                             <ul class="unstyled">
                                 <li>
-                                    <label class="span3 text-right" for="area_state">{{msg('indicators.form.selectState')}}: </label>
+                                    <label class="span3 text-right" for="area_state">{{msg('indicators.form.selectState')}}:&nbsp;</label>
                                     <select class="span9" id="area_state" ng-model="selectedState" ng-options="item.id as item.name for item in listState" class="input-block-level" required></select>
                                 </li>
                                 <li ng-show="showDistrict">
-                                    <label class="span3 text-right" for="area_district">{{msg('indicators.form.selectDistrict')}}: </label>
+                                    <label class="span3 text-right" for="area_district">{{msg('indicators.form.selectDistrict')}}:&nbsp;</label>
                                     <select class="span9" id="area_district" ng-model="selectedDistrict" ng-options="item.id as item.name for item in listDistrict" class="input-block-level"></select>
                                 </li>
                                 <li ng-show="showBlock">
-                                    <label class="span3 text-right" for="area_block">{{msg('indicators.form.selectBlock')}}: </label>
+                                    <label class="span3 text-right" for="area_block">{{msg('indicators.form.selectBlock')}}:&nbsp;</label>
                                     <select class="span9" id="area_block" ng-model="selectedBlock" ng-options="item.id as item.name for item in listBlock" class="input-block-level"></select>
                                 </li>
                                 <li ng-show="showHSC">
-                                    <label class="span3 text-right" for="area_HSC">{{msg('indicators.form.selectHSC')}}: </label>
+                                    <label class="span3 text-right" for="area_HSC">{{msg('indicators.form.selectHSC')}}:&nbsp;</label>
                                     <select class="span9" id="area_HSC" ng-model="selectedHSC" ng-options="item.id as item.name for item in listHSC" class="input-block-level"></select>
                                 </li>
                                 <li ng-show="showAWC">
-                                    <label class="span3 text-right" for="area_AWC">{{msg('indicators.form.selectAWC')}}: </label>
+                                    <label class="span3 text-right" for="area_AWC">{{msg('indicators.form.selectAWC')}}:&nbsp;</label>
                                     <select class="span9" id="area_AWC" ng-model="selectedAWC" ng-options="item.id as item.name for item in listAWC" class="input-block-level"></select>
                                 </li>
                             </ul>
@@ -133,9 +133,9 @@
                     <fieldset>
                         <legend>{{msg('indicators.form.trend')}}:</legend>
                         <label for="trendPositive"><i class="icon-arrow-up"></i> {{msg('indicators.form.trendPositive.label')}}: </label>
-                        <input id="trendPositive" pattern="-?[0-9]+(.[0-9]+)?" type="text" ng-model="indicator.trend.positiveDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendPositive.placeholder')}}" required />
+                        <input id="trendPositive" type="number" ng-model="indicator.trend.positiveDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendPositive.placeholder')}}" required />
                         <label for="trendNegative"><i class="icon-arrow-down"></i> {{msg('indicators.form.trendNegative.label')}}: </label>
-                        <input id="trendNegative" pattern="-?[0-9]+(.[0-9]+)?" type="text" ng-model="indicator.trend.negativeDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendNegative.placeholder')}}" required />
+                        <input id="trendNegative" type="number" ng-model="indicator.trend.negativeDiff" class="input-block-level" placeholder="{{msg('indicators.form.trendNegative.placeholder')}}" required />
                         <p class="text-info text-center"><span class="label label-info">?</span> Trend will remain neutral if change won't be significant enough.</p>
                     </fieldset>
                 </div>

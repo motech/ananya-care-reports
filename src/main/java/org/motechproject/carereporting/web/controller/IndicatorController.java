@@ -161,6 +161,7 @@ public class IndicatorController extends BaseController {
         IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 
         foundIndicatorCategoryEntity.setName(indicatorCategoryEntity.getName());
+        foundIndicatorCategoryEntity.setShortCode(indicatorCategoryEntity.getShortCode());
         indicatorService.updateIndicatorCategory(foundIndicatorCategoryEntity);
     }
 

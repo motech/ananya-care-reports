@@ -121,8 +121,8 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
 
     $scope.submitUser = function(user) {
         if (user.area != undefined) {
-            delete user.area.levelId;
-            delete user.area.levelHierarchyDepth
+            delete user.area.level;
+            delete user.area.parentArea;
         }
         $http({method: 'PUT', url: 'api/users' + (user.id !== undefined ? ('/' + user.id) : ''), data: user})
             .success(function(response) {

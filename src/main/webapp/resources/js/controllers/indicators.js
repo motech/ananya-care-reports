@@ -535,7 +535,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
         $http({
             url: "api/indicator" + ($scope.indicator.id ? ('/' + $scope.indicator.id) : ''),
-            method: "PUT",
+            method: $scope.indicator.id ? "PUT" : "POST",
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {

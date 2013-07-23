@@ -13,4 +13,8 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #10" author="Adrian Boguszewski">
+            <dropColumn schemaName="dashboard_app" tableName="dashboard" columnName="indicator_category_id"/>
+    </changeSet>
+
 </databaseChangeLog>

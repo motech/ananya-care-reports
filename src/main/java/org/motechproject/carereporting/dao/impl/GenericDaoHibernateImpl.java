@@ -14,7 +14,7 @@ import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     public Set<T> getAll() {
-        return new HashSet<T>(sessionFactory.getCurrentSession()
+        return new LinkedHashSet<T>(sessionFactory.getCurrentSession()
                 .createCriteria(type).list());
     }
 
@@ -55,7 +55,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
             }
         }
 
-        return new HashSet<T>(criteria.list());
+        return new LinkedHashSet<T>(criteria.list());
     }
 
     @Override

@@ -3,12 +3,12 @@
 <div class="container">
     <h1 class="text-center">{{msg('category.edit')}}</h1>
     <div class="well span7 offset2">
-        <form class="form-horizontal">
+        <form class="form-horizontal" name="categoryForm">
             <div class="control-group">
                 <label class="control-label">{{msg('category.name')}}:</label>
                 <div class="controls">
                     <div class="input-append">
-                        <input ng-model="category.name" type="text" placeholder="{{msg('category.name.placeholder')}}">
+                        <input ng-model="category.name" type="text" placeholder="{{msg('category.name.placeholder')}}" required />
                         <span class="add-on"><i class="icon-tag"></i></span>
                     </div>
                 </div>
@@ -17,13 +17,13 @@
                 <label class="control-label">{{msg('category.shortcode')}}:</label>
                 <div class="controls">
                     <div class="input-append">
-                        <input ng-model="category.shortCode" type="text" placeholder="{{msg('category.shortcode.placeholder')}}" maxlength="4">
+                        <input ng-model="category.shortCode" type="text" placeholder="{{msg('category.shortcode.placeholder')}}" maxlength="4" required />
                         <span class="add-on"><i class="icon-tag"></i></span>
                     </div>
                 </div>
             </div>
             <div class="control-group">
-                <button type="submit" class="btn btn-primary offset2" ng-click="submitCategory(category)">{{msg('forms.form.submit')}}</button>
+                <button type="submit" class="btn btn-primary offset2" ng-click="submitCategory(category)" ng-disabled="categoryForm.$invalid">{{msg('forms.form.submit')}}</button>
             </div>
         </form>
     </div>
