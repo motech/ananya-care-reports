@@ -1,3 +1,5 @@
+SET search_path = dashboard_app;
+
 INSERT INTO level (name, hierarchy_depth) values ('State', 0);
 INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('District', 1, 1);
 INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('Block', 2, 2);
