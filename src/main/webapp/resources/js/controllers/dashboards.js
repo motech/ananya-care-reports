@@ -129,12 +129,13 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.tabChanged = function(dashboard) {
         $scope.reportRows = [];
         $scope.charts = [];
+        $("#mapReport").html('');
         $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
-        if (dashboard.name === "Performance summary") {
+        if (dashboard.name == "Performance summary") {
             $scope.fetchTrends();
-        } else if (dashboard.name === "Map report") {
-
+        } else if (dashboard.name == "Map report") {
+            $scope.fetchMapReport();
         } else {
             $scope.fetchReportRows();
         }
@@ -212,6 +213,68 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.fetchTrends();
+
+    $scope.fetchIndicators = function() {
+        $http.get('api/indicator').success(function(indicators) {
+            $scope.indicators = indicators;
+            $scope.$watch('indicatorId', function(newValue, oldValue) {
+                $scope.fetchMapReport();
+            }, true);
+        });
+    };
+
+    $scope.fetchIndicators();
+
+    $scope.fetchMapReport = function() {
+
+        $http.get('api/map-report?areaId=1&indicatorId=1').success(function(data) {
+            $('#mapReport').html('').vectorMap({
+                map: 'bihar',
+                onRegionClick: function(event, code) {
+                    //change area i
+                    $('.jvectormap-label').remove();
+                    $scope.fetchMapReport();
+                },
+                series: {
+                    regions: [{
+                        values: data,
+                        scale: {
+                            'positive': '#A8F022',
+                            'negative': '#F1A219',
+                            'neutral': '#82AAFF'
+                        },
+                        normalizeFunction: 'polynomial'
+                    }]
+                },
+                regionStyle: {
+                  initial: {
+                    fill: 'white',
+                    "fill-opacity": 1,
+                    stroke: '#444444',
+                    "stroke-width": 0.5,
+                    "stroke-opacity": 1
+                  },
+                  hover: {
+                    "fill-opacity": 1,
+                    "stroke-width": 2,
+                    stroke: "#FFFFFF",
+                    "stroke-opacity": 1
+                  }
+                },
+                onRegionLabelShow: function(e, el, code) {
+                    $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
+                    el.html('<span class="name">' + el.html() + '</span>');
+                    if (data[code] == "positive") {
+                        el.html(el.html() + ' <img src="/resources/images/trend_positive.png" />');
+                    } else if (data[code] == "negative") {
+                        el.html(el.html() + ' <img src="/resources/images/trend_negative.png" />');
+                    } else {
+                        el.html(el.html() + ' <img src="/resources/images/trend_neutral.png" />');
+                    }
+                }
+            });
+        });
+    };
 
     $scope.indicator = { name: null };
     $scope.chartData = [];
@@ -294,4 +357,5 @@ care.controller('chartDetailsController', function($rootScope, $scope, $http, $s
 
         $location.path("/");
     };
+
 });

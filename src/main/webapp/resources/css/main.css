@@ -155,3 +155,25 @@ h5 {
 .tab-trend {
     margin-bottom: 0px !important;
 }
+
+.map-report, .map-report-wrapper {
+    width: 820px;
+    height: 600px;
+    margin: auto;
+}
+
+.map-report-wrapper {
+    margin-bottom: 100px;
+}
+
+.jvectormap-label {
+    padding: 5px;
+    background-color: #FFFFFF;
+    border-radius: 2px 2px 2px 2px;
+    color: #333333;
+    border: 1px solid black;
+}
+
+.jvectormap-label .name {
+    font-weight: bold;
+}

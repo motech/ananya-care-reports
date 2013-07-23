@@ -13,6 +13,16 @@
             </li>
         </ul>
         <div class="tab-content">
+            <div id="mapReportWrapper" class="map-report-wrapper" ng-show="dashboard.name == 'Map report'">
+                <div class="input-prepend">
+                    <span class="add-on text-success date-label">Indicator:</span>
+                    <select ng-model="indicatorId" class="span8">
+                        <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in indicators">{{indicator.name}}</option>
+                    </select>
+                </div>
+                <div id="mapReport" class="map-report">
+                </div>
+            </div>
             <div class="tab-pane" ng-repeat="dashboard in dashboards" id="tab_{{$index + 1}}" ng-class="{ active: $index == 0 }">
                 <div class="row text-center" ng-show="dashboard.name == 'Performance summary'">
                     <div class="input-append input-prepend date" id="start-date" data-date="{{startDate}" data-date-format="dd-mm-yyyy">

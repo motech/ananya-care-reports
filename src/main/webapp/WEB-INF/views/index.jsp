@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-datepicker.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/jquery-ui-1.10.3.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="resources/css/jquery-jvectormap-1.2.2.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
     <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
@@ -44,6 +45,8 @@
     <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
     <script src="resources/lib/flotr2.min.js"></script>
+    <script src="resources/lib/jVectorMap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="resources/lib/jVectorMap/maps/bihar.js"></script>
     <!--[if lt IE 9]>
         <script type="text/javascript" src="resources/lib/flashcanvas.js"></script>
     <![endif]-->
