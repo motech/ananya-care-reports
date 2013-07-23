@@ -132,4 +132,49 @@
                };
             });
 
+        widgetModule.directive('indicatorChart', function($http, $timeout) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attrs) {
+                    attrs.$observe('value', function(report) {
+                        var createChart = function() {
+                            var report = attrs.value;
+
+                            if (!report) {
+                                return;
+                            }
+
+                            if (!element[0] || element[0].clientWidth <= 0 || element[0].clientHeight <= 0) {
+                                return;
+                            }
+
+                            report = JSON.parse(report);
+
+                            var chartType = report.reportType.name.toLowerCase();
+                            var indicatorId = report.indicatorId;
+                            var areaId = scope.areaId;
+
+                            var url = 'api/chart?chartType=' + chartType  + '&indicatorId=' + indicatorId;
+                            if (areaId != undefined) {
+                                url += "&areaId=" + areaId;
+                            }
+
+                            $http.get(url).success(function(chart) {
+                                var graph, title, chart, wrapper, titleElement;
+
+                                if (chart.settings.title != undefined) {
+                                    title = chart.settings.title;
+                                    delete chart.settings.title;
+                                }
+
+                                Flotr.draw(element[0], chart.data, chart.settings);
+                            });
+                        };
+
+                        $timeout(createChart, 0);
+                    });
+                }
+            }
+        });
+
 }());

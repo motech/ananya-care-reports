@@ -45,10 +45,10 @@
                     <table class="span12">
                         <tbody>
                             <tr class="span12" ng-repeat="reportRow in reportRows">
-                                <td id="report_{{report.id}}" class="span4" ng-repeat="report in reportRow">
+                                <td class="span4" ng-repeat="report in reportRow">
                                     <div class="chart-container-wrapper">
-                                        <div class="chart-container">{{drawChart(report)}}</div>
-                                        <p class="text-center">{{report.id}}</p>
+                                        <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}"></div>
+                                        <p class="text-center">{{report.indicatorName}}</p>
                                     </div>
                                 </td>
                             </tr>
@@ -58,38 +58,4 @@
             </div>
         </div>
     </div>
-    <!--
-    <tabset id="dashboards-tabs">
-        <tab select="tabChanged(dashboard)" ng-repeat="dashboard in dashboards" heading="{{dashboard.name}}" active="dashboard.active">
-            <div id="tab{{dashboard.id}}">
-            </div>
-            <div class="text-center" ng-show="dashboard.name == 'Performance summary'">
-                <div class="input-append input-prepend date" id="start-date" data-date="{{startDate}" data-date-format="dd-mm-yyyy">
-                    <span class="add-on text-success date-label">{{msg('trends.from')}}:</span>
-                    <input class="span2" size="16" type="text" value="{{startDate}}">
-                    <span class="add-on"><i class="icon-calendar"></i></span>
-                </div>
-                <div style="margin-left: 50px;" class="input-append input-prepend date" id="end-date" data-date="{{endDate}" data-date-format="dd-mm-yyyy">
-                    <span class="add-on text-success date-label">{{msg('trends.to')}}:</span>
-                    <input class="span2" size="16" type="text" value="{{endDate}}">
-                    <span class="add-on"><i class="icon-calendar"></i></span>
-                </div>
-                <span ng-click="analyze()" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('trends.analyze')}}</span>
-                <script>
-                    $("#start-date").datepicker();
-                    $("#end-date").datepicker();
-                </script>
-                <table id="performanceHistory" class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>{{msg('trends.indicator')}}</th>
-                            <th>{{msg('trends.trend')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody indicators-trend>
-                    </tbody>
-                </table>
-            </div>
-        </tab>
-    </tabset>-->
 </div>

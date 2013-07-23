@@ -72,32 +72,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         });
     };
 
-    $scope.loadChart = function(container, indicatorId, chartType, areaId) {
-        var url = 'api/chart?chartType=' + chartType  + '&indicatorId=' + indicatorId;
-        if (areaId != undefined) {
-            url += "&areaId=" + areaId;
-        }
-        $http.get(url).success(function(chart) {
-            var graph, title, chart, wrapper, titleElement;
-            if (chart.settings.title != undefined) {
-                title = chart.settings.title;
-                delete chart.settings.title;
-            }
-            graph = Flotr.draw(container[0], chart.data, chart.settings);
-            if (title != undefined) {
-                titleElement = $(angular.element("<p/>"));
-                titleElement.html(title);
-                titleElement.addClass("title");
-                var p = $(container).parent().find('p');
-                if ($(p).length) {
-                    p.replaceWith(titleElement);
-                } else {
-                    $(container).parent().append(titleElement);
-                }
-            }
-        });
-    };
-
     $scope.fetchChartData = function(element) {
         $rootScope.indicatorId = $(element).parents('td').attr('data-indicator-id');
         $rootScope.areaId = $scope.areaId;
@@ -148,106 +122,22 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 var reportRow = [];
                 for (var q = 0; q < 3; q++) {
                     var report = (indicator.reports[r + q]) ? indicator.reports[r + q] : null;
-                    if (report != null && !report.reportType.name.toLowerCase().endsWith('chart')) {
-                        report = null;
+                    if (report != null) {
+                        if (report.reportType.name.toLowerCase().endsWith('chart')) {
+                            report.indicatorId = indicator.id;
+                            report.needsRefreshing = true;
+                            report.indicatorName = indicator.name;
+                            report.rowIndex = $scope.reportRows.length;
+                            report.index = reportRow.length;
+                        } else {
+                            report = null;
+                        }
                     }
-                    report.indicatorId = indicator.id;
                     reportRow.push(report);
                 }
                 $scope.reportRows.push(reportRow);
             }
         }
-    };
-
-    $scope.drawChart = function(report) {
-        if (report == null) {
-            return;
-        }
-
-        var chartType = report.reportType.name.toLowerCase();
-        var indicatorId = report.indicatorId;
-        var areaId = $scope.areaId;
-
-        var url = 'api/chart?chartType=' + chartType  + '&indicatorId=' + indicatorId;
-        if (areaId != undefined) {
-            url += "&areaId=" + areaId;
-        }
-        $http.get(url).success(function(chart) {
-            var graph, title, chart, wrapper, titleElement;
-
-            if (chart.settings.title != undefined) {
-                title = chart.settings.title;
-                delete chart.settings.title;
-            }
-
-            if (container[0] === undefined || container[0] === null) {
-                return;
-            }
-
-            graph = Flotr.draw(container[0], chart.data, chart.settings);
-            /*if (title != undefined) {
-                titleElement = $(angular.element("<p/>"));
-                titleElement.html(title);
-                titleElement.addClass("title");
-                var p = $(container).parent().find('p');
-                if ($(p).length) {
-                    p.replaceWith(titleElement);
-                } else {
-                    $(container).parent().append(titleElement);
-                }
-            }*/
-        });
-    };
-
-    $scope.drawCharts = function() {
-        var colCount = 0,
-            div = $('#tab' + $scope.dashboard.id),
-            table = angular.element('<table/>').addClass('row-fluid'),
-            tr = angular.element('<tr/>');
-        div.html('');
-        div.append(table);
-        table.append(tr);
-        var index = 0;
-        if ($scope.dashboard.indicatorCategories != null) {
-            for (var i in $scope.dashboard.indicatorCategories.indicators) {
-
-                var indicator = $scope.dashboard.indicatorCategories.indicators[i];
-                if (indicator.reports == undefined) {
-                    continue;
-                }
-                for (var r in indicator.reports) {
-                    if (!indicator.reports.hasOwnProperty(r)) {
-                        continue;
-                    }
-                    var report = indicator.reports[r], td, div;
-                    if (!report.reportType.name.toLowerCase().endsWith('chart')) {
-                        continue;
-                    }
-                    td = angular.element('<td />')
-                            .addClass('chart-td')
-                            .attr('data-indicator-id', indicator.id)
-                            .attr('data-display-type', 'chart')
-                            .attr('data-chart-type', report.reportType.name.toLowerCase())
-                            .click(function() {
-                        $scope.toggleChartDisplay($(this).find('div.chart-container'));
-                    });
-                    var wrapper = angular.element('<div/>').addClass('chart-container-wrapper');
-                    div = angular.element('<div/>');
-                    if (colCount == 3) {
-                        tr = angular.element('<tr/>');
-                        table.append(tr);
-                        colCount=0;
-                    }
-                    tr.append(td);
-                    $(div).addClass('chart-container');
-                    wrapper.append(div);
-                    td.append(wrapper);
-                    $scope.loadChart(div, indicator.id, report.reportType.name.toLowerCase(), $scope.areaId);
-                    colCount++;
-                }
-            }
-        }
-
     };
 
     $scope.tabChanged = function(dashboard) {
@@ -260,13 +150,12 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         } else if (dashboard.name === "Map report") {
 
         } else {
-            //$scope.drawCharts();
             $scope.fetchReportRows();
         }
 
         $scope.$watch('areaId', function(newValue, oldValue) {
             if ($scope.previousAreaId != $scope.areaId) {
-                //$scope.drawCharts();
+                $scope.fetchReportRows();
                 $scope.previousAreaId = $scope.areaId;
             }
         }, true);
