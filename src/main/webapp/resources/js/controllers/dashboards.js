@@ -11,6 +11,7 @@ function sortByDateComparisonFunction(a, b) {
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
     $scope.title = $scope.msg('dashboard.title');
 
+    $scope.indicatorCategories = [];
     $scope.charts = {};
 
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
@@ -48,22 +49,26 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/dashboards').success(function(dashboards) {
             dashboards.sort($scope.compareDashboardPositions);
             $scope.dashboards = dashboards;
-            $("#dashboards-tabs ul").sortable({update: function(event, ui) {
+            if (Object.keys($scope.dashboards).length > 0) {
+                $scope.tabChanged($scope.dashboards[0]);
+            }
 
-                var tabsPositions = [],
-                    tabs = $("#dashboards-tabs").find("li"),
-                    len = tabs.length;
+            /*$(".tabbable ul").sortable({
+                update: function(event, ui) {
+                    var tabsPositions = [],
+                        tabs = $("#dashboards-tabs").find("li"),
+                        len = tabs.length;
 
-                tabs.each(function(index) {
-                    tabsPositions.push({
-                        position: index,
-                        name: $(this).attr("heading")
+                    tabs.each(function(index) {
+                        tabsPositions.push({
+                            position: index,
+                            name: $(this).attr("heading")
+                        });
+                        if (index == len-1) {
+                            $http.post('api/dashboards/save-positions', tabsPositions);
+                        }
                     });
-                    if (index == len-1) {
-                        $http.post('api/dashboards/save-positions', tabsPositions);
-                    }
-                });
-            }});
+            }});*/
         });
     };
 
@@ -115,8 +120,83 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.fetchChartData(element);
         } else {
             $(parent).attr('data-display-type', 'chart');
-            $scope.loadChart(element, indicatorId, chartType, $scope.areaId);
+            //$scope.loadChart(element, indicatorId, chartType, $scope.areaId);
         }
+    };
+
+    $scope.reportRows = [];
+    $scope.fetchReportRows = function() {
+        $scope.reportRows = [];
+        if ($scope.dashboard === undefined
+            || $scope.dashboard.indicatorCategory === undefined) {
+            return;
+        }
+
+        for (var i in $scope.dashboard.indicatorCategory.indicators) {
+            var indicator = $scope.dashboard.indicatorCategory.indicators[i];
+            if (indicator.reports === undefined) {
+                continue;
+            }
+
+            indicator.reports.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); });
+
+            for (var r = 0; r < indicator.reports.length; r += 3) {
+                if (!indicator.reports.hasOwnProperty(r)) {
+                    continue;
+                }
+
+                var reportRow = [];
+                for (var q = 0; q < 3; q++) {
+                    var report = (indicator.reports[r + q]) ? indicator.reports[r + q] : null;
+                    if (report != null && !report.reportType.name.toLowerCase().endsWith('chart')) {
+                        report = null;
+                    }
+                    report.indicatorId = indicator.id;
+                    reportRow.push(report);
+                }
+                $scope.reportRows.push(reportRow);
+            }
+        }
+    };
+
+    $scope.drawChart = function(report) {
+        if (report == null) {
+            return;
+        }
+
+        var chartType = report.reportType.name.toLowerCase();
+        var indicatorId = report.indicatorId;
+        var areaId = $scope.areaId;
+
+        var url = 'api/chart?chartType=' + chartType  + '&indicatorId=' + indicatorId;
+        if (areaId != undefined) {
+            url += "&areaId=" + areaId;
+        }
+        $http.get(url).success(function(chart) {
+            var graph, title, chart, wrapper, titleElement;
+
+            if (chart.settings.title != undefined) {
+                title = chart.settings.title;
+                delete chart.settings.title;
+            }
+
+            if (container[0] === undefined || container[0] === null) {
+                return;
+            }
+
+            graph = Flotr.draw(container[0], chart.data, chart.settings);
+            /*if (title != undefined) {
+                titleElement = $(angular.element("<p/>"));
+                titleElement.html(title);
+                titleElement.addClass("title");
+                var p = $(container).parent().find('p');
+                if ($(p).length) {
+                    p.replaceWith(titleElement);
+                } else {
+                    $(container).parent().append(titleElement);
+                }
+            }*/
+        });
     };
 
     $scope.drawCharts = function() {
@@ -128,10 +208,10 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         div.append(table);
         table.append(tr);
         var index = 0;
-        if ($scope.dashboard.indicatorCategory != null) {
-            for (var i in $scope.dashboard.indicatorCategory.indicators) {
+        if ($scope.dashboard.indicatorCategories != null) {
+            for (var i in $scope.dashboard.indicatorCategories.indicators) {
 
-                var indicator = $scope.dashboard.indicatorCategory.indicators[i];
+                var indicator = $scope.dashboard.indicatorCategories.indicators[i];
                 if (indicator.reports == undefined) {
                     continue;
                 }
@@ -171,6 +251,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.tabChanged = function(dashboard) {
+        $scope.reportRows = [];
         $scope.charts = [];
         $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
@@ -179,12 +260,13 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         } else if (dashboard.name === "Map report") {
 
         } else {
-            $scope.drawCharts();
+            //$scope.drawCharts();
+            $scope.fetchReportRows();
         }
 
         $scope.$watch('areaId', function(newValue, oldValue) {
             if ($scope.previousAreaId != $scope.areaId) {
-                $scope.drawCharts();
+                //$scope.drawCharts();
                 $scope.previousAreaId = $scope.areaId;
             }
         }, true);
@@ -218,7 +300,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
                 var category = $scope.indicatorCategories[c];
                 var key = 'category_' + category.name;
-                $('tabset').find('li[heading="' + category.name + '"]').find('a').addClass('alert alert-info tab-trend');
+                $('.tabbable').find('a[data-tab-caption="' + category.name + '"]').addClass('alert alert-info tab-trend');
 
                 for (var i = 0; i < category.indicators.length; i++) {
                     if ($scope.trendPerCategory[key] === undefined) {
@@ -239,10 +321,10 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 var trend = $scope.trendPerCategory[key];
                 if (trend !== undefined) {
                     if (trend.positive > trend.negative) {
-                        $('tabset').find('li[heading="' + category.name + '"]').find('a')
+                        $('.tabbable').find('a[data-tab-caption="' + category.name + '"]')
                             .removeClass('alert-info').addClass('alert-success');
                     } else if (trend.positive < trend.negative) {
-                        $('tabset').find('li[heading="' + category.name + '"]').find('a')
+                        $('.tabbable').find('a[data-tab-caption="' + category.name + '"]')
                             .removeClass('alert-info').addClass('alert-danger');
                     }
                 }

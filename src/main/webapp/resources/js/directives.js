@@ -68,7 +68,15 @@
                             if (scope.indicatorCategories == undefined) {
                                 return;
                             }
-                            scope.indicatorCategories.sortByField('name');
+                            scope.indicatorCategories.sort(function(a, b) {
+                                if (a.name > b.name) {
+                                    return 1;
+                                } else if (a.name < b.name) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
+                            });
                             for (var c in scope.indicatorCategories) {
                                 if (!scope.indicatorCategories.hasOwnProperty(c)) {
                                     continue;

@@ -114,11 +114,14 @@ td.chart-td {
 }
 
 .chart-container-wrapper {
-    margin: 5px;
+    padding: 5px;
     min-width: 300px !important;
     width: 300px !important;
     min-height: 300px !important;
     height: 300px !important;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .chart-container-wrapper .title {
