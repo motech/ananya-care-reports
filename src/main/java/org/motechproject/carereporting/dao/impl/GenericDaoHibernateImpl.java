@@ -8,7 +8,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
-import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.exception.CareNullArgumentRuntimeException;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
