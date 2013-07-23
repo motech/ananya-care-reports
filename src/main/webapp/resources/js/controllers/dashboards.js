@@ -83,21 +83,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         });
     };
 
-    $scope.toggleChartDisplay = function(element) {
-        var parent = $(element).parents('td');
-        var isChartType = (parent.attr('data-display-type') === 'chart');
-        var indicatorId = parent.attr('data-indicator-id');
-        var chartType = parent.attr('data-chart-type');
-
-        if (isChartType) {
-            parent.attr('data-display-type', 'table');
-            $scope.fetchChartData(element);
-        } else {
-            $(parent).attr('data-display-type', 'chart');
-            //$scope.loadChart(element, indicatorId, chartType, $scope.areaId);
-        }
-    };
-
     $scope.reportRows = [];
     $scope.fetchReportRows = function() {
         $scope.reportRows = [];
@@ -129,6 +114,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.indicatorName = indicator.name;
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
+                            report.displayType = 'chart';
                         } else {
                             report = null;
                         }
@@ -226,6 +212,44 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.fetchTrends();
+
+    $scope.indicator = { name: null };
+    $scope.chartData = [];
+
+    $scope.toggleChartDisplay = function(report) {
+        if (!report) {
+            return;
+        }
+
+        if (report.displayType == 'chart') {
+            report.displayType = 'table';
+            $scope.loadChartDetails(report);
+        } else if (report.displayType == 'table') {
+            report.displayType = 'chart';
+        }
+    };
+
+    $scope.loadChartDetails = function(report) {
+        $scope.fetchChartData(report, $scope.areaId);
+    };
+
+    $scope.fetchChartData = function(report, areaId) {
+        var indicatorId = report.indicatorId;
+        var url = 'api/chart/data/?indicatorId=' + indicatorId;
+
+        if (!isNaN(areaId) && isFinite(areaId)) {
+            url += '&areaId=' + areaId;
+        }
+
+        $simplifiedHttpService.get($scope, url, 'charts.details.cannotLoadChartDetails', function(chartData) {
+            chartData.sort(sortByDateComparisonFunction);
+           report.chart = chartData;
+        });
+    };
+
+    $scope.formatDate = function(date) {
+        return moment(date).format("LLL");
+    };
 });
 
 care.controller('chartDetailsController', function($rootScope, $scope, $http, $simplifiedHttpService, $location) {

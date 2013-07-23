@@ -91,18 +91,8 @@ form#indicatorForm div#formButtons {
     overflow: visible !important;
 }
 
-td.chart-td {
-    margin: 0px;
-    padding: 0px;
-    min-width: 300px !important;
-    width: 300px !important;
-    max-width: 300px !important;
-    min-height: 300px !important;
-    height: 300px !important;
-    max-height: 300px !important;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
+.chart-title {
+    padding: 20px 0px 20px 0px;
 }
 
 .chart-container {
@@ -111,6 +101,14 @@ td.chart-td {
     min-height: 300px !important;
     height: 300px !important;
     overflow: auto;
+    cursor: pointer;
+}
+
+.chart-container * {
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .chart-container-wrapper {
