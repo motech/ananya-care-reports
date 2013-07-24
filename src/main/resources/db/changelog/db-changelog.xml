@@ -14,7 +14,19 @@
     </changeSet>
 
     <changeSet id="CARE #10" author="Adrian Boguszewski">
-            <dropColumn schemaName="dashboard_app" tableName="dashboard" columnName="indicator_category_id"/>
+        <dropColumn schemaName="dashboard_app" tableName="dashboard" columnName="indicator_category_id"/>
+    </changeSet>
+
+    <changeSet id="CARE #13" author="Łukasz Gąsior">
+        <sql>
+            update dashboard_app.area set name = 'Bihar', level_id = 1, parent_area_id = null where area_id = 1;
+            update dashboard_app.area set name = 'Begusarai', level_id = 2, parent_area_id = 1 where area_id = 2;
+            update dashboard_app.area set name = 'Champaran East', level_id = 2, parent_area_id = 1 where area_id = 3;
+            update dashboard_app.area set name = 'Patna', level_id = 2, parent_area_id = 1 where area_id = 4;
+            update dashboard_app.area set name = 'Saharsa', level_id = 2, parent_area_id = 1 where area_id = 5;
+            delete from dashboard_app.area where name not in ('Begusarai', 'Champaran East', 'Patna', 'Saharsa', 'Bihar');
+            update dashboard_app.care_user set area_id = 1;
+        </sql>
     </changeSet>
 
     <changeSet id="CARE #46" author="Lech Różański">

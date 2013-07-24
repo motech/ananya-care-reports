@@ -34,8 +34,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -378,6 +380,24 @@ public class IndicatorServiceImpl implements IndicatorService {
             }
         }
         return categories;
+    }
+
+    @Override
+    public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(
+            Integer indicatorId, Integer parentAreaId, Date startDate, Date endDate) {
+        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
+        IndicatorEntity indicator = getIndicatorById(indicatorId);
+        Set<AreaEntity> areas;
+        if (parentAreaId != null) {
+            areas = areaService.getAllChildAreasByParentAreaId(parentAreaId);
+        } else {
+            areas = areaService.getAllTopLevelAreas();
+        }
+        for (AreaEntity area: areas) {
+            int trend = getTrendForIndicator(area, indicator, startDate, endDate);
+            areasTrends.put(area, trend);
+        }
+        return areasTrends;
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {

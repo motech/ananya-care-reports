@@ -21,10 +21,10 @@ public class AreaDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
     private AreaDao areaDao;
 
     private final int PARENT_AREA_ID = 1;
-    private final int EXPECTED_CHILD_AREAS = 8;
-    private final int EXPECTED_DIRECT_CHILD_AREAS = 2;
+    private final int EXPECTED_CHILD_AREAS = 4;
+    private final int EXPECTED_DIRECT_CHILD_AREAS = 4;
     private final int LEVEL_ID = 1;
-    private final int EXPECTED_AREAS_BY_LEVEL_ID = 2;
+    private final int EXPECTED_AREAS_BY_LEVEL_ID = 1;
 
     @Test
     public void testFindAllChildAreasByParentAreaId() {

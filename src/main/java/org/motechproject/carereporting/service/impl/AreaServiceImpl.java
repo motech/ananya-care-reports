@@ -45,6 +45,11 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
+    public Set<AreaEntity> getAllTopLevelAreas() {
+        return getAreasByLevelId(2);
+    }
+
+    @Override
     @Transactional
     public AreaEntity getAreaById(Integer areaId) {
         return areaDao.getById(areaId);

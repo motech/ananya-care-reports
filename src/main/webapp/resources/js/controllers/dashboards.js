@@ -11,6 +11,9 @@ function sortByDateComparisonFunction(a, b) {
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
     $scope.title = $scope.msg('dashboard.title');
 
+    $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
+    $scope.endDate = moment().format('DD-MM-YYYY');
+
     $scope.indicatorCategories = [];
     $scope.charts = {};
 
@@ -52,23 +55,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             if (Object.keys($scope.dashboards).length > 0) {
                 $scope.tabChanged($scope.dashboards[0]);
             }
-
-            /*$(".tabbable ul").sortable({
-                update: function(event, ui) {
-                    var tabsPositions = [],
-                        tabs = $("#dashboards-tabs").find("li"),
-                        len = tabs.length;
-
-                    tabs.each(function(index) {
-                        tabsPositions.push({
-                            position: index,
-                            name: $(this).attr("heading")
-                        });
-                        if (index == len-1) {
-                            $http.post('api/dashboards/save-positions', tabsPositions);
-                        }
-                    });
-            }});*/
         });
     };
 
@@ -151,9 +137,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchDashboards();
     $scope.fetchAreas();
 
-    $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
-    $scope.endDate = moment().format('DD-MM-YYYY');
-
     $scope.trendPerCategory = {};
 
     $scope.fetchTrends = function() {
@@ -210,9 +193,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.analyze = function() {
         $scope.fetchTrends();
+        $scope.fetchMapReport();
     }
-
-    $scope.fetchTrends();
 
     $scope.fetchIndicators = function() {
         $http.get('api/indicator').success(function(indicators) {
@@ -225,9 +207,27 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchIndicators();
 
-    $scope.fetchMapReport = function() {
+    $scope.indicatorId = 1;
 
-        $http.get('api/map-report?areaId=1&indicatorId=1').success(function(data) {
+    $scope.fetchMapReport = function() {
+        var startDate = $("#start-date input").val(),
+               endDate = $("#end-date input").val();
+        if (startDate == undefined) {
+           startDate = $scope.startDate;
+        }
+        if (endDate == undefined) {
+           endDate = $scope.endDate;
+        }
+        var url = 'api/map-report?indicatorId=' + $scope.indicatorId + '&startDate=' + startDate + '&endDate=' + endDate;
+        if ($scope.areaId != undefined) {
+            url += '&areaId=' + $scope.areaId;
+        }
+        $http.get(url).success(function(data) {
+            for (var i in data) {
+                if (data.hasOwnProperty(i)) {
+                    data[i] = data[i].toString();
+                }
+            }
             $('#mapReport').html('').vectorMap({
                 map: 'bihar',
                 onRegionClick: function(event, code) {
@@ -239,16 +239,15 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     regions: [{
                         values: data,
                         scale: {
-                            'positive': '#A8F022',
-                            'negative': '#F1A219',
-                            'neutral': '#82AAFF'
-                        },
-                        normalizeFunction: 'polynomial'
+                            "1": '#A8F022',
+                            "-1": '#F1A219',
+                            "0": '#82AAFF'
+                        }
                     }]
                 },
                 regionStyle: {
                   initial: {
-                    fill: 'white',
+                    fill: 'grey',
                     "fill-opacity": 1,
                     stroke: '#444444',
                     "stroke-width": 0.5,
@@ -262,13 +261,17 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                   }
                 },
                 onRegionLabelShow: function(e, el, code) {
+                    if (data[code] == undefined) {
+                        $(el).html('No data for ' + code);
+                    }
+                    var ads = data[code];
                     $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
                     el.html('<span class="name">' + el.html() + '</span>');
-                    if (data[code] == "positive") {
+                    if (data[code] == 1) {
                         el.html(el.html() + ' <img src="/resources/images/trend_positive.png" />');
-                    } else if (data[code] == "negative") {
+                    } else if (data[code] == -1) {
                         el.html(el.html() + ' <img src="/resources/images/trend_negative.png" />');
-                    } else {
+                    } else if (data[code] != undefined) {
                         el.html(el.html() + ' <img src="/resources/images/trend_neutral.png" />');
                     }
                 }

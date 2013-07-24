@@ -106,4 +106,9 @@ public class AreaEntity extends AbstractEntity {
     public void setIndicatorValues(Set<IndicatorValueEntity> indicatorValues) {
         this.indicatorValues = indicatorValues;
     }
+
+    @Override
+    public String toString() {
+        return id != null ? id.toString() : super.toString();
+    }
 }

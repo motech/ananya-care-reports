@@ -15,6 +15,8 @@ public interface AreaService {
 
     Set<AreaEntity> getAllChildAreasByParentAreaId(Integer areaId);
 
+    Set<AreaEntity> getAllTopLevelAreas();
+
     AreaEntity getAreaById(Integer areaId);
 
     Set<LevelEntity> getAllLevels();
