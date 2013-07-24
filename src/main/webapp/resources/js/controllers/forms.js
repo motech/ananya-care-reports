@@ -30,8 +30,8 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
         $http({method: 'PUT', url: 'api/forms' + (form.id !== undefined ? ('/' + form.id) : ''), data: form})
             .success(function(response) {
                 $location.path( "/forms" );
-            }).error(function(response) {
-                $errorService.apiError($scope, response);
+            }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 

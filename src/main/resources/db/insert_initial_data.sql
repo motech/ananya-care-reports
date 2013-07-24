@@ -17,6 +17,8 @@ INSERT INTO area (name, level_id, parent_area_id) values ('AWC 1', 5, 11), ('AWC
 
 INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
           VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 1, 'test', now(), now());
+INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
+          VALUES ('soldeveloper', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Care', 'Care', 'test@test.test', 1, 'test', now(), now());
 INSERT INTO role (name) VALUES ('Admin'), ('Manager');
 INSERT INTO permission(name, display_name) VALUES
     ('CAN_CREATE_INDICATORS', 'Can create indicators'),

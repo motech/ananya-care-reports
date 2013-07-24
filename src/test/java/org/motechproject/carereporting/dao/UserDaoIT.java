@@ -1,11 +1,12 @@
 package org.motechproject.carereporting.dao;
 
-import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.exception.CareSqlRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,6 +45,34 @@ public class UserDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
     public void testGetForNonExistingUser() {
         String name = "bad name";
         userDao.getSaltForUser(name);
+    }
+
+    @Test(expected = CareSqlRuntimeException.class)
+    public void shouldThrowCareSqlRuntimeExceptionWhenEntityWithUniqueKeyAlreadyExistsDuringSave() {
+        String username = "test";
+        String password = "pass";
+        Integer id = 1;
+        UserEntity userEntity = new UserEntity(username, password);
+        userEntity.setFirstName(username);
+        userEntity.setLastName(username);
+        LevelEntity levelEntity = new LevelEntity(username, null);
+        levelEntity.setId(id);
+        AreaEntity areaEntity = new AreaEntity(username, levelEntity);
+        areaEntity.setId(id);
+        userEntity.setArea(areaEntity);
+
+        userDao.save(userEntity);
+    }
+
+    @Test(expected = CareSqlRuntimeException.class)
+    public void shouldThrowCareSqlRuntimeExceptionWhenEntityWithUniqueKeyAlreadyExistsDuringUpdate() {
+        String username = "test";
+        String newUsername = "soldeveloper";
+        String password = "51abb9636078defbf888d8457a7c76f85c8f114c";
+        UserEntity userEntity = userDao.getByUsernameAndPassword(username, password);
+        userEntity.setUsername(newUsername);
+
+        userDao.update(userEntity);
     }
 
 }

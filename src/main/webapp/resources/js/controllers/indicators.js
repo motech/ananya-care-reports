@@ -540,8 +540,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
                 $location.path( "/indicators" );
-            }).error(function(response) {
-                $errorService.apiError($scope, response);
+        }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -759,12 +759,14 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
             url: "api/complexcondition",
             method: "POST",
             data: $scope.complexCondition,
-            headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
+            headers: { 'Content-Type': 'application/json' },
+            dialog: this
+        }).success(function(data, status, headers, config) {
                 indicatorScope.fetchComplexConditions();
+                config.dialog.dismiss();
                 $location.path( "/indicators" );
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotCreateComplexCondition');
+        }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 });
@@ -891,11 +893,13 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
             url: "api/computedfields",
             method: "POST",
             data: $scope.newField,
-            headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
+            headers: { 'Content-Type': 'application/json' },
+            dialog: this
+        }).success(function(data, status, headers, config) {
             indicatorScope.fetchComputedFields();
-        }).error(function(response) {
-            $errorService.apiError($scope, response);
+            config.dialog.dismiss();
+        }).error(function(data, status, headers, config) {
+            $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 });

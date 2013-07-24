@@ -32,7 +32,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn pull-left" ng-click="addField()" ng-disabled="listFields.length <= 0">{{msg('indicators.computedFieldDialog.button.addField')}}</button>
-        <button class="btn btn-primary" ng-click="saveNewComputedField();dismiss()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('save')}}</button>
+        <button class="btn btn-primary" ng-click="saveNewComputedField()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('save')}}</button>
         <button class="btn" ng-click="dismiss()">{{msg('cancel')}}</button>
     </div>
 </form>

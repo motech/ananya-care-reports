@@ -2,6 +2,7 @@ package org.motechproject.carereporting.dao.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.JDBCException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +12,7 @@ import org.motechproject.carereporting.domain.AbstractEntity;
 import org.motechproject.carereporting.exception.CareNullArgumentRuntimeException;
 import org.motechproject.carereporting.exception.CareResourceNotFoundRuntimeException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.exception.CareSqlRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
@@ -98,14 +100,34 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     public void save(T entity) {
-        sessionFactory.getCurrentSession().save(entity);
+        try {
+            sessionFactory.getCurrentSession().save(entity);
+        } catch (JDBCException e) {
+            if(e.getMessage().contains("duplicate key value violates unique constraint")) {
+                throw new CareSqlRuntimeException(prepareMessageForException(e), e);
+            }
+        }
     }
 
     @Override
     public void update(T entity) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(entity);
-        session.flush();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            session.update(entity);
+            session.flush();
+        } catch (JDBCException e) {
+            if (e.getMessage().contains("duplicate key value violates unique constraint")) {
+                throw new CareSqlRuntimeException(prepareMessageForException(e), e);
+            }
+        }
+    }
+
+    private String prepareMessageForException(JDBCException e) {
+        String message = e.getMessage().substring(e.getMessage().indexOf("Detail"));
+        String key = message.substring(message.indexOf('('), message.lastIndexOf(')'));
+        String keyWithValue = key.replaceAll("[)(]", " ").trim();
+        String entityName = type.getSimpleName();
+        return entityName.substring(0, entityName.indexOf("Entity")) + " with " + keyWithValue + " already exists.";
     }
 
     @Override

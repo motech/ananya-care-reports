@@ -31,7 +31,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class, TrendJsonView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private String name;
 
-    @Column (name = "short_code")
+    @Column (name = "short_code", unique = true)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
     private String shortCode;
 

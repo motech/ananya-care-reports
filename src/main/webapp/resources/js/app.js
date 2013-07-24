@@ -44,7 +44,7 @@
                     document.location.reload(true);
                     return;
                 }
-                return response;
+                return $q.reject(response);
             }
 
             return function (promise) {

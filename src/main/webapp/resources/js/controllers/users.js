@@ -127,8 +127,8 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
         $http({method: 'PUT', url: 'api/users' + (user.id !== undefined ? ('/' + user.id) : ''), data: user})
             .success(function(response) {
                 $location.path( "/users" );
-            }).error(function(response) {
-                $errorService.apiError($scope, response);
+            }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
 
     };

@@ -36,4 +36,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #5" author="Adrian Boguszewski">
+        <addUniqueConstraint columnNames="short_code"
+                             constraintName="short_code_uk"
+                             schemaName="dashboard_app"
+                             tableName="indicator_category"/>
+    </changeSet>
+
 </databaseChangeLog>

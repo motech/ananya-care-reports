@@ -102,8 +102,8 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
             headers: { 'Content-Type': 'application/json' }
         }).success(function(response) {
                 $location.path("/users/roles");
-            }).error(function(response) {
-                $errorService.apiError($scope, response);
+        }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 });
