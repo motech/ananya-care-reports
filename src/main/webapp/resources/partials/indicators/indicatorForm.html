@@ -159,11 +159,13 @@
                         <thead>
                         <tr>
                             <th>{{msg('indicators.list.displayName')}}</th>
+                            <th>{{msg('actions')}}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="item in indicators | orderBy:'+name'">
                             <td><a href="#/indicators/{{item.id}}">{{item.name}}</a></td>
+                            <td><span class="btn btn-link" ng-click="deleteIndicator(item);"><i class="icon-remove"></i></span></td>
                         </tr>
                         </tbody>
                     </table>

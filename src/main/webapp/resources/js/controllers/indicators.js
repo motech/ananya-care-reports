@@ -16,7 +16,7 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
     $scope.title = $scope.msg('indicators.title');
 
     $scope.indicators = [];
@@ -46,6 +46,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     .success(function(data, status, headers, config) {
                         $scope.selectedCategory=null;
                         $scope.fetchIndicators();
+                        $location.path( "/indicators/new" );
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
@@ -764,7 +765,6 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         }).success(function(data, status, headers, config) {
                 indicatorScope.fetchComplexConditions();
                 config.dialog.dismiss();
-                $location.path( "/indicators" );
         }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
