@@ -50,7 +50,7 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
     private final static String CLEANUP_DELETE_COMPLEX_CONDITION_QUERY = "delete ComplexConditionEntity"
             + " where id = :complexConditionId";
 
-    private final static int EXPECTED_COMPLEX_CONDITIONS_ALL = 1;
+    private final static int EXPECTED_COMPLEX_CONDITIONS_ALL = 2;
     private final static Integer COMPLEX_CONDITION_ID = 1;
     private final static Integer INDICATOR_ID = 1;
     private final static Integer CONDITION_ID = 1;

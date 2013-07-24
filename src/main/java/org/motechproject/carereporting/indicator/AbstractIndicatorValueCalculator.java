@@ -12,10 +12,10 @@ import java.util.Iterator;
 
 public abstract class AbstractIndicatorValueCalculator {
 
-    private static final String CONDITION_WHERE_CLAUSE = "(t.%s %s %s)";
+    private static final String CONDITION_WHERE_CLAUSE = "(%s %s %s)";
     protected static final String REPORT_DB_NAME = "report";
     protected static final String AREA_WHERE_CLAUSE = "(flw.block = :areaName OR flw.district = :areaName OR flw.village = :areaName)";
-    protected static final String FREQUENCY_WHERE_CLAUSE = "(DATE_PART('day', now() - t.time_end) < :frequency)";
+    protected static final String FREQUENCY_WHERE_CLAUSE = "(DATE_PART('day', current_date - t.time_end) < :frequency)";
     protected static final String FLW_JOIN = "INNER JOIN " + REPORT_DB_NAME + ".flw flw ON t.user_id = flw.id";
     protected static final String TABLE_ALIAS = "t";
 
@@ -56,7 +56,8 @@ public abstract class AbstractIndicatorValueCalculator {
         String comparisonSymbol = condition.getComparisonSymbol().getName();
         String value = condition.getComparisonValue();
 
-        return String.format(CONDITION_WHERE_CLAUSE, fieldName, comparisonSymbol, value);
+        return String.format(CONDITION_WHERE_CLAUSE,
+                REPORT_DB_NAME + "."  + getTableName() + "." + fieldName, comparisonSymbol, value);
     }
 
     protected BigDecimal executeQuery(String query, MapSqlParameterSource params) {

@@ -17,4 +17,23 @@
             <dropColumn schemaName="dashboard_app" tableName="dashboard" columnName="indicator_category_id"/>
     </changeSet>
 
+    <changeSet id="CARE #46" author="Lech Różański">
+        <sql>
+            insert into dashboard_app.dashboard (name, tab_position) values ('Essential Newborn Care', 4);
+            insert into dashboard_app.indicator_category (name, short_code, dashboard_id) values ('Essential Newborn Care', 'ENC', 5);
+            insert into dashboard_app.trend (positive_diff, negative_diff, creation_date, modification_date)
+                values (1, -1, now(), now());
+            insert into dashboard_app.complex_condition(name, creation_date, modification_date)
+                values ('delivery_child_form.breastfed_hour = Yes', now(), now());
+            insert into dashboard_app.condition(complex_condition_id, computed_field_id, comparison_symbol_id, comparison_value, creation_date, modification_date)
+                values (2, 847, 1, true, now(), now());
+            insert into dashboard_app.indicator (type_id, area_id, trend_id, complex_condition_id, computed_field_id, frequency, name, creation_date, modification_date)
+                values (3, 1, 2, 2, 847, 30, '% of new born breastfed within one hour of delivery', now(), now());
+            insert into dashboard_app.indicator_indicator_category(indicator_id, indicator_category_id) values (2, 3);
+            insert into dashboard_app.report (indicator_id, report_type_id, creation_date, modification_date)
+                values (2, 3, now(), now());
+            insert into dashboard_app.indicator_user(indicator_id, user_id) values (2, 1);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -4,6 +4,7 @@ INSERT INTO field (form_id, name, type) VALUES (1, 'field_1', 'String');
 
 INSERT INTO computed_field (form_id, name, type) VALUES (1, 'abortion_type_computed_field', 'Number');
 INSERT INTO computed_field (computed_field_id, form_id, name, type) VALUES (471, 1, 'ifa_tablets_total', 'Number');
+INSERT INTO computed_field (computed_field_id, form_id, name, type) VALUES (847, 1, 'breastfed_hour', 'Boolean');
 
 INSERT INTO field_operation (field_1_id, computed_field_id) VALUES (1, 1);
 

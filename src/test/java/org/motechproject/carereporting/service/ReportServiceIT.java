@@ -29,8 +29,8 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
 
     private static final Integer INDICATOR_ID = 1;
     private static final Integer REPORT_TYPE_ID = 1;
-    private static final int EXPECTED_REPORTS_DELETE = 3;
-    private static final int EXPECTED_REPORTS_DEFINE = 4;
+    private static final int EXPECTED_REPORTS_DELETE = 4;
+    private static final int EXPECTED_REPORTS_DEFINE = 5;
 
     @Autowired
     private SessionFactory sessionFactory;

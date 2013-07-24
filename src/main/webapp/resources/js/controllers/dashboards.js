@@ -311,51 +311,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.formatDate = function(date) {
-        return moment(date).format("LLL");
+        return moment(date).format("L HH:mm");
     };
-});
-
-care.controller('chartDetailsController', function($rootScope, $scope, $http, $simplifiedHttpService, $location) {
-    $scope.title = $scope.msg('charts.details.title');
-
-    $scope.indicator = { name: null };
-    $scope.chartData = [];
-
-    var indicatorId = $rootScope.indicatorId;
-    var areaId = $rootScope.areaId;
-    delete $rootScope.indicatorId;
-    delete $rootScope.areaId;
-
-    var url = 'api/chart/data/?indicatorId=' + indicatorId;
-    if (!isNaN(areaId) && isFinite(areaId)) {
-        url += '&areaId=' + areaId;
-    }
-
-    $scope.fetchIndicator = function() {
-        $simplifiedHttpService.get($scope, 'api/indicator/' + indicatorId,
-                'charts.details.cannotLoadIndicator', function(indicator) {
-            $scope.indicator = indicator;
-        });
-    };
-    $scope.fetchIndicator();
-
-    $scope.fetchChartData = function() {
-        $simplifiedHttpService.get($scope, url, 'charts.details.cannotLoadChartDetails', function(chartData) {
-            chartData.sort(sortByDateComparisonFunction);
-            $scope.chartData = chartData;
-        });
-    };
-    $scope.fetchChartData();
-
-    $scope.formatDate = function(date) {
-        return moment(date).format("LLL");
-    };
-
-    $scope.goBack = function() {
-        $rootScope.areaId = areaId;
-        $rootScope.dashboard = dashboard;
-
-        $location.path("/");
-    };
-
 });

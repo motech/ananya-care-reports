@@ -489,7 +489,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $http.get('api/forms/' + $scope.selectedForm + '/computedfields')
             .success(function(computedFields) {
                 computedFields.sortByField('name');
-                $scope.listComputedFields = $scope.filterComputedFieldsByNumberType(computedFields);
+                $scope.listComputedFields = computedFields;
 
                 if ($scope.listComputedFields.notEmpty() && !$routeParams.indicatorId) {
                     $scope.indicator.computedField = $scope.listComputedFields[0].id;

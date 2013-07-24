@@ -31,6 +31,7 @@ public final class ChartFactory {
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
     private static final double BAR_WIDTH = .5;
     private static final int EXPLOSION_NUMBER = 6;
+    private static final int DIVIDE_BY_ONE_HUNDRED = 100;
 
     public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         return createTemplateChart(indicator.getName())
@@ -84,7 +85,7 @@ public final class ChartFactory {
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         BigDecimal latestIndicatorValue = values.size() != 0
-                ? values.get(values.size() - 1).getValue()
+                ? values.get(values.size() - 1).getValue().divide(new BigDecimal(DIVIDE_BY_ONE_HUNDRED))
                 : BigDecimal.ZERO;
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
