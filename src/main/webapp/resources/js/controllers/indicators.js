@@ -546,6 +546,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         });
     };
 
+    $scope.addNew = function() {
+        $location.path( "/indicators/new" );
+    };
+
     $scope.fetchForms = function() {
         $http.get('api/forms')
             .success(function(forms) {
@@ -607,11 +611,6 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         field: -1,
         comparisonValue: null
     };
-
-    $scope.listForms = indicatorScope.listForms;
-    if ($scope.listForms.notEmpty()) {
-        $scope.newCondition.form = $scope.listForms[0];
-    }
 
     $scope.fetchComparisonSymbols = function() {
         $http.get('api/complexcondition/comparisonsymbol')
