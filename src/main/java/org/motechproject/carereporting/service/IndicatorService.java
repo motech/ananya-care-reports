@@ -49,12 +49,6 @@ public interface IndicatorService {
 
     IndicatorTypeEntity getIndicatorTypeById(Integer id);
 
-    void createNewIndicatorType(IndicatorTypeEntity indicatorTypeEntity);
-
-    void updateIndicatorType(IndicatorTypeEntity indicatorTypeEntity);
-
-    void deleteIndicatorType(IndicatorTypeEntity indicatorTypeEntity);
-
     Set<IndicatorCategoryEntity> getAllIndicatorCategories();
 
     IndicatorCategoryEntity getIndicatorCategoryById(Integer id);

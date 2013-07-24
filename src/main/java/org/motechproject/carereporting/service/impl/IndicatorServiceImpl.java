@@ -281,24 +281,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         return indicatorTypeDao.getById(id);
     }
 
-    @Transactional(readOnly = false)
-    @Override
-    public void createNewIndicatorType(IndicatorTypeEntity indicatorTypeEntity) {
-        indicatorTypeDao.save(indicatorTypeEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void updateIndicatorType(IndicatorTypeEntity indicatorTypeEntity) {
-        indicatorTypeDao.update(indicatorTypeEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void deleteIndicatorType(IndicatorTypeEntity indicatorTypeEntity) {
-        indicatorTypeDao.remove(indicatorTypeEntity);
-    }
-
     // IndicatorCategoryEntity
 
     @Transactional
