@@ -73,7 +73,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchReportRows = function() {
         $scope.reportRows = [];
         if ($scope.dashboard === undefined
-            || $scope.dashboard.indicatorCategory === undefined) {
+            || $scope.dashboard.indicatorCategory == undefined) {
             return;
         }
 
@@ -130,6 +130,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             if ($scope.previousAreaId != $scope.areaId) {
                 $scope.fetchReportRows();
                 $scope.previousAreaId = $scope.areaId;
+                //replace map with new area and then:
+                $scope.fetchMapReport();
             }
         }, true);
     };
@@ -268,11 +270,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
                     el.html('<span class="name">' + el.html() + '</span>');
                     if (data[code] == 1) {
-                        el.html(el.html() + ' <img src="/resources/images/trend_positive.png" />');
+                        el.html(el.html() + ' <img src="resources/images/trend_positive.png" />');
                     } else if (data[code] == -1) {
-                        el.html(el.html() + ' <img src="/resources/images/trend_negative.png" />');
+                        el.html(el.html() + ' <img src="resources/images/trend_negative.png" />');
                     } else if (data[code] != undefined) {
-                        el.html(el.html() + ' <img src="/resources/images/trend_neutral.png" />');
+                        el.html(el.html() + ' <img src="resources/images/trend_neutral.png" />');
                     }
                 }
             });
