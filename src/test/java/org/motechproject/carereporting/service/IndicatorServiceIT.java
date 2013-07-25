@@ -18,6 +18,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -60,10 +61,11 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Before
     public void setupAuthentication() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("CAN_CREATE_INDICATORS"));
-        authorities.add(new SimpleGrantedAuthority("CAN_EDIT_INDICATORS"));
-        authorities.add(new SimpleGrantedAuthority("CAN_REMOVE_INDICATORS"));
-        authorities.add(new SimpleGrantedAuthority("CAN_CREATE_CATEGORIES"));
+        String[] permissions = {"CAN_CREATE_INDICATORS", "CAN_EDIT_INDICATORS", "CAN_REMOVE_INDICATORS",
+            "CAN_CREATE_CATEGORIES", "CAN_EDIT_CATEGORIES", "CAN_REMOVE_CATEGORIES"};
+        for (String permission: permissions) {
+            authorities.add(new SimpleGrantedAuthority(permission));
+        }
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(userService.getUserById(USER_ID), null, authorities));
     }
@@ -131,10 +133,64 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Test
     public void testCreateNewIndicatorCategory() {
         int indicatorCategoriesCount = indicatorService.getAllIndicatorCategories().size();
+        createIndicatorCategory();
+        assertEquals(indicatorCategoriesCount + 1, indicatorService.getAllIndicatorCategories().size());
+    }
+
+    private void createIndicatorCategory() {
         IndicatorCategoryEntity indicatorCategory = new IndicatorCategoryEntity("name");
         indicatorCategory.setShortCode("code");
         indicatorService.createNewIndicatorCategory(indicatorCategory);
-        assertEquals(indicatorCategoriesCount+1, indicatorService.getAllIndicatorCategories().size());
+    }
+
+    @Test
+    public void testUpdateIndicatorCategory() {
+        String newName = "new name";
+        IndicatorCategoryEntity indicatorCategory = indicatorService.getAllIndicatorCategories().iterator().next();
+        indicatorCategory.setName(newName);
+        indicatorService.updateIndicatorCategory(indicatorCategory);
+        indicatorCategory = indicatorService.getIndicatorCategoryById(indicatorCategory.getId());
+        assertEquals(newName, indicatorCategory.getName());
+    }
+
+    @Test
+    public void testDeleteIndicatorCategory() {
+        int indicatorCategoriesCount = indicatorService.getAllIndicatorCategories().size();
+        createIndicatorCategory();
+        assertEquals(indicatorCategoriesCount + 1, indicatorService.getAllIndicatorCategories().size());
+        indicatorService.deleteIndicatorCategory(indicatorService.getAllIndicatorCategories().iterator().next());
+        assertEquals(indicatorCategoriesCount, indicatorService.getAllIndicatorCategories().size());
+    }
+
+    @Test
+    public void testGetAllIndicatorValues() {
+        assertNotNull(indicatorService.getAllIndicatorValues());
+    }
+
+    @Test
+    public void testCreateNewIndicatorValue() {
+        IndicatorEntity indicator = indicatorService.getIndicatorById(INDICATOR_ID);
+        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator,
+                indicator.getArea(), BigDecimal.ONE);
+        indicatorService.createNewIndicatorValue(indicatorValueEntity);
+        assertNotNull(indicatorService.getAllIndicatorValues().iterator().next());
+    }
+
+    @Test
+    public void testUpdateIndicatorValue() {
+        IndicatorEntity indicator = indicatorService.getIndicatorById(INDICATOR_ID);
+        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator,
+                indicator.getArea(), BigDecimal.ONE);
+        indicatorService.createNewIndicatorValue(indicatorValueEntity);
+        indicatorValueEntity.setValue(BigDecimal.TEN);
+        indicatorService.updateIndicatorValue(indicatorValueEntity);
+        indicatorValueEntity = indicatorService.getAllIndicatorValues().iterator().next();
+        assertEquals(BigDecimal.TEN, indicatorValueEntity.getValue());
+    }
+
+    @Test
+    public void testGetIndicatorsWithTrendsUnderUser() {
+        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date()));
     }
 
 }
