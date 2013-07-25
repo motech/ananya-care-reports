@@ -18,6 +18,10 @@
                     <th colspan="2">{{msg('users.roles.form.permissions.header')}}</th>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td class="span1"><input id="permission_all" type="checkbox" ng-click="selectAllPermissions()" ng-checked="isAllSelected()"/></td>
+                        <td class="span11"><label for="permission_{{key}}">{{msg('users.roles.form.checkAll')}}</label></td>
+                    </tr>
                     <tr ng-repeat="(key, item) in permissionList">
                         <td class="span1"><input id="permission_{{key}}" type="checkbox" ng-model="selectedPermissions[item.id]" ng-checked="selectedPermissions[item.id]" /></td>
                         <td class="span11"><label for="permission_{{key}}">{{item.displayName}}</label></td>

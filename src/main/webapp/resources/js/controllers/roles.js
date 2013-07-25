@@ -36,6 +36,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
 
     var isEdit = ($routeParams.roleId !== undefined);
     $scope.selectedPermissions = [];
+    $scope.permissionList = [];
 
     $scope.fetchPermissions = function() {
         $http.get('api/users/permissions')
@@ -87,6 +88,28 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                 $scope.role.permissions.push($scope.permissionList[i]);
             }
         }
+    };
+
+    $scope.selectAllPermissions = function() {
+        if($scope.isAllSelected() == true) {
+            var check = false;
+        } else {
+            var check = true;
+        }
+
+        for (var i = 0; i < $scope.permissionList.length; i++) {
+            var id = $scope.permissionList[i].id;
+            $scope.selectedPermissions[id] = check;
+        }
+    };
+
+    $scope.isAllSelected = function() {
+        var sum = 0;
+        for (var i = 0; i < $scope.selectedPermissions.length; i++) {
+             if($scope.selectedPermissions[i] === true)
+                sum++;
+         }
+        return sum != 0 && $scope.permissionList.length == sum;
     };
 
     $scope.submitRole = function() {
