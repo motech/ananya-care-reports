@@ -40,7 +40,6 @@ public interface UserService {
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void addRole(String roleName);
 
-    @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     UserEntity getUserById(Integer id);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
