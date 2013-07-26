@@ -73,10 +73,12 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                 });
         };
         $scope.fetchRole();
+        $scope.formHeaderMsg = $scope.msg('users.roles.form.header.edit');
     } else {
         $scope.role = {};
         $scope.role.permissions = [];
         $scope.fetchPermissions();
+        $scope.formHeaderMsg = $scope.msg('users.roles.form.header.add');
     }
 
     $scope.getSelectedPermissions = function() {

@@ -26,6 +26,9 @@ care.controller('categoriesController', function($scope, $http, $dialog, $routeP
 
     if ($scope.categoryId !== undefined) {
         $scope.fetchCategory();
+        $scope.formHeaderMsg = $scope.msg('category.edit');
+    } else {
+        $scope.formHeaderMsg = $scope.msg('category.add');
     };
 });
 

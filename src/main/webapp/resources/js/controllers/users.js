@@ -138,5 +138,8 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
 
     if ($scope.userId !== undefined) {
         $scope.fetchUser();
+        $scope.formHeaderMsg = $scope.msg('users.form.header.edit');
+    } else {
+        $scope.formHeaderMsg = $scope.msg('users.form.header.add');
     };
 });
