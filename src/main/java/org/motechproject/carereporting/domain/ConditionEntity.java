@@ -29,7 +29,7 @@ import javax.validation.constraints.NotNull;
         @JsonSubTypes.Type(name = "value", value = ValueComparisonConditionEntity.class),
         @JsonSubTypes.Type(name = "date", value = DateDiffComparisonConditionEntity.class)
 })
-public class ConditionEntity extends AbstractEntity {
+public abstract class ConditionEntity extends AbstractEntity {
 
     @NotNull
     @ManyToOne

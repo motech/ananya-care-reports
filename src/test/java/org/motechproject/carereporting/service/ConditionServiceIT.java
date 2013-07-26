@@ -8,8 +8,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Set;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -22,14 +20,6 @@ public class ConditionServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     private final static int EXPECTED_CONDITION_ENTITIES_ALL = 3;
     private final static Integer CONDITION_ID = 1;
-
-    @Test
-    public void testGetAllConditions() {
-        Set<ConditionEntity> conditionEntities = conditionService.getAllConditions();
-
-        assertNotNull(conditionEntities);
-        assertEquals(EXPECTED_CONDITION_ENTITIES_ALL, conditionEntities.size());
-    }
 
     @Test
     public void testGetConditionEntityById() {
