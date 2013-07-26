@@ -177,3 +177,7 @@ h5 {
 .jvectormap-label .name {
     font-weight: bold;
 }
+
+.tabbable .nav-tabs li {
+    cursor: pointer;
+}

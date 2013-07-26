@@ -103,4 +103,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #37" author="Łukasz Gąsior">
+        <sql>
+            update dashboard_app.level set name = 'state' where level_id = 1;
+            update dashboard_app.level set name = 'district' where level_id = 2;
+            update dashboard_app.level set name = 'block' where level_id = 3;
+            update dashboard_app.level set name = 'panchayat' where level_id = 4;
+            update dashboard_app.level set name = 'village' where level_id = 5;
+
+            insert into dashboard_app.value_comparison(condition_id, value) values (1, 90), (2, 'true');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

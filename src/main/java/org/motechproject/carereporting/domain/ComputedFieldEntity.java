@@ -126,4 +126,10 @@ public class ComputedFieldEntity extends AbstractEntity {
         }
         return fieldOperations.iterator().next().getField1();
     }
+
+    @JsonIgnore
+    public String getFieldSql() {
+        //assuming that it's a regular field.
+        return getRegularField().getName();
+    }
 }
