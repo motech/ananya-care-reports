@@ -70,10 +70,8 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorById(indicatorId));
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void createNewIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -83,10 +81,8 @@ public class IndicatorController extends BaseController {
         indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 
-    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void updateIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
             BindingResult bindingResult, @PathVariable Integer indicatorId) {
         if (bindingResult.hasErrors()) {
@@ -97,10 +93,8 @@ public class IndicatorController extends BaseController {
         indicatorService.updateIndicatorFromDto(indicatorDto);
     }
 
-    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE,
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void deleteIndicator(@PathVariable Integer indicatorId) {
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
         indicatorService.deleteIndicator(indicatorEntity);
@@ -143,10 +137,8 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.PUT,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void createNewIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -157,10 +149,8 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.PUT,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void updateIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult, @PathVariable Integer indicatorCategoryId) {
         if (bindingResult.hasErrors()) {
@@ -174,21 +164,16 @@ public class IndicatorController extends BaseController {
         indicatorService.updateIndicatorCategory(foundIndicatorCategoryEntity);
     }
 
-    @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.DELETE,
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void deleteIndicatorCategory(@PathVariable Integer indicatorCategoryId) {
         IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
     }
 
-    @RequestMapping(value = "/calculator/recalculate", method = RequestMethod.GET,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/calculator/recalculate", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void recalculateAllIndicatorValues() {
         indicatorValueCalculator.calculateIndicatorValues();
     }
@@ -214,10 +199,8 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/calculator/frequency", method = RequestMethod.PUT,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void updateCalculatorFrequency(@RequestBody String expr) throws ParseException {
         CronTaskEntity cronTaskEntity = cronService.getDefaultCronTask();
         cronTaskEntity.setExpression(expr);

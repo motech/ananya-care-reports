@@ -63,7 +63,6 @@ public class UserServiceImpl implements UserService {
         return userDao.getByUsernameAndPassword(username, encodedPassword);
     }
 
-    @Transactional
     @Override
     public UserEntity getCurrentlyLoggedUser() {
         return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

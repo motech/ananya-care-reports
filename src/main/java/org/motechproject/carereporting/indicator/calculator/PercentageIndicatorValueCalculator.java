@@ -15,7 +15,7 @@ public class PercentageIndicatorValueCalculator extends AbstractIndicatorValueCa
                     " AND %(frequencyWhereClause)" +
                     " AND %(conditionsWhere)" +
                 ") AS count," +
-            " COUNT(%(fieldName)) as total" +
+            " COUNT(*) as total" +
                 " FROM %(reportDbName).%(tableName)" +
                 " %(flwJoin)" +
                 " WHERE %(areaWhereClause)" +
