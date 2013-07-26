@@ -181,3 +181,11 @@ h5 {
 .tabbable .nav-tabs li {
     cursor: pointer;
 }
+
+.margin-bottom {
+    margin-bottom: 10px;
+}
+
+.form-button-add {
+    margin-top: 20px;
+}

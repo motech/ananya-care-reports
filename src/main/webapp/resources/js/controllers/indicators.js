@@ -592,7 +592,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 });
 
-care.controller('createComplexConditionController', function($rootScope, $scope, $http, $dialog) {
+care.controller('createComplexConditionController', function($rootScope, $scope, $http, $simplifiedHttpService, $dialog) {
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
@@ -604,17 +604,37 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     $scope.listComparisonSymbols = [];
     $scope.listComputedFields = [];
     $scope.newConditions = [];
-    $scope.showForm = false;
     $scope.newCondition = {
-        form: -1,
-        comparisonSymbol: -1,
-        field: -1,
-        comparisonValue: null
+        field1: null,
+        field2: null
     };
+    $scope.listComparisonSymbols = [];
+    $scope.listConditionTypes = [
+        { type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
+        { type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
+        { type: 'value', code: 'indicators.complexConditionDialog.conditionType.value' }
+    ];
+    $scope.newCondition.type = 'date';
+
+    $scope.listDateDiffTypes = [
+        { code: 'minutes' },
+        { code: 'hours' },
+        { code: 'days' },
+        { code: 'weeks' },
+        { code: 'months' },
+        { code: 'years' }
+    ];
+    $scope.newCondition.dateDiffType = 'days';
+
+    $scope.listForms = indicatorScope.listForms;
+    if (indicatorScope.listForms.notEmpty()) {
+        $scope.newCondition.form1 = $scope.listForms[0];
+        $scope.newCondition.form2 = $scope.listForms[0];
+    }
 
     $scope.fetchComparisonSymbols = function() {
-        $http.get('api/complexcondition/comparisonsymbol')
-            .success(function(comparisonSymbols) {
+        $simplifiedHttpService.get($scope, 'api/complexcondition/comparisonsymbol',
+            'indicators.form.error.cannotLoadComparisonSymbolList', function(comparisonSymbols) {
                 comparisonSymbols.sortByField('name');
                 $scope.listAllComparisonSymbols = comparisonSymbols;
                 $scope.listComparisonSymbols = $scope.listAllComparisonSymbols;
@@ -622,131 +642,183 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 if ($scope.listComparisonSymbols.notEmpty()) {
                     $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0];
                 }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComparisonSymbolList');
             });
     };
     $scope.fetchComparisonSymbols();
 
-    $scope.removeExistingComputedFields = function(computedFields) {
-        for (var c = computedFields.length - 1; c >= 0; c--) {
-            var field = computedFields[c];
+    $scope.swapFields = function() {
+        var form1 = $scope.newCondition.form1;
+        var form2 = $scope.newCondition.form2;
+        var field1 = $scope.newCondition.field1;
+        var field2 = $scope.newCondition.field2;
+        var fields1 = $scope.listComputedFields1;
+        var fields2 = $scope.listComputedFields2;
 
-            for (nc = 0; nc < $scope.newConditions.length; nc++) {
-                var condition = $scope.newConditions[nc];
+        if (form1 == null || form2 == null || field1 == null || field2 == null
+                || fields1 == null || fields2 == null) {
+            return;
+        }
 
-                if (field.id == condition.computedField.id) {
-                    computedFields.splice(c, 1);
+        $scope.listComputedFields1 = fields2;
+        $scope.listComputedFields2 = fields1;
+        $scope.newCondition.form1 = form2;
+        $scope.newCondition.form2 = form1;
+        $scope.newCondition.field1 = field2;
+        $scope.newCondition.field2 = field1;
+        $scope.newCondition.swapFields = true;
+    };
+
+    $scope.$watch('newCondition.form1', function() {
+        if ($scope.newCondition.form1 == null || $scope.newCondition.swapFields === true) {
+            if ($scope.newCondition.type == 'value') {
+                $scope.newCondition.swapFields = false;
+            }
+            return;
+        }
+
+        $scope.fetchComputedFieldsForForm('form1');
+    });
+
+    $scope.$watch('newCondition.form2', function() {
+        if ($scope.newCondition.form2 == null || $scope.newCondition.swapFields === true) {
+            $scope.newCondition.swapFields = false;
+            return;
+        }
+
+        $scope.fetchComputedFieldsForForm('form2');
+    });
+
+    $scope.$watch('newCondition.type', function() {
+        if ($scope.newCondition.type != null) {
+            $scope.newCondition.value = null;
+
+            $scope.fetchComputedFieldsForForm('form1');
+        }
+    });
+
+    $scope.$watch('newCondition.field1', function() {
+        if ($scope.newCondition.field1 != null && $scope.newCondition.type == 'value') {
+            $scope.newCondition.value = null;
+
+            if ($scope.newCondition.field1.type == 'Boolean'
+                || $scope.newCondition.field1.type == 'String') {
+                for (var i = 0; i < $scope.listAllComparisonSymbols.length; i++) {
+                    if ($scope.listAllComparisonSymbols[i].name == '=') {
+                        $scope.listComparisonSymbols = [].concat($scope.listAllComparisonSymbols[i]);
+                        $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0];
+                        break;
+                    }
                 }
+
+                return;
             }
         }
 
-        return computedFields;
+        $scope.listComparisonSymbols = $scope.listAllComparisonSymbols;
+    });
+
+    $scope.filterComputedFieldsByTypes = function(fields, types) {
+        var filteredFields = [];
+
+        for (var f = 0; f < fields.length; f++) {
+            var found = false;
+
+            for (var t = 0; t < types.length; t++) {
+                if (fields[f].type == types[t]) {
+                    found = true;
+                    break
+                }
+            }
+
+            if (found || types.length <= 0) {
+                filteredFields.push(fields[f]);
+            }
+        }
+
+        return filteredFields;
     };
 
-    $scope.fetchComputedFields = function () {
-        $http.get('api/forms/' + indicatorScope.selectedForm + '/computedfields')
-            .success(function(computedFields) {
+    $scope.fetchComputedFieldsForForm = function(formName) {
+        $simplifiedHttpService.get($scope, 'api/forms/' + $scope.newCondition[formName].id + '/computedfields',
+            'indicators.form.error.cannotLoadComputedFieldList', function(computedFields) {
                 computedFields.sortByField('name');
-                $scope.listComputedFields = $scope.removeExistingComputedFields(computedFields);
 
-                if ($scope.listComputedFields.notEmpty()) {
-                    $scope.newCondition.computedField = $scope.listComputedFields[0];
+                if (formName == 'form1') {
+                    if ($scope.newCondition.type == 'date') {
+                        $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Date' ]);
+                    } else if ($scope.newCondition.type == 'field') {
+                        $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Number', 'Date' ]);
+                    } else if ($scope.newCondition.type == 'value') {
+                        $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ ]);
+                    }
+                } else if (formName == 'form2') {
+                    if ($scope.newCondition.type == 'date') {
+                        $scope.listComputedFields2 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Date' ]);
+                    } else if ($scope.newCondition.type == 'field') {
+                        $scope.listComputedFields2 = $scope.filterComputedFieldsByTypes(computedFields,
+                            [ $scope.newCondition.field1.type ]);
+                    }
                 }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
+
+                if (computedFields.notEmpty()) {
+                    if (formName == 'form1') {
+                        $scope.newCondition.field1 = $scope.listComputedFields1[0];
+                    } else if (formName == 'form2') {
+                        $scope.newCondition.field2 = $scope.listComputedFields2[0];
+                    }
+                }
             });
     };
 
-    $scope.filterComparisonSymbolsByFieldType = function(fieldType) {
-        if (fieldType != "Number" && fieldType != "Date") {
-            for (var i = 0; i < $scope.listAllComparisonSymbols.length; i++) {
-                if ($scope.listAllComparisonSymbols[i].name == "=") {
-                    return [
-                        $scope.listAllComparisonSymbols[i]
-                    ];
-                }
-            }
-        }
-
-        return $scope.listAllComparisonSymbols;
-    };
-
-    $scope.$watch('newCondition.form', function() {
-        $scope.fetchComputedFields();
-    });
-
-    $scope.$watch('newCondition.computedField', function() {
-        $scope.newCondition.comparisonValue = null;
-
-        if ($scope.newCondition.computedField != null) {
-            $scope.listComparisonSymbols = $scope.filterComparisonSymbolsByFieldType($scope.newCondition.computedField.type);
-
-            if ($scope.listComparisonSymbols != null && $scope.listComparisonSymbols.notEmpty()) {
-                $scope.newCondition.comparisonSymbol = $scope.listComparisonSymbols[0];
-            }
-        }
-    });
-
     $scope.addCondition = function() {
-        var condition = {
-            form: $scope.newCondition.form,
-            comparisonSymbol: $scope.newCondition.comparisonSymbol,
-            computedField: $scope.newCondition.computedField,
-            comparisonValue: $scope.newCondition.comparisonValue
-        };
-
-        if (condition.computedField.type == "Date") {
-            condition.comparisonValue = moment(condition.comparisonValue).format("MM/DD/YYYY");
+        var condition = $scope.newCondition;
+        if (condition.type == 'date') {
+            condition.name = condition.form1.displayName + '.' + condition.field1.name
+                + ' ' + condition.comparisonSymbol.name + ' ' + condition.value + ' ' + $scope.msg(condition.dateDiffType)
+                + ' ' + $scope.msg('since')
+                +  ' ' + condition.form2.displayName + '.' + condition.field2.name
+        } else if (condition.type == 'field') {
+            condition.name = condition.form1.displayName + '.' + condition.field1.name
+                + ' ' + condition.comparisonSymbol.name
+                + ' ' + condition.form2.displayName + '.' + condition.field2.name
+        } else if (condition.type == 'value') {
+            condition.name = condition.form1.displayName + '.' + condition.field1.name
+                + ' ' + condition.comparisonSymbol.name
+                + ' ' + condition.value
         }
-
-        for (var i = 0; i < $scope.listComputedFields.length; i++) {
-            if ($scope.listComputedFields[i].id == condition.computedField.id) {
-                $scope.listComputedFields.splice(i, 1);
-
-                if ($scope.listComputedFields.notEmpty()) {
-                    $scope.newCondition.computedField = $scope.listComputedFields[0];
-                }
-
-                break;
-            }
-        }
-
+    
         $scope.newConditions.push(condition);
-        $scope.newCondition.comparisonValue = null;
+        $scope.newCondition = {
+            type: 'date',
+            form1: $scope.listForms[0],
+            form2: $scope.listForms[0],
+            field1: $scope.listComputedFields1[0],
+            field2: $scope.listComputedFields2[0],
+            comparisonSymbol: $scope.listComparisonSymbols[0],
+            dateDiffType: 'days'
+        };
     };
 
     $scope.removeCondition = function(key) {
-        var condition = $scope.newConditions[key];
-
-        if (condition.form.id == $scope.newCondition.form.id) {
-            $scope.listComputedFields.push(condition.computedField);
-            $scope.listComputedFields.sortByField('name');
-            $scope.newCondition.computedField = $scope.listComputedFields[0];
-        }
-
         $scope.newConditions.splice(key, 1);
-    };
-
-    $scope.clearAllConditions = function() {
-        for (var i = 0; i < $scope.newConditions.length; i++) {
-            var condition = $scope.newConditions[i];
-
-            if (condition.form.id == $scope.newCondition.form.id) {
-                $scope.listComputedFields.push(condition.computedField);
-            }
-        }
-
-        if ($scope.listComputedFields.notEmpty()) {
-            $scope.listComputedFields.sortByField('name');
-            $scope.newCondition.computedField = $scope.listComputedFields[0];
-        }
-        $scope.newConditions.length = 0;
     };
 
     $scope.getNewConditions = function() {
         for (var i = 0; i < $scope.newConditions.length; i++) {
-            delete $scope.newConditions[i].form;
+            if ($scope.newConditions[i].type == 'date') {
+                $scope.newConditions[i].value = moment.duration(
+                    $scope.newConditions[i].value,
+                    $scope.newConditions[i].dateDiffType).asSeconds();
+            } else if ($scope.newConditions[i].type == 'field') {
+                delete $scope.newConditions[i].value;
+            } else if ($scope.newConditions[i].type == 'value') {
+                delete $scope.newConditions[i].field2;
+            }
+
+            delete $scope.newConditions[i].name;
+            delete $scope.newConditions[i].form1;
+            delete $scope.newConditions[i].form2;
+            delete $scope.newConditions[i].dateDiffType;
         }
 
         return $scope.newConditions;
@@ -756,8 +828,8 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         $scope.complexCondition.conditions = $scope.getNewConditions();
 
         $http({
-            url: "api/complexcondition",
-            method: "POST",
+            url: 'api/complexcondition',
+            method: 'POST',
             data: $scope.complexCondition,
             headers: { 'Content-Type': 'application/json' },
             dialog: this
