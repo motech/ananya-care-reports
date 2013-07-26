@@ -3,7 +3,7 @@ package org.motechproject.carereporting.web.chart;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
-import org.motechproject.carereporting.domain.ReportType;
+import org.motechproject.carereporting.domain.types.ReportType;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.web.chart.builder.AxisBuilder;
 import org.motechproject.carereporting.web.chart.builder.BarsBuilder;

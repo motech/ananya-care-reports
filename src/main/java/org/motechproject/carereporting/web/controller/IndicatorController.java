@@ -1,13 +1,16 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
+import org.motechproject.carereporting.domain.types.FrequencyType;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
-import org.motechproject.carereporting.indicator.IndicatorValueCalculatorScheduler;
+import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -32,7 +38,10 @@ public class IndicatorController extends BaseController {
     private IndicatorService indicatorService;
 
     @Autowired
-    private IndicatorValueCalculatorScheduler indicatorValueCalculatorScheduler;
+    private IndicatorValueCalculator indicatorValueCalculator;
+
+    @Autowired
+    private CronService cronService;
 
     // IndicatorEntity
 
@@ -175,12 +184,43 @@ public class IndicatorController extends BaseController {
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
     }
 
-    @RequestMapping(value = "/recalculate", method = RequestMethod.GET,
+    @RequestMapping(value = "/calculator/recalculate", method = RequestMethod.GET,
             consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void recalculateAllIndicatorValues() {
-        indicatorValueCalculatorScheduler.calculateIndicatorValues();
+        indicatorValueCalculator.calculateIndicatorValues();
+    }
+
+    @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Map<String, String> getPredefinedFrequencies() {
+        Map<String, String> map = new LinkedHashMap<>();
+        for(FrequencyType frequencyType: FrequencyType.values()) {
+            map.put(frequencyType.getName(), frequencyType.getExpression());
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/calculator/frequency", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getCalculatorFrequency() {
+        return cronService.getDefaultCronTask().toCronExpression();
+    }
+
+    @RequestMapping(value = "/calculator/frequency", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateCalculatorFrequency(@RequestBody String expr) throws ParseException {
+        CronTaskEntity cronTaskEntity = cronService.getDefaultCronTask();
+        cronTaskEntity.setExpression(expr);
+        cronService.updateCronTask(cronTaskEntity);
     }
 }

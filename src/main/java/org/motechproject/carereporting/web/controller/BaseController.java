@@ -4,10 +4,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 public abstract class BaseController {
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
@@ -27,5 +33,12 @@ public abstract class BaseController {
         }
 
         return str;
+    }
+
+    @InitBinder
+    private void dateBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+        binder.registerCustomEditor(Date.class, editor);
     }
 }

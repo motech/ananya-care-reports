@@ -7,18 +7,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
+import org.motechproject.carereporting.domain.types.FrequencyType;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,6 +46,9 @@ public class IndicatorControllerTest {
 
     @Mock
     private IndicatorService indicatorService;
+
+    @Mock
+    private CronService cronService;
 	
 	@InjectMocks
 	private IndicatorController indicatorController = new IndicatorController();
@@ -254,4 +263,41 @@ public class IndicatorControllerTest {
         verify(indicatorService, times(1)).updateIndicatorCategory(indicatorCategory);
     }
 
+    @Test
+    public void testGetPredefinedFrequencies() throws Exception {
+        Map<String, String> map = indicatorController.getPredefinedFrequencies();
+
+        assertNotNull(map);
+        assertEquals(6, map.size());
+        assertEquals(true, map.containsKey(FrequencyType.EVERY_DAY.getName()));
+        assertEquals(true, map.containsValue(FrequencyType.EVERY_DAY.getExpression()));
+    }
+
+    @Test
+    public void testGetCalculatorFrequency() throws Exception {
+        String expr = "* * * * * ?";
+        CronTaskEntity cronTaskEntity = new CronTaskEntity();
+        cronTaskEntity.setExpression(expr);
+
+        Mockito.when(cronService.getDefaultCronTask()).thenReturn(cronTaskEntity);
+
+        mockMvc.perform(get("/api/indicator/calculator/frequency"))
+                .andExpect(status().isOk());
+
+        verify(cronService).getDefaultCronTask();
+    }
+
+    @Test
+    public void testUpdateCalculatorFrequency() throws Exception {
+        String expr = "* * * * * ?";
+
+        Mockito.when(cronService.getDefaultCronTask()).thenReturn(new CronTaskEntity());
+
+        mockMvc.perform(put("/api/indicator/calculator/frequency")
+                .content(expr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(cronService).updateCronTask((CronTaskEntity) anyObject());
+    }
 }

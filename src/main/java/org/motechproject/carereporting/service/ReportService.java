@@ -5,7 +5,7 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.dto.ReportDto;
-import org.motechproject.carereporting.domain.ReportType;
+import org.motechproject.carereporting.domain.types.ReportType;
 import org.motechproject.carereporting.web.chart.Chart;
 import org.springframework.security.access.prepost.PreAuthorize;
 

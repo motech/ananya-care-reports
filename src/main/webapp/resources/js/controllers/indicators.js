@@ -906,7 +906,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
 care.controller('recalculateIndicatorsController', function($scope, $http, $dialog, $location) {
     $scope.recalculateIndicators = function() {
         $http({
-            url: "api/indicator/recalculate",
+            url: "api/indicator/calculator/recalculate",
             method: "GET",
             data: null,
             headers: { 'Content-Type': 'application/json' }
@@ -917,4 +917,60 @@ care.controller('recalculateIndicatorsController', function($scope, $http, $dial
 
     $location.path( "api/dashboards" );
     $scope.recalculateIndicators();
+});
+
+care.controller('calculatorController', function($scope, $http, $dialog, $location, $errorService) {
+    $scope.freqList = [];
+    $scope.fromDatabase = null;
+    $scope.expression = null;
+
+    $scope.fetchFrequencyList = function() {
+        $http({
+            url: "api/indicator/calculator/frequencies",
+            method: "GET",
+        }).success(function(data) {
+             $scope.freqList.length = 0;
+             $scope.freqList.push({ key: ' ', value: $scope.fromDatabase });
+             for (var key in data) {
+                 if (data.hasOwnProperty(key)) {
+                     $scope.freqList.push({ key: key, value: data[key] });
+                 }
+             }
+             $scope.expression = $scope.freqList[0].value;
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadFrequencyList');
+        });
+    };
+
+    $scope.$watch('fromDatabase', function() {
+        if($scope.fromDatabase != null) {
+            $scope.fetchFrequencyList();
+        }
+    });
+
+    $scope.fetchExpression = function() {
+        $http({
+            url: "api/indicator/calculator/frequency",
+            method: "GET",
+        }).success(function(data) {
+            $scope.fromDatabase = data;
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadCronExpression');
+        });
+    };
+    $scope.fetchExpression();
+
+    $scope.saveFrequency = function() {
+        $http({
+            url: "api/indicator/calculator/frequency",
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            data: $scope.expression,
+            dialog: this
+        }).success(function(data, status, headers, config) {
+            config.dialog.dismiss();
+        }).error(function(data, status, headers, config) {
+            $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+        });
+    };
 });

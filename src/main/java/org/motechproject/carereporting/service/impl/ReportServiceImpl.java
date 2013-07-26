@@ -9,7 +9,7 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.dto.ReportDto;
-import org.motechproject.carereporting.domain.ReportType;
+import org.motechproject.carereporting.domain.types.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.web.chart.Chart;
@@ -58,7 +58,7 @@ public class ReportServiceImpl implements ReportService {
         query.setParameter("reportTypeId", reportType.getValue());
         query.setParameter("indicatorId", indicatorId);
 
-        return (ReportEntity)query.list().get(0);
+        return (ReportEntity) query.list().get(0);
     }
 
     @Override

@@ -1,0 +1,23 @@
+<form id="defineFrequencyForm" name="defineForm" novalidate ng-controller="calculatorController">
+    <div class="modal-header">
+        <h3>{{msg('indicators.frequencyDialog.header')}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <label for="name">{{msg('indicators.frequencyDialog.label.expr')}}:</label>
+                <input type="text" id="name" ng-model="expression" class="input-block-level" required />
+                <label for="field">{{msg('indicators.frequencyDialog.label.defined')}}:</label>
+                <select id="field" class="span9" ng-model="expression" ng-options="item.value as item.key for item in freqList" />
+                <div class="well">
+                    {{msg('reference')}}: <a href="http://quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger">CronTrigger Tutorial</a><br />
+                </div>
+                <span class="label label-important">{{msg('restart')}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="saveFrequency()" ng-disabled="defineForm.$invalid">{{msg('save')}}</button>
+        <button class="btn" ng-click="dismiss()">{{msg('cancel')}}</button>
+    </div>
+</form>

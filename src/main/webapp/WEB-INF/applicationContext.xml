@@ -42,6 +42,15 @@
         <property name="testConnectionOnCheckin" value="true" />
     </bean>
 
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property ref="dataSource" name="dataSource" />
+        <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
+        <property name="contexts" value="production" />
+        <property name="defaultSchema" value="${jdbc.schema}" />
+    </bean>
+
+    <bean id="applicationContextProvider" class="org.motechproject.carereporting.context.ApplicationContextProvider" />
+
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="org.motechproject.carereporting.domain" />
@@ -59,19 +68,19 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="/messages/messages" />
-		<property name="defaultEncoding" value="UTF-8" />
-		<property name="cacheSeconds" value="1"/> 
-	</bean>
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="/messages/messages" />
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="cacheSeconds" value="1"/>
+    </bean>
 
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-	    <property name="defaultLocale" value="en"/>
-	</bean>
-	
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="en"/>
+    </bean>
+
     <context:component-scan base-package="org.motechproject.carereporting" />
 
-	<mvc:annotation-driven />
+    <mvc:annotation-driven />
     <mvc:view-controller path="/" view-name="index"/>
     <mvc:view-controller path="/login" view-name="login"/>
     <mvc:view-controller path="/error" view-name="error"/>
@@ -88,13 +97,6 @@
     <tx:annotation-driven transaction-manager="transactionManager" />
 
     <task:annotation-driven />
-
-    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
-        <property ref="dataSource" name="dataSource" />
-        <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
-        <property name="contexts" value="production" />
-        <property name="defaultSchema" value="${jdbc.schema}" />
-    </bean>
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.FormEntityInitializer" init-method="loadFormsFromDB" />
 

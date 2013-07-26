@@ -17,6 +17,13 @@
 
     <context:property-placeholder location="classpath:configuration.properties" />
 
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property ref="dataSource" name="dataSource" />
+        <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
+        <property name="contexts" value="test, production" />
+        <property name="defaultSchema" value="${test.jdbc.schema}" />
+    </bean>
+
     <bean id="careDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${care.jdbc.driverName}" />
         <property name="url" value="${care.jdbc.url}" />
@@ -62,13 +69,6 @@
     <security:authentication-manager>
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
-
-    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
-        <property ref="dataSource" name="dataSource" />
-        <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
-        <property name="contexts" value="test, production" />
-        <property name="defaultSchema" value="${test.jdbc.schema}" />
-    </bean>
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.FormEntityInitializer" />
 

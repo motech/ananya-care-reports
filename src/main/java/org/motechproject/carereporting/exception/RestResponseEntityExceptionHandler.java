@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         return handleExceptionInternal(ex, ex.getErrorList(), httpHeaders, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = ParseException.class)
+    protected ResponseEntity<Object> handleParseExpressionError(ParseException ex, WebRequest request) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return handleExceptionInternal(ex, ex.getMessage(), httpHeaders, HttpStatus.BAD_REQUEST, request);
     }
 
     private static class RestFormErrorResponse implements Serializable {

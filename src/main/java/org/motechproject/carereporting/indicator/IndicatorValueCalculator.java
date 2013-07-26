@@ -11,7 +11,6 @@ import org.motechproject.carereporting.indicator.calculator.PercentageIndicatorV
 import org.motechproject.carereporting.indicator.calculator.SumIndicatorValueCalculator;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +24,9 @@ import java.util.Set;
 
 @Component
 @Transactional
-public class IndicatorValueCalculatorScheduler {
+public class IndicatorValueCalculator {
 
-    private static final Logger LOG = Logger.getLogger(IndicatorValueCalculatorScheduler.class);
+    private static final Logger LOG = Logger.getLogger(IndicatorValueCalculator.class);
 
     @Resource(name = "careDataSource")
     private DataSource careDataSource;
@@ -35,7 +34,6 @@ public class IndicatorValueCalculatorScheduler {
     @Autowired
     private IndicatorService indicatorService;
 
-    @Scheduled(cron = "${indicator.calculation.cronExpr}")
     public void calculateIndicatorValues() {
         LOG.info("Running scheduled indicator values calculation.");
         int totalIndicatorValuesCalculated = calculateAllIndicatorValues();

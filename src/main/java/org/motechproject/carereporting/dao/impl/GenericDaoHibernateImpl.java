@@ -103,7 +103,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
         try {
             sessionFactory.getCurrentSession().save(entity);
         } catch (JDBCException e) {
-            if(e.getMessage().contains("duplicate key value violates unique constraint")) {
+            if (e.getMessage().contains("duplicate key value violates unique constraint")) {
                 throw new CareSqlRuntimeException(prepareMessageForException(e), e);
             }
         }

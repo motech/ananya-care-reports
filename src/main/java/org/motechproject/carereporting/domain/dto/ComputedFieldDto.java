@@ -2,7 +2,7 @@ package org.motechproject.carereporting.domain.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
-import org.motechproject.carereporting.domain.FieldType;
+import org.motechproject.carereporting.domain.types.FieldType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

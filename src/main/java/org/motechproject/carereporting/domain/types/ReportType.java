@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.domain;
+package org.motechproject.carereporting.domain.types;
 
 public enum ReportType {
     BarChart(1), LineChart(2), PieChart(3);

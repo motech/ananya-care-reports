@@ -54,6 +54,28 @@
                              schemaName="dashboard_app"
                              tableName="indicator_category"/>
     </changeSet>
+    
+    <changeSet id="CARE #48" author="Adrian Boguszewski">
+        <sql>
+            create table dashboard_app.cron_task(
+                cron_task_id serial not null,
+                name character varying(100) not null,
+                second character varying(100) not null,
+                minute character varying(100) not null,
+                hour character varying(50) not null,
+                day character varying(50) not null,
+                month character varying(30) not null,
+                week_day character varying(20) not null,
+                year character varying(100) not null,
+                creation_date timestamp,
+                modification_date timestamp,
+            constraint cron_task_pk primary key (cron_task_id),
+            constraint cron_task_name_uk unique (name));
+
+            insert into dashboard_app.cron_task (name, second, minute, hour, day, month, week_day, year, creation_date, modification_date)
+                values ('calculate_indicator_values', '0', '0', '0', '*', '*', '?', '', now(), now());
+        </sql>
+    </changeSet>
 
     <changeSet id="CARE #26" author="Lech Różański">
         <dropColumn schemaName="dashboard_app"

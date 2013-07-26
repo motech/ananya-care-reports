@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.domain;
+package org.motechproject.carereporting.domain.types;
 
 public enum FieldType {
     Number, Boolean, String, Date;
