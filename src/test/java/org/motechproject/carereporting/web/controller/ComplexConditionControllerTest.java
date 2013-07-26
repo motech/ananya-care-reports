@@ -1,8 +1,10 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -26,21 +28,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
+@FixMethodOrder(value = MethodSorters.NAME_ASCENDING)
 public class ComplexConditionControllerTest {
 
     private static final String TEST_COMPLEX_CONDITION_ID = "1";
+    private static final String TEST_DELETE_COMPLEX_CONDITION_ID = "2";
 
     private static final String TEST_COMPLEX_CONDITION_NAME = "test_complex_condition";
 
     private static final String CREATE_COMPLEX_CONDITION_JSON =
-            "{\"conditions\":[{\"comparisonSymbol\":{\"id\":3,\"name\":\"<\"},\"" +
-            "computedField\":{\"id\":407,\"name\":\"ifa_tablets\",\"type\":\"Number\"},\"comparisonValue\":90}]" +
-            ",\"name\":\"test cc\"}";
+            "{\"conditions\":[{\"type\":\"value\",\"comparisonSymbol\":{\"id\":3,\"name\":\"<\"}," +
+                    "\"field1\":{\"id\":407,\"name\":\"ifa_tablets\",\"type\":\"Number\"},\"value\":\"90\"}]," +
+                    "\"name\":\"test cc\"}";
 
     private static final String UPDATE_COMPLEX_CONDITION_JSON =
-            "{\"conditions\":[{\"comparisonSymbol\":{\"id\":3,\"name\":\"<\"},\"" +
-                    "computedField\":{\"id\":407,\"name\":\"ifa_tablets\",\"type\":\"Number\"},\"comparisonValue\":90}]" +
-                    ",\"name\":\"updated test cc\"}";
+            "{\"conditions\":[{\"type\":\"value\",\"comparisonSymbol\":{\"id\":3,\"name\":\"<\"}," +
+                    "\"field1\":{\"id\":407,\"name\":\"ifa_tablets\",\"type\":\"Number\"},\"value\":\"90\"}]," +
+                    "\"name\":\"updatedtestcc\"}";
 
     @Mock
     private ComplexConditionService complexConditionService;
@@ -121,7 +125,7 @@ public class ComplexConditionControllerTest {
 
     @Test
     public void testDeleteComplexCondition() throws Exception {
-        mockMvc.perform(delete("/api/complexcondition/" + TEST_COMPLEX_CONDITION_ID)
+        mockMvc.perform(delete("/api/complexcondition/" + TEST_DELETE_COMPLEX_CONDITION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 

@@ -53,9 +53,6 @@ public class ComputedFieldEntity extends AbstractEntity {
     private Set<FieldOperationEntity> fieldOperations;
 
     @OneToMany(mappedBy = "computedField")
-    private Set<ConditionEntity> conditions;
-
-    @OneToMany(mappedBy = "computedField")
     private Set<IndicatorEntity> indicators;
 
     public ComputedFieldEntity() {
@@ -106,14 +103,6 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     public void setFieldOperations(Set<FieldOperationEntity> fieldOperations) {
         this.fieldOperations = fieldOperations;
-    }
-
-    public Set<ConditionEntity> getConditions() {
-        return conditions;
-    }
-
-    public void setConditions(Set<ConditionEntity> conditions) {
-        this.conditions = conditions;
     }
 
     public Set<IndicatorEntity> getIndicators() {

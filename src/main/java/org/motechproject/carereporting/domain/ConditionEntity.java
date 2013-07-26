@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
@@ -8,6 +10,8 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,12 +22,14 @@ import javax.validation.constraints.NotNull;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "condition_id"))
 })
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(name = "field", value = FieldComparisonConditionEntity.class),
+        @JsonSubTypes.Type(name = "value", value = ValueComparisonConditionEntity.class),
+        @JsonSubTypes.Type(name = "date", value = DateDiffComparisonConditionEntity.class)
+})
 public class ConditionEntity extends AbstractEntity {
-
-    @NotNull
-    @Column(name = "comparison_value", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
-    private String comparisonValue;
 
     @NotNull
     @ManyToOne
@@ -31,23 +37,14 @@ public class ConditionEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private ComparisonSymbolEntity comparisonSymbol;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "computed_field_id")
+    @JoinColumn(name = "field_1_id")
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
-    private ComputedFieldEntity computedField;
+    private ComputedFieldEntity field1;
 
     @ManyToOne
     @JoinColumn(name = "complex_condition_id")
     private ComplexConditionEntity complexCondition;
-
-    public String getComparisonValue() {
-        return comparisonValue;
-    }
-
-    public void setComparisonValue(String comparisonValue) {
-        this.comparisonValue = comparisonValue;
-    }
 
     public ComparisonSymbolEntity getComparisonSymbol() {
         return comparisonSymbol;
@@ -57,12 +54,12 @@ public class ConditionEntity extends AbstractEntity {
         this.comparisonSymbol = comparisonSymbol;
     }
 
-    public ComputedFieldEntity getComputedField() {
-        return computedField;
+    public ComputedFieldEntity getField1() {
+        return field1;
     }
 
-    public void setComputedField(ComputedFieldEntity computedField) {
-        this.computedField = computedField;
+    public void setField1(ComputedFieldEntity field1) {
+        this.field1 = field1;
     }
 
     public ComplexConditionEntity getComplexCondition() {

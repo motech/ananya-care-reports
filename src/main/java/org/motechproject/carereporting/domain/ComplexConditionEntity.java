@@ -69,6 +69,12 @@ public class ComplexConditionEntity extends AbstractEntity {
 
     public void setConditions(Set<ConditionEntity> conditions) {
         this.conditions = conditions;
+
+        for (ConditionEntity condition : conditions) {
+            if (condition.getComplexCondition() == null) {
+                condition.setComplexCondition(this);
+            }
+        }
     }
 
     @JsonIgnore

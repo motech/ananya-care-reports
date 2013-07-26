@@ -55,4 +55,52 @@
                              tableName="indicator_category"/>
     </changeSet>
 
+    <changeSet id="CARE #26" author="Lech Różański">
+        <dropColumn schemaName="dashboard_app"
+                    tableName="condition"
+                    columnName="comparison_value" />
+        <renameColumn schemaName="dashboard_app"
+                      tableName="condition"
+                      oldColumnName="computed_field_id"
+                      newColumnName="field_1_id" />
+        <sql>
+            create table dashboard_app.field_comparison (
+                field_comparison_id serial not null,
+                condition_id integer not null,
+                field_2_id integer not null,
+                constraint field_comparison_pk primary key (field_comparison_id),
+                constraint field_comparison_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint field_comparison_field_2_id foreign key (field_2_id)
+                references dashboard_app.computed_field (computed_field_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            create table dashboard_app.value_comparison (
+                value_comparison_id serial not null,
+                condition_id integer not null,
+                value character varying(50) not null,
+                constraint value_comparison_pk primary key (value_comparison_id),
+                constraint field_comparison_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            create table dashboard_app.date_diff_comparison (
+                date_diff_comparison_id serial not null,
+                condition_id integer not null,
+                field_2_id integer not null,
+                value integer not null,
+                constraint date_diff_comparison_pk primary key (date_diff_comparison_id),
+                constraint field_comparison_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint date_diff_comparison_field_2_id foreign key (field_2_id)
+                references dashboard_app.computed_field (computed_field_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

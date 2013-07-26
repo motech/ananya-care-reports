@@ -54,7 +54,7 @@ public abstract class AbstractIndicatorValueCalculator {
     private String buildConditionWhereClause(ConditionEntity condition) {
         String fieldName = getField();
         String comparisonSymbol = condition.getComparisonSymbol().getName();
-        String value = condition.getComparisonValue();
+        String value = "1";// condition.getComparisonValue();
 
         return String.format(CONDITION_WHERE_CLAUSE,
                 REPORT_DB_NAME + "."  + getTableName() + "." + fieldName, comparisonSymbol, value);
