@@ -136,5 +136,24 @@
             insert into dashboard_app.value_comparison(condition_id, value) values (1, 90), (2, 'true');
         </sql>
     </changeSet>
+    
+    <changeSet id="CARE #46" author="Pawel Reise">
+        <update tableName="indicator_category" schemaName="dashboard_app">
+            <column name="dashboard_id" value="6" />
+            <where>name = 'Essential Newborn Care'</where>
+        </update>
+        <update tableName="indicator_indicator_category" schemaName="dashboard_app">
+            <column name="indicator_category_id" value="4" />
+            <where>indicator_id = 2</where>
+        </update>
+        <insert tableName="report_dashboard" schemaName="dashboard_app">
+            <column name="report_id" value="2"></column>
+            <column name="dashboard_id" value="6"></column>
+        </insert>
+        <update tableName="indicator" schemaName="dashboard_app">
+            <column name="frequency" value="60" type="integer" />
+            <where>indicator_id = 1 or indicator_id = 2</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>
