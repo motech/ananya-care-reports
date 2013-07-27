@@ -610,11 +610,12 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
     $scope.listComparisonSymbols = [];
     $scope.listConditionTypes = [
-        { type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
-        { type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
+        // TODO: Enable those options when functionalities will work
+        //{ type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
+        //{ type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
         { type: 'value', code: 'indicators.complexConditionDialog.conditionType.value' }
     ];
-    $scope.newCondition.type = 'date';
+    $scope.newCondition.type = 'value';
 
     $scope.listDateDiffTypes = [
         { code: 'minutes' },
@@ -786,16 +787,13 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 + ' ' + condition.comparisonSymbol.name
                 + ' ' + condition.value
         }
-    
+
         $scope.newConditions.push(condition);
         $scope.newCondition = {
-            type: 'date',
+            type: 'value',
             form1: $scope.listForms[0],
-            form2: $scope.listForms[0],
             field1: $scope.listComputedFields1[0],
-            field2: $scope.listComputedFields2[0],
             comparisonSymbol: $scope.listComparisonSymbols[0],
-            dateDiffType: 'days'
         };
     };
 
@@ -826,6 +824,11 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
     $scope.saveNewComplexCondition = function() {
         $scope.complexCondition.conditions = $scope.getNewConditions();
+
+        // TODO: Remove this when swapping fields is adressed in ConditionEntity
+        for (key in $scope.complexCondition.conditions) {
+            $scope.complexCondition.conditions[key].swapFields = undefined;
+        }
 
         $http({
             url: 'api/complexcondition',
