@@ -1023,6 +1023,14 @@ care.controller('calculatorController', function($scope, $http, $dialog, $locati
         }
     });
 
+    $scope.$watch('expression', function() {
+        if($scope.fromDatabase != $scope.expression) {
+            $scope.message = $scope.msg('restart');
+        } else {
+            $scope.message = "";
+        }
+    });
+
     $scope.fetchExpression = function() {
         $http({
             url: "api/indicator/calculator/frequency",
