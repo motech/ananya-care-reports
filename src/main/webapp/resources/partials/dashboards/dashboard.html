@@ -13,7 +13,7 @@
             </li>
         </ul>
         <div class="tab-content">
-            <div class="row text-center" ng-show="dashboard.name == 'Map report' || dashboard.name == 'Performance summary'">
+            <div class="row text-center" ng-show="dashboard.name == 'Performance summary'">
                 <div class="input-append input-prepend date" id="start-date" data-date="{{startDate}" data-date-format="dd-mm-yyyy">
                     <span class="add-on text-success date-label">{{msg('trends.from')}}:</span>
                     <input class="span2" size="16" type="text" value="{{startDate}}">
@@ -30,14 +30,94 @@
                     $("#end-date").datepicker();
                 </script>
             </div>
-            <div id="mapReportWrapper" class="map-report-wrapper" ng-show="dashboard.name == 'Map report'">
-                <div class="input-prepend">
-                    <span class="add-on text-success date-label">Indicator:</span>
-                    <select ng-model="indicatorId" class="span8">
-                        <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in indicators">{{indicator.name}}</option>
-                    </select>
+            <div id="mapReportWrapper" ng-show="dashboard.name == 'Map report'">
+                <div class="row">
+                    <div id="mapReport1Wrapper" class="span7">
+                        <div class="row text-center">
+                            <div class="input-append input-prepend date" id="map1_start-date" data-date="{{maps[0].startDate}}" data-date-format="dd-mm-yyyy">
+                                <span class="add-on text-success date-label">{{msg('trends.from')}}:</span>
+                                <input class="span2" size="16" type="text" value="{{maps[0].startDate}}">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <div style="margin-left: 50px;" class="input-append input-prepend date" id="map1_end-date" data-date="{{maps[0].endDate}}" data-date-format="dd-mm-yyyy">
+                                <span class="add-on text-success date-label">{{msg('trends.to')}}:</span>
+                                <input class="span2" size="16" type="text" value="{{maps[0].endDate}}">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <script>
+                                $("#map1_start-date").datepicker();
+                                $("#map1_end-date").datepicker();
+                            </script>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on text-success">{{msg('map.category')}}:</span>
+                            <select ng-model="maps[0].selectedIndicatorCategoryId" class="span6">
+                                <option value="{{category.id}}" ng-selected="$index == 0" ng-repeat="category in mapCategories">{{category.name}}</option>
+                            </select>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on text-success">{{msg('map.indicator')}}:</span>
+                            <select ng-model="maps[0].selectedIndicatorId" class="span6">
+                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[0].selectedCategoryIndicators">{{indicator.name}}</option>
+                            </select>
+                        </div>
+                        <p class="text-center"><span ng-click="analyzeMap(maps[0])" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('trends.analyze')}}</span></p>
+                        <div id="mapReport0" class="map-report">
+                        </div>
+                    </div>
+                    <div id="mapReport2Wrapper" class="span7">
+                        <div class="row text-center">
+                            <div class="input-append input-prepend date" id="map2_start-date" data-date="{{maps[1].startDate}" data-date-format="dd-mm-yyyy">
+                                <span class="add-on text-success date-label">{{msg('trends.from')}}:</span>
+                                <input class="span2" size="16" type="text" value="{{maps[1].startDate}}">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <div style="margin-left: 50px;" class="input-append input-prepend date" id="map2_end-date" data-date="{{maps[1].endDate}" data-date-format="dd-mm-yyyy">
+                                <span class="add-on text-success date-label">{{msg('trends.to')}}:</span>
+                                <input class="span2" size="16" type="text" value="{{maps[1].endDate}}">
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <script>
+                                $("#map2_start-date").datepicker();
+                                $("#map2_end-date").datepicker();
+                            </script>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on text-success">{{msg('map.category')}}:</span>
+                            <select ng-model="maps[1].selectedIndicatorCategoryId" class="span6">
+                                <option value="{{category.id}}" ng-selected="$index == 0" ng-repeat="category in mapCategories">{{category.name}}</option>
+                            </select>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on text-success">{{msg('map.indicator')}}:</span>
+                            <select ng-model="maps[1].selectedIndicatorId" class="span6">
+                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[1].selectedCategoryIndicators">{{indicator.name}}</option>
+                            </select>
+                        </div>
+                        <p class="text-center"><span ng-click="analyzeMap(maps[1])" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('trends.analyze')}}</span></p>
+                        <div id="mapReport1" class="map-report">
+                        </div>
+                    </div>
                 </div>
-                <div id="mapReport" class="map-report">
+                <div class="row" style="margin-bottom: 100px; margin-top: 20px;">
+                    <table class="offset1">
+                        <tr>
+                            <td class="legend-color legend-positive">&nbsp;</td>
+                            <td>{{msg('map.legend.positiveTrend')}}</td>
+                        </tr>
+                        <tr>
+                            <td class="legend-color legend-negative">&nbsp;</td>
+                            <td>{{msg('map.legend.negativeTrend')}}</td>
+                        </tr>
+                        <tr>
+                            <td class="legend-color legend-neutral">&nbsp;</td>
+                            <td>{{msg('map.legend.neutralTrend')}}</td>
+                        </tr>
+                        <tr>
+                            <td class="legend-color legend-no-data">&nbsp;</td>
+                            <td>{{msg('map.legend.noData')}}</td>
+                        </tr>
+                        </table>
                 </div>
             </div>
             <div class="tab-pane" ng-repeat="dashboard in dashboards" id="tab_{{$index + 1}}" ng-class="{ active: $index == 0 }">

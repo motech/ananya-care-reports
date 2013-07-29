@@ -115,13 +115,18 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.tabChanged = function(dashboard) {
         $scope.reportRows = [];
         $scope.charts = [];
-        $("#mapReport").html('');
+        $("#mapReport1").html('');
+        $("#mapReport2").html('');
         $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
         if (dashboard.name == "Performance summary") {
             $scope.fetchTrends();
         } else if (dashboard.name == "Map report") {
-            $scope.fetchMapReport();
+            for (var i in $scope.maps) {
+                if ($scope.maps.hasOwnProperty(i)) {
+                    $scope.fetchMapReport($scope.maps[i]);
+                }
+            }
         } else {
             $scope.fetchReportRows();
         }
@@ -130,8 +135,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             if ($scope.previousAreaId != $scope.areaId) {
                 $scope.fetchReportRows();
                 $scope.previousAreaId = $scope.areaId;
-                //replace map with new area and then:
-                $scope.fetchMapReport();
+                for (var i in $scope.maps) {
+                    if ($scope.maps.hasOwnProperty(i)) {
+                        $scope.fetchMapReport($scope.maps[i]);
+                    }
+                }
             }
         }, true);
     };
@@ -193,34 +201,49 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         });
     };
 
-    $scope.analyze = function() {
-        $scope.fetchTrends();
-        $scope.fetchMapReport();
+    $scope.maps = [];
+    for (i=0; i<2; i+=1) {
+        $scope.maps[i] = {
+            startDate: moment().subtract('months', 1).format('DD-MM-YYYY'),
+            endDate: moment().format('DD-MM-YYYY'),
+            selectedIndicatorCategoryId: 1,
+            selectedCategoryIndicators: [],
+            selectedIndicatorId: 1,
+            containerId: "mapReport" + i
+        };
     }
 
-    $scope.fetchIndicators = function() {
-        $http.get('api/indicator').success(function(indicators) {
-            $scope.indicators = indicators;
-            $scope.$watch('indicatorId', function(newValue, oldValue) {
-                $scope.fetchMapReport();
+    $scope.analyzeMap = function(map) {
+      $scope.fetchMapReport(map);
+    }
+
+    $scope.analyze = function() {
+        $scope.fetchTrends();
+    }
+
+    $scope.fetchCategoryIndicators = function(map) {
+        $http.get('api/indicator/filter/' + map.selectedIndicatorCategoryId).success(function(indicators) {
+            map.selectedCategoryIndicators = indicators;
+        });
+    };
+
+    $scope.fetchCategories = function() {
+        $http.get('api/indicator/category').success(function(indicatorCategories) {
+            $scope.mapCategories = indicatorCategories;
+            $scope.indicatorCategory1 = $scope.indicatorCategory2 = indicatorCategories[0];
+            $scope.$watch('maps[0].selectedIndicatorCategoryId', function(newValue, oldValue) {
+                $scope.fetchCategoryIndicators($scope.maps[0]);
+            }, true);
+            $scope.$watch('maps[1].selectedIndicatorCategoryId', function(newValue, oldValue) {
+                $scope.fetchCategoryIndicators($scope.maps[1]);
             }, true);
         });
     };
 
-    $scope.fetchIndicators();
+    $scope.fetchCategories();
 
-    $scope.indicatorId = 1;
-
-    $scope.fetchMapReport = function() {
-        var startDate = $("#start-date input").val(),
-               endDate = $("#end-date input").val();
-        if (startDate == undefined) {
-           startDate = $scope.startDate;
-        }
-        if (endDate == undefined) {
-           endDate = $scope.endDate;
-        }
-        var url = 'api/map-report?indicatorId=' + $scope.indicatorId + '&startDate=' + startDate + '&endDate=' + endDate;
+    $scope.fetchMapReport = function(map) {
+        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate + '&endDate=' + map.endDate;
         if ($scope.areaId != undefined) {
             url += '&areaId=' + $scope.areaId;
         }
@@ -230,7 +253,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     data[i] = data[i].toString();
                 }
             }
-            $('#mapReport').html('').vectorMap({
+            $('#' + map.containerId).html('').vectorMap({
                 map: 'bihar',
                 onRegionClick: function(event, code) {
                     //change area i
@@ -264,7 +287,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 },
                 onRegionLabelShow: function(e, el, code) {
                     if (data[code] == undefined) {
-                        $(el).html('No data for ' + code);
+                        $(el).html($scope.msg('map.noData', code));
                     }
                     var ads = data[code];
                     $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
