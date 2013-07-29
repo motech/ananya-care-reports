@@ -189,3 +189,18 @@ h5 {
 .form-button-add {
     margin-top: 20px;
 }
+
+.condition-dialog {
+    width: 900px !important;
+    margin-left: -450px !important;
+    top: 50px !important;
+}
+
+.condition-dialog-body {
+    max-height: 500px !important;
+}
+
+.dialog-form {
+    margin: 0px !important;
+    padding: 0px !important;
+}

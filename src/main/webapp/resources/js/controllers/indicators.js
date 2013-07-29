@@ -569,12 +569,24 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.launchDialog = function() {
         $rootScope.indicatorScope = $scope;
 
-        var dialog = $modal({
-            template: "resources/partials/indicators/newComplexConditionDialog.html",
-            persist: true,
-            show: true,
-            backdrop: "static"
-        });
+//        var dialog = $modal({
+//            template: "resources/partials/indicators/newComplexConditionDialog.html",
+//            persist: true,
+//            show: true,
+//            backdrop: "static"
+//        });
+
+        var opts = {
+            backdrop: true,
+            keyboard: true,
+            backdropClick: false,
+            templateUrl: 'resources/partials/indicators/newComplexConditionDialog.html',
+            controller: 'createComplexConditionController',
+            dialogClass: 'modal condition-dialog'
+        };
+
+        var dialog = $dialog.dialog(opts);
+        dialog.open();
     };
 
     $scope.launchComputedFieldDialog = function() {
@@ -587,12 +599,14 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             backdrop: "static"
         });
     };
-	if ($routeParams.indicatorId) {
+
+    if ($routeParams.indicatorId) {
         $scope.fetchIndicatorAndFillDetails();
     };
 });
 
-care.controller('createComplexConditionController', function($rootScope, $scope, $http, $simplifiedHttpService, $dialog) {
+care.controller('createComplexConditionController', function($rootScope, $scope, $http, $simplifiedHttpService,
+        $dialog, dialog) {
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
@@ -603,6 +617,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     $scope.listConditions = [];
     $scope.listComparisonSymbols = [];
     $scope.listComputedFields = [];
+    $scope.listComputedFields2 = [];
     $scope.newConditions = [];
     $scope.newCondition = {
         field1: null,
@@ -817,6 +832,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
             delete $scope.newConditions[i].form1;
             delete $scope.newConditions[i].form2;
             delete $scope.newConditions[i].dateDiffType;
+            delete $scope.newConditions[i].swapFields;
         }
 
         return $scope.newConditions;
@@ -824,11 +840,6 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
     $scope.saveNewComplexCondition = function() {
         $scope.complexCondition.conditions = $scope.getNewConditions();
-
-        // TODO: Remove this when swapping fields is adressed in ConditionEntity
-        for (key in $scope.complexCondition.conditions) {
-            $scope.complexCondition.conditions[key].swapFields = undefined;
-        }
 
         $http({
             url: 'api/complexcondition',
@@ -838,10 +849,14 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
             dialog: this
         }).success(function(data, status, headers, config) {
                 indicatorScope.fetchComplexConditions();
-                config.dialog.dismiss();
+                dialog.close();
         }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
+    };
+
+    $scope.close = function(result) {
+        dialog.close(result);
     };
 });
 
