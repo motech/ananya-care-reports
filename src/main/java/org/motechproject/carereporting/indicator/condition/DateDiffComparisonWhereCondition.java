@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class DateDiffComparisonWhereCondition extends AbstractWhereCondition<DateDiffComparisonConditionEntity> {
 
-    private static final String DATE_DIFF_COMPARISON_CONDITION_WHERE_CLAUSE = "((%(firstDate) - $(secondDate)) %(comparisonSymbol) %(value))";
+    private static final String DATE_DIFF_COMPARISON_CONDITION_WHERE_CLAUSE = "((%(firstDate) - %(secondDate)) %(comparisonSymbol) %(value))";
 
     public DateDiffComparisonWhereCondition(ComputedFieldEntity computedField,
                                             DateDiffComparisonConditionEntity condition) {
