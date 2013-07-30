@@ -30,10 +30,12 @@ public class TrendController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getTrends(@RequestParam Date startDate, @RequestParam Date endDate) {
+    public String getTrends(@RequestParam Date startDate,
+                            @RequestParam Date endDate,
+                            @RequestParam(required = false) Integer areaId) {
         UserEntity user = userService.getCurrentlyLoggedUser();
         return writeAsString(TrendJsonView.class,
-                indicatorService.getIndicatorsWithTrendsUnderUser(user, startDate, endDate));
+                indicatorService.getIndicatorsWithTrendsUnderUser(user, startDate, endDate, areaId));
     }
 
 }

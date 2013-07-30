@@ -10,6 +10,7 @@ function sortByDateComparisonFunction(a, b) {
 
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
     $scope.title = $scope.msg('dashboard.title');
+    $scope.areaId = 1;
 
     $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
     $scope.endDate = moment().format('DD-MM-YYYY');
@@ -133,6 +134,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
         $scope.$watch('areaId', function(newValue, oldValue) {
             if ($scope.previousAreaId != $scope.areaId) {
+                $scope.fetchTrends();
                 $scope.fetchReportRows();
                 $scope.previousAreaId = $scope.areaId;
                 for (var i in $scope.maps) {
@@ -151,14 +153,19 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchTrends = function() {
         var startDate = $("#start-date input").val(),
-            endDate = $("#end-date input").val();
+            endDate = $("#end-date input").val(),
+            url;
         if (startDate == undefined) {
             startDate = $scope.startDate;
         }
         if (endDate == undefined) {
             endDate = $scope.endDate;
         }
-        $http.get('api/trend?startDate=' + startDate + '&endDate=' + endDate)
+        url = 'api/trend?startDate=' + startDate + '&endDate=' + endDate;
+        if ($scope.areaId != undefined) {
+            url += '&areaId=' + $scope.areaId;
+        }
+        $http.get(url)
                 .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;
 

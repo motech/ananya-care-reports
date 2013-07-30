@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Date;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ public class TrendControllerTest {
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
         verify(indicatorService, times(1)).getIndicatorsWithTrendsUnderUser((UserEntity) anyObject(),
-                (Date) anyObject(), (Date) anyObject());
+                (Date) anyObject(), (Date) anyObject(), anyInt());
     }
 
 }

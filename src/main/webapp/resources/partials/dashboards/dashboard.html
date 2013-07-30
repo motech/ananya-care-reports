@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <h1 class="text-center">{{msg('dashboard.header')}}</h1>
 
-    <select class="pull-right" ng-model="areaId" ng-hide="dashboard.name == 'Performance summary'">
+    <select class="pull-right" ng-model="areaId">
         <option value="{{area.id}}" style="padding-left: {{area.levelHierarchyDepth*15 + 5}}px" ng-selected="$index == 0" ng-repeat="area in areas">{{area.name}}</option>
     </select>
     <div class="tabbable">

@@ -179,7 +179,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testGetIndicatorsWithTrendsUnderUser() {
-        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date()));
+        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), null));
     }
 
 }

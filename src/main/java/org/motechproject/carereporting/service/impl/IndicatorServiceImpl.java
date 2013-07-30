@@ -365,16 +365,22 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate) {
+    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId) {
         Set<TrendIndicatorCategoryDto> categories = new LinkedHashSet<>();
         Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
+        AreaEntity area;
+        if (areaId != null) {
+            area = areaService.getAreaById(areaId);
+        } else {
+            area = user.getArea();
+        }
         for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
             TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
                 if (indicator.getOwners().contains(user)) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
-                            getTrendForIndicator(user.getArea(), indicator, startDate, endDate));
+                            getTrendForIndicator(area, indicator, startDate, endDate));
                     trendCategory.getIndicators().add(trendIndicator);
                 }
             }
