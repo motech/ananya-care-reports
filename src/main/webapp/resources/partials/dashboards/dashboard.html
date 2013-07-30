@@ -134,36 +134,41 @@
                     </table>
                 </div>
                 <div class="row" ng-show="reportRows.length > 0">
-                    <table class="span12">
-                        <tbody>
-                            <tr ng-repeat="reportRow in reportRows">
-                                <td class="span4" ng-repeat="report in reportRow">
-                                    <div class="chart-container-wrapper" ng-click="toggleChartDisplay(report)">
-                                        <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
-                                        <div class="chart-container" ng-show="report.displayType == 'table'">
-                                            <div class="row-fluid">
-                                                <table class="span11 table table-hover table-striped table-bordered centered" ng-show="report.chart.length > 0">
-                                                    <thead>
-                                                    <th>{{msg('charts.details.table.header.date')}}</th>
-                                                    <th>{{msg('charts.details.table.header.value')}}</th>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr ng-repeat="item in report.chart">
-                                                        <td class="span8">{{formatDate(item.date)}}</td>
-                                                        <td class="span4">{{item.value}}%</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                    <div style="overflow: auto;">
+                        <table class="span12">
+                            <tbody>
+                                <tr ng-repeat="reportRow in reportRows">
+                                    <td class="span4" ng-repeat="report in reportRow">
+                                        <div class="chart-container-wrapper">
+                                            <p class="text-center"><span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('charts.showData') || msg('charts.showChart') }}</span></p>
+                                            <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
+                                            <div class="chart-container" ng-show="report.displayType == 'table'">
+                                                <div class="row-fluid">
+                                                    <table class="span11 table table-hover table-striped table-bordered centered" ng-show="report.chart.length > 0">
+                                                        <thead>
+                                                        <th>{{msg('charts.details.table.header.date')}}</th>
+                                                        <th>{{msg('charts.details.table.header.value')}}</th>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr ng-repeat="item in report.chart">
+                                                            <td class="span8">{{formatDate(item.date)}}</td>
+                                                            <td class="span4">{{item.value}}%</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row-fluid chart-title">
-                                        <p class="text-center">{{report.indicatorName}}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                        <p class="chart-title">{{report.indicatorName}}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>{{msg('tip')}}:</strong> {{msg('charts.zoomTip')}}
+                    </div>
                 </div>
             </div>
         </div>

@@ -160,14 +160,38 @@
                             }
 
                             $http.get(url).success(function(chart) {
-                                var graph, title, chart, wrapper, titleElement;
+                                var graph, title, chart, wrapper, titleElement,
+                                    isLineChart = chart.settings.pie == undefined && chart.settings.bars == undefined,
+                                    drawChart = function(opts) {
+                                        var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
+                                        Flotr.draw(element[0], chart.data, o);
+                                    };
 
                                 if (chart.settings.title != undefined) {
                                     title = chart.settings.title;
                                     delete chart.settings.title;
                                 }
 
-                                Flotr.draw(element[0], chart.data, chart.settings);
+                                drawChart();
+
+                                if (isLineChart) {
+                                    Flotr.EventAdapter.observe(element[0], 'flotr:select', function(area) {
+                                        drawChart({
+                                            xaxis: {
+                                                min: area.x1,
+                                                max: area.x2
+                                            },
+                                            yaxis: {
+                                                min: area.y1,
+                                                max: area.y2
+                                            }
+                                        });
+                                    });
+
+                                    Flotr.EventAdapter.observe(element[0], 'flotr:click', function() {
+                                        drawChart();
+                                    });
+                                }
                             });
                         };
 

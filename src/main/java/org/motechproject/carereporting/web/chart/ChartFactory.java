@@ -12,6 +12,7 @@ import org.motechproject.carereporting.web.chart.builder.GridBuilder;
 import org.motechproject.carereporting.web.chart.builder.LegendBuilder;
 import org.motechproject.carereporting.web.chart.builder.MouseBuilder;
 import org.motechproject.carereporting.web.chart.builder.PieBuilder;
+import org.motechproject.carereporting.web.chart.builder.SelectionBuilder;
 import org.motechproject.carereporting.web.chart.builder.SerieBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public final class ChartFactory {
     private static final double BAR_WIDTH = .5;
     private static final int EXPLOSION_NUMBER = 6;
     private static final int DIVIDE_BY_ONE_HUNDRED = 100;
+    private static final int SELECTION_FPS = 30;
 
     public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
         return createTemplateChart(indicator.getName())
@@ -41,6 +43,9 @@ public final class ChartFactory {
                         .timeformat("%m/%d/%y"))
                 .grid(new GridBuilder()
                         .minorVerticalLines(true))
+                .selection(new SelectionBuilder()
+                        .fps(SELECTION_FPS)
+                        .mode(SelectionBuilder.Mode.X))
                 .serie(createSerieForIndicatorValues(values))
                 .build();
     }

@@ -18,6 +18,7 @@ public class ChartBuilder extends ParamsBuilder {
     private static final String PARAM_MOUSE = "mouse";
     private static final String PARAM_PIE = "pie";
     private static final String PARAM_BARS = "bars";
+    private static final String PARAM_SELECTION = "selection";
 
     private List<Serie> data = new ArrayList<>();
 
@@ -67,6 +68,10 @@ public class ChartBuilder extends ParamsBuilder {
 
     public ChartBuilder bars(ParamsBuilder builder) {
         return (ChartBuilder) param(PARAM_BARS, builder.build());
+    }
+
+    public ChartBuilder selection(SelectionBuilder builder) {
+        return (ChartBuilder) param(PARAM_SELECTION, builder.build());
     }
 
     @Override
