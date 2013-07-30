@@ -18,9 +18,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -88,10 +88,9 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "trend_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
-    private TrendEntity trend;
+    @Column(name = "trend", nullable = true)
+    @JsonView({ BaseView.class })
+    private BigDecimal trend;
 
     public IndicatorEntity() {
 
@@ -123,11 +122,11 @@ public class IndicatorEntity extends AbstractEntity {
         }
     }
 
-    public TrendEntity getTrend() {
+    public BigDecimal getTrend() {
         return trend;
     }
 
-    public void setTrend(TrendEntity trend) {
+    public void setTrend(BigDecimal trend) {
         this.trend = trend;
     }
 

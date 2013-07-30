@@ -7,7 +7,6 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
-import org.motechproject.carereporting.domain.TrendEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -88,10 +87,6 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     private void createIndicator() {
         IndicatorDto indicatorDto = new IndicatorDto(1, new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, 1, new HashSet<Integer>(), new HashSet<ReportEntity>(), 30, "name");
-        TrendEntity trend = new TrendEntity();
-        trend.setPositiveDiff(BigDecimal.ONE);
-        trend.setNegativeDiff(BigDecimal.ONE.negate());
-        indicatorDto.setTrend(trend);
         indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 

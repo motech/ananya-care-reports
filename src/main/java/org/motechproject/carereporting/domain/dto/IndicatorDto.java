@@ -2,11 +2,11 @@ package org.motechproject.carereporting.domain.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.ReportEntity;
-import org.motechproject.carereporting.domain.TrendEntity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public class IndicatorDto implements Serializable {
@@ -47,8 +47,7 @@ public class IndicatorDto implements Serializable {
     @NotEmpty
     private String name;
 
-    @NotNull
-    private TrendEntity trend;
+    private BigDecimal trend;
 
     public IndicatorDto() {
 
@@ -70,11 +69,11 @@ public class IndicatorDto implements Serializable {
         this.name = name;
     }
 
-    public TrendEntity getTrend() {
+    public BigDecimal getTrend() {
         return trend;
     }
 
-    public void setTrend(TrendEntity trend) {
+    public void setTrend(BigDecimal trend) {
         this.trend = trend;
     }
 

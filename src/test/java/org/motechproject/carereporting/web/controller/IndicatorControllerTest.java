@@ -38,9 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorControllerTest {
 
-    private static final String CREATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"name\":\"name\",\"computedField\":399,\"trend\":{\"positiveDiff\":\"5\",\"negativeDiff\":\"-5\"},\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
-    private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":{\"positiveDiff\":\"5\",\"negativeDiff\":\"-5\"},\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
-    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":{\"id\":1,\"positiveDiff\":5,\"negativeDiff\":-5},\"owners\":[1],\"categories\":[2]}";
+    private static final String CREATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"name\":\"name\",\"computedField\":399,\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":2,\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":3,\"owners\":[1],\"categories\":[2]}";
     private static final String CREATE_CATEGORY_JSON = "{\"name\":\"Name\",\"shortCode\":\"Code\"}";
     private static final String UPDATE_CATEGORY_JSON = "{\"name\":\"New name\",\"shortCode\":\"Code\"}";
 

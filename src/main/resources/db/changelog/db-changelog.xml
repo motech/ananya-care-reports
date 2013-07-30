@@ -156,4 +156,12 @@
         </update>
     </changeSet>
 
+    <changeSet id="CARE #6" author="Łukasz Gąsior">
+        <dropColumn columnName="trend_id" schemaName="dashboard_app" tableName="indicator" />
+        <dropTable cascadeConstraints="true" schemaName="dashboard_app" tableName="trend" />
+        <addColumn schemaName="dashboard_app" tableName="indicator">
+            <column name="trend" type="bigint" defaultValue="null" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

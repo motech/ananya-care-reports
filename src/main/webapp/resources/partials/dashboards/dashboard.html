@@ -58,7 +58,7 @@
                         <div class="input-prepend">
                             <span class="add-on text-success">{{msg('map.indicator')}}:</span>
                             <select ng-model="maps[0].selectedIndicatorId" class="span6">
-                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[0].selectedCategoryIndicators">{{indicator.name}}</option>
+                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[0].selectedCategoryIndicators | withTrend">{{indicator.name}}</option>
                             </select>
                         </div>
                         <p class="text-center"><span ng-click="analyzeMap(maps[0])" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('trends.analyze')}}</span></p>
@@ -91,7 +91,7 @@
                         <div class="input-prepend">
                             <span class="add-on text-success">{{msg('map.indicator')}}:</span>
                             <select ng-model="maps[1].selectedIndicatorId" class="span6">
-                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[1].selectedCategoryIndicators">{{indicator.name}}</option>
+                                <option value="{{indicator.id}}" ng-selected="$index == 0" ng-repeat="indicator in maps[1].selectedCategoryIndicators | withTrend">{{indicator.name}}</option>
                             </select>
                         </div>
                         <p class="text-center"><span ng-click="analyzeMap(maps[1])" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('trends.analyze')}}</span></p>

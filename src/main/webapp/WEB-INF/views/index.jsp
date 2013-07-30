@@ -36,6 +36,7 @@
     <script src="resources/js/localization.js"></script>
     <script src="resources/js/app.js" type="text/javascript"></script>
     <script src="resources/js/services.js" type="text/javascript"></script>
+    <script src="resources/js/filters.js" type="text/javascript"></script>
     <script src="resources/js/controllers/categories.js" type="text/javascript"></script>
     <script src="resources/js/controllers/dashboards.js" type="text/javascript"></script>
     <script src="resources/js/controllers/forms.js" type="text/javascript"></script>

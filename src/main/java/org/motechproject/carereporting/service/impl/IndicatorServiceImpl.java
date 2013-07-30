@@ -172,8 +172,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorEntity.setComputedField(findComputedFieldEntityFromDto(indicatorDto));
         indicatorEntity.setComplexCondition(findComplexConditionEntityFromDto(indicatorDto));
         indicatorEntity.setValues(findIndicatorValueEntitiesFromDto(indicatorDto));
-        indicatorEntity.getTrend().setPositiveDiff(indicatorDto.getTrend().getPositiveDiff());
-        indicatorEntity.getTrend().setNegativeDiff(indicatorDto.getTrend().getNegativeDiff());
+        indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
         indicatorEntity.setFrequency(indicatorDto.getFrequency());
         indicatorEntity.setName(indicatorDto.getName());
@@ -378,7 +377,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
-                if (indicator.getOwners().contains(user)) {
+                if (indicator.getOwners().contains(user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
                             getTrendForIndicator(area, indicator, startDate, endDate));
                     trendCategory.getIndicators().add(trendIndicator);
@@ -391,8 +390,11 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(
             Integer indicatorId, Integer parentAreaId, Date startDate, Date endDate) {
-        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
         IndicatorEntity indicator = getIndicatorById(indicatorId);
+        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
+        if (indicator.getTrend() == null) {
+            return areasTrends;
+        }
         Set<AreaEntity> areas;
         if (parentAreaId != null) {
             areas = areaService.getAllChildAreasByParentAreaId(parentAreaId);
@@ -408,6 +410,10 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {
 
+        if (indicator.getTrend() == null) {
+            throw new IllegalArgumentException("Cannot calculate trend value for indicator with null trend.");
+        }
+
         IndicatorValueEntity startValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, startDate);
         IndicatorValueEntity endValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, endDate);
 
@@ -417,9 +423,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         BigDecimal diff = endValue.getValue().subtract(startValue.getValue());
 
-        if (diff.compareTo(indicator.getTrend().getNegativeDiff()) < 0) {
+        if (diff.compareTo(indicator.getTrend().negate()) < 0) {
             return TREND_NEGATIVE;
-        } else if (diff.compareTo(indicator.getTrend().getPositiveDiff()) > 0) {
+        } else if (diff.compareTo(indicator.getTrend()) > 0) {
             return TREND_POSITIVE;
         }
         return TREND_NEUTRAL;
