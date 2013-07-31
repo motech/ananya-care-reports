@@ -1,11 +1,16 @@
 package org.motechproject.carereporting.domain;
 
+import org.apache.log4j.Logger;
+import org.motechproject.carereporting.domain.types.FrequencyType;
 import org.quartz.CronExpression;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.text.ParseException;
@@ -18,10 +23,6 @@ import java.text.ParseException;
 public class CronTaskEntity extends AbstractEntity {
 
     private static final String PARSE_ERROR = "Invalid expression. See reference.";
-
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @NotNull
     @Column(name = "second", nullable = false)
@@ -51,11 +52,55 @@ public class CronTaskEntity extends AbstractEntity {
     @Column(name = "year", nullable = false)
     private String year;
 
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "indicator_id", nullable = false)
+    private IndicatorEntity indicator;
+
+    private static final Logger LOG = Logger.getLogger(CronTaskEntity.class);
+
     public CronTaskEntity() {
         year = "";
     }
 
-    public void setExpression(String expression) throws ParseException {
+    public CronTaskEntity(String expression) {
+        year = "";
+
+        try {
+            setExpression(expression);
+        } catch (ParseException e) {
+            LOG.error(e.getMessage());
+        }
+    }
+
+    public void setExpression(String cronFrequency, String date, String time) {
+        String defaultExpression = "* * * * * ?";
+
+        try {
+            setExpression(defaultExpression);
+        } catch (ParseException e) {
+            LOG.error(e.getMessage());
+        }
+        String[] dateArray = date.split("-");
+        String[] timeArray = time.split(":");
+
+        switch(FrequencyType.fromValue(cronFrequency)) {
+            case EVERY_YEAR:
+                month = dateArray[1];
+            case EVERY_MONTH:
+                day = dateArray[0];
+            case EVERY_DAY:
+                hour = timeArray[0];
+            case EVERY_HOUR:
+                minute = timeArray[1];
+            case EVERY_MINUTE:
+                second = "0";
+            default:
+                break;
+        }
+    }
+
+    public final void setExpression(String expression) throws ParseException {
         if (!CronExpression.isValidExpression(expression)) {
             throw new ParseException(PARSE_ERROR, 0);
         }
@@ -93,12 +138,12 @@ public class CronTaskEntity extends AbstractEntity {
         this.second = second;
     }
 
-    public String getName() {
-        return name;
+    public IndicatorEntity getIndicator() {
+        return indicator;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIndicator(IndicatorEntity indicator) {
+        this.indicator = indicator;
     }
 
     public String getMinute() {

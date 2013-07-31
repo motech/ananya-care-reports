@@ -49,14 +49,21 @@ public class IndicatorDto implements Serializable {
 
     private BigDecimal trend;
 
+    @NotNull
+    @NotEmpty
+    private String cronFrequency;
+
+    private String date;
+
+    private String time;
+
     public IndicatorDto() {
 
     }
 
-    public IndicatorDto(final Integer indicatorType, final Set<Integer> categories,
-                        final Integer area, final Set<Integer> owners, final Integer computedField,
-                        final Integer complexCondition, final Set<Integer> values, Set<ReportEntity> reports,
-                        final Integer frequency, final String name) {
+    public IndicatorDto(Integer indicatorType, Set<Integer> categories, Integer area, Set<Integer> owners,
+                        Integer computedField, Integer complexCondition, Set<Integer> values, Set<ReportEntity> reports,
+                        Integer frequency, String name, BigDecimal trend, String cronFrequency, String date, String time) {
         this.indicatorType = indicatorType;
         this.categories = categories;
         this.area = area;
@@ -67,6 +74,34 @@ public class IndicatorDto implements Serializable {
         this.reports = reports;
         this.frequency = frequency;
         this.name = name;
+        this.trend = trend;
+        this.cronFrequency = cronFrequency;
+        this.date = date;
+        this.time = time;
+    }
+
+    public String getCronFrequency() {
+        return cronFrequency;
+    }
+
+    public void setCronFrequency(String cronFrequency) {
+        this.cronFrequency = cronFrequency;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public BigDecimal getTrend() {

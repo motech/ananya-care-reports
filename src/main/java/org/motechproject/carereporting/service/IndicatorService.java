@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -33,7 +34,7 @@ public interface IndicatorService {
     IndicatorEntity getIndicatorById(Integer id);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
-    void createNewIndicator(IndicatorEntity indicatorEntity);
+    void createNewIndicator(IndicatorEntity indicatorEntity, CronTaskEntity cronTaskEntity);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
     void createNewIndicatorFromDto(IndicatorDto indicatorDto);

@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -20,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -28,19 +27,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorControllerTest {
 
-    private static final String CREATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"name\":\"name\",\"computedField\":399,\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String CREATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"name\":\"name\",\"computedField\":399,\"owners\":[1],\"categories\":[1],\"cronFrequency\":\"freq\",\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
     private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":2,\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
-    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":3,\"owners\":[1],\"categories\":[2]}";
+    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"cronFrequency\":\"freq\",\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":3,\"owners\":[1],\"categories\":[2]}";
     private static final String CREATE_CATEGORY_JSON = "{\"name\":\"Name\",\"shortCode\":\"Code\"}";
     private static final String UPDATE_CATEGORY_JSON = "{\"name\":\"New name\",\"shortCode\":\"Code\"}";
 
@@ -265,39 +264,11 @@ public class IndicatorControllerTest {
 
     @Test
     public void testGetPredefinedFrequencies() throws Exception {
-        Map<String, String> map = indicatorController.getPredefinedFrequencies();
+        List<String> list = indicatorController.getPredefinedFrequencies();
 
-        assertNotNull(map);
-        assertEquals(6, map.size());
-        assertEquals(true, map.containsKey(FrequencyType.EVERY_DAY.getName()));
-        assertEquals(true, map.containsValue(FrequencyType.EVERY_DAY.getExpression()));
+        assertNotNull(list);
+        assertEquals(6, list.size());
+        assertEquals(true, list.contains(FrequencyType.EVERY_DAY.getName()));
     }
 
-    @Test
-    public void testGetCalculatorFrequency() throws Exception {
-        String expr = "* * * * * ?";
-        CronTaskEntity cronTaskEntity = new CronTaskEntity();
-        cronTaskEntity.setExpression(expr);
-
-        Mockito.when(cronService.getDefaultCronTask()).thenReturn(cronTaskEntity);
-
-        mockMvc.perform(get("/api/indicator/calculator/frequency"))
-                .andExpect(status().isOk());
-
-        verify(cronService).getDefaultCronTask();
-    }
-
-    @Test
-    public void testUpdateCalculatorFrequency() throws Exception {
-        String expr = "* * * * * ?";
-
-        Mockito.when(cronService.getDefaultCronTask()).thenReturn(new CronTaskEntity());
-
-        mockMvc.perform(put("/api/indicator/calculator/frequency")
-                .content(expr)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(cronService).updateCronTask((CronTaskEntity) anyObject());
-    }
 }

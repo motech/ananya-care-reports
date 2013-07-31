@@ -89,6 +89,22 @@
                         </div>
                     </fieldset>
                 </div>
+                <div class="nested-well">
+                    <legend>{{msg('indicators.form.defineCalculationFrequency')}}:</legend>
+                    <label for="field">{{msg('indicators.form.defineCalculationFrequency.frequency')}}:</label>
+                    <select id="field" class="span9" ng-model="selectedCronTask.cronTask" ng-options="item for item in freqList" />
+                    <div class="control-group input-append" ng-show="selectedCronTask.startTime" ng-model="selectedTime">
+                        <label for="timepicker">{{msg('indicators.form.defineCalculationFrequency.startTime')}}:</label>
+                        <input id="timepicker" type="text" ng-model="selectedCronTask.time" bs-timepicker>
+                        <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
+                    </div>
+                    <div class="control-group input-append" ng-show="selectedCronTask.startDate">
+                        <label for="datepicker">{{msg('indicators.form.defineCalculationFrequency.startDate')}}:</label>
+                        <input id="datepicker" type="text" ng-model="selectedCronTask.date" data-date-format="yyyy-mm-dd" bs-datepicker>
+                        <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+                    </div>
+                    <span class="label label-important">{{message}}</span>
+                </div>
             </div>
             <div class="span4 well">
                 <div class="nested-well">
@@ -127,7 +143,7 @@
                     <label for="computedField">{{msg('indicators.form.label.aggregatedField')}}:</label>
                     <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for item in listComputedFields" class="input-block-level" required></select>
                     <label for="complexCondition">{{msg('indicators.form.label.complexCondition')}}:</label>
-                    <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in listComplexConditions" class="input-block-level"></select>
+                    <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in listComplexConditions" class="input-block-level" required></select>
                 </div>
                 <div class="nested-well">
                     <fieldset>

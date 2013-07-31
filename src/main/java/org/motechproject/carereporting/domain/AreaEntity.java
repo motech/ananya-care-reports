@@ -10,6 +10,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -40,7 +41,7 @@ public class AreaEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private AreaEntity parentArea;
 
-    @OneToMany(mappedBy = "parentArea")
+    @OneToMany(mappedBy = "parentArea", fetch = FetchType.EAGER)
     private Set<AreaEntity> childAreas;
 
     @OneToMany(mappedBy = "area", cascade = CascadeType.ALL)

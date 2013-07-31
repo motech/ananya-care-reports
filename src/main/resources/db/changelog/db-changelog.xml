@@ -156,12 +156,33 @@
         </update>
     </changeSet>
 
+
     <changeSet id="CARE #6" author="Łukasz Gąsior">
         <dropColumn columnName="trend_id" schemaName="dashboard_app" tableName="indicator" />
         <dropTable cascadeConstraints="true" schemaName="dashboard_app" tableName="trend" />
         <addColumn schemaName="dashboard_app" tableName="indicator">
             <column name="trend" type="bigint" defaultValue="null" />
         </addColumn>
+    </changeSet>
+
+    <changeSet id="CARE #48.1" author="Adrian Boguszewski">
+        <delete tableName="cron_task" schemaName="dashboard_app" />
+        <addColumn tableName="cron_task" schemaName="dashboard_app">
+            <column name="indicator_id" type="integer" />
+        </addColumn>
+        <addNotNullConstraint tableName="cron_task" columnName="indicator_id" />
+        <addForeignKeyConstraint baseTableName="cron_task" baseColumnNames="indicator_id" constraintName="indicator_fk"
+                                 referencedTableName="indicator"
+                                 referencedColumnNames="indicator_id" />
+        <addUniqueConstraint tableName="cron_task" columnNames="indicator_id" />
+        <dropColumn tableName="cron_task" columnName="name" schemaName="dashboard_app"/>
+        <sql>
+            insert into dashboard_app.cron_task (indicator_id, second, minute, hour, day, month, week_day, year, creation_date, modification_date)
+            values (1, '0', '0', '0', '*', '*', '?', '', now(), now());
+            insert into dashboard_app.cron_task (indicator_id, second, minute, hour, day, month, week_day, year, creation_date, modification_date)
+            values (2, '0', '0', '0', '*', '*', '?', '', now(), now());
+        </sql>
+
     </changeSet>
 
 </databaseChangeLog>

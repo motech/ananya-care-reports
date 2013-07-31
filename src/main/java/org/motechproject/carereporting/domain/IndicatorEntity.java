@@ -18,11 +18,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Entity
 @Table(name = "indicator")
 @AttributeOverrides({
@@ -92,8 +94,13 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private BigDecimal trend;
 
-    public IndicatorEntity() {
+    @OneToOne(mappedBy = "indicator", cascade = CascadeType.ALL)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    private CronTaskEntity cronTask;
 
+
+    public IndicatorEntity() {
+        
     }
 
     public IndicatorEntity(Integer id) {
@@ -120,6 +127,15 @@ public class IndicatorEntity extends AbstractEntity {
                 report.setIndicator(this);
             }
         }
+    }
+
+
+    public CronTaskEntity getCronTask() {
+        return cronTask;
+    }
+
+    public void setCronTask(CronTaskEntity cronTask) {
+        this.cronTask = cronTask;
     }
 
     public BigDecimal getTrend() {

@@ -141,7 +141,7 @@ public class CalculatorQueryBuilder {
                 }
                 break;
             case Count:
-                    operationFunction = count();
+                operationFunction = count();
                 break;
             case Sum:
                 if (computedField.getType().equals(FieldType.Number)) {
@@ -190,7 +190,7 @@ public class CalculatorQueryBuilder {
 
         step = step.join(computedFieldTable).on(
                 fieldByName(computedFieldTable.getName(), "case_id")
-                .equal(fieldByName(caseAlias, "id")));
+                        .equal(fieldByName(caseAlias, "id")));
 
         if (complexCondition == null || complexCondition.getConditions().isEmpty()) {
             return step;
@@ -205,7 +205,7 @@ public class CalculatorQueryBuilder {
 
             step = step.join(keyTable).on(
                     fieldByName(keyTable.getName(), "case_id")
-                    .equal(fieldByName(caseAlias, "id")));
+                            .equal(fieldByName(caseAlias, "id")));
         }
 
         return step;

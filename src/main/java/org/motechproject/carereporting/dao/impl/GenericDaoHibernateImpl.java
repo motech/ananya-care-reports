@@ -77,7 +77,11 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     @Override
     public T getByIdWithFields(Integer id, String... fieldNames) {
-        if (id == null) {
+        return getWithFields("id", id, fieldNames);
+    }
+
+    protected T getWithFields(String key, Object value, String... fieldNames) {
+        if (value == null) {
             throw new CareNullArgumentRuntimeException();
         }
 
@@ -87,12 +91,12 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
                 criteria = criteria.setFetchMode(fieldName, FetchMode.JOIN);
             }
         }
-        criteria.add(Restrictions.eq("id", id));
+        criteria.add(Restrictions.eq(key, value));
 
         T entity = (T) criteria.list().get(0);
 
         if (entity == null) {
-            throw new CareResourceNotFoundRuntimeException(type, id);
+            throw new CareResourceNotFoundRuntimeException(type, (Integer) value);
         }
 
         return entity;

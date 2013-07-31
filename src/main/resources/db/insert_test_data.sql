@@ -13,8 +13,8 @@ INSERT INTO condition (complex_condition_id, computed_field_id, comparison_symbo
 
 INSERT INTO trend (positive_diff, negative_diff) VALUES (1, -1);
 
-INSERT INTO indicator (type_id, area_id, computed_field_id, trend_id, frequency, name)
-    VALUES (1, 1, 1, 1, 1, 'Test indicator');
+INSERT INTO indicator (type_id, area_id, computed_field_id, trend_id, complex_condition_id, frequency, name)
+    VALUES (1, 1, 1, 1, 1, 1, 'Test indicator');
 
 INSERT INTO report (indicator_id, report_type_id, label_x, label_y)
     VALUES (1, 1, 'Label X', 'Label Y');

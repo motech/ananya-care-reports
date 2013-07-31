@@ -101,6 +101,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.reportTypes = [];
     $scope.listCategories = [];
     $scope.listComplexCondition = [];
+    $scope.listComputedFields = [];
+    $scope.allComputedFields = [];
+    $scope.filteredComputedFields = [];
+    $scope.listIndicatorTypes = [];
 	$scope.indicator.area={};
 
     $scope.fetchUsers = function() {
@@ -128,6 +132,52 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.listAWC = [];
     $scope.showAWC = false;
     $scope.area = {};
+    $scope.freqList = [];
+    $scope.selectedCronTask = {};
+    $scope.selectedCronTask.date = moment().format("YYYY-MM-DD");
+    $scope.selectedCronTask.time = "00:00";
+    $scope.selectedCronTask.index = null;
+    $scope.selectedCronTask.cronTask = null;
+
+    $scope.fetchFrequencyList = function() {
+        $http({
+            url: "api/indicator/calculator/frequencies",
+            method: "GET",
+        }).success(function(data) {
+             $scope.freqList = data
+             $scope.selectedCronTask.cronTask = $scope.freqList[3];
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadFrequencyList');
+        });
+    };
+    $scope.fetchFrequencyList();
+
+    $scope.$watch('selectedCronTask.cronTask', function() {
+        if($scope.selectedCronTask.cronTask != " ") {
+            $scope.message = $scope.msg('restart');
+        } else {
+            $scope.message = null;
+        }
+
+        $scope.selectedCronTask.startTime = false;
+
+        for(var i = 0; i < $scope.freqList.length; i++) {
+            if($scope.freqList[i] == $scope.selectedCronTask.cronTask) {
+                break;
+            }
+        }
+
+        if(i < $scope.freqList.length) {
+            $scope.selectedCronTask.index = i;
+            if(i > 3) {
+                $scope.selectedCronTask.startDate = true;
+                $scope.selectedCronTask.startTime = true;
+            } else if(i > 1) {
+                $scope.selectedCronTask.startTime = true;
+                $scope.selectedCronTask.startDate = false;
+            }
+        }
+    });
 
     $scope.fetchIndicatorAndFillDetails = function() {
         $http.get('api/indicator/' + $routeParams.indicatorId)
@@ -140,7 +190,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope.indicator.reports=indicator.reports;
                 $scope.indicator.complexCondition = indicator.complexCondition.id;
                 $scope.categories = indicator.categories;
-                $scope.indicator.indicatorType=indicator.indicatorType.id;
+                $scope.indicator.indicatorType = indicator.indicatorType.id;
+                $scope.selectedCronTask.cronTask = " ";
                 for(var i = 0 ; i< indicator.owners.length ; i++){
                     $scope.selectedOwners[indicator.owners[i].id]=true;
                 }
@@ -489,16 +540,37 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.fetchComputedFields = function () {
         $http.get('api/forms/' + $scope.selectedForm + '/computedfields')
             .success(function(computedFields) {
-                computedFields.sortByField('name');
-                $scope.listComputedFields = computedFields;
-
-                if ($scope.listComputedFields.notEmpty() && !$routeParams.indicatorId) {
-                    $scope.indicator.computedField = $scope.listComputedFields[0].id;
+                $scope.allComputedFields = computedFields;
+                $scope.filteredComputedFields = [];
+                for(var i = 0; i < computedFields.length; i++) {
+                    if(computedFields[i].type == "Number") {
+                        $scope.filteredComputedFields.push(computedFields[i]);
+                    }
                 }
+                $scope.filteredComputedFields.sortByField('name');
+                $scope.allComputedFields.sortByField('name');
+                $scope.updateComputedFields();
             }).error(function() {
                 $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
             });
     };
+
+    $scope.updateComputedFields = function() {
+        if($scope.listIndicatorTypes.notEmpty()) {
+            var type = $scope.listIndicatorTypes[$scope.indicator.indicatorType - 1];
+            if(type.name == "Average" || type.name == "Sum") {
+                $scope.listComputedFields = $scope.filteredComputedFields;
+            } else {
+                $scope.listComputedFields = $scope.allComputedFields;
+            }
+
+            if ($scope.listComputedFields.notEmpty()) {
+                $scope.indicator.computedField = $scope.listComputedFields[0].id;
+            }
+        }
+    };
+
+    $scope.$watch('indicator.indicatorType', $scope.updateComputedFields);
 
     $scope.$watch('selectedForm', function() {
         if ($scope.selectedForm > 0) {
@@ -525,6 +597,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.submit = function() {
+        $scope.indicator.date = moment($scope.selectedCronTask.date).format('DD-MM-YYYY');;
+        $scope.indicator.time = $scope.selectedCronTask.time;
+        $scope.indicator.cronFrequency = $scope.selectedCronTask.cronTask;
         $scope.indicator.owners = $scope.getSelectedOwners();
         $scope.indicator.categories = $scope.getSelectedCategories();
         $scope.indicator.area = $scope.getSelectedArea();
@@ -568,7 +643,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
     $scope.launchDialog = function() {
         $rootScope.indicatorScope = $scope;
-
+// TODO
 //        var dialog = $modal({
 //            template: "resources/partials/indicators/newComplexConditionDialog.html",
 //            persist: true,
@@ -1007,68 +1082,4 @@ care.controller('recalculateIndicatorsController', function($scope, $http, $dial
 
     $location.path( "api/dashboards" );
     $scope.recalculateIndicators();
-});
-
-care.controller('calculatorController', function($scope, $http, $dialog, $location, $errorService) {
-    $scope.freqList = [];
-    $scope.fromDatabase = null;
-    $scope.expression = null;
-
-    $scope.fetchFrequencyList = function() {
-        $http({
-            url: "api/indicator/calculator/frequencies",
-            method: "GET",
-        }).success(function(data) {
-             $scope.freqList.length = 0;
-             $scope.freqList.push({ key: ' ', value: $scope.fromDatabase });
-             for (var key in data) {
-                 if (data.hasOwnProperty(key)) {
-                     $scope.freqList.push({ key: key, value: data[key] });
-                 }
-             }
-             $scope.expression = $scope.freqList[0].value;
-        }).error(function() {
-            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadFrequencyList');
-        });
-    };
-
-    $scope.$watch('fromDatabase', function() {
-        if($scope.fromDatabase != null) {
-            $scope.fetchFrequencyList();
-        }
-    });
-
-    $scope.$watch('expression', function() {
-        if($scope.fromDatabase != $scope.expression) {
-            $scope.message = $scope.msg('restart');
-        } else {
-            $scope.message = "";
-        }
-    });
-
-    $scope.fetchExpression = function() {
-        $http({
-            url: "api/indicator/calculator/frequency",
-            method: "GET",
-        }).success(function(data) {
-            $scope.fromDatabase = data;
-        }).error(function() {
-            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadCronExpression');
-        });
-    };
-    $scope.fetchExpression();
-
-    $scope.saveFrequency = function() {
-        $http({
-            url: "api/indicator/calculator/frequency",
-            method: "PUT",
-            headers: { 'Content-Type': 'application/json' },
-            data: $scope.expression,
-            dialog: this
-        }).success(function(data, status, headers, config) {
-            config.dialog.dismiss();
-        }).error(function(data, status, headers, config) {
-            $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-        });
-    };
 });

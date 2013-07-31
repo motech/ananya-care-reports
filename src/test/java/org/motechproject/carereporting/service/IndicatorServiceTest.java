@@ -6,8 +6,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.motechproject.carereporting.dao.CronTaskDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
+import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.domain.types.FrequencyType;
 import org.motechproject.carereporting.service.impl.IndicatorServiceImpl;
 
 import java.util.HashSet;
@@ -24,9 +27,13 @@ public class IndicatorServiceTest {
     private final static String TEST_INDICATOR_NAME = "TEST_INDICATOR_1";
     private final static Integer TEST_INDICATOR_ID = 1;
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
+    private final static String EXPRESSION = "* * * * * ?";
 
     @Mock
     private IndicatorDao indicatorDao;
+
+    @Mock
+    private CronService cronService;
 
     @InjectMocks
     private IndicatorService indicatorService = new IndicatorServiceImpl();
@@ -36,7 +43,8 @@ public class IndicatorServiceTest {
     @Test
     public void testCreateNewIndicator() {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorService.createNewIndicator(indicatorEntity);
+        CronTaskEntity cronTaskEntity = new CronTaskEntity(EXPRESSION);
+        indicatorService.createNewIndicator(indicatorEntity, cronTaskEntity);
 
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
 
@@ -48,7 +56,8 @@ public class IndicatorServiceTest {
     @Test
     public void testUpdateIndicator() {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorService.createNewIndicator(indicatorEntity);
+        CronTaskEntity cronTaskEntity = new CronTaskEntity(EXPRESSION);
+        indicatorService.createNewIndicator(indicatorEntity, cronTaskEntity);
 
         indicatorEntity.setName(TEST_INDICATOR_1_UPDATED_NAME);
         indicatorService.updateIndicator(indicatorEntity);
@@ -90,7 +99,8 @@ public class IndicatorServiceTest {
     @Test
     public void testDeleteIndicator() {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorService.createNewIndicator(indicatorEntity);
+        CronTaskEntity cronTaskEntity = new CronTaskEntity(EXPRESSION);
+        indicatorService.createNewIndicator(indicatorEntity, cronTaskEntity);
         indicatorService.deleteIndicator(indicatorEntity);
 
         verify(indicatorDao).remove(indicatorEntity);

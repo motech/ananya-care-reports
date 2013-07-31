@@ -26,7 +26,7 @@ public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalcula
                 .withOperation(CalculatorQueryBuilder.OperationType.Count)
                 .build();
 
-        return new BigDecimal((Integer)query.fetch().getValue(0, 0));
+        return new BigDecimal((Integer) query.fetch().getValue(0, 0));
     }
 
 }
