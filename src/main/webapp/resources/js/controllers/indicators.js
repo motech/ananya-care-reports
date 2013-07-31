@@ -625,12 +625,11 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
     $scope.listComparisonSymbols = [];
     $scope.listConditionTypes = [
-        // TODO: Enable those options when functionalities will work
-        //{ type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
-        //{ type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
+        { type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
+        { type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
         { type: 'value', code: 'indicators.complexConditionDialog.conditionType.value' }
     ];
-    $scope.newCondition.type = 'value';
+    $scope.newCondition.type = 'date';
 
     $scope.listDateDiffTypes = [
         { code: 'minutes' },
@@ -805,9 +804,11 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
         $scope.newConditions.push(condition);
         $scope.newCondition = {
-            type: 'value',
+            type: 'date',
             form1: $scope.listForms[0],
+            form2: $scope.listForms[0],
             field1: $scope.listComputedFields1[0],
+            field2: $scope.listComputedFields2[0],
             comparisonSymbol: $scope.listComparisonSymbols[0],
         };
     };
@@ -820,8 +821,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         for (var i = 0; i < $scope.newConditions.length; i++) {
             if ($scope.newConditions[i].type == 'date') {
                 $scope.newConditions[i].value = moment.duration(
-                    $scope.newConditions[i].value,
-                    $scope.newConditions[i].dateDiffType).asSeconds();
+                    $scope.newConditions[i].value, $scope.newConditions[i].dateDiffType).asSeconds();
             } else if ($scope.newConditions[i].type == 'field') {
                 delete $scope.newConditions[i].value;
             } else if ($scope.newConditions[i].type == 'value') {

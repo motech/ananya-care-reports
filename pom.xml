@@ -28,6 +28,7 @@
         <liquibase.version>3.0.2</liquibase.version>
         <jetty.version>9.0.4.v20130625</jetty.version>
         <quartz.version>1.8.3</quartz.version>
+        <jooq.version>3.1.0</jooq.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
 
@@ -205,6 +206,16 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
         </dependency>
     </dependencies>
     <build>

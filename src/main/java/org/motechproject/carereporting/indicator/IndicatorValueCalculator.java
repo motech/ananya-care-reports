@@ -9,6 +9,7 @@ import org.motechproject.carereporting.indicator.calculator.AverageIndicatorValu
 import org.motechproject.carereporting.indicator.calculator.CountIndicatorValueCalculator;
 import org.motechproject.carereporting.indicator.calculator.PercentageIndicatorValueCalculator;
 import org.motechproject.carereporting.indicator.calculator.SumIndicatorValueCalculator;
+import org.motechproject.carereporting.service.FormsService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,9 @@ public class IndicatorValueCalculator {
 
     @Autowired
     private IndicatorService indicatorService;
+
+    @Autowired
+    private FormsService formsService;
 
     public void calculateIndicatorValues() {
         LOG.info("Running scheduled indicator values calculation.");
@@ -88,13 +92,13 @@ public class IndicatorValueCalculator {
     private AbstractIndicatorValueCalculator getIndicatorValueCalculator(IndicatorEntity indicator) {
         switch (indicator.getIndicatorType().getName()) {
             case "Average":
-                return new AverageIndicatorValueCalculator(careDataSource, indicator);
+                return new AverageIndicatorValueCalculator(careDataSource, indicator, formsService);
             case "Count":
-                return new CountIndicatorValueCalculator(careDataSource, indicator);
+                return new CountIndicatorValueCalculator(careDataSource, indicator, formsService);
             case "Percentage":
-                return new PercentageIndicatorValueCalculator(careDataSource, indicator);
+                return new PercentageIndicatorValueCalculator(careDataSource, indicator, formsService);
             case "Sum":
-                return new SumIndicatorValueCalculator(careDataSource, indicator);
+                return new SumIndicatorValueCalculator(careDataSource, indicator, formsService);
             default:
                 throw new IllegalArgumentException("Indicator type " +
                         indicator.getIndicatorType().getName() + " not supported.");
