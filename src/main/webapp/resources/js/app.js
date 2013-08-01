@@ -16,9 +16,9 @@
             .when('/users/roles/:roleId', {templateUrl: 'resources/partials/users/editRole.html', controller: 'roleController'})
             .when('/users/new', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
             .when('/users/:userId', {templateUrl: 'resources/partials/users/editUser.html', controller: 'userController'})
-            .when('/categories', { templateUrl: 'resources/partials/categories.html', controller: 'categoriesListController'})
-            .when('/categories/new', { templateUrl: 'resources/partials/addCategory.html', controller: 'categoriesController'})
-            .when('/categories/:categoryId', { templateUrl: 'resources/partials/addCategory.html', controller: 'categoriesController'})
+            .when('/categories', { templateUrl: 'resources/partials/indicators/categories.html', controller: 'categoriesListController'})
+            .when('/categories/new', { templateUrl: 'resources/partials/indicators/addCategory.html', controller: 'categoriesController'})
+            .when('/categories/:categoryId', { templateUrl: 'resources/partials/indicators/addCategory.html', controller: 'categoriesController'})
             .when('/reports/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
             .when('/reports', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
             .otherwise({ redirectTo: '/' });

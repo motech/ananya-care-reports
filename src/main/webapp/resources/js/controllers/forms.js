@@ -31,7 +31,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/forms" );
             }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 

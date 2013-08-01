@@ -34,7 +34,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.fetchIndicators();
 
     $scope.deleteIndicator = function(indicator) {
-        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
+        var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
         $dialog.messageBox($scope.msg('indicators.list.confirmDelete.header'), $scope.msg('indicators.list.confirmDelete.message', indicator.name), btns)
             .open()
             .then(function(result) {
@@ -58,7 +58,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
         $http.get('api/indicator/category').success(function(category) {
             $scope.category = category;
         }).error(function(response) {
-            $dialog.messageBox($scope.msg('error'), $scope.msg('category.error.load'), [{label: 'Ok', cssClass: 'btn'}]).open();
+            $dialog.messageBox($scope.msg('common.error'), $scope.msg('categories.error.cannotLoadCategories'), [{label: 'Ok', cssClass: 'btn'}]).open();
         });
     };
 
@@ -611,7 +611,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }).success(function() {
                 $location.path( "/indicators" );
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -694,19 +694,19 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
     $scope.listComparisonSymbols = [];
     $scope.listConditionTypes = [
-        { type: 'date', code: 'indicators.complexConditionDialog.conditionType.date' },
-        { type: 'field', code: 'indicators.complexConditionDialog.conditionType.field' },
-        { type: 'value', code: 'indicators.complexConditionDialog.conditionType.value' }
+        { type: 'date', code: 'complex_condition.condition_type.date' },
+        { type: 'field', code: 'complex_condition.condition_type.field' },
+        { type: 'value', code: 'complex_condition.condition_type.value' }
     ];
     $scope.newCondition.type = 'date';
 
     $scope.listDateDiffTypes = [
-        { code: 'minutes' },
-        { code: 'hours' },
-        { code: 'days' },
-        { code: 'weeks' },
-        { code: 'months' },
-        { code: 'years' }
+        { code: 'complex_condition.minutes' },
+        { code: 'complex_condition.hours' },
+        { code: 'complex_condition.days' },
+        { code: 'complex_condition.weeks' },
+        { code: 'complex_condition.months' },
+        { code: 'complex_condition.years' }
     ];
     $scope.newCondition.dateDiffType = 'days';
 
@@ -859,7 +859,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         if (condition.type == 'date') {
             condition.name = condition.form1.displayName + '.' + condition.field1.name
                 + ' ' + condition.comparisonSymbol.name + ' ' + condition.value + ' ' + $scope.msg(condition.dateDiffType)
-                + ' ' + $scope.msg('since')
+                + ' ' + $scope.msg('complex_condition.since')
                 +  ' ' + condition.form2.displayName + '.' + condition.field2.name
         } else if (condition.type == 'field') {
             condition.name = condition.form1.displayName + '.' + condition.field1.name
@@ -920,7 +920,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 indicatorScope.fetchComplexConditions();
                 dialog.close();
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -963,7 +963,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedOperator = $scope.listOperators[0];
                 }
             }).error(function() {
-                $errorService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadOperatorList');
+                $errorService.genericError($scope, 'computed_field.error.cannotLoadOperatorList');
             });
     };
     $scope.fetchOperators();
@@ -978,7 +978,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
                     $scope.selectedField = $scope.listFields[0].id;
                 }
             }).error(function() {
-                $errorService.genericError($scope, 'indicators.computedFieldDialog.error.cannotLoadFieldList');
+                $errorService.genericError($scope, 'computed_field.error.cannotLoadFieldList');
             });
     };
     $scope.fetchFields();
@@ -1057,7 +1057,7 @@ care.controller('createComputedFieldController', function($rootScope, $scope, $h
             indicatorScope.fetchComputedFields();
             config.dialog.dismiss();
         }).error(function(data, status, headers, config) {
-            $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 });
@@ -1070,7 +1070,7 @@ care.controller('recalculateIndicatorsController', function($scope, $http, $dial
             data: null,
             headers: { 'Content-Type': 'application/json' }
         }).error(function() {
-            $dialog.messageBox("Error", $scope.msg('dashboard.recalculate.error'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            $dialog.messageBox("Error", $scope.msg('menu.recalculate.error'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 

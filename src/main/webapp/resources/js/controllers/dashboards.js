@@ -9,7 +9,7 @@ function sortByDateComparisonFunction(a, b) {
 };
 
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
-    $scope.title = $scope.msg('dashboard.title');
+    $scope.title = $scope.msg('dashboards.title');
     $scope.areaId = 1;
 
     $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
@@ -64,7 +64,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $rootScope.areaId = $scope.areaId;
 
         $simplifiedHttpService.get($scope, 'resources/partials/dashboards/chartDetails.html',
-                'charts.details.cannotLoadChartDetails', function(htmlData) {
+                'dashboards.charts.error.cannotLoadChartDetails', function(htmlData) {
             var html = $compile(htmlData)($scope);
             $(element).html(html);
         });
@@ -294,7 +294,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 },
                 onRegionLabelShow: function(e, el, code) {
                     if (data[code] == undefined) {
-                        $(el).html($scope.msg('map.noData', code));
+                        $(el).html($scope.msg('dashboards.map.noData', code));
                     }
                     var ads = data[code];
                     $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
@@ -339,7 +339,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             url += '&areaId=' + areaId;
         }
 
-        $simplifiedHttpService.get($scope, url, 'charts.details.cannotLoadChartDetails', function(chartData) {
+        $simplifiedHttpService.get($scope, url, 'dashboards.charts.error.cannotLoadChartDetails', function(chartData) {
             chartData.sort(sortByDateComparisonFunction);
            report.chart = chartData;
         });

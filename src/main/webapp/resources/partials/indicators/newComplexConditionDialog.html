@@ -2,19 +2,19 @@
 
 <form id="createComplexConditionForm" name="createForm" class="dialog-form" novalidate>
     <div class="modal-header">
-        <h3>{{msg('indicators.complexConditionDialog.header')}}</h3>
+        <h3>{{msg('complex_condition.header')}}</h3>
     </div>
     <div class="modal-body condition-dialog-body">
         <div class="row-fluid">
             <table class="table table-highlight span12">
                 <thead>
-                <th colspan="2">{{msg('indicators.complexConditionDialog.conditionsHeader')}}:</th>
+                <th colspan="2">{{msg('complex_condition.conditions_header')}}:</th>
                 </thead>
                 <tbody>
                 <tr ng-repeat="(key, item) in newConditions">
                     <td class="span9">{{item.name}}</td>
                     <td class="span3">
-                        <button class="btn" ng-click="removeCondition(key)">{{msg('remove')}}</button>
+                        <button class="btn" ng-click="removeCondition(key)">{{msg('common.remove')}}</button>
                     </td>
                 </tr>
                 </tbody>
@@ -22,81 +22,81 @@
         </div>
         <div class="row-fluid">
             <div class="well">
-                <label for="conditionName">{{msg('indicators.complexConditionDialog.label.name')}}:</label>
+                <label for="conditionName">{{msg('complex_condition.label.name')}}:</label>
                 <input type="text" id="conditionName" ng-model="complexCondition.name" class="input-block-level" required></select>
-                <label for="conditionType">{{msg('indicators.complexConditionDialog.label.conditionType')}}:</label>
+                <label for="conditionType">{{msg('complex_condition.label.condition_type')}}:</label>
                 <div class="row-fluid">
                     <select id="conditionType" class="input-block-level" ng-model="newCondition.type" ng-options="item.type as msg(item.code) for item in listConditionTypes" required></select>
                 </div>
                 <div class="row-fluid" ng-switch="newCondition.type">
                     <div class="row-fluid" ng-switch-when="date">
                         <div class="nested-well span6">
-                            <label for="dateComparisonField1">{{msg('indicators.complexConditionDialog.comparison.label.field1')}}:</label>
+                            <label for="dateComparisonField1">{{msg('complex_condition.comparison.label.field1')}}:</label>
                             <select id="dateComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="dateComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
-                            <label for="dateComparisonOperator">{{msg('indicators.complexConditionDialog.comparison.label.operator')}}:</label>
+                            <label for="dateComparisonOperator">{{msg('complex_condition.comparison.label.operator')}}:</label>
                             <select id="dateComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
                         </div>
                         <div class="nested-well span6">
-                            <label for="dateComparisonField2">{{msg('indicators.complexConditionDialog.comparison.label.field2')}}:</label>
+                            <label for="dateComparisonField2">{{msg('complex_condition.comparison.label.field2')}}:</label>
                             <select id="dateComparisonForm2" class="input-block-level" ng-model="newCondition.form2" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="dateComparisonField2" class="input-block-level" ng-model="newCondition.field2" ng-options="item as item.name for item in listComputedFields2"></select>
-                            <label for="dateComparisonDifference">{{msg('indicators.complexConditionDialog.comparison.label.difference')}}:</label>
+                            <label for="dateComparisonDifference">{{msg('complex_condition.comparison.label.difference')}}:</label>
                             <input type="number" pattern="[1-9][0-9]*" id="dateComparisonDifference" class="span6" ng-model="newCondition.value" />
                             <select class="span6" ng-model="newCondition.dateDiffType" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
                         </div>
                     </div>
                     <div class="row-fluid" ng-switch-when="field">
                         <div class="nested-well span6">
-                            <label for="dateComparisonField1">{{msg('indicators.complexConditionDialog.comparison.label.field1')}}:</label>
+                            <label for="dateComparisonField1">{{msg('complex_condition.comparison.label.field1')}}:</label>
                             <select id="fieldComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="fieldComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
-                            <label for="fieldComparisonOperator">{{msg('indicators.complexConditionDialog.comparison.label.operator')}}:</label>
+                            <label for="fieldComparisonOperator">{{msg('complex_condition.comparison.label.operator')}}:</label>
                             <select id="fieldComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
                         </div>
                         <div class="nested-well span6">
-                            <label for="fieldComparisonField2">{{msg('indicators.complexConditionDialog.comparison.label.field2')}}:</label>
+                            <label for="fieldComparisonField2">{{msg('complex_condition.comparison.label.field2')}}:</label>
                             <select id="fieldComparisonForm2" class="input-block-level" ng-model="newCondition.form2" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="fieldComparisonField2" class="input-block-level" ng-model="newCondition.field2" ng-options="item as item.name for item in listComputedFields2"></select>
                         </div>
                     </div>
                     <div class="row-fluid" ng-switch-when="value">
                         <div class="nested-well span6">
-                            <label for="dateComparisonField1">{{msg('indicators.complexConditionDialog.comparison.label.field1')}}:</label>
+                            <label for="dateComparisonField1">{{msg('complex_condition.comparison.label.field1')}}:</label>
                             <select id="valueComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="valueComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
-                            <label for="valueComparisonOperator">{{msg('indicators.complexConditionDialog.comparison.label.operator')}}:</label>
+                            <label for="valueComparisonOperator">{{msg('complex_condition.comparison.label.operator')}}:</label>
                             <select id="valueComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
                         </div>
                         <div class="nested-well span6">
                             <div ng-switch="newCondition.field1.type">
                                 <div ng-switch-when="Number">
-                                    <label for="valueComparisonNumber">{{msg('indicators.complexConditionDialog.comparison.label.value')}}:</label>
+                                    <label for="valueComparisonNumber">{{msg('complex_condition.comparison.label.value')}}:</label>
                                     <div class="input-append">
                                         <input type="number" id="valueComparisonNumber" class="input-block-level" ng-model="newCondition.value" />
                                         <span class="add-on"><i class="icon-font"></i></span>
                                     </div>
                                 </div>
                                 <div ng-switch-when="String">
-                                    <label for="valueComparisonNumber">{{msg('indicators.complexConditionDialog.comparison.label.value')}}:</label>
+                                    <label for="valueComparisonNumber">{{msg('complex_condition.comparison.label.value')}}:</label>
                                     <div class="input-append">
                                         <input type="text" id="valueComparisonString" class="input-block-level" ng-model="newCondition.value" />
                                         <span class="add-on"><i class="icon-font"></i></span>
                                     </div>
                                 </div>
                                 <div ng-switch-when="Date">
-                                    <label for="valueComparisonDate">{{msg('indicators.complexConditionDialog.comparison.label.value')}}:</label>
+                                    <label for="valueComparisonDate">{{msg('complex_condition.comparison.label.value')}}:</label>
                                     <div class="input-append">
                                         <input type="date" id="valueComparisonDate" class="input-block-level" ng-model="newCondition.value" bs-datepicker />
                                         <span class="add-on"><i class="icon-calendar"></i></span>
                                     </div>
                                 </div>
                                 <div ng-switch-when="Boolean">
-                                    <label for="valueComparisonBoolean">{{msg('indicators.complexConditionDialog.comparison.label.value')}}:</label>
+                                    <label for="valueComparisonBoolean">{{msg('complex_condition.comparison.label.value')}}:</label>
                                     <div id="valueComparisonBoolean" class="input-append">
                                         <div class="btn-group" ng-model="newCondition.value" bs-buttons-radio>
-                                            <button type="button" class="btn btn-success" value="true">{{msg('yes')}}</button>
-                                            <button type="button" class="btn btn-danger" value="false">{{msg('no')}}</button>
+                                            <button type="button" class="btn btn-success" value="true">{{msg('common.yes')}}</button>
+                                            <button type="button" class="btn btn-danger" value="false">{{msg('common.no')}}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -105,15 +105,15 @@
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <button class="btn pull-left form-button-add" ng-click="swapFields()" ng-hide="newCondition.type == 'value'" ng-disabled="newCondition.form1 == null || newCondition.form2 == null || newCondition.field1 == null || newCondition.field2 == null">{{msg('indicators.complexConditionDialog.button.swapFields')}}</button>
-                    <button class="btn btn-primary pull-right form-button-add" ng-click="addCondition()" ng-disabled="newCondition.field1 == null || (newCondition.type != 'value' && (newCondition.field1.id == newCondition.field2.id || newCondition.field2 == null)) || (newCondition.type != 'field' && newCondition.value == null) || (newCondition.type != 'date' && newCondition.comparisonSymbol == null) || (newCondition.type == 'date' && newCondition.value <= '0')">{{msg('indicators.complexConditionDialog.button.addCondition')}}</button>
+                    <button class="btn pull-left form-button-add" ng-click="swapFields()" ng-hide="newCondition.type == 'value'" ng-disabled="newCondition.form1 == null || newCondition.form2 == null || newCondition.field1 == null || newCondition.field2 == null">{{msg('complex_condition.button.swap_fields')}}</button>
+                    <button class="btn btn-primary pull-right form-button-add" ng-click="addCondition()" ng-disabled="newCondition.field1 == null || (newCondition.type != 'value' && (newCondition.field1.id == newCondition.field2.id || newCondition.field2 == null)) || (newCondition.type != 'field' && newCondition.value == null) || (newCondition.type != 'date' && newCondition.comparisonSymbol == null) || (newCondition.type == 'date' && newCondition.value <= '0')">{{msg('complex_condition.button.add')}}</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-danger pull-left" ng-click="clearAllConditions()" ng-disabled="newConditions.length <= 0">{{msg('indicators.complexConditionDialog.button.clearAllConditions')}}</button>
-        <button class="btn btn-primary" ng-click="saveNewComplexCondition()" ng-disabled="!complexCondition.name || newConditions.length <= 0">{{msg('save')}}</button>
-        <button class="btn" ng-click="close()">{{msg('cancel')}}</button>
+        <button class="btn btn-danger pull-left" ng-click="clearAllConditions()" ng-disabled="newConditions.length <= 0">{{msg('complex_condition.button.clear')}}</button>
+        <button class="btn btn-primary" ng-click="saveNewComplexCondition()" ng-disabled="!complexCondition.name || newConditions.length <= 0">{{msg('common.save')}}</button>
+        <button class="btn" ng-click="close()">{{msg('common.cancel')}}</button>
     </div>
 </form>

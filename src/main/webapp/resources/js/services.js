@@ -19,7 +19,7 @@ care.factory('$errorService', function($dialog) {
                       errors +
                       '</div>'+
                       '<div class="modal-footer">'+
-                      '<button ng-click="close()" class="btn btn-primary" >' + scope.msg('close') + '</button>'+
+                      '<button ng-click="close()" class="btn btn-primary" >' + scope.msg('common.close') + '</button>'+
                       '</div>';
 
               scope.opts = {

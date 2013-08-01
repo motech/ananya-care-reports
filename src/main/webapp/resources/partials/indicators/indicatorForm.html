@@ -76,7 +76,7 @@
                                         <span>{{item.name}}</span>
                                     </td>
                                     <td class="span3">
-                                        <button class="span12 btn" ng-click="removeReportType(key)">{{msg('remove')}}</button>
+                                        <button class="span12 btn" ng-click="removeReportType(key)">{{msg('common.remove')}}</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -122,7 +122,7 @@
                                 <span>{{item.name}}</span>
                             </td>
                             <td class="span3">
-                                <button class="span12 btn" ng-click="removeCategory(key)">{{msg('remove')}}</button>
+                                <button class="span12 btn" ng-click="removeCategory(key)">{{msg('common.remove')}}</button>
                             </td>
                         </tr>
                         </tbody>
@@ -146,14 +146,14 @@
                 </div>
                 <div class="nested-well">
                     <fieldset>
-                        <legend>{{msg('indicators.form.trend')}} <small>({{msg('optional')}})</small>:</legend>
+                        <legend>{{msg('indicators.form.trend')}} <small>({{msg('common.optional')}})</small>:</legend>
                         <label for="trend">{{msg('indicators.form.trend.label')}}: </label>
                         <input id="trend" type="number" ng-model="indicator.trend" class="input-block-level" placeholder="{{msg('indicators.form.trend.placeholder')}}" />
                     </fieldset>
                 </div>
                 <div class="row-fluid" id="formButtons">
                     <div class="btn-group">
-                        <button class="btn btn-primary " ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid || reportTypes.length <= 0">{{msg('save')}}</button>
+                        <button class="btn btn-primary " ng-click="submit()" ng-disabled="form.$invalid || !ownersValid || !categoriesValid || !typeValid || reportTypes.length <= 0">{{msg('common.save')}}</button>
                     </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@
                             <thead>
                             <tr>
                                 <th>{{msg('indicators.list.displayName')}}</th>
-                                <th>{{msg('actions')}}</th>
+                                <th>{{msg('common.actions')}}</th>
                             </tr>
                             </thead>
                             <tbody>

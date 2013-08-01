@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 care.controller('roleListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.roles.title');
+    $scope.title = $scope.msg('roles.title');
 
     $scope.fetchRoles = function() {
         $http.get('api/users/roles').success(function(roles) {
@@ -10,10 +10,10 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
     };
 
     $scope.deleteRole = function(role) {
-        var btns = [{result:'yes', label: $scope.msg('yes'), cssClass: 'btn-primary btn'},
-                            {result:'no', label: $scope.msg('no'), cssClass: 'btn-danger btn'}];
-                $dialog.messageBox($scope.msg('users.roles.list.confirmDelete.header'),
-                                   $scope.msg('users.roles.list.confirmDelete.message') + role.name + '?', btns)
+        var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'},
+                            {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
+                $dialog.messageBox($scope.msg('roles.list.confirmDelete.header'),
+                                   $scope.msg('roles.list.confirmDelete.message') + role.name + '?', btns)
             .open()
             .then(function(result) {
                 if (result === 'yes') {
@@ -32,7 +32,7 @@ care.controller('roleListController', function($scope, $http, $routeParams, $loc
 });
 
 care.controller('roleController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.roles.title');
+    $scope.title = $scope.msg('roles.title');
 
     var isEdit = ($routeParams.roleId !== undefined);
     $scope.selectedPermissions = [];
@@ -55,7 +55,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                      }
                  }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('users.roles.list.error.cannotLoadPermissionList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadPermissionList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     }
 
@@ -69,16 +69,16 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                     $scope.role.permissions.sort(function(a, b) { return a.displayName > b.displayName; });
                     $scope.fetchPermissions();
                 }).error(function() {
-                    $dialog.messageBox("Error", $scope.msg('users.roles.list.error.cannotLoadRole'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                    $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadRole'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
                 });
         };
         $scope.fetchRole();
-        $scope.formHeaderMsg = $scope.msg('users.roles.form.header.edit');
+        $scope.formHeaderMsg = $scope.msg('roles.form.header.edit');
     } else {
         $scope.role = {};
         $scope.role.permissions = [];
         $scope.fetchPermissions();
-        $scope.formHeaderMsg = $scope.msg('users.roles.form.header.add');
+        $scope.formHeaderMsg = $scope.msg('roles.form.header.add');
     }
 
     $scope.getSelectedPermissions = function() {
@@ -117,7 +117,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
     $scope.submitRole = function() {
         var requestUrl = (isEdit) ? "api/users/roles/" + $scope.role.id : "api/users/roles";
         var requestMethod = (isEdit) ? "PUT" : "POST";
-        var errorMsg = (isEdit) ? "users.roles.list.error.cannotUpdateRole" : "users.roles.list.error.cannotCreateRole";
+        var errorMsg = (isEdit) ? "roles.list.error.cannotUpdateRole" : "roles.list.error.cannotCreateRole";
 
         $scope.getSelectedPermissions();
         $http({
@@ -128,7 +128,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
         }).success(function(response) {
                 $location.path("/users/roles");
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
         });
     };
 });

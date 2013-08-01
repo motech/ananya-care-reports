@@ -2,37 +2,37 @@
 
 <form id="createComputedFieldForm" class="dialog-form" name="createForm" novalidate ng-controller="createComputedFieldController">
     <div class="modal-header">
-        <h3>{{msg('indicators.computedFieldDialog.header')}}</h3>
+        <h3>{{msg('computed_field.header')}}</h3>
     </div>
     <div class="modal-body">
         <div class="container-fluid">
             <div class="row-fluid">
-                <label for="name">{{msg('indicators.computedFieldDialog.label.name')}}:</label>
+                <label for="name">{{msg('computed_field.label.name')}}:</label>
                 <input type="text" id="name" ng-model="newField.name" class="input-block-level" required />
                 <div class="well">
                     <table class="table table-highlight">
                         <thead>
-                            <th colspan="2">{{msg('indicators.computedFieldDialog.selectedFieldsHeader')}}:</th>
+                            <th colspan="2">{{msg('computed_field.selectedFieldsHeader')}}:</th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="(key, item) in selectedFields">
                                 <td><span ng-show="item.operator">{{item.operator.name}}&nbsp;</span>{{item.field.name}}</td>
                                 <td>
-                                    <button class="btn" ng-click="removeField(key)">{{msg('remove')}}</button>
+                                    <button class="btn" ng-click="removeField(key)">{{msg('common.remove')}}</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <label for="field">{{msg('indicators.computedFieldDialog.label.selectField')}}:</label>
+                <label for="field">{{msg('computed_field.label.selectField')}}:</label>
                 <select id="operator" class="span3" ng-model="selectedOperator" ng-options="item as item.name for (key, item) in listOperators" ng-disabled="selectedFields.length < 1"></select>
                 <select id="field" class="span9" ng-model="selectedField" ng-options="item.id as item.name for (key, item) in listFields"></select>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn pull-left" ng-click="addField()" ng-disabled="listFields.length <= 0">{{msg('indicators.computedFieldDialog.button.addField')}}</button>
-        <button class="btn btn-primary" ng-click="saveNewComputedField()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('save')}}</button>
-        <button class="btn" ng-click="dismiss()">{{msg('cancel')}}</button>
+        <button class="btn pull-left" ng-click="addField()" ng-disabled="listFields.length <= 0">{{msg('computed_field.button.add')}}</button>
+        <button class="btn btn-primary" ng-click="saveNewComputedField()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('common.save')}}</button>
+        <button class="btn" ng-click="dismiss()">{{msg('common.cancel')}}</button>
     </div>
 </form>

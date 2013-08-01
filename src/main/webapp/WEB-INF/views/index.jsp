@@ -62,42 +62,42 @@
                  <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
                  <!-- TODO: Add `Manage reports` menu option when this feature is implemented. -->
                  <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageIndicators')}}<b class="caret"></b></a>
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.indicators')}}<b class="caret"></b></a>
                      <ul class="dropdown-menu">
                         <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
-                            <li><a href="#/indicators/new"><i class="icon-list"></i> {{msg('menu.manageIndicators.indicatorsManager')}}</a></li>
+                            <li><a href="#/indicators/new"><i class="icon-list"></i> {{msg('menu.indicators.manager')}}</a></li>
                         </sec:authorize>
                         <li class="divider"></li>
                         <li class="dropdown-submenu">
-                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.indicatorCategories')}}</a>
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.categories')}}</a>
                              <ul class="dropdown-menu">
-                                <li><a href="#/categories"><i class="icon-list"></i> {{msg('menu.manageCategories.list')}}</a></li>
+                                <li><a href="#/categories"><i class="icon-list"></i> {{msg('menu.categories.list')}}</a></li>
                                 <sec:authorize access="hasRole('CAN_CREATE_CATEGORIES')">
-                                    <li><a href="#/categories/new"><i class="icon-plus-sign"></i> {{msg('menu.manageCategories.add')}}</a></li>
+                                    <li><a href="#/categories/new"><i class="icon-plus-sign"></i> {{msg('menu.categories.add')}}</a></li>
                                 </sec:authorize>
                              </ul>
                         </li>
                         <li class="dropdown-submenu">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.reports')}}</a>
                              <ul class="dropdown-menu">
-                                 <li><a href="#/reports"><i class="icon-list"></i> {{msg('menu.manageReports.list')}}</a></li>
+                                 <li><a href="#/reports"><i class="icon-list"></i> {{msg('menu.reports.list')}}</a></li>
                              </ul>
                          </li>
                      </ul>
                  </li>
                  <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">
                      <li class="dropdown">
-                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers')}}<b class="caret"></b></a>
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.users')}}<b class="caret"></b></a>
                          <ul class="dropdown-menu">
-                             <li><a href="#/users"><i class="icon-list"></i> {{msg('menu.manageSystemUsers.usersList')}}</a></li>
-                             <li><a href="#/users/new"><i class="icon-plus-sign"></i> {{msg('menu.manageSystemUsers.addNewUser')}}</a></li>
+                             <li><a href="#/users"><i class="icon-list"></i> {{msg('menu.users.list')}}</a></li>
+                             <li><a href="#/users/new"><i class="icon-plus-sign"></i> {{msg('menu.users.add')}}</a></li>
                              <li class="divider"></li>
                              <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageSystemUsers.roles')}}</a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.roles')}}</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#/users/roles"><i class="icon-list"></i> {{msg('menu.manageSystemUsers.rolesList')}}</a></li>
+                                    <li><a href="#/users/roles"><i class="icon-list"></i> {{msg('menu.roles.list')}}</a></li>
                                     <sec:authorize access="hasRole('CAN_CREATE_ROLE')">
-                                        <li><a href="#/users/roles/new"><i class="icon-plus-sign"></i> {{msg('menu.manageSystemUsers.addNewRole')}}</a></li>
+                                        <li><a href="#/users/roles/new"><i class="icon-plus-sign"></i> {{msg('menu.roles.add')}}</a></li>
                                     </sec:authorize>
                                 </ul>
                              </li>
@@ -105,14 +105,14 @@
                      </li>
                  </sec:authorize>
                  <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.manageForms')}} <b class="caret"></b></a>
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.forms')}} <b class="caret"></b></a>
                      <ul class="dropdown-menu">
-                         <li><a href="#/forms"><i class="icon-list"></i> {{msg('menu.manageForms.formList')}}</a></li>
+                         <li><a href="#/forms"><i class="icon-list"></i> {{msg('menu.forms.list')}}</a></li>
                      </ul>
                  </li>
              </ul>
              <div class="pull-right">
-                 <a href="#/indicators/recalculate" class="btn">{{msg('dashboard.recalculate')}}</a>
+                 <a href="#/indicators/recalculate" class="btn">{{msg('menu.recalculate')}}</a>
                  <a href="logout" class="btn btn-info">{{msg('menu.logout')}}</a>
              </div>
          </div>

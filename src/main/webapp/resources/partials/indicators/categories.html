@@ -2,13 +2,13 @@
 
 <div class="container">
     <div class="well span7 offset2">
-        <h1 class="text-center">{{msg('category.categories')}}</h1>
+        <h1 class="text-center">{{msg('categories.list.header')}}</h1>
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>{{msg('category.shortcode')}}</th>
-                    <th>{{msg('category.name')}}</th>
-                    <th>{{msg('category.remove')}}</th>
+                    <th>{{msg('categories.list.shortCode')}}</th>
+                    <th>{{msg('categories.list.name')}}</th>
+                    <th>{{msg('categories.list.remove')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +22,7 @@
             </tbody>
         </table>
         <p class="text-center">
-            <span class="text-info" ng-show="category.length == 0">{{msg('category.empty')}}<br /> <br />
+            <span class="text-info" ng-show="category.length == 0">{{msg('categories.list.empty')}}<br /> <br />
             </span>
         </p>
     </div>

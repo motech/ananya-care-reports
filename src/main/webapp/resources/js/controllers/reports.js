@@ -13,7 +13,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
             .success(function(report) {
                 $scope.report = report;
             }).error(function() {
-                $dialog.messageBox($scope.msg('error'), $scope.msg('reports.form.error.cannotFetchReport'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), $scope.msg('reports.form.error.cannotFetchReport'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
     };
 

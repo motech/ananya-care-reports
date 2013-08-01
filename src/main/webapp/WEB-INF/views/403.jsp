@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row centered-row">
             <div class="span12 well">
-               <h1><spring:message code="accessDenied" /></h1>
+               <h1><spring:message code="common.accessDenied" /></h1>
             </div>
         </div>
     </div>

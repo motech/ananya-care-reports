@@ -39,7 +39,7 @@
                         placement: 'left',
                         trigger: 'hover',
                         html: true,
-                        title: scope.msg('users.roles.list.popoverTitle') + ":",
+                        title: scope.msg('roles.list.popoverTitle') + ":",
                         content: function () {
                             var html = angular.element('<ul />');
                             for (var i in scope.role.permissions) {
@@ -101,15 +101,15 @@
                                     indicator = indicatorCategory.indicators[i];
                                     switch (indicator.trend) {
                                     case 0:
-                                        trend = scope.msg('trends.trend.neutral');
+                                        trend = scope.msg('dashboards.trends.trend.neutral');
                                         labelClass = "label-info";
                                         break;
                                     case 1:
-                                        trend = scope.msg('trends.trend.positive');
+                                        trend = scope.msg('dashboards.trends.trend.positive');
                                         labelClass = "label-success";
                                         break;
                                     case -1:
-                                        trend = scope.msg('trends.trend.negative');
+                                        trend = scope.msg('dashboards.trends.trend.negative');
                                         labelClass = "label-important";
                                         break;
                                     }
