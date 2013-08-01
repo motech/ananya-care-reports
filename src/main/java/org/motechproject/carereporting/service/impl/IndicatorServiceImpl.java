@@ -20,6 +20,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
+import org.motechproject.carereporting.scheduler.CronScheduler;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
@@ -86,6 +87,9 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private CronScheduler cronScheduler;
+
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
         return indicatorDao.getAll();
@@ -140,6 +144,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         indicatorDao.save(indicatorEntity);
         cronService.createCronTask(cronTaskEntity);
+
+        cronScheduler.addJob(cronTaskEntity);
     }
 
     @Transactional(readOnly = false)
@@ -193,7 +199,9 @@ public class IndicatorServiceImpl implements IndicatorService {
             cronTaskEntity.setExpression(indicatorDto.getCronFrequency(), indicatorDto.getDate(), indicatorDto.getTime());
 
             cronService.updateCronTask(cronTaskEntity);
+            cronScheduler.updateJob(cronTaskEntity);
         }
+
         indicatorDao.update(indicatorEntity);
     }
 
@@ -283,6 +291,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicator(IndicatorEntity indicatorEntity) {
+        cronScheduler.deleteJob(indicatorEntity.getCronTask());
+
         indicatorDao.remove(indicatorEntity);
     }
 

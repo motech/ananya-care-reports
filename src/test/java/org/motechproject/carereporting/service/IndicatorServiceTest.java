@@ -11,6 +11,7 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.types.FrequencyType;
+import org.motechproject.carereporting.scheduler.CronScheduler;
 import org.motechproject.carereporting.service.impl.IndicatorServiceImpl;
 
 import java.util.HashSet;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +38,9 @@ public class IndicatorServiceTest {
     @Mock
     private CronService cronService;
 
+    @Mock
+    private CronScheduler cronScheduler;
+
     @InjectMocks
     private IndicatorService indicatorService = new IndicatorServiceImpl();
 
@@ -45,6 +51,8 @@ public class IndicatorServiceTest {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         CronTaskEntity cronTaskEntity = new CronTaskEntity(EXPRESSION);
         indicatorService.createNewIndicator(indicatorEntity, cronTaskEntity);
+
+       doNothing().when(cronScheduler).addJob((CronTaskEntity) anyObject());
 
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
 
@@ -62,6 +70,8 @@ public class IndicatorServiceTest {
         indicatorEntity.setName(TEST_INDICATOR_1_UPDATED_NAME);
         indicatorService.updateIndicator(indicatorEntity);
 
+        doNothing().when(cronScheduler).updateJob((CronTaskEntity) anyObject());
+
         verify(indicatorDao).update(indicatorEntityArgumentCaptor.capture());
 
         List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
@@ -75,6 +85,8 @@ public class IndicatorServiceTest {
         indicatorEntities.add(new IndicatorEntity());
         when(indicatorDao.getAll()).thenReturn(indicatorEntities);
         Set<IndicatorEntity> indicatorList = indicatorService.getAllIndicators();
+
+        doNothing().when(cronScheduler).deleteJob((CronTaskEntity) anyObject());
 
         verify(indicatorDao).getAll();
 

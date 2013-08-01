@@ -79,7 +79,7 @@ public class CronTaskEntity extends AbstractEntity {
         try {
             setExpression(defaultExpression);
         } catch (ParseException e) {
-            LOG.error(e.getMessage());
+            LOG.trace(e);
         }
         String[] dateArray = date.split("-");
         String[] timeArray = time.split(":");

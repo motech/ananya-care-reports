@@ -153,12 +153,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.fetchFrequencyList();
 
     $scope.$watch('selectedCronTask.cronTask', function() {
-        if($scope.selectedCronTask.cronTask != " ") {
-            $scope.message = $scope.msg('restart');
-        } else {
-            $scope.message = null;
-        }
-
         $scope.selectedCronTask.startTime = false;
 
         for(var i = 0; i < $scope.freqList.length; i++) {

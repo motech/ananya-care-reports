@@ -72,4 +72,6 @@
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.FormEntityInitializer" />
 
+    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" />
+
 </beans>
