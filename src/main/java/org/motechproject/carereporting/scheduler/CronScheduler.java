@@ -5,7 +5,6 @@ import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.scheduler.jobs.IndicatorValueCalculatorJob;
 import org.motechproject.carereporting.service.CronService;
 import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -19,12 +18,12 @@ import java.util.Set;
 
 public class CronScheduler {
 
+    private static final String DEFAULT_GROUP_NAME = "DEFAULT";
+
     @Autowired
     private CronService cronService;
 
     private Scheduler scheduler;
-
-    private static final String GROUP_NAME = "indicators";
 
     private  static final Logger LOGGER = Logger.getLogger(CronScheduler.class);
 
@@ -35,43 +34,22 @@ public class CronScheduler {
         Set<CronTaskEntity> allCronTasks = cronService.getAllCronTasks();
 
         for (CronTaskEntity cronTaskEntity : allCronTasks) {
-            addJob(cronTaskEntity);
+            JobDetail job = new JobDetail();
+            job.setName(cronTaskEntity.getName());
+            job.setJobClass(IndicatorValueCalculatorJob.class);
+
+            Trigger trigger = prepareTrigger(cronTaskEntity);
+            scheduler.scheduleJob(job, trigger);
         }
 
         scheduler.start();
     }
 
-    public void addJob(CronTaskEntity cronTaskEntity) {
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("indicator", cronTaskEntity.getIndicator());
-
-        JobDetail job = new JobDetail();
-        job.setGroup(GROUP_NAME);
-        job.setName(String.valueOf(cronTaskEntity.getId()));
-        job.setJobClass(IndicatorValueCalculatorJob.class);
-        job.setJobDataMap(jobDataMap);
-
-        Trigger trigger = prepareTrigger(cronTaskEntity);
-
-        try {
-            scheduler.scheduleJob(job, trigger);
-        } catch (SchedulerException e) {
-            LOGGER.trace(e);
-        }
-    }
-
     public void updateJob(CronTaskEntity cronTaskEntity) {
         Trigger trigger = prepareTrigger(cronTaskEntity);
-        try {
-            scheduler.rescheduleJob(String.valueOf(cronTaskEntity.getId()), GROUP_NAME, trigger);
-        } catch (SchedulerException e) {
-            LOGGER.trace(e.getMessage());
-        }
-    }
 
-    public void deleteJob(CronTaskEntity cronTaskEntity) {
         try {
-            scheduler.deleteJob(String.valueOf(cronTaskEntity.getId()), GROUP_NAME);
+            scheduler.rescheduleJob(cronTaskEntity.getName(), DEFAULT_GROUP_NAME, trigger);
         } catch (SchedulerException e) {
             LOGGER.trace(e.getMessage());
         }
@@ -79,13 +57,11 @@ public class CronScheduler {
 
     private Trigger prepareTrigger(CronTaskEntity cronTaskEntity) {
         CronTrigger trigger = new CronTrigger();
-        trigger.setJobGroup(GROUP_NAME);
-        trigger.setJobName(String.valueOf(cronTaskEntity.getId()));
-        trigger.setGroup(GROUP_NAME);
-        trigger.setName(String.valueOf(cronTaskEntity.getId()));
+        trigger.setJobName(cronTaskEntity.getName());
+        trigger.setName(cronTaskEntity.getName());
 
         try {
-            trigger.setCronExpression(cronTaskEntity.toCronExpression());
+            trigger.setCronExpression(cronTaskEntity.toString());
         } catch (ParseException e) {
             LOGGER.trace(e.getMessage());
         }

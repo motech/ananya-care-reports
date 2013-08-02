@@ -46,6 +46,7 @@
     <script src="resources/js/controllers/roles.js" type="text/javascript"></script>
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>
     <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/nav.js" type="text/javascript"></script>
     <script src="resources/js/controllers/computed-fields.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
     <script src="resources/lib/flotr2.min.js"></script>
@@ -57,7 +58,7 @@
 </head>
 <body>
     <div class="navbar" bs-navbar>
-         <div class="navbar-inner">
+         <div class="navbar-inner" ng-controller="navController">
              <a class="brand" style="font-size: 13px;" href="#">{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</a>
              <ul class="nav">
                  <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
@@ -69,6 +70,12 @@
                             <li><a href="#/indicators/new"><i class="icon-list"></i> {{msg('menu.indicators.manager')}}</a></li>
                         </sec:authorize>
                         <li class="divider"></li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="" ng-click="launchFrequencyDialog()"><i class="icon-time"></i> {{msg('menu.calculator.frequency')}}</a></li>
+                                </ul>
+                        </li>
                         <li class="dropdown-submenu">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.categories')}}</a>
                              <ul class="dropdown-menu">

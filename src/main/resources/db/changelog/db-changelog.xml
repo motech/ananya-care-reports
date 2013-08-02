@@ -182,7 +182,6 @@
             insert into dashboard_app.cron_task (indicator_id, second, minute, hour, day, month, week_day, year, creation_date, modification_date)
             values (2, '0', '0', '0', '*', '*', '?', '', now(), now());
         </sql>
-
     </changeSet>
 
 	<changeSet id="CARE #44" author="Łukasz Gąsior">
@@ -196,7 +195,24 @@
                 REFERENCES dashboard_app.computed_field (computed_field_id) MATCH FULL
                 ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
             DROP TABLE dashboard_app.complex_condition_field;
+        </sql>
+    </changeSet>
 
+    <changeSet id="CARE #48.2" author="Adrian Boguszewski">
+        <delete tableName="cron_task" schemaName="dashboard_app" />
+        <addColumn tableName="cron_task" schemaName="dashboard_app">
+            <column name="name" type="character varying" />
+        </addColumn>
+        <addNotNullConstraint tableName="cron_task" columnName="name" />
+        <addUniqueConstraint tableName="cron_task" columnNames="name" />
+        <dropColumn tableName="cron_task" columnName="indicator_id" schemaName="dashboard_app"/>
+        <sql>
+            insert into dashboard_app.cron_task (name, second, minute, hour, day, month, week_day, year, creation_date, modification_date) values
+            ('daily', '0', '00', '00', '*', '*', '?', '', now(), now()),
+            ('weekly', '0', '0', '0', '?', '*', 'MON', '', now(), now()),
+            ('monthly', '0', '0', '0', '1', '*', '?', '', now(), now()),
+            ('quarterly', '0', '0', '0', '1', '1/3', '?', '', now(), now()),
+            ('yearly', '0', '0', '0', '1', '1', '?', '', now(), now());
         </sql>
     </changeSet>
 

@@ -100,6 +100,6 @@
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer" init-method="loadFormsFromDB" />
 
-    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" />
+    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
 </beans>

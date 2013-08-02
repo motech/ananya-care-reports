@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 public class CronTaskDaoHibernateImpl extends GenericDaoHibernateImpl<CronTaskEntity> implements CronTaskDao {
 
     @Override
-    public CronTaskEntity getByIndicatorId(Integer indicatorId) {
+    public CronTaskEntity getByName(String name) {
         return (CronTaskEntity) getCurrentSession()
                 .createCriteria(CronTaskEntity.class)
-                .add(Restrictions.eq("indicator.id", indicatorId))
+                .add(Restrictions.eq("name", name))
                 .uniqueResult();
     }
 

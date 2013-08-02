@@ -31,6 +31,8 @@
         <property name="password" value="${care.jdbc.password}" />
     </bean>
 
+    <bean id="applicationContextProvider" class="org.motechproject.carereporting.context.ApplicationContextProvider" />
+
     <context:component-scan base-package="org.motechproject.carereporting" />
 
     <mvc:annotation-driven />
@@ -72,6 +74,6 @@
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer" />
 
-    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" />
+    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
 </beans>

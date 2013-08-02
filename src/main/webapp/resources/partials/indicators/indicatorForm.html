@@ -89,21 +89,6 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="nested-well">
-                    <legend>{{msg('indicators.form.defineCalculationFrequency')}}:</legend>
-                    <label for="field">{{msg('indicators.form.defineCalculationFrequency.frequency')}}:</label>
-                    <select id="field" class="span9" ng-model="selectedCronTask.cronTask" ng-options="item for item in freqList" />
-                    <div class="control-group input-append" ng-show="selectedCronTask.startTime" ng-model="selectedTime">
-                        <label for="timepicker">{{msg('indicators.form.defineCalculationFrequency.startTime')}}:</label>
-                        <input id="timepicker" type="text" ng-model="selectedCronTask.time" bs-timepicker>
-                        <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
-                    </div>
-                    <div class="control-group input-append" ng-show="selectedCronTask.startDate">
-                        <label for="datepicker">{{msg('indicators.form.defineCalculationFrequency.startDate')}}:</label>
-                        <input id="datepicker" type="text" ng-model="selectedCronTask.date" data-date-format="yyyy-mm-dd" bs-datepicker>
-                        <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
-                    </div>
-                </div>
             </div>
             <div class="span4 well">
                 <div class="nested-well">

@@ -4,6 +4,6 @@ import org.motechproject.carereporting.domain.CronTaskEntity;
 
 public interface CronTaskDao extends GenericDao<CronTaskEntity> {
 
-    CronTaskEntity getByIndicatorId(Integer indicatorId);
+    CronTaskEntity getByName(String name);
 
 }

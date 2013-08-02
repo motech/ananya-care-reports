@@ -15,14 +15,14 @@
   var Timepicker = function(element, options) {
     this.widget = '';
     this.$element = $(element);
-    this.defaultTime = '00:00'//options.defaultTime;
+    this.defaultTime = options.defaultTime;
     this.disableFocus = options.disableFocus;
     this.isOpen = options.isOpen;
-    this.minuteStep = 1//options.minuteStep;
+    this.minuteStep = options.minuteStep;
     this.modalBackdrop = options.modalBackdrop;
     this.secondStep = options.secondStep;
     this.showInputs = options.showInputs;
-    this.showMeridian = false//options.showMeridian;
+    this.showMeridian = options.showMeridian;
     this.showSeconds = options.showSeconds;
     this.template = options.template;
     this.appendWidgetTo = options.appendWidgetTo;

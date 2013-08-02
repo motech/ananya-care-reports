@@ -3,7 +3,6 @@ package org.motechproject.carereporting.dao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.CronTaskEntity;
-import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -19,16 +18,16 @@ public class CronTaskDaoIT extends AbstractTransactionalJUnit4SpringContextTests
     @Autowired
     private CronTaskDao cronTaskDao;
 
+    private static final String TASK_NAME = "daily";
+
     @Test
-    public void testGetByIndicatorId() {
-        Integer id = 1;
-        String name = "% of mothers who received at least 90 IFA tablets";
-        String cronExpression = "0 0 0 * * ?";
-        CronTaskEntity cronTaskEntity = cronTaskDao.getByIndicatorId(id);
+    public void testGetByName() {
+        String cronExpression = "0 00 00 * * ?";
+        CronTaskEntity cronTaskEntity = cronTaskDao.getByName(TASK_NAME);
 
         assertNotNull(cronTaskEntity);
-        assertEquals(name, cronTaskEntity.getIndicator().getName());
-        assertEquals(cronExpression, cronTaskEntity.toCronExpression());
+        assertEquals(TASK_NAME, cronTaskEntity.getName());
+        assertEquals(cronExpression, cronTaskEntity.toString());
     }
 
 }

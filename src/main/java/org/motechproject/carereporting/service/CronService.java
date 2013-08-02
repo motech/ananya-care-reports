@@ -8,10 +8,10 @@ public interface CronService {
 
     Set<CronTaskEntity> getAllCronTasks();
 
-    CronTaskEntity getCronTaskByIndicatorId(Integer indicatorId);
+    CronTaskEntity getCronTaskByName(String name);
+
+    CronTaskEntity getDailyCronTask();
 
     void updateCronTask(CronTaskEntity cronTaskEntity);
-
-    void createCronTask(CronTaskEntity cronTaskEntity);
 
 }

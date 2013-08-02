@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.scheduler.jobs;
 
 import org.motechproject.carereporting.context.ApplicationContextProvider;
-import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -20,7 +19,6 @@ public class IndicatorValueCalculatorJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        IndicatorEntity indicatorEntity = (IndicatorEntity) jobExecutionContext.getJobDetail().getJobDataMap().get("indicator");
-        indicatorValueCalculator.calculateIndicatorValue(indicatorEntity);
+        indicatorValueCalculator.calculateIndicatorValues();
     }
 }

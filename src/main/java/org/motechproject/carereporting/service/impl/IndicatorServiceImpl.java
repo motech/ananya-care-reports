@@ -9,7 +9,6 @@ import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
@@ -20,11 +19,9 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
-import org.motechproject.carereporting.scheduler.CronScheduler;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
-import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
@@ -82,13 +79,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private ReportService reportService;
 
     @Autowired
-    private CronService cronService;
-
-    @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private CronScheduler cronScheduler;
 
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
@@ -139,13 +130,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void createNewIndicator(IndicatorEntity indicatorEntity, CronTaskEntity cronTaskEntity) {
-        cronTaskEntity.setIndicator(indicatorEntity);
-
+    public void createNewIndicator(IndicatorEntity indicatorEntity) {
         indicatorDao.save(indicatorEntity);
-        cronService.createCronTask(cronTaskEntity);
-
-        cronScheduler.addJob(cronTaskEntity);
     }
 
     @Transactional(readOnly = false)
@@ -165,10 +151,8 @@ public class IndicatorServiceImpl implements IndicatorService {
                 indicatorDto.getName());
 
         indicatorEntity.setTrend(indicatorDto.getTrend());
-        CronTaskEntity cronTaskEntity = new CronTaskEntity();
-        cronTaskEntity.setExpression(indicatorDto.getCronFrequency(), indicatorDto.getDate(), indicatorDto.getTime());
 
-        createNewIndicator(indicatorEntity, cronTaskEntity);
+        createNewIndicator(indicatorEntity);
     }
 
     @Transactional(readOnly = false)
@@ -193,14 +177,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
         indicatorEntity.setFrequency(indicatorDto.getFrequency());
         indicatorEntity.setName(indicatorDto.getName());
-
-        if (!" ".equals(indicatorDto.getCronFrequency())) {
-            CronTaskEntity cronTaskEntity = cronService.getCronTaskByIndicatorId(indicatorEntity.getId());
-            cronTaskEntity.setExpression(indicatorDto.getCronFrequency(), indicatorDto.getDate(), indicatorDto.getTime());
-
-            cronService.updateCronTask(cronTaskEntity);
-            cronScheduler.updateJob(cronTaskEntity);
-        }
 
         indicatorDao.update(indicatorEntity);
     }
@@ -291,8 +267,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicator(IndicatorEntity indicatorEntity) {
-        cronScheduler.deleteJob(indicatorEntity.getCronTask());
-
         indicatorDao.remove(indicatorEntity);
     }
 

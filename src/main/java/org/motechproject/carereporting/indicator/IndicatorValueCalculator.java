@@ -58,11 +58,6 @@ public class IndicatorValueCalculator {
         return calculatedIndicatorsCount;
     }
 
-    public void calculateIndicatorValue(IndicatorEntity indicatorEntity) {
-        LOG.info("Calculating values for indicator: " + indicatorEntity.getName());
-        calculateAndPersistIndicatorValues(indicatorEntity);
-    }
-
     private void calculateAndPersistIndicatorValues(IndicatorEntity indicator) {
 
         for (AreaEntity area: getAllAreasForIndicator(indicator)) {

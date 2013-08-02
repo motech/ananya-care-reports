@@ -1,14 +1,15 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
-import org.motechproject.carereporting.domain.types.FrequencyType;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -36,6 +35,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private IndicatorValueCalculator indicatorValueCalculator;
+
+    @Autowired
+    private CronService cronService;
 
     // IndicatorEntity
 
@@ -172,16 +174,21 @@ public class IndicatorController extends BaseController {
         indicatorValueCalculator.calculateIndicatorValues();
     }
 
-    @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET,
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/calculator/frequency/daily", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<String> getPredefinedFrequencies() {
-        List<String> list = new ArrayList<>();
-        for (FrequencyType frequencyType: FrequencyType.values()) {
-            list.add(frequencyType.getName());
-        }
-        return list;
+    public String getDailyTaskTime() {
+        return cronService.getDailyCronTask().getTime();
+    }
+
+    @RequestMapping(value = "/calculator/frequency/daily", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    public void updateDailyTaskTime(@RequestBody String time) {
+        CronTaskEntity cronTaskEntity = cronService.getDailyCronTask();
+        cronTaskEntity.setTime(time);
+
+        cronService.updateCronTask(cronTaskEntity);
     }
 
 }

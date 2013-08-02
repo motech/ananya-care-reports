@@ -101,10 +101,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.reportTypes = [];
     $scope.listCategories = [];
     $scope.listComplexCondition = [];
-    $scope.listComputedFields = [];
-    $scope.allComputedFields = [];
-    $scope.filteredComputedFields = [];
-    $scope.listIndicatorTypes = [];
 	$scope.indicator.area={};
 
     $scope.fetchUsers = function() {
@@ -132,46 +128,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.listAWC = [];
     $scope.showAWC = false;
     $scope.area = {};
-    $scope.freqList = [];
-    $scope.selectedCronTask = {};
-    $scope.selectedCronTask.date = moment().format("YYYY-MM-DD");
-    $scope.selectedCronTask.time = "00:00";
-    $scope.selectedCronTask.index = null;
-    $scope.selectedCronTask.cronTask = null;
-
-    $scope.fetchFrequencyList = function() {
-        $http({
-            url: "api/indicator/calculator/frequencies",
-            method: "GET",
-        }).success(function(data) {
-             $scope.freqList = data
-             $scope.selectedCronTask.cronTask = $scope.freqList[3];
-        }).error(function() {
-            $errorService.genericError($scope, 'indicators.frequencyDialog.error.cannotLoadFrequencyList');
-        });
-    };
-    $scope.fetchFrequencyList();
-
-    $scope.$watch('selectedCronTask.cronTask', function() {
-        $scope.selectedCronTask.startTime = false;
-
-        for(var i = 0; i < $scope.freqList.length; i++) {
-            if($scope.freqList[i] == $scope.selectedCronTask.cronTask) {
-                break;
-            }
-        }
-
-        if(i < $scope.freqList.length) {
-            $scope.selectedCronTask.index = i;
-            if(i > 3) {
-                $scope.selectedCronTask.startDate = true;
-                $scope.selectedCronTask.startTime = true;
-            } else if(i > 1) {
-                $scope.selectedCronTask.startTime = true;
-                $scope.selectedCronTask.startDate = false;
-            }
-        }
-    });
 
     $scope.fetchIndicatorAndFillDetails = function() {
         $http.get('api/indicator/' + $routeParams.indicatorId)
@@ -185,7 +141,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope.indicator.complexCondition = indicator.complexCondition.id;
                 $scope.categories = indicator.categories;
                 $scope.indicator.indicatorType = indicator.indicatorType.id;
-                $scope.selectedCronTask.cronTask = " ";
                 for(var i = 0 ; i< indicator.owners.length ; i++){
                     $scope.selectedOwners[indicator.owners[i].id]=true;
                 }
@@ -313,7 +268,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
         $scope.resetDropdownDisplay(($scope.selectedBlock > 0) ? 'HSC' : 'Block');
     });
-    
+
     $scope.$watch('selectedHSC', function() {
         if ($scope.selectedHSC > 0) {
             $scope.fetchAreasByParentAreaId($scope.selectedHSC, 'AWC');
@@ -591,9 +546,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.submit = function() {
-        $scope.indicator.date = moment($scope.selectedCronTask.date).format('DD-MM-YYYY');;
-        $scope.indicator.time = $scope.selectedCronTask.time;
-        $scope.indicator.cronFrequency = $scope.selectedCronTask.cronTask;
         $scope.indicator.owners = $scope.getSelectedOwners();
         $scope.indicator.categories = $scope.getSelectedCategories();
         $scope.indicator.area = $scope.getSelectedArea();
@@ -1076,4 +1028,34 @@ care.controller('recalculateIndicatorsController', function($scope, $http, $dial
 
     $location.path( "api/dashboards" );
     $scope.recalculateIndicators();
+});
+
+care.controller('calculatorController', function($scope, $http, $dialog, $location, $errorService) {
+    $scope.time = null;
+
+    $scope.fetchDailyTaskTime = function() {
+        $http({
+            url: "api/indicator/calculator/frequency/daily",
+            method: "GET",
+        }).success(function(data) {
+             $scope.time = data;
+        }).error(function() {
+            $errorService.genericError($scope, 'indicatorCalculator.error.cannotLoadTime');
+        });
+    };
+    $scope.fetchDailyTaskTime();
+
+    $scope.saveTime = function() {
+        $http({
+            url: "api/indicator/calculator/frequency/daily",
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            data: $scope.time,
+            dialog: this
+        }).success(function(data, status, headers, config) {
+            config.dialog.dismiss();
+        }).error(function(data, status, headers, config) {
+            $errorService.genericError($scope, 'indicatorCalculator.error.cannotSaveNmesTime');
+        });
+    };
 });

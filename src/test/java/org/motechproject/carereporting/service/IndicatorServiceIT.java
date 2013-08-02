@@ -8,7 +8,6 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
-import org.motechproject.carereporting.domain.types.FrequencyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -87,7 +86,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     private void createIndicator() {
-        IndicatorDto indicatorDto = new IndicatorDto(1, new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, 1, new HashSet<Integer>(), new HashSet<ReportEntity>(), 30, "name", new BigDecimal(30), FrequencyType.EVERY_DAY.getName(), "20-12-2012", "00:00");
+        IndicatorDto indicatorDto = new IndicatorDto(1, new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, 1, new HashSet<Integer>(), new HashSet<ReportEntity>(), 30, "name", new BigDecimal(30));
         indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 
