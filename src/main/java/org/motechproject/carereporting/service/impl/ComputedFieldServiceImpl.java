@@ -60,15 +60,30 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     @Transactional(readOnly = false)
     @Override
     public void createNewComputedFieldFromDto(ComputedFieldDto computedFieldDto) {
-        computedFieldDao.save(new ComputedFieldEntity(
+        ComputedFieldEntity computedField = new ComputedFieldEntity(
                 computedFieldDto.getName(),
                 computedFieldDto.getType(),
                 findFormEntityFromDto(computedFieldDto),
-                new LinkedHashSet<>(computedFieldDto.getFieldOperations())
-        ));
+                new LinkedHashSet<>(computedFieldDto.getFieldOperations()));
+        computedFieldDao.save(computedField);
     }
 
     private FormEntity findFormEntityFromDto(ComputedFieldDto computedFieldDto) {
         return formsService.getFormById(computedFieldDto.getForm());
     }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateComputedFieldFromDto(Integer id, ComputedFieldDto computedFieldDto) {
+        ComputedFieldEntity computedFieldEntity = getComputedFieldById(id);
+        computedFieldEntity.setName(computedFieldDto.getName());
+        computedFieldEntity.setType(computedFieldDto.getType());
+        computedFieldEntity.setForm(findFormEntityFromDto(computedFieldDto));
+        computedFieldEntity.getFieldOperations().clear();
+        computedFieldDao.update(computedFieldEntity);
+        sessionFactory.getCurrentSession().flush();
+        computedFieldEntity.getFieldOperations().addAll(computedFieldDto.getFieldOperations());
+        computedFieldDao.update(computedFieldEntity);
+    }
+
 }

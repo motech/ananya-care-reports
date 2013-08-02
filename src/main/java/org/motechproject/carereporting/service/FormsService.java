@@ -1,8 +1,8 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.dto.FieldDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -32,7 +32,7 @@ public interface FormsService {
 
     Set<String> getTableColumns(String tableName);
 
-    Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity);
+    Set<FieldDto> getFieldsByFormEntity(FormEntity formEntity);
 
     String getForeignKeyForTable(String tableName);
 

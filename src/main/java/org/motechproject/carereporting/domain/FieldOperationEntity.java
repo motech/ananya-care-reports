@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.ComputedFieldView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -9,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "field_operation")
@@ -18,54 +18,43 @@ import javax.validation.constraints.NotNull;
 })
 public class FieldOperationEntity extends AbstractEntity {
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "field_1_id")
-    private FieldEntity field1;
+    @JsonView(ComputedFieldView.class)
+    private ComputedFieldEntity field1;
 
     @ManyToOne
     @JoinColumn(name = "field_2_id")
-    private FieldEntity field2;
-
-    @ManyToOne
-    @JoinColumn(name = "computed_field_id")
-    private ComputedFieldEntity computedField;
+    @JsonView(ComputedFieldView.class)
+    private ComputedFieldEntity field2;
 
     @ManyToOne
     @JoinColumn(name = "operator_type_id")
+    @JsonView(ComputedFieldView.class)
     private OperatorTypeEntity operatorType;
 
     public FieldOperationEntity() {
 
     }
 
-    public FieldOperationEntity(FieldEntity field1) {
+    public FieldOperationEntity(ComputedFieldEntity field1) {
         this.field1 = field1;
     }
 
-    public FieldEntity getField1() {
+    public ComputedFieldEntity getField1() {
         return field1;
     }
 
-    public void setField1(FieldEntity field1) {
+    public void setField1(ComputedFieldEntity field1) {
         this.field1 = field1;
     }
 
-    public FieldEntity getField2() {
+    public ComputedFieldEntity getField2() {
         return field2;
     }
 
-    public void setField2(FieldEntity field2) {
+    public void setField2(ComputedFieldEntity field2) {
         this.field2 = field2;
-    }
-
-    @JsonIgnore
-    public ComputedFieldEntity getComputedField() {
-        return computedField;
-    }
-
-    public void setComputedField(ComputedFieldEntity computedField) {
-        this.computedField = computedField;
     }
 
     public OperatorTypeEntity getOperatorType() {
@@ -74,5 +63,40 @@ public class FieldOperationEntity extends AbstractEntity {
 
     public void setOperatorType(OperatorTypeEntity operatorType) {
         this.operatorType = operatorType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FieldOperationEntity that = (FieldOperationEntity) o;
+
+        if (!field1.equals(that.field1)) {
+            return false;
+        }
+        if (!field2.equals(that.field2)) {
+            return false;
+        }
+        if (!operatorType.equals(that.operatorType)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        if (field1 == null || field2 == null || operatorType == null) {
+            return 0;
+        }
+        int result = field1.hashCode();
+        result = 31 * result + field2.hashCode();
+        result = 31 * result + operatorType.hashCode();
+        return result;
     }
 }

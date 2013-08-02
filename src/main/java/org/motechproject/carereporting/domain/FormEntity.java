@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
@@ -33,10 +34,6 @@ public class FormEntity extends AbstractEntity {
     @JsonView(IndicatorJsonView.IndicatorDetails.class)
     private Set<ComputedFieldEntity> computedFields;
 
-    @OneToMany(mappedBy = "form")
-    @JsonView({ IndicatorJsonView.ListFormFields.class })
-    private Set<FieldEntity> fields;
-
     public String getTableName() {
         return tableName;
     }
@@ -53,6 +50,7 @@ public class FormEntity extends AbstractEntity {
         this.displayName = displayName;
     }
 
+    @JsonIgnore
     public Set<ComputedFieldEntity> getComputedFields() {
         return computedFields;
     }
@@ -61,11 +59,4 @@ public class FormEntity extends AbstractEntity {
         this.computedFields = computedFields;
     }
 
-    public Set<FieldEntity> getFields() {
-        return fields;
-    }
-
-    public void setFields(Set<FieldEntity> fields) {
-        this.fields = fields;
-    }
 }

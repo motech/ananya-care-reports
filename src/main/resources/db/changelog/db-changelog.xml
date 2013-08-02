@@ -185,4 +185,19 @@
 
     </changeSet>
 
+	<changeSet id="CARE #44" author="Łukasz Gąsior">
+        <sql>
+            ALTER TABLE dashboard_app.field_operation DROP CONSTRAINT field_operation_field_1_id;
+            ALTER TABLE dashboard_app.field_operation DROP CONSTRAINT field_operation_field_2_id;
+            ALTER TABLE dashboard_app.field_operation ADD CONSTRAINT field_operation_field_1_id FOREIGN KEY (field_1_id)
+                REFERENCES dashboard_app.computed_field (computed_field_id) MATCH FULL
+                ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
+            ALTER TABLE dashboard_app.field_operation ADD CONSTRAINT field_operation_field_2_id FOREIGN KEY (field_2_id)
+                REFERENCES dashboard_app.computed_field (computed_field_id) MATCH FULL
+                ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
+            DROP TABLE dashboard_app.complex_condition_field;
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

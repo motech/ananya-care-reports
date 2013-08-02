@@ -46,6 +46,7 @@
     <script src="resources/js/controllers/roles.js" type="text/javascript"></script>
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>
     <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/computed-fields.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
     <script src="resources/lib/flotr2.min.js"></script>
     <script src="resources/lib/jVectorMap/jquery-jvectormap-1.2.2.min.js"></script>
@@ -110,6 +111,12 @@
                          <li><a href="#/forms"><i class="icon-list"></i> {{msg('menu.forms.list')}}</a></li>
                      </ul>
                  </li>
+				<li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="#/computed-fields">{{msg('menu.computedFields')}}</a></li>
+                  </ul>
+              </li>
              </ul>
              <div class="pull-right">
                  <a href="#/indicators/recalculate" class="btn">{{msg('menu.recalculate')}}</a>

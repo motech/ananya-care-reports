@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.ComputedFieldView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -18,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -29,8 +31,6 @@ import java.util.Set;
 })
 public class ComputedFieldEntity extends AbstractEntity {
 
-    private static final int TYPE_LENGTH = 50;
-
     @NotNull
     @NotEmpty
     @Column(name = "name")
@@ -38,7 +38,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     private String name;
 
     @NotNull
-    @Column(name = "type", columnDefinition = "character varying", length = TYPE_LENGTH)
+    @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     @JsonView({ BaseView.class })
     private FieldType type;
@@ -46,11 +46,13 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "form_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
 
-    @NotNull
-    @OneToMany(mappedBy = "computedField", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonView(ComputedFieldView.class)
+    @JoinColumn(name="computed_field_id", nullable = false)
+    @OrderBy("field_operation_id")
     private Set<FieldOperationEntity> fieldOperations;
 
     @OneToMany(mappedBy = "computedField")
@@ -66,12 +68,6 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.type = type;
         this.form = form;
         this.fieldOperations = fieldOperations;
-
-        for (FieldOperationEntity fieldOperationEntity : fieldOperations) {
-            if (fieldOperationEntity.getComputedField() == null) {
-                fieldOperationEntity.setComputedField(this);
-            }
-        }
     }
 
     public String getName() {
@@ -106,6 +102,7 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.fieldOperations = fieldOperations;
     }
 
+    @JsonIgnore
     public Set<IndicatorEntity> getIndicators() {
         return indicators;
     }
@@ -121,16 +118,8 @@ public class ComputedFieldEntity extends AbstractEntity {
     }
 
     @JsonIgnore
-    public FieldEntity getRegularField() {
-        if (!isRegularField()) {
-            return null;
-        }
-        return fieldOperations.iterator().next().getField1();
-    }
-
-    @JsonIgnore
     public String getFieldSql() {
         //assuming that it's a regular field.
-        return getRegularField().getName();
+        return getName();
     }
 }

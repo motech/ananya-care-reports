@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
@@ -35,9 +34,6 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
 
     @Autowired
     private ComputedFieldService computedFieldService;
-
-    @Autowired
-    private FieldService fieldService;
 
     @Autowired
     private FormsService formsService;
@@ -128,9 +124,8 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     private ComputedFieldEntity createComputedField() {
-        FieldEntity fieldEntity = getFieldEntity();
         Set<FieldOperationEntity> fieldOperationEntities = new LinkedHashSet<>(
-                createFieldOperationEntities(fieldEntity));
+                createFieldOperationEntities());
         FormEntity formEntity = formsService.getFormById(FORM_ID);
 
         assertNotNull(formEntity);
@@ -151,8 +146,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     private ComputedFieldDto createComputedFieldDto() {
-        FieldEntity fieldEntity = getFieldEntity();
-        List<FieldOperationEntity> fieldOperationEntities = createFieldOperationEntities(fieldEntity);
+        List<FieldOperationEntity> fieldOperationEntities = new ArrayList<>();
 
         ComputedFieldDto computedFieldDto = new ComputedFieldDto(
                 COMPUTED_FIELD_NAME, COMPUTED_FIELD_TYPE, FORM_ID, fieldOperationEntities);
@@ -160,17 +154,8 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
         return computedFieldDto;
     }
 
-    private FieldEntity getFieldEntity() {
-        FieldEntity fieldEntity = fieldService.getFieldById(FIELD_ID);
-
-        assertNotNull(fieldEntity);
-        assertEquals(FIELD_ID, fieldEntity.getId());
-
-        return fieldEntity;
-    }
-
-    private List<FieldOperationEntity> createFieldOperationEntities(FieldEntity fieldEntity) {
-        FieldOperationEntity fieldOperationEntity = new FieldOperationEntity(fieldEntity);
+    private List<FieldOperationEntity> createFieldOperationEntities() {
+        FieldOperationEntity fieldOperationEntity = new FieldOperationEntity();
         List<FieldOperationEntity> fieldOperationEntities = new ArrayList<>();
         fieldOperationEntities.add(fieldOperationEntity);
 

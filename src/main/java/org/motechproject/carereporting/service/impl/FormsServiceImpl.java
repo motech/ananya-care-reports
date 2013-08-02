@@ -2,8 +2,8 @@ package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.dto.FieldDto;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,8 +115,8 @@ public class FormsServiceImpl implements FormsService {
 
     @Override
     @Transactional
-    public Set<FieldEntity> getFieldsByFormEntity(FormEntity formEntity) {
-        Set<FieldEntity> fieldEntities = new LinkedHashSet<>();
+    public Set<FieldDto> getFieldsByFormEntity(FormEntity formEntity) {
+        Set<FieldDto> fields = new LinkedHashSet<>();
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         SqlRowSet columns = jdbcTemplate.queryForRowSet(COLUMN_INFO_IN_TABLE,
                 careSchemaName, formEntity.getTableName());
@@ -125,19 +125,13 @@ public class FormsServiceImpl implements FormsService {
             String columnName = columns.getString("column_name");
             FieldType columnType = FieldType.getValueOf(columns.getString("data_type"));
 
-            if (("id").equals(columnName) || columnName.endsWith("_id")) {
-                continue;
+            boolean isIdField = "id".equals(columnName) || columnName.endsWith("_id");
+            if (!isIdField) {
+                fields.add(new FieldDto(columnName, columnType));
             }
-
-            FieldEntity fieldEntity = new FieldEntity();
-            fieldEntity.setName(columnName);
-            fieldEntity.setType(columnType);
-            fieldEntity.setForm(formEntity);
-
-            fieldEntities.add(fieldEntity);
         }
 
-        return fieldEntities;
+        return fields;
     }
 
     @Override
@@ -150,6 +144,7 @@ public class FormsServiceImpl implements FormsService {
     public Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId) {
         return formDao.getByIdWithFields(formId, "computedFields").getComputedFields();
     }
+
 }
 
 

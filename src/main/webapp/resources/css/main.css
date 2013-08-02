@@ -206,8 +206,9 @@ h5 {
 
 .condition-dialog {
     width: 900px !important;
+    height: 100% !important;
     margin-left: -450px !important;
-    top: 50px !important;
+    top: 0 !important;
 }
 
 .condition-dialog-body {
@@ -221,4 +222,9 @@ h5 {
 
 .chart-button {
     cursor: pointer;
+}
+
+.computed-fields-list {
+    height: 350px;
+    overflow-y: scroll;
 }

@@ -98,7 +98,7 @@
 
     <task:annotation-driven />
 
-    <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.FormEntityInitializer" init-method="loadFormsFromDB" />
+    <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer" init-method="loadFormsFromDB" />
 
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" />
 

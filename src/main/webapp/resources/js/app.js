@@ -21,6 +21,7 @@
             .when('/categories/:categoryId', { templateUrl: 'resources/partials/indicators/addCategory.html', controller: 'categoriesController'})
             .when('/reports/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
             .when('/reports', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
+            .when('/computed-fields', { templateUrl: 'resources/partials/computed-fields/manage.html', controller: 'computedFieldsController' })
             .otherwise({ redirectTo: '/' });
 
 

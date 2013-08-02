@@ -1,8 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
-import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.ComputedFieldView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,22 +29,20 @@ public class ComputedFieldController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getAllComputedFields() {
-        return this.writeAsString(BaseView.class, computedFieldService.getAllComputedFields());
+        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields());
     }
 
     @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ComputedFieldEntity getComputedField(@PathVariable Integer computedFieldId) {
-        return computedFieldService.getComputedFieldById(computedFieldId);
+    public String getComputedField(@PathVariable Integer computedFieldId) {
+        return writeAsString(ComputedFieldView.class, computedFieldService.getComputedFieldById(computedFieldId));
     }
 
     @RequestMapping(method = RequestMethod.POST,
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE })
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public void createNewComputedField(@RequestBody @Valid ComputedFieldDto computedFieldDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -53,5 +50,17 @@ public class ComputedFieldController extends BaseController {
         }
 
         computedFieldService.createNewComputedFieldFromDto(computedFieldDto);
+    }
+
+    @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.POST,
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    public void updateComputedField(@RequestBody @Valid ComputedFieldDto computedFieldDto,
+                                    @PathVariable Integer computedFieldId,
+                                       BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+        computedFieldService.updateComputedFieldFromDto(computedFieldId, computedFieldDto);
     }
 }

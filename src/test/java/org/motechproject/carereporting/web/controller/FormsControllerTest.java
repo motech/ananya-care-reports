@@ -8,11 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.initializers.FormEntityInitializer;
+import org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer;
 import org.motechproject.carereporting.service.ComputedFieldService;
-import org.motechproject.carereporting.service.FieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,10 +42,7 @@ public class FormsControllerTest {
     private ComputedFieldService computedFieldService;
 
     @Mock
-    private FieldService fieldService;
-
-    @Mock
-    private FormEntityInitializer formEntityInitializer;
+    private ComputedFieldEntityInitializer formEntityInitializer;
 
     @InjectMocks
     private FormsController formsController;
@@ -117,23 +112,6 @@ public class FormsControllerTest {
                 .andExpect(jsonPath("$[0].name").value(COMPUTED_FIELD_NAME));
 
         verify(computedFieldService, times(1)).getComputedFieldsByFormId(ONE);
-    }
-
-    @Test
-    public void testGetFieldsByFormId() throws Exception {
-        Set<FieldEntity> fieldEntities = new LinkedHashSet<>();
-        FieldEntity fieldEntity = new FieldEntity();
-        fieldEntity.setId(ONE);
-        fieldEntity.setName(FIELD_NAME);
-        fieldEntities.add(fieldEntity);
-        Mockito.when(fieldService.getAllFieldsByFormId(ONE)).thenReturn(fieldEntities);
-
-        mockMvc.perform(get("/api/forms/" + ONE + "/fields"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(ONE))
-                .andExpect(jsonPath("$[0].name").value(FIELD_NAME));
-
-        verify(fieldService, times(1)).getAllFieldsByFormId(ONE);
     }
 
     @Test

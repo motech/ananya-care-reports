@@ -1,11 +1,10 @@
 package org.motechproject.carereporting.domain.initializers;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.FieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.dto.FieldDto;
 import org.motechproject.carereporting.service.ComputedFieldService;
-import org.motechproject.carereporting.service.FieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,19 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FormEntityInitializer {
+public class ComputedFieldEntityInitializer {
 
     @Autowired
     private FormsService formsService;
-
-    @Autowired
-    private FieldService fieldService;
 
     @Autowired
     private ComputedFieldService computedFieldService;
@@ -50,18 +45,9 @@ public class FormEntityInitializer {
             if (formTables.contains(formEntity.getTableName())) {
                 newFormEntities.remove(formEntity.getTableName());
             }
-
-            createFields(formEntity);
         }
 
-        Iterator<FormEntity> mapIterator = newFormEntities.values().iterator();
-        while (mapIterator.hasNext()) {
-            FormEntity formEntity = mapIterator.next();
-
-            if (formEntity == null) {
-                continue;
-            }
-
+        for (FormEntity formEntity: newFormEntities.values()) {
             formsService.addForm(formEntity);
             createFields(formEntity);
         }
@@ -69,32 +55,22 @@ public class FormEntityInitializer {
 
     @Transactional(readOnly = false)
     private void createFields(FormEntity formEntity) {
-        Set<FieldEntity> fieldEntities = formsService.getFieldsByFormEntity(formEntity);
-        List<String> existingEntities = fieldService.getAllFieldNamesByFormId(formEntity.getId());
-
-        for (FieldEntity fieldEntity : fieldEntities) {
-            if (existingEntities.contains(fieldEntity.getName())) {
-                continue;
-            }
-
-            fieldService.createNewField(fieldEntity);
-
-            Set<FieldOperationEntity> fieldOperationEntities = new LinkedHashSet<>();
-            fieldOperationEntities.add(new FieldOperationEntity(fieldEntity));
-
-            ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity(
-                    fieldEntity.getName(),
-                    fieldEntity.getType(),
-                    fieldEntity.getForm(),
-                    fieldOperationEntities
-            );
-
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("CAN_CREATE_COMPUTED_FIELDS"));
-            SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken("principal", "credentials", authorities));
-            computedFieldService.createNewComputedField(computedFieldEntity);
-            SecurityContextHolder.clearContext();
+        setupSecurityContext();
+        Set<FieldDto> fields = formsService.getFieldsByFormEntity(formEntity);
+        for (FieldDto field : fields) {
+            computedFieldService.createNewComputedField(new ComputedFieldEntity(
+                field.getName(),
+                field.getType(),
+                formEntity,
+                new LinkedHashSet<FieldOperationEntity>()));
         }
+        SecurityContextHolder.clearContext();
+    }
+
+    private void setupSecurityContext() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("CAN_CREATE_COMPUTED_FIELDS"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("principal", "credentials", authorities));
     }
 }

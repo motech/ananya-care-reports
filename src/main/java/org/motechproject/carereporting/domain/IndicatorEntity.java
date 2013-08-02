@@ -53,7 +53,6 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private AreaEntity area;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "computed_field_id")
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })

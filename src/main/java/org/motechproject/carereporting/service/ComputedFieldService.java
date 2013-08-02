@@ -21,4 +21,7 @@ public interface ComputedFieldService {
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
     void createNewComputedFieldFromDto(ComputedFieldDto computedFieldDto);
+
+    @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
+    void updateComputedFieldFromDto(Integer id, ComputedFieldDto computedFieldDto);
 }
