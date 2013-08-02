@@ -66,8 +66,7 @@ public class IndicatorValueCalculator {
             BigDecimal indicatorValue = calculator.calculateIndicatorValueForArea(area);
 
             if (indicatorValue != null) {
-                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(),
-                        indicator, area, indicatorValue);
+                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator, area, indicatorValue);
                 indicatorService.createNewIndicatorValue(indicatorValueEntity);
             }
         }

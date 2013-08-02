@@ -631,7 +631,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     var indicatorScope = $rootScope.indicatorScope;
     delete $rootScope.indicatorScope;
 
-    $rootScope.pageTitle = $scope.msg('indicators.title');
+    $scope.title = $scope.msg('indicators.title');
 
     $scope.complexCondition = {};
     $scope.complexCondition.conditions = [];
@@ -878,139 +878,6 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
     $scope.close = function(result) {
         dialog.close(result);
-    };
-});
-
-care.controller('createComputedFieldController', function($rootScope, $scope, $http, $dialog) {
-    var indicatorScope = $rootScope.indicatorScope;
-    delete $rootScope.indicatorScope;
-
-    $rootScope.pageTitle = $scope.msg('indicators.title');
-
-    $scope.listOperators = [];
-    $scope.listFields = [];
-    $scope.selectedFields = [];
-    $scope.newField = {};
-    $scope.newField.type = "Number";
-
-    $scope.filterFieldsByNumberType = function(fieldList) {
-        var filteredFields = [];
-
-        for (var i = 0; i < fieldList.length; i++) {
-            if (fieldList[i].type === $scope.newField.type) {
-                filteredFields.push(fieldList[i]);
-            }
-        }
-
-        return filteredFields;
-    };
-
-    $scope.fetchOperators = function() {
-        $http.get('api/complexcondition/operatortype')
-            .success(function(operators) {
-                operators.sortByField('name');
-                $scope.listOperators = operators;
-
-                if ($scope.listOperators.notEmpty()) {
-                    $scope.selectedOperator = $scope.listOperators[0];
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'computed_field.error.cannotLoadOperatorList');
-            });
-    };
-    $scope.fetchOperators();
-
-    $scope.fetchFields = function() {
-        $http.get('api/forms/' + indicatorScope.selectedForm + '/fields')
-            .success(function(fields) {
-                fields.sortByField('name');
-                $scope.listFields = $scope.filterFieldsByNumberType(fields);
-
-                if ($scope.listFields.notEmpty()) {
-                    $scope.selectedField = $scope.listFields[0].id;
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'computed_field.error.cannotLoadFieldList');
-            });
-    };
-    $scope.fetchFields();
-
-    $scope.addField = function() {
-        if (!$scope.selectedField) {
-            return;
-        }
-
-        var index = -1;
-        for (var i = 0; i < $scope.listFields.length; i++) {
-            if ($scope.listFields[i].id == $scope.selectedField) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            var field = {
-                operator: ($scope.selectedFields.length > 0) ? $scope.selectedOperator : null,
-                field: $scope.listFields[index]
-            };
-
-            $scope.selectedFields.push(field);
-            $scope.listFields.splice(index, 1);
-            if ($scope.listFields.notEmpty()) {
-                $scope.selectedField = $scope.listFields[0].id;
-            }
-        }
-    };
-
-    $scope.removeField = function(key) {
-        $scope.listFields.push($scope.selectedFields[key].field);
-        $scope.listFields.sortByField('name');
-        $scope.selectedField = $scope.listFields[0].id;
-
-        $scope.selectedFields.splice(key, 1);
-
-        if (key == 0 && $scope.selectedFields.notEmpty()) {
-            $scope.selectedFields[0].operator = null;
-        }
-    };
-
-    $scope.createFieldOperations = function() {
-        var fields = $scope.selectedFields;
-        var fieldOperations = [];
-
-        for (var i = 0; i < $scope.selectedFields.length; i++) {
-            if (fieldOperations.length > 1 && i >= $scope.selectedFields.length - 1) {
-                break;
-            }
-
-            var fieldOperation = {
-                field1: fields[i].field,
-                field2: (i + 1 < $scope.selectedFields.length) ? fields[i + 1].field : null,
-                operatorType: (i + 1 < $scope.selectedFields.length) ? fields[i + 1].operator : null,
-            };
-
-            fieldOperations.push(fieldOperation);
-        }
-
-        return fieldOperations;
-    };
-
-    $scope.saveNewComputedField = function() {
-        $scope.newField.form = indicatorScope.selectedForm;
-        $scope.newField.fieldOperations = $scope.createFieldOperations();
-
-        $http({
-            url: "api/computedfields",
-            method: "POST",
-            data: $scope.newField,
-            headers: { 'Content-Type': 'application/json' },
-            dialog: this
-        }).success(function(data, status, headers, config) {
-            indicatorScope.fetchComputedFields();
-            config.dialog.dismiss();
-        }).error(function(data, status, headers, config) {
-            $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-        });
     };
 });
 

@@ -121,7 +121,7 @@
 				<li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                      <li><a href="#/computed-fields">{{msg('menu.computedFields')}}</a></li>
+                      <li><a href="#/admin/computed-fields">{{msg('menu.admin.computedFields')}}</a></li>
                   </ul>
               </li>
              </ul>

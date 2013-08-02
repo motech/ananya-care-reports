@@ -206,9 +206,7 @@ h5 {
 
 .condition-dialog {
     width: 900px !important;
-    height: 100% !important;
     margin-left: -450px !important;
-    top: 0 !important;
 }
 
 .condition-dialog-body {
