@@ -10,7 +10,7 @@ localizationModule.factory("i18nService", function() {
         ready : false,
         loading : false,
         languages : {
-            "en": "English",
+            "en": "English (US)",
             "pl": "Polski"
         },
 
@@ -33,7 +33,7 @@ localizationModule.factory("i18nService", function() {
 
             jQuery.i18n.properties({
                 name:'messages',
-                path:'messages/',
+                path: 'api/languages/messages/plain/',
                 mode:'map',
                 language: lang || null,
                 callback: function() {
@@ -43,12 +43,10 @@ localizationModule.factory("i18nService", function() {
             });
         },
 
-
-
         getLanguage : function(locale) {
             return {
                 key: locale.toString() || "en",
-                value: this.languages[locale.fullName()] || this.languages[locale.withoutVariant()] || this.languages[locale.language] || "English"
+                value: this.languages[locale.fullName()] || this.languages[locale.withoutVariant()] || this.languages[locale.language] || "English (US)"
             }
         }
     }

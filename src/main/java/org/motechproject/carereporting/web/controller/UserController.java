@@ -170,7 +170,7 @@ public class UserController extends BaseController {
     public void registerUser(@RequestBody @Valid UserEntity userEntity, BindingResult bindingResult,
                              HttpServletRequest request) {
         if (StringUtils.isEmpty(userEntity.getPassword())) {
-            bindingResult.rejectValue("password", "NotNull.userEntity.password");
+            bindingResult.rejectValue("password", "notNull.userEntity.password");
         }
 
         if (bindingResult.hasErrors()) {
@@ -180,7 +180,7 @@ public class UserController extends BaseController {
         try {
             userService.register(userEntity);
         } catch (EntityException e) {
-            bindingResult.rejectValue("username", "Duplicate.userEntity.username");
+            bindingResult.rejectValue("username", "duplicate.userEntity.username");
             throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
         }
     }
@@ -195,7 +195,7 @@ public class UserController extends BaseController {
         try {
             userService.updateUser(userEntity);
         } catch (EntityException e) {
-            result.rejectValue("username", "Duplicate.userEntity.username");
+            result.rejectValue("username", "duplicate.userEntity.username");
             throw new CareApiRuntimeException(result.getFieldErrors(), e);
         }
     }

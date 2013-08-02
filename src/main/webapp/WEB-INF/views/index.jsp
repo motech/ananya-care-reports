@@ -39,6 +39,8 @@
     <script src="resources/js/app.js" type="text/javascript"></script>
     <script src="resources/js/services.js" type="text/javascript"></script>
     <script src="resources/js/filters.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/nav.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/languages.js" type="text/javascript"></script>
     <script src="resources/js/controllers/categories.js" type="text/javascript"></script>
     <script src="resources/js/controllers/dashboards.js" type="text/javascript"></script>
     <script src="resources/js/controllers/forms.js" type="text/javascript"></script>
@@ -46,7 +48,6 @@
     <script src="resources/js/controllers/roles.js" type="text/javascript"></script>
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>
     <script src="resources/js/controllers/reports.js" type="text/javascript"></script>
-    <script src="resources/js/controllers/nav.js" type="text/javascript"></script>
     <script src="resources/js/controllers/computed-fields.js" type="text/javascript"></script>
     <script src="resources/js/directives.js" type="text/javascript"></script>
     <script src="resources/lib/flotr2.min.js"></script>
@@ -57,8 +58,8 @@
     <![endif]-->
 </head>
 <body>
-    <div class="navbar" bs-navbar>
-         <div class="navbar-inner" ng-controller="navController">
+    <div class="navbar" bs-navbar ng-controller="navController">
+         <div class="navbar-inner">
              <a class="brand" style="font-size: 13px;" href="#">{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</a>
              <ul class="nav">
                  <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
@@ -118,12 +119,26 @@
                          <li><a href="#/forms"><i class="icon-list"></i> {{msg('menu.forms.list')}}</a></li>
                      </ul>
                  </li>
-				<li class="dropdown">
+                <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                       <li><a href="#/admin/computed-fields">{{msg('menu.admin.computedFields')}}</a></li>
                   </ul>
-              </li>
+                </li>
+                <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}} <b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                          <li class="dropdown-submenu">
+                              <a href="#"><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
+                              <ul class="dropdown-menu">
+                                  <li ng-repeat="item in listLanguages">
+                                      <a href="#" ng-click="selectLanguage($index)">{{item.name}}</a>
+                                  </li>
+                              </ul>
+                          </li>
+                          <li><a href="#/messages"><i class="icon-list"></i> {{msg('menu.languages.list')}}</a></li>
+                      </ul>
+                  </li>
              </ul>
              <div class="pull-right">
                  <a href="#/indicators/recalculate" class="btn">{{msg('menu.recalculate')}}</a>

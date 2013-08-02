@@ -40,6 +40,8 @@
     <bean id="authenticationProvider"
           class="org.motechproject.carereporting.auth.CareReportingAuthenticationProvider" />
 
+    <bean id="servletContextProvider" class="org.motechproject.carereporting.context.ServletContextProvider" />
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${test.jdbc.driverName}" />
         <property name="url" value="${test.jdbc.url}" />

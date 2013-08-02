@@ -230,3 +230,11 @@ h5 {
 .time-dialog {
     height: 200px;
 }
+
+#messageContainer .control-label {
+    width: 320px !important;
+}
+
+#messageContainer .controls {
+    margin-left: 340px !important;
+}

@@ -62,7 +62,7 @@ public class ReportController extends BaseController {
                     reportDto.getIndicatorId(),
                     reportDto.getReportTypeId());
         } catch (EntityException e) {
-            bindingResult.rejectValue("name", "Duplicate.reportForm.name");
+            bindingResult.rejectValue("name", "duplicate.reportForm.name");
             throw new CareApiRuntimeException(bindingResult.getFieldErrors(), e);
         }
     }

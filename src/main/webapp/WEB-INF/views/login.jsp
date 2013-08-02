@@ -46,7 +46,7 @@
                     <button type="submit" class="btn btn-success btn-large offset2"><spring:message code="login.submit" /></button>
                 </div>
                 <div class="login-default-info">
-                    <spring:message code="login.default_login_info" />
+                    <spring:message code="login.defaultLoginInfo" />
                 </div>
             </form>
         </div>

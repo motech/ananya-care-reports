@@ -646,21 +646,21 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
     $scope.listComparisonSymbols = [];
     $scope.listConditionTypes = [
-        { type: 'date', code: 'complex_condition.condition_type.date' },
-        { type: 'field', code: 'complex_condition.condition_type.field' },
-        { type: 'value', code: 'complex_condition.condition_type.value' }
+        { type: 'date', code: 'complexCondition.conditionType.date' },
+        { type: 'field', code: 'complexCondition.conditionType.field' },
+        { type: 'value', code: 'complexCondition.conditionType.value' }
     ];
     $scope.newCondition.type = 'date';
 
     $scope.listDateDiffTypes = [
-        { code: 'complex_condition.minutes' },
-        { code: 'complex_condition.hours' },
-        { code: 'complex_condition.days' },
-        { code: 'complex_condition.weeks' },
-        { code: 'complex_condition.months' },
-        { code: 'complex_condition.years' }
+        { code: 'complexCondition.minutes' },
+        { code: 'complexCondition.hours' },
+        { code: 'complexCondition.days' },
+        { code: 'complexCondition.weeks' },
+        { code: 'complexCondition.months' },
+        { code: 'complexCondition.years' }
     ];
-    $scope.newCondition.dateDiffType = 'days';
+    $scope.newCondition.dateDiffType = 'complexCondition.days';
 
     $scope.listForms = indicatorScope.listForms;
     if (indicatorScope.listForms.notEmpty()) {
@@ -811,7 +811,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
         if (condition.type == 'date') {
             condition.name = condition.form1.displayName + '.' + condition.field1.name
                 + ' ' + condition.comparisonSymbol.name + ' ' + condition.value + ' ' + $scope.msg(condition.dateDiffType)
-                + ' ' + $scope.msg('complex_condition.since')
+                + ' ' + $scope.msg('complexCondition.since')
                 +  ' ' + condition.form2.displayName + '.' + condition.field2.name
         } else if (condition.type == 'field') {
             condition.name = condition.form1.displayName + '.' + condition.field1.name
