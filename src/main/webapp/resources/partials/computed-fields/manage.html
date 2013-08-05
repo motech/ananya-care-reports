@@ -1,7 +1,7 @@
 <div ng:init="$root.pageTitle = title"></div>
 
 <div>
-    <h1 class="text-center">{{msg('computed_field.header')}}</h1>
+    <h1 class="text-center">{{msg('computedField.header')}}</h1>
     <div class="row">
         <div class="span7 offset1 computed-fields-list">
             <table class="table table-striped table-hover">
@@ -28,7 +28,7 @@
                     <div class="nested-well">
                         <table class="table table-highlight">
                             <thead>
-                            <th colspan="2">{{msg('computed_field.selectedFieldsHeader')}}:</th>
+                            <th colspan="2">{{msg('computedField.selectedFieldsHeader')}}:</th>
                             </thead>
                             <tbody>
                             <tr ng-repeat="(key, item) in selectedFields">
@@ -40,13 +40,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <label for="field">{{msg('computed_field.label.selectField')}}:</label>
+                    <label for="field">{{msg('computedField.label.selectField')}}:</label>
                     <p>
                         <select id="operator" class="span3" ng-model="selectedOperator" ng-options="item as item.name for (key, item) in listOperators" ng-disabled="selectedFields.length < 1"></select>
                         <select id="field" ng-model="selectedField" ng-options="item.id as item.name for (key, item) in fields"></select>
                     </p>
                     <p>
-                        <span class="btn" ng-click="addField()" ng-disabled="fields.length <= 0">{{msg('computed_field.button.add')}}</span>
+                        <span class="btn" ng-click="addField()" ng-disabled="fields.length <= 0">{{msg('computedField.button.add')}}</span>
                         <span class="btn btn-primary pull-right" ng-click="save()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('common.save')}}</span>
                     </p>
                 </form>
