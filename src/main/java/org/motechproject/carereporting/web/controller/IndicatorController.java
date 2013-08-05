@@ -11,6 +11,9 @@ import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.xml.XmlIndicatorParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Set;
@@ -29,6 +34,8 @@ import java.util.Set;
 @RequestMapping("api/indicator")
 @Controller
 public class IndicatorController extends BaseController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IndicatorController.class);
 
     @Autowired
     private IndicatorService indicatorService;
@@ -38,6 +45,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private CronService cronService;
+
+    @Autowired
+    private XmlIndicatorParser xmlIndicatorParser;
 
     // IndicatorEntity
 
@@ -188,6 +198,18 @@ public class IndicatorController extends BaseController {
         cronTaskEntity.setTime(time);
 
         cronService.updateCronTask(cronTaskEntity);
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file) throws Exception {
+        try {
+            indicatorService.createNewIndicatorFromDto(xmlIndicatorParser.parse(file.getInputStream()));
+            return "redirect:/#/indicators/new";
+        } catch (Exception e) {
+            LOG.warn("", e);
+            throw e;
+        }
     }
 
 }

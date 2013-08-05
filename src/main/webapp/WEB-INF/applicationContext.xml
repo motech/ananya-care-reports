@@ -108,4 +108,7 @@
 
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
 </beans>

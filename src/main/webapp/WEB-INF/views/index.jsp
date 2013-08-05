@@ -92,6 +92,8 @@
                                  <li><a href="#/reports"><i class="icon-list"></i> {{msg('menu.reports.list')}}</a></li>
                              </ul>
                          </li>
+                         <li class="divider"></li>
+                         <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                      </ul>
                  </li>
                  <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">
