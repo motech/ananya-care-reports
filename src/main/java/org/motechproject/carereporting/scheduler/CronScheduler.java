@@ -35,7 +35,7 @@ public class CronScheduler {
 
         for (CronTaskEntity cronTaskEntity : allCronTasks) {
             JobDetail job = new JobDetail();
-            job.setName(cronTaskEntity.getName());
+            job.setName(cronTaskEntity.getFrequency().getFrequencyName());
             job.setJobClass(IndicatorValueCalculatorJob.class);
 
             Trigger trigger = prepareTrigger(cronTaskEntity);
@@ -49,7 +49,7 @@ public class CronScheduler {
         Trigger trigger = prepareTrigger(cronTaskEntity);
 
         try {
-            scheduler.rescheduleJob(cronTaskEntity.getName(), DEFAULT_GROUP_NAME, trigger);
+            scheduler.rescheduleJob(cronTaskEntity.getFrequency().getFrequencyName(), DEFAULT_GROUP_NAME, trigger);
         } catch (SchedulerException e) {
             LOGGER.trace(e.getMessage());
         }
@@ -57,8 +57,8 @@ public class CronScheduler {
 
     private Trigger prepareTrigger(CronTaskEntity cronTaskEntity) {
         CronTrigger trigger = new CronTrigger();
-        trigger.setJobName(cronTaskEntity.getName());
-        trigger.setName(cronTaskEntity.getName());
+        trigger.setJobName(cronTaskEntity.getFrequency().getFrequencyName());
+        trigger.setName(cronTaskEntity.getFrequency().getFrequencyName());
 
         try {
             trigger.setCronExpression(cronTaskEntity.toString());

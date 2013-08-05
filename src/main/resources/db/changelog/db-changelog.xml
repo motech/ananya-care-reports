@@ -284,4 +284,62 @@
         </sql>
     </changeSet>
 
+    <!--TODO-->
+    <changeSet id="CARE #?" author="Adrian Boguszewski">
+        <sql>
+            create table dashboard_app.frequency(
+                frequency_id serial not null,
+                frequency_name character varying(10),
+                parent_frequency_id integer,
+                creation_date timestamp,
+                modification_date timestamp,
+            constraint frequency_pk primary key (frequency_id),
+            constraint frequency_uq unique (frequency_name),
+            constraint frequency_fk foreign key (parent_frequency_id) references dashboard_app.frequency (frequency_id));
+
+            insert into dashboard_app.frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values
+                ('yearly', null, now(), now()),
+                ('quarterly', 1, now(), now()),
+                ('monthly', 2, now(), now()),
+                ('weekly', 3, now(), now()),
+                ('daily', 4, now(), now());
+        </sql>
+        <dropColumn tableName="indicator_value" columnName="date" schemaName="dashboard_app"/>
+        <addColumn tableName="indicator_value" schemaName="dashboard_app">
+            <column name="nominator" type="decimal(19,6)"/>
+        </addColumn>
+        <addColumn tableName="indicator_value" schemaName="dashboard_app">
+            <column name="denominator" type="decimal(19,6)"/>
+        </addColumn>
+        <addColumn tableName="indicator_value" schemaName="dashboard_app">
+            <column name="frequency_id" type="integer"/>
+        </addColumn>
+        <addColumn tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" type="integer"/>
+        </addColumn>
+        <update tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" value="1"/>
+            <where>name = 'yearly'</where>
+        </update>
+        <update tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" value="2"/>
+            <where>name = 'quarterly'</where>
+        </update>
+        <update tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" value="3"/>
+            <where>name = 'monthly'</where>
+        </update>
+        <update tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" value="4"/>
+            <where>name = 'weekly'</where>
+        </update>
+        <update tableName="cron_task" schemaName="dashboard_app">
+            <column name="frequency_id" value="5"/>
+            <where>name = 'daily'</where>
+        </update>
+        <dropColumn tableName="cron_task" columnName="name" schemaName="dashboard_app"/>
+        <addNotNullConstraint tableName="cron_task" columnName="frequency_id" schemaName="dashboard_app"/>
+        <addNotNullConstraint tableName="indicator_value" columnName="frequency_id" schemaName="dashboard_app"/>
+    </changeSet>
+
 </databaseChangeLog>

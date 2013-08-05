@@ -23,9 +23,6 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Autowired
     private IndicatorService indicatorService;
-//
-//    @Mock
-//    private ApplicationContext applicationContext;
 
     @Autowired
     private CronService cronService;
@@ -33,12 +30,12 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     private static final String TASK_NAME = "weekly";
 
     @Test
-    public void testGetCronTaskByName() {
+    public void testGetCronTaskByFrequencyName() {
         String cronExpression = "0 0 0 ? * MON";
-        CronTaskEntity cronTaskEntity = cronService.getCronTaskByName(TASK_NAME);
+        CronTaskEntity cronTaskEntity = cronService.getCronTaskByFrequencyName(TASK_NAME);
 
         assertNotNull(cronTaskEntity);
-        assertEquals(TASK_NAME, cronTaskEntity.getName());
+        assertEquals(TASK_NAME, cronTaskEntity.getFrequency().getFrequencyName());
         assertEquals(cronExpression, cronTaskEntity.toString());
     }
 
@@ -49,24 +46,24 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         CronTaskEntity cronTaskEntity = cronService.getDailyCronTask();
 
         assertNotNull(cronTaskEntity);
-        assertEquals(defaultName, cronTaskEntity.getName());
+        assertEquals(defaultName, cronTaskEntity.getFrequency().getFrequencyName());
         assertEquals(cronExpression, cronTaskEntity.toString());
     }
 
     @Test
     public void testUpdateCronTask() {
         String cronExpression = "0 0 3,4 ? * 1-6";
-        CronTaskEntity cronTaskEntity = cronService.getCronTaskByName(TASK_NAME);
+        CronTaskEntity cronTaskEntity = cronService.getCronTaskByFrequencyName(TASK_NAME);
 
         cronTaskEntity.setHour("3,4");
         cronTaskEntity.setWeekDay("1-6");
 
         cronService.updateCronTask(cronTaskEntity);
 
-        cronTaskEntity = cronService.getCronTaskByName(TASK_NAME);
+        cronTaskEntity = cronService.getCronTaskByFrequencyName(TASK_NAME);
 
         assertNotNull(cronTaskEntity);
-        assertEquals(TASK_NAME, cronTaskEntity.getName());
+        assertEquals(TASK_NAME, cronTaskEntity.getFrequency().getFrequencyName());
         assertEquals(cronExpression, cronTaskEntity.toString());
     }
 

@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer;
+import org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;

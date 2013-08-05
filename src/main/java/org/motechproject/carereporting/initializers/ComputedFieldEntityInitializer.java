@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.domain.initializers;
+package org.motechproject.carereporting.initializers;
 
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;

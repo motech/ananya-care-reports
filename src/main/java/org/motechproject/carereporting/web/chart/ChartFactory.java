@@ -54,7 +54,7 @@ public final class ChartFactory {
         SerieBuilder serieBuilder = new SerieBuilder();
 
         for (IndicatorValueEntity value: values) {
-            serieBuilder.point(BigDecimal.valueOf(value.getDate().getTime()), value.getValue());
+            serieBuilder.point(BigDecimal.valueOf(value.getModificationDate().getTime()), value.getValue());
         }
 
         return serieBuilder.build();

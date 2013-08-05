@@ -74,7 +74,7 @@
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
 
-    <bean id="formEntityInitializer" class="org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer" />
+    <bean id="formEntityInitializer" class="org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer" />
 
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 

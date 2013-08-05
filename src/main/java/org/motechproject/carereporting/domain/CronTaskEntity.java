@@ -1,11 +1,11 @@
 package org.motechproject.carereporting.domain;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -16,10 +16,10 @@ import javax.validation.constraints.NotNull;
 })
 public class CronTaskEntity extends AbstractEntity {
 
+    @OneToOne
     @NotNull
-    @NotEmpty
-    @Column(name = "name", nullable = false)
-    private String name;
+    @JoinColumn(name = "frequency_id", nullable = false)
+    private FrequencyEntity frequency;
 
     @NotNull
     @Column(name = "second", nullable = false)
@@ -64,12 +64,12 @@ public class CronTaskEntity extends AbstractEntity {
         return (second + " " + minute + " " + hour + " " + day + " " + month + " " + weekDay + " " + year).trim();
     }
 
-    public String getName() {
-        return name;
+    public FrequencyEntity getFrequency() {
+        return frequency;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFrequency(FrequencyEntity frequency) {
+        this.frequency = frequency;
     }
 
     public String getSecond() {

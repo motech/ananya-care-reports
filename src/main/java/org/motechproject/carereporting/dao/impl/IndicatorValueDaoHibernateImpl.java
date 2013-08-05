@@ -50,7 +50,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
         Long minDiff = null;
         IndicatorValueEntity value = null;
         for (IndicatorValueEntity loopValue: values) {
-            long diff = Math.abs(date.getTime() - loopValue.getDate().getTime());
+            long diff = Math.abs(date.getTime() - loopValue.getModificationDate().getTime());
             if (minDiff == null || diff < minDiff) {
                 minDiff = diff;
                 value = loopValue;

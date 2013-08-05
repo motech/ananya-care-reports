@@ -3,6 +3,7 @@ package org.motechproject.carereporting.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
@@ -153,18 +154,26 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testCreateNewIndicatorValue() {
+        Integer id = 1;
         IndicatorEntity indicator = indicatorService.getIndicatorById(INDICATOR_ID);
-        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator,
+        FrequencyEntity frequencyEntity = new FrequencyEntity();
+        frequencyEntity.setId(id);
+        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
                 indicator.getArea(), BigDecimal.ONE);
+        indicatorValueEntity.setFrequency(frequencyEntity);
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         assertNotNull(indicatorService.getAllIndicatorValues().iterator().next());
     }
 
     @Test
     public void testUpdateIndicatorValue() {
+        Integer id = 1;
         IndicatorEntity indicator = indicatorService.getIndicatorById(INDICATOR_ID);
-        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator,
+        FrequencyEntity frequencyEntity = new FrequencyEntity();
+        frequencyEntity.setId(id);
+        IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
                 indicator.getArea(), BigDecimal.ONE);
+        indicatorValueEntity.setFrequency(frequencyEntity);
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
         indicatorService.updateIndicatorValue(indicatorValueEntity);

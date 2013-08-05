@@ -17,6 +17,7 @@ public class LanguageDaoHibernateImpl extends GenericDaoHibernateImpl<LanguageEn
     private SessionFactory sessionFactory;
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<LanguageEntity> getAllWithDefined(Boolean isDefined) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from LanguageEntity where defined = :isDefined");
@@ -31,6 +32,6 @@ public class LanguageDaoHibernateImpl extends GenericDaoHibernateImpl<LanguageEn
                 .createQuery("from LanguageEntity where code = :languageCode");
         query.setParameter("languageCode", languageCode);
 
-        return (LanguageEntity)query.list().get(0);
+        return (LanguageEntity) query.list().get(0);
     }
 }

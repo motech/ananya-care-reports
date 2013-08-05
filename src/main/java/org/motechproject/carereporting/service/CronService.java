@@ -8,7 +8,7 @@ public interface CronService {
 
     Set<CronTaskEntity> getAllCronTasks();
 
-    CronTaskEntity getCronTaskByName(String name);
+    CronTaskEntity getCronTaskByFrequencyName(String name);
 
     CronTaskEntity getDailyCronTask();
 

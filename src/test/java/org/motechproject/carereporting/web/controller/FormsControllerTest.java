@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.initializers.ComputedFieldEntityInitializer;
+import org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.http.MediaType;

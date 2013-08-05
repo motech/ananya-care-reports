@@ -2,7 +2,9 @@ package org.motechproject.carereporting.service.impl;
 
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.dao.CronTaskDao;
+import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.domain.CronTaskEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.scheduler.CronScheduler;
 import org.motechproject.carereporting.service.CronService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +25,23 @@ public class CronServiceImpl implements CronService {
     @Autowired
     private CronTaskDao cronTaskDao;
 
+    @Autowired
+    private FrequencyDao frequencyDao;
+
     @Override
     public Set<CronTaskEntity> getAllCronTasks() {
         return cronTaskDao.getAll();
     }
 
     @Override
-    public CronTaskEntity getCronTaskByName(String name) {
-        return cronTaskDao.getByName(name);
+    public CronTaskEntity getCronTaskByFrequencyName(String name) {
+        FrequencyEntity frequencyEntity = frequencyDao.getByFrequencyName(name);
+        return cronTaskDao.getByFrequency(frequencyEntity);
     }
 
     @Override
     public CronTaskEntity getDailyCronTask() {
-        return cronTaskDao.getByName(DAILY_TASK_NAME);
+        return getCronTaskByFrequencyName(DAILY_TASK_NAME);
     }
 
     @Override

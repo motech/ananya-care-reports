@@ -19,7 +19,6 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +49,6 @@ public class IndicatorValueCalculator {
         int calculatedIndicatorsCount = 0;
         Set<IndicatorEntity> indicators = indicatorService.getAllIndicators();
         for (IndicatorEntity indicator: indicators) {
-            LOG.info("Calculating values for indicator: " + indicator.getName());
             calculateAndPersistIndicatorValues(indicator);
             ++calculatedIndicatorsCount;
             LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
@@ -66,7 +64,7 @@ public class IndicatorValueCalculator {
             BigDecimal indicatorValue = calculator.calculateIndicatorValueForArea(area);
 
             if (indicatorValue != null) {
-                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(new Date(), indicator, area, indicatorValue);
+                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator, area, indicatorValue);
                 indicatorService.createNewIndicatorValue(indicatorValueEntity);
             }
         }
