@@ -117,8 +117,10 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
         }
 
         $scope.nextId = 1;
-        var div = $scope.constructMessageElements($scope.messages, 2);
+        var div = $scope.constructMessageElements($scope.messages, 0, $('#messageContainer'));
         $('#messageContainer').append(div);
+
+        console.log($scope.messages['categories']);
     };
 
     $scope.constructMessage = function(message) {
@@ -132,10 +134,6 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
                 lastCategory[categoryName] = { '_name': categoryName };
             }
             lastCategory = lastCategory[categoryName];
-        }
-
-        if (lastCategory === undefined) {
-            return;
         }
 
         lastCategory['_message'] = message.value;
@@ -160,16 +158,16 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
         return categoryName[0].toUpperCase() + categoryName.substr(1);
     };
 
-    $scope.constructMessageElements = function(category, hierarchyLevel) {
-        if (category === undefined) {
-            return;
-        }
-
-        var level = hierarchyLevel;
+    $scope.constructMessageElements = function(category, hierarchyLevel, parentElement) {
+        var level = hierarchyLevel + 2;
         var div = angular.element('<div />');
+        if (hierarchyLevel == 0) {
+            div.attr('data-hierarchy-level', hierarchyLevel);
+        }
         var isMessage = (category['_message'] !== undefined);
 
         if (isMessage) {
+            div.attr('data-message', true);
             var id = $scope.nextId++;
             var code = category['_code'];
             var message = category['_message'];
@@ -185,13 +183,21 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
 
                     $("#saveButton").prop('disabled', error);
                     $(this).parent().parent().toggleClass('alert alert-error', error);
-                });
+            });
 
             controls.append(input);
             controlGroup.append(label);
             controlGroup.append(controls);
             div.append(controlGroup);
-            return div;
+
+            var lastMessage = parentElement.children('div:not(.message-category):last');
+            if (lastMessage.length) {
+                lastMessage.after(div);
+            } else {
+                parentElement.prepend(div);
+            }
+            return null;
+            //return div;
         }
 
         $scope.validateForm = function() {
@@ -206,9 +212,15 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
 
         var keys = Object.keys(category);
         keys.sort();
+        var messages = keys;
+
         for (var i = 0; i < keys.length; i++) {
             if (keys[i] != '_name' && category.hasOwnProperty(keys[i])) {
-                div.append($scope.constructMessageElements(category[keys[i]], level + 1));
+                if (category['_message'] !== undefined) {
+                    continue;
+                }
+
+                div.append($scope.constructMessageElements(category[keys[i]], hierarchyLevel + 1, div));
             };
         }
 

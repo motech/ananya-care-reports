@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -125,8 +126,9 @@ public class LanguageServiceImpl implements LanguageService {
             String code = extractLanguageCode(languageCode);
             String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
 
+            Set<MessageDto> defaultMessages = getDefaultMessageFileContentsAsJson();
             if (StringUtils.isBlank(code)) {
-                return getDefaultMessageFileContentsAsJson();
+                return defaultMessages;
             }
 
             File messageFile = new File(fileName);
@@ -152,6 +154,7 @@ public class LanguageServiceImpl implements LanguageService {
                 messages.add(new MessageDto(lineParts[0], lineParts[1]));
             }
 
+            messages.addAll(defaultMessages);
             return messages;
 
         } catch (IOException e) {
@@ -164,8 +167,9 @@ public class LanguageServiceImpl implements LanguageService {
             String code = extractLanguageCode(languageCode);
             String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
 
+            Set<String> defaultMessages = getDefaultMessageFileContents();
             if (StringUtils.isBlank(code)) {
-                return getDefaultMessageFileContents();
+                return StringUtils.join(defaultMessages, '\n');
             }
 
             File messageFile = new File(fileName);
@@ -173,9 +177,11 @@ public class LanguageServiceImpl implements LanguageService {
                 throw new CareMessageFileNotFoundRuntimeException(messageFile.getName());
             }
 
-            return StringUtils.join(Files.readAllLines(
-                    Paths.get(messageFile.getAbsolutePath()),
-                    Charset.defaultCharset()), '\n');
+            Set<String> messages = new LinkedHashSet<>(Files.readAllLines(Paths.get(messageFile.getAbsolutePath()),
+                    Charset.defaultCharset()));
+
+            messages.addAll(defaultMessages);
+            return StringUtils.join(messages, '\n');
 
         } catch (IOException e) {
             throw new CareRuntimeException(e);
@@ -227,12 +233,15 @@ public class LanguageServiceImpl implements LanguageService {
         return true;
     }
 
-    private String getDefaultMessageFileContents() {
+    private Set<String> getDefaultMessageFileContents() {
         ServletContextResource resource = new ServletContextResource(
                 servletContextProvider.getServletContext(), "messages/messages.properties");
 
         try (InputStream inputStream = resource.getInputStream()) {
-            return StreamUtils.copyToString(inputStream, Charset.defaultCharset());
+            return new LinkedHashSet<>(
+                    Arrays.asList(StreamUtils.copyToString(
+                        inputStream, Charset.defaultCharset()).split("(\r\n)|(\n)")));
+
         } catch (IOException e) {
             throw new CareRuntimeException(e);
         }
