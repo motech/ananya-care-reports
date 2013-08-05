@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 
 @RequestMapping("api/chart")
 @Controller
@@ -37,17 +35,18 @@ public class ChartController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Chart getChartData(@RequestParam Integer indicatorId, @RequestParam(required = false) Integer areaId, @RequestParam String chartType) {
+    public Chart getChartData(@RequestParam Integer indicatorId,
+                              @RequestParam(required = false) Integer areaId,
+                              @RequestParam String chartType,
+                              @RequestParam Date startDate,
+                              @RequestParam Date endDate) {
 
         Integer area = areaId != null ? areaId :
                 userService.getCurrentlyLoggedUser().getArea().getId();
 
         IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DAY_OF_YEAR, -indicator.getFrequency());
         List<IndicatorValueEntity> indicatorValues =
-                indicatorService.getIndicatorValuesForArea(indicatorId, area, c.getTime());
+                indicatorService.getIndicatorValuesForArea(indicatorId, area, startDate, endDate);
 
         return reportService.prepareChart(indicator, chartType, indicatorValues);
     }
@@ -56,19 +55,14 @@ public class ChartController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<IndicatorValueEntity> getChartValues(@RequestParam Integer indicatorId,
-            @RequestParam(required = false) Integer areaId) {
+            @RequestParam(required = false) Integer areaId,
+            @RequestParam Date startDate,
+            @RequestParam Date endDate) {
 
         Integer area = areaId != null ? areaId :
                 userService.getCurrentlyLoggedUser().getArea().getId();
 
-        IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DAY_OF_YEAR, -indicator.getFrequency());
-        List<IndicatorValueEntity> indicatorValues =
-                indicatorService.getIndicatorValuesForArea(indicatorId, area, c.getTime());
-
-        return indicatorValues;
+        return indicatorService.getIndicatorValuesForArea(indicatorId, area, startDate, endDate);
     }
 
 }

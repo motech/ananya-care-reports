@@ -68,12 +68,15 @@ public class ChartControllerTest {
         mockMvc.perform(get("/api/chart")
                 .param("indicatorId", "1")
                 .param("chartType", "pie chart")
+                .param("startDate", "01/01/2013")
+                .param("endDate", "01/02/2013")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
         verify(indicatorService, times(1)).getIndicatorById(anyInt());
-        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), (Date) anyObject());
+        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(),
+                (Date) anyObject(), (Date) anyObject());
     }
 
     @Test
@@ -82,12 +85,14 @@ public class ChartControllerTest {
 
         mockMvc.perform(get("/api/chart/data")
                 .param("indicatorId", "1")
+                .param("startDate", "01/01/2013")
+                .param("endDate", "01/02/2013")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
-        verify(indicatorService, times(1)).getIndicatorById(anyInt());
-        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), (Date) anyObject());
+        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(),
+                (Date) anyObject(), (Date) anyObject());
     }
 
     private void mockMethodCalls() {

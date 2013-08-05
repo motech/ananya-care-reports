@@ -139,8 +139,20 @@
                             <tbody>
                                 <tr ng-repeat="reportRow in reportRows">
                                     <td class="span4" ng-repeat="report in reportRow">
+                                        <div ng-show="report != undefined">
+                                            <div class="input-prepend input-append">
+                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.from')}}:</span>
+                                                <input type="date" ng-model="report.from" bs-datepicker ng-change="reportFromDateChanged(report)" />
+                                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                            </div>
+                                            <div class="input-prepend input-append">
+                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.to')}}:</span>
+                                                <input type="date" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
+                                                <span class="add-on"><i class="icon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <p class="text-center"><span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</span></p>
                                         <div class="chart-container-wrapper">
-                                            <p class="text-center"><span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</span></p>
                                             <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
                                             <div class="chart-container" ng-show="report.displayType == 'table'">
                                                 <div class="row-fluid">

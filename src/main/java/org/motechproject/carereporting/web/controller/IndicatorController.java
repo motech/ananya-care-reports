@@ -57,7 +57,6 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorsByCategoryId(categoryId));
     }
 
-
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

@@ -17,16 +17,20 @@ import java.util.List;
 @Component
 public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<IndicatorValueEntity>
         implements IndicatorValueDao {
+    
+    private static final String DATE = "date";
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date earliestDate) {
+    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId,
+                                                                Date startDate, Date endDate) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorValueEntity.class)
                 .add(Restrictions.eq("indicator.id", indicatorId))
                 .add(Restrictions.eq("area.id", areaId))
-                .add(Restrictions.gt("date", earliestDate))
-                .addOrder(Order.asc("date"));
+                .add(Restrictions.ge(DATE, startDate))
+                .add(Restrictions.le(DATE, endDate))
+                .addOrder(Order.asc(DATE));
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
     }
 
@@ -36,7 +40,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
                 .createCriteria(IndicatorValueEntity.class)
                 .add(Restrictions.eq("indicator.id", indicatorId))
                 .add(Restrictions.eq("area.id", areaId))
-                .addOrder(Order.asc("date"));
+                .addOrder(Order.asc(DATE));
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
     }
 

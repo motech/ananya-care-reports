@@ -238,3 +238,7 @@ h5 {
 #messageContainer .controls {
     margin-left: 340px !important;
 }
+
+.label-fixed-width {
+    width: 40px !important;
+}

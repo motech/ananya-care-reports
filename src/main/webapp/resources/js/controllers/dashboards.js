@@ -102,6 +102,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
                             report.displayType = 'chart';
+                            report.from = moment().subtract('months', 1).format('L');
+                            report.to = moment().format('L');
                         } else {
                             report = null;
                         }
@@ -110,6 +112,24 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 }
                 $scope.reportRows.push(reportRow);
             }
+        }
+    };
+
+    $scope.reportFromDateChanged = function(report) {
+        report.from = moment(report.from);
+        report.to = moment(report.to);
+
+        if (moment(report.to).diff(report.from, 'days') <= 0) {
+            report.from = moment(report.to).subtract('days', 1).format('L');
+        }
+    };
+
+    $scope.reportToDateChanged = function(report) {
+        report.from = moment(report.from);
+        report.to = moment(report.to);
+
+        if (moment(report.to).diff(report.from, 'days') <= 0) {
+            report.to = moment(report.from).add('days', 1).format('L');
         }
     };
 
@@ -324,6 +344,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.loadChartDetails(report);
         } else if (report.displayType == 'table') {
             report.displayType = 'chart';
+            $scope.loadChartDetails(report);
         }
     };
 
@@ -333,7 +354,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchChartData = function(report, areaId) {
         var indicatorId = report.indicatorId;
-        var url = 'api/chart/data/?indicatorId=' + indicatorId;
+        var url = 'api/chart/data/?indicatorId=' + indicatorId
+            + '&startDate=' + moment(report.from).format('L')
+            + '&endDate=' + moment(report.to).format('L');
 
         if (!isNaN(areaId) && isFinite(areaId)) {
             url += '&areaId=' + areaId;

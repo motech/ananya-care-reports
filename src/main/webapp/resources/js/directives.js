@@ -154,7 +154,10 @@
                             var indicatorId = report.indicatorId;
                             var areaId = scope.areaId;
 
-                            var url = 'api/chart?chartType=' + chartType  + '&indicatorId=' + indicatorId;
+                            var url = 'api/chart?chartType=' + chartType
+                                + '&indicatorId=' + indicatorId
+                                + '&startDate=' + moment(report.from).format('L')
+                                + '&endDate=' + moment(report.to).format('L');
                             if (areaId != undefined) {
                                 url += "&areaId=" + areaId;
                             }
