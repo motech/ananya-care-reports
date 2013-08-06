@@ -252,7 +252,7 @@ public class CalculatorQueryBuilder {
                     .as(field1.getForm().getTableName());
 
             if (conditionEntity instanceof DateDiffComparisonConditionEntity) {
-                DateDiffComparisonConditionEntity condition = (DateDiffComparisonConditionEntity)conditionEntity;
+                DateDiffComparisonConditionEntity condition = (DateDiffComparisonConditionEntity) conditionEntity;
                 field2 = condition.getField2();
                 Integer value = condition.getValue();
                 Table field2Table = tableByName(SCHEMA_NAME, field2.getForm().getTableName())
@@ -264,7 +264,7 @@ public class CalculatorQueryBuilder {
                 step = step.and(getConditionByOperator(diff, value, operator));
 
             } else if (conditionEntity instanceof FieldComparisonConditionEntity) {
-                FieldComparisonConditionEntity condition = (FieldComparisonConditionEntity)conditionEntity;
+                FieldComparisonConditionEntity condition = (FieldComparisonConditionEntity) conditionEntity;
                 field2 = condition.getField2();
                 Table field2Table = tableByName(SCHEMA_NAME, field2.getForm().getTableName())
                         .as(field2.getForm().getTableName());
@@ -275,7 +275,7 @@ public class CalculatorQueryBuilder {
                         operator));
 
             } else if (conditionEntity instanceof ValueComparisonConditionEntity) {
-                ValueComparisonConditionEntity condition = (ValueComparisonConditionEntity)conditionEntity;
+                ValueComparisonConditionEntity condition = (ValueComparisonConditionEntity) conditionEntity;
                 String value = condition.getValue();
 
                 step = step.and(getConditionByOperator(
@@ -369,10 +369,10 @@ public class CalculatorQueryBuilder {
             String field2TableName = null;
 
             if (conditionEntity instanceof DateDiffComparisonConditionEntity) {
-                DateDiffComparisonConditionEntity fieldComparison = (DateDiffComparisonConditionEntity)conditionEntity;
+                DateDiffComparisonConditionEntity fieldComparison = (DateDiffComparisonConditionEntity) conditionEntity;
                 field2 = fieldComparison.getField2();
             } else if (conditionEntity instanceof FieldComparisonConditionEntity) {
-                FieldComparisonConditionEntity fieldComparison = (FieldComparisonConditionEntity)conditionEntity;
+                FieldComparisonConditionEntity fieldComparison = (FieldComparisonConditionEntity) conditionEntity;
                 field2 = fieldComparison.getField2();
             }
 

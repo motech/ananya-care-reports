@@ -47,8 +47,8 @@ public abstract class AbstractIndicatorValueCalculator {
 
             BigDecimal value = denominator.compareTo(BigDecimal.ZERO) != 0 ? nominator.divide(denominator, 1, RoundingMode.HALF_UP) : null;
 
-            if(value != null) {
-                if(this instanceof  PercentageIndicatorValueCalculator) {
+            if (value != null) {
+                if (this instanceof  PercentageIndicatorValueCalculator) {
                     value = value.multiply(new BigDecimal(100));
                 }
                 IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator, area, nominator, denominator, value, frequencyEntity);
@@ -76,7 +76,7 @@ public abstract class AbstractIndicatorValueCalculator {
     private Set<IndicatorValueEntity> getValuesFromDatabase(AreaEntity area) {
         Set<IndicatorValueEntity> values = null;
 
-        if(!frequencyEntity.getFrequencyName().equals("defined") && !frequencyEntity.getFrequencyName().equals("daily")) {
+        if (!"defined".equals(frequencyEntity.getFrequencyName()) && !"daily".equals(frequencyEntity.getFrequencyName())) {
             Date date = resolveDate();
             FrequencyEntity child = resolveChild();
             values = indicatorService.getIndicatorValues(indicator, area, child, date);
@@ -95,6 +95,8 @@ public abstract class AbstractIndicatorValueCalculator {
             case "quarterly":
             case "yearly":
                 child = child.getChildFrequency();
+                break;
+            default:
                 break;
         }
 
@@ -121,6 +123,8 @@ public abstract class AbstractIndicatorValueCalculator {
                 date = DateUtils.addYears(date, -1);
                 date = DateUtils.addSeconds(date, -25);
                 break;
+            default:
+                break;
         }
 
         return date;
@@ -129,7 +133,7 @@ public abstract class AbstractIndicatorValueCalculator {
     protected BigDecimal getNominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
         BigDecimal result = BigDecimal.ZERO;
 
-        if (frequencyEntity.getFrequencyName().equals("undefined") || frequencyEntity.getFrequencyName().equals("daily")) {
+        if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
             SelectQuery query = calculatorQueryBuilder
                     .withIndicator(indicator)
                     .withComplexCondition(indicator.getComplexCondition())
@@ -142,7 +146,7 @@ public abstract class AbstractIndicatorValueCalculator {
             String resultObjStr = (resultObj != null) ? resultObj.toString() : "0.0";
             result = new BigDecimal(resultObjStr);
         } else {
-            for(IndicatorValueEntity indicatorValueEntity: values) {
+            for (IndicatorValueEntity indicatorValueEntity: values) {
                 result = result.add(indicatorValueEntity.getNominator());
             }
         }
@@ -153,7 +157,7 @@ public abstract class AbstractIndicatorValueCalculator {
     protected BigDecimal getDenominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
         BigDecimal result = BigDecimal.ZERO;
 
-        if (frequencyEntity.getFrequencyName().equals("undefined") || frequencyEntity.getFrequencyName().equals("daily")) {
+        if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
             SelectQuery query = calculatorQueryBuilder
                     .withIndicator(indicator)
                     .withArea(areaEntity)
@@ -165,7 +169,7 @@ public abstract class AbstractIndicatorValueCalculator {
             String resultObjStr = (resultObj != null) ? resultObj.toString() : "0.0";
             result = new BigDecimal(resultObjStr);
         } else {
-            for(IndicatorValueEntity indicatorValueEntity: values) {
+            for (IndicatorValueEntity indicatorValueEntity: values) {
                 result = result.add(indicatorValueEntity.getDenominator());
             }
         }

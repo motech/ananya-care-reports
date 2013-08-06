@@ -182,6 +182,8 @@ public class XmlIndicatorParser {
                 return 3;
             case "sum":
                 return 4;
+            default:
+                break;
         }
         throw new IllegalArgumentException("Indicator type: " + typeName + " is invalid.");
     }
@@ -192,6 +194,8 @@ public class XmlIndicatorParser {
                 return 30;
             case "weekly":
                 return 7;
+            default:
+                break;
         }
         throw new IllegalArgumentException("Frequency " + frequency + " not supported.");
     }
