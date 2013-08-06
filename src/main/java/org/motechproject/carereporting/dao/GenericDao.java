@@ -15,6 +15,10 @@ public interface GenericDao<T extends AbstractEntity> {
 
     T getByIdWithFields(Integer id, String... fieldNames);
 
+    T getByField(String fieldName, Object fieldValue);
+
+    T getByFields(Map<String, Object> fields);
+
     void save(T entity);
 
     void update(T entity);

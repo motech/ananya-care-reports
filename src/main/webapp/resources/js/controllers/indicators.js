@@ -16,6 +16,10 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
+care.controller('uploadIndicatorController', function($scope) {
+    $scope.title = $scope.msg('indicators.uploadXml.title');
+});
+
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
     $scope.title = $scope.msg('indicators.title');
 

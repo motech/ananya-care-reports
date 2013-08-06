@@ -1,0 +1,40 @@
+<indicator>
+	<name>Sample Uploaded3 Indicator</name>
+	<frequency>monthly</frequency>
+    <type>count</type>
+	<computedField>eating</computedField>
+    <form>ebf_child_form</form>
+    <area>Bihar</area>
+    <categories>
+        <category name="IFA Tablets" />
+    </categories>
+    <conditions>
+		<condition type="valueComparison">
+            <fieldName>couple_interested</fieldName>
+            <symbol>=</symbol>
+			<value>yes</value>
+		</condition>
+        <condition type="valueComparison">
+            <fieldName>couple_interested</fieldName>
+            <symbol>&lt;=</symbol>
+            <value>90</value>
+        </condition>
+        <condition type="fieldComparison">
+            <fieldName>couple_interested</fieldName>
+            <symbol>&lt;=</symbol>
+            <secondField>couple_interested</secondField>
+        </condition>
+        <condition type="dateDiff">
+            <fieldName>couple_interested</fieldName>
+            <secondField>couple_interested</secondField>
+            <symbol>&lt;=</symbol>
+            <value>90</value>
+        </condition>
+	</conditions>
+</indicator>
+
+
+
+
+
+

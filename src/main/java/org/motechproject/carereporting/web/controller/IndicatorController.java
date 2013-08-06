@@ -9,6 +9,7 @@ import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
+import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.xml.XmlIndicatorParser;
@@ -48,6 +49,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private XmlIndicatorParser xmlIndicatorParser;
+
+    @Autowired
+    private ComplexConditionService complexConditionService;
 
     // IndicatorEntity
 
@@ -204,7 +208,9 @@ public class IndicatorController extends BaseController {
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public String uploadIndicatorXml(@RequestParam("file") MultipartFile file) throws Exception {
         try {
-            indicatorService.createNewIndicatorFromDto(xmlIndicatorParser.parse(file.getInputStream()));
+            IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
+            complexConditionService.createNewComplexCondition(indicatorEntity.getComplexCondition());
+            indicatorService.createNewIndicator(indicatorEntity);
             return "redirect:/#/indicators/new";
         } catch (Exception e) {
             LOG.warn("", e);

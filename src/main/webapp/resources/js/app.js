@@ -7,7 +7,7 @@
             .when('/indicators', { templateUrl: 'resources/partials/indicators/listIndicators.html', controller: 'indicatorListController' })
             .when('/indicators/new', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
             .when('/indicators/recalculate', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'recalculateIndicatorsController' })
-            .when('/indicator/upload-xml', { templateUrl: 'resources/partials/indicators/upload-xml.html'})
+            .when('/indicator/upload-xml', { templateUrl: 'resources/partials/indicators/uploadXml.html', controller: 'uploadIndicatorController'})
             .when('/indicators/:indicatorId', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
             .when('/forms', { templateUrl: 'resources/partials/forms/list.html', controller: 'formListController' })
             .when('/forms/:formId', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })
