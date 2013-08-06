@@ -35,6 +35,7 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class LanguageServiceImpl implements LanguageService {
 
+    private static final String DEFAULT_LANGUAGE_CODE = "df";
     private static final String INVALID_CODE = "Invalid language code specified.";
     private static final String CARE_MESSAGE_DIRECTORY = SystemUtils.getUserHome().getAbsolutePath()
             + File.separatorChar + ".care" + File.separatorChar + "messages" + File.separatorChar;
@@ -49,16 +50,6 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     public Set<LanguageEntity> getAllLanguages() {
         return languageDao.getAll();
-    }
-
-    @Override
-    public Set<LanguageEntity> getAllDefinedLanguages() {
-        return languageDao.getAllWithDefined(true);
-    }
-
-    @Override
-    public Set<LanguageEntity> getAllUndefinedLanguages() {
-        return languageDao.getAllWithDefined(false);
     }
 
     @Override
@@ -79,7 +70,7 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     @Transactional(readOnly = false)
     public void defineLanguage(LanguageEntity languageEntity) {
-        languageDao.update(languageEntity);
+        languageDao.save(languageEntity);
 
         this.setMessagesForLanguage(languageEntity);
     }
@@ -96,20 +87,19 @@ public class LanguageServiceImpl implements LanguageService {
     @Transactional(readOnly = false)
     public void removeLanguage(String languageCode) {
         String code = extractLanguageCode(languageCode);
-        if (StringUtils.isBlank(code)) {
+        if (StringUtils.isBlank(code) || code.equals(DEFAULT_LANGUAGE_CODE)) {
             throw new CareRuntimeException(INVALID_CODE);
         }
 
         LanguageEntity languageEntity = languageDao.getLanguageByCode(code);
-        languageEntity.setDefined(false);
-        languageDao.update(languageEntity);
-
         removeMessageFileForLanguage(languageEntity);
+        languageDao.deleteByCode(code);
     }
 
     private void removeMessageFileForLanguage(LanguageEntity languageEntity) {
         try {
-            if (StringUtils.isBlank(languageEntity.getCode())) {
+            if (StringUtils.isBlank(languageEntity.getCode())
+                    || languageEntity.getCode().equals(DEFAULT_LANGUAGE_CODE)) {
                 throw new CareRuntimeException(INVALID_CODE);
             }
 
@@ -127,7 +117,7 @@ public class LanguageServiceImpl implements LanguageService {
             String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
 
             Set<MessageDto> defaultMessages = getDefaultMessageFileContentsAsJson();
-            if (StringUtils.isBlank(code)) {
+            if (StringUtils.isBlank(code) || code.equals(DEFAULT_LANGUAGE_CODE)) {
                 return defaultMessages;
             }
 
@@ -154,12 +144,33 @@ public class LanguageServiceImpl implements LanguageService {
                 messages.add(new MessageDto(lineParts[0], lineParts[1]));
             }
 
-            messages.addAll(defaultMessages);
+            messages.addAll(getMissingMessageDtos(messages, defaultMessages));
             return messages;
 
         } catch (IOException e) {
             throw new CareRuntimeException(e);
         }
+    }
+
+    private Set<MessageDto> getMissingMessageDtos(Set<MessageDto> messages, Set<MessageDto> defaultMessages) {
+        Set<MessageDto> missingMessages = new LinkedHashSet<>();
+
+        for (MessageDto defaultMessage : defaultMessages) {
+
+            Boolean found = false;
+            for (MessageDto message : messages) {
+                if (message.getCode().equals(defaultMessage.getCode())) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                missingMessages.add(defaultMessage);
+            }
+        }
+
+        return missingMessages;
     }
 
     private String getMessagesFromFilePlain(String languageCode) {
@@ -168,7 +179,7 @@ public class LanguageServiceImpl implements LanguageService {
             String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
 
             Set<String> defaultMessages = getDefaultMessageFileContents();
-            if (StringUtils.isBlank(code)) {
+            if (StringUtils.isBlank(code) || code.equals(DEFAULT_LANGUAGE_CODE)) {
                 return StringUtils.join(defaultMessages, '\n');
             }
 
@@ -180,12 +191,43 @@ public class LanguageServiceImpl implements LanguageService {
             Set<String> messages = new LinkedHashSet<>(Files.readAllLines(Paths.get(messageFile.getAbsolutePath()),
                     Charset.defaultCharset()));
 
-            messages.addAll(defaultMessages);
+            messages.addAll(getMissingMessages(messages, defaultMessages));
             return StringUtils.join(messages, '\n');
 
         } catch (IOException e) {
             throw new CareRuntimeException(e);
         }
+    }
+
+    private Set<String> getMissingMessages(Set<String> messages, Set<String> defaultMessages) {
+        Set<String> missingMessages = new LinkedHashSet<>();
+
+        for (String defaultMessage : defaultMessages) {
+            if (StringUtils.isBlank(defaultMessage) || defaultMessage.startsWith("#")) {
+                continue;
+            }
+
+            Boolean found = false;
+            for (String message : messages) {
+                if (isMessageCodeEqual(message, defaultMessage)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                missingMessages.add(defaultMessage);
+            }
+        }
+
+        return missingMessages;
+    }
+
+    private Boolean isMessageCodeEqual(String messageA, String messageB) {
+        String messageCodeA = messageA.trim().split("=")[0];
+        String messageCodeB = messageB.trim().split("=")[0];
+
+        return messageCodeA.equalsIgnoreCase(messageCodeB);
     }
 
     private Set<MessageDto> getDefaultMessageFileContentsAsJson() {
@@ -250,7 +292,8 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     public void setMessagesForLanguage(LanguageEntity languageEntity) {
         try {
-            if (StringUtils.isBlank(languageEntity.getCode())) {
+            if (StringUtils.isBlank(languageEntity.getCode())
+                    || languageEntity.getCode().equals(DEFAULT_LANGUAGE_CODE)) {
                 throw new CareRuntimeException(INVALID_CODE);
             }
 
@@ -286,7 +329,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     private String extractLanguageCode(String from) {
         if (StringUtils.isBlank(from)) {
-            return null;
+            return DEFAULT_LANGUAGE_CODE;
         }
 
         return from.replaceAll("(messages(_)?)|([.]properties)", "").replaceAll("-", "_").trim();

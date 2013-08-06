@@ -120,6 +120,10 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
     }
 
     $scope.submitUser = function(user) {
+        user.defaultLanguage = {
+            id: 1
+        };
+
         if (user.area != undefined) {
             delete user.area.level;
             delete user.area.parentArea;

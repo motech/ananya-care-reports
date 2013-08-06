@@ -38,20 +38,6 @@ public class LanguageController {
         return messageService.getLanguageByCode(languageCode);
     }
 
-    @RequestMapping(value = "/defined", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Set<LanguageEntity> getAllDefinedLanguages() {
-        return messageService.getAllDefinedLanguages();
-    }
-
-    @RequestMapping(value = "/undefined", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Set<LanguageEntity> getAllUndefinedLanguages() {
-        return messageService.getAllUndefinedLanguages();
-    }
-
     @RequestMapping(value = "/messages", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

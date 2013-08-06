@@ -349,4 +349,34 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #51.1" author="Lech Różański">
+        <sql>
+            alter table dashboard_app.indicator_indicator_category
+                drop constraint indicator_indicator_category_indicator_id_fk,
+                drop constraint indicator_indicator_category_indicator_category_id_fk,
+                add constraint indicator_indicator_category_indicator_id_fk foreign key (indicator_id)
+                    references dashboard_app.indicator (indicator_id) match full
+                    on delete cascade on update cascade not deferrable,
+                add constraint indicator_indicator_category_indicator_category_id_fk foreign key (indicator_category_id)
+                    references dashboard_app.indicator_category (indicator_category_id) match full
+                    on delete cascade on update cascade not deferrable;
+
+            delete from dashboard_app.language where language_id > 1;
+            update dashboard_app.language set code = 'df';
+
+            alter table dashboard_app.language
+                alter column code type character varying(2),
+                alter column code set not null;
+
+            alter sequence dashboard_app.language_language_id_seq
+                restart with 2;
+
+            alter table dashboard_app.care_user
+                add column default_language_id integer not null default 1,
+                add constraint care_user_default_language_id_fk foreign key (default_language_id)
+                    references dashboard_app.language (language_id) match full
+                    on delete set default on update cascade;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

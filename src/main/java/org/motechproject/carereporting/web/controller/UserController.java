@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -156,6 +157,25 @@ public class UserController extends BaseController {
     @ResponseBody
     public UserEntity getUserById(@PathVariable Integer userId) {
         return userService.getUserById(userId);
+    }
+
+    @RequestMapping(value = "/logged_in/language", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public LanguageEntity getCurrentlyLoggedUserLanguageCode() {
+        return userService.getCurrentlyLoggedUser().getDefaultLanguage();
+    }
+
+    @RequestMapping(value = "/logged_in/language", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateCurrentlyLoggedUserLanguage(@RequestBody @Valid LanguageEntity languageEntity) {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+        userEntity.setDefaultLanguage(languageEntity);
+        userService.updateUser(userEntity);
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)

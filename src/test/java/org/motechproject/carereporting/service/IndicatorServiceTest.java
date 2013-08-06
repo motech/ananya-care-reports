@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +27,7 @@ public class IndicatorServiceTest {
     private final static Integer TEST_INDICATOR_ID = 1;
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
     private final static String EXPRESSION = "* * * * * ?";
+    private final static String WITH_FIELDS_REPORTS = "reports";
 
     @Mock
     private IndicatorDao indicatorDao;
@@ -65,10 +68,10 @@ public class IndicatorServiceTest {
     public void testFindAllIndicators() {
         Set <IndicatorEntity> indicatorEntities = new HashSet<>();
         indicatorEntities.add(new IndicatorEntity());
-        when(indicatorDao.getAll()).thenReturn(indicatorEntities);
+        when(indicatorDao.getAllWithFields(WITH_FIELDS_REPORTS)).thenReturn(indicatorEntities);
         Set<IndicatorEntity> indicatorList = indicatorService.getAllIndicators();
 
-        verify(indicatorDao).getAll();
+        verify(indicatorDao).getAllWithFields(WITH_FIELDS_REPORTS);
 
         assertEquals(1, indicatorList.size());
     }
@@ -79,10 +82,10 @@ public class IndicatorServiceTest {
         indicatorEntity.setId(TEST_INDICATOR_ID);
         indicatorEntity.setName(TEST_INDICATOR_NAME);
 
-        when(indicatorDao.getById(TEST_INDICATOR_ID)).thenReturn(indicatorEntity);
+        when(indicatorDao.getByIdWithFields(TEST_INDICATOR_ID, WITH_FIELDS_REPORTS)).thenReturn(indicatorEntity);
         IndicatorEntity returnedIndicator = indicatorService.getIndicatorById(TEST_INDICATOR_ID);
 
-        verify(indicatorDao).getById(TEST_INDICATOR_ID);
+        verify(indicatorDao).getByIdWithFields(TEST_INDICATOR_ID, WITH_FIELDS_REPORTS);
 
         assertEquals(TEST_INDICATOR_ID, returnedIndicator.getId());
         assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());

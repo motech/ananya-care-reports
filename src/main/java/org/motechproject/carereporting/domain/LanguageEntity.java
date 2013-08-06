@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -19,16 +18,13 @@ import java.util.Set;
 })
 public class LanguageEntity extends AbstractEntity {
 
+    @NotEmpty
     @Column(name = "code")
     private String code;
 
     @NotEmpty
     @Column(name = "name")
     private String name;
-
-    @NotNull
-    @Column(name = "defined", columnDefinition = "boolean default false")
-    private Boolean defined;
 
     @Transient
     private Set<MessageDto> messages;
@@ -51,14 +47,6 @@ public class LanguageEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Boolean getDefined() {
-        return defined;
-    }
-
-    public void setDefined(Boolean defined) {
-        this.defined = defined;
     }
 
     public Set<MessageDto> getMessages() {

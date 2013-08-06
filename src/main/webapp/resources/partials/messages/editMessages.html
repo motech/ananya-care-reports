@@ -4,12 +4,26 @@
     <h1 class="text-center">{{msg('languages.edit.header')}}</h1>
     <div class="row">
         <div class="span12 well">
-            <form class="form-horizontal" novalidate>
+            <form class="form-horizontal" name="editLanguageForm" novalidate>
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <label class="control-label" for="languageName">{{msg('languages.name')}}</label>
+                        <div class="controls">
+                            <input type="text" class="span4" id="languageName" ng-model="language.name" ng-change="validateForm()" required />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="languageCode">{{msg('languages.code')}}</label>
+                        <div class="controls">
+                            <input id="languageCode" maxlength="2" class="span1" type="text" ng-model="language.code" ng-change="validateForm()" required />
+                        </div>
+                    </div>
+                </div>
                 <div id="messageContainer"></div>
                 <div class="row-fluid">
                     <div class="control-group">
                         <div class="controls">
-                            <button type="button" id="saveButton" class="btn btn-primary pull-left form-button-add" ng-click="saveMessages()" ng-disable="validateForm()">{{msg('common.save')}}</button>
+                            <button type="button" id="saveButton" class="btn btn-primary pull-left form-button-add" ng-click="saveMessages()" ng-disabled="editLanguageForm.$invalid || !validateForm()">{{msg('common.save')}}</button>
                             <button type="button" class="btn btn-danger pull-right form-button-add" ng-click="revertChanges()">{{msg('languages.edit.revert')}}</button>
                         </div>
                     </div>

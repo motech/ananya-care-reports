@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.EntityException;
@@ -34,6 +35,9 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     private UserService userService;
 
     @Autowired
+    private LanguageService languageService;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @Before
@@ -53,6 +57,10 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         user.setPassword(password);
         user.setFirstName("firstName");
         user.setLastName("lastName");
+
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setId(1);
+        user.setDefaultLanguage(languageEntity);
         AreaEntity area = new AreaEntity();
         area.setId(1);
         user.setArea(area);
@@ -113,6 +121,8 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         userEntity.setLastName("lastName");
         AreaEntity area = new AreaEntity();
         area.setId(1);
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setId(1);
         userEntity.setArea(area);
         userService.register(userEntity);
         userEntity.setUsername(newusername);

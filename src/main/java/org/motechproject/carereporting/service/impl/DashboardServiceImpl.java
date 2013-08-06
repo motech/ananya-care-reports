@@ -20,7 +20,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public Set<DashboardEntity> getAllDashboards() {
-        return dashboardDao.getAll();
+        return dashboardDao.getAllWithFields("reports");
     }
 
     @Override

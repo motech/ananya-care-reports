@@ -84,7 +84,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
-        return indicatorDao.getAll();
+        return indicatorDao.getAllWithFields("reports");
     }
 
     @Transactional
@@ -126,7 +126,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional
     @Override
     public IndicatorEntity getIndicatorById(Integer id) {
-        return indicatorDao.getById(id);
+        return indicatorDao.getByIdWithFields(id, "reports");
     }
 
     @Transactional(readOnly = false)
@@ -324,6 +324,10 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
+        for (IndicatorEntity indicatorEntity : indicatorCategoryEntity.getIndicators()) {
+            indicatorEntity.getCategories().remove(indicatorCategoryEntity);
+        }
+
         indicatorCategoryDao.remove(indicatorCategoryEntity);
     }
 

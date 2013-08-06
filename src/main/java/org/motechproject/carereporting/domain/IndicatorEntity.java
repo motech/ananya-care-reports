@@ -2,6 +2,8 @@ package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.FetchProfile;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
@@ -28,6 +30,9 @@ import java.util.Set;
 @Table(name = "indicator")
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "indicator_id"))
+})
+@FetchProfile(name = "indicator-with-reports", fetchOverrides = {
+        @FetchProfile.FetchOverride(entity = IndicatorEntity.class, association = "reports", mode = FetchMode.JOIN)
 })
 public class IndicatorEntity extends AbstractEntity {
 
@@ -73,7 +78,7 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<IndicatorValueEntity> values;
 
     @NotNull
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
 

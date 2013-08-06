@@ -5,6 +5,7 @@ import org.motechproject.carereporting.dao.PermissionDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -22,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -75,6 +77,10 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setArea(area);
+
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setId(1);
+        user.setDefaultLanguage(languageEntity);
         String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
         user.setPassword(encodedPassword);
         try {
@@ -87,6 +93,12 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     @Override
     public void register(UserEntity userEntity) {
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setId(1);
+        userEntity.setDefaultLanguage(languageEntity);
+        if (userEntity.getSalt() == null) {
+            userEntity.setSalt(UUID.randomUUID().toString());
+        }
         String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
         userEntity.setPassword(encodedPassword);
         try {
@@ -107,6 +119,7 @@ public class UserServiceImpl implements UserService {
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setRoles(user.getRoles());
             userToUpdate.setArea(user.getArea());
+            userToUpdate.setDefaultLanguage(user.getDefaultLanguage());
             if (!StringUtils.isEmpty(user.getPassword())) {
                 String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
                 userToUpdate.setPassword(encodedPassword);

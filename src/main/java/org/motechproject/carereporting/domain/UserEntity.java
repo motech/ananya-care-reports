@@ -59,6 +59,10 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "area_id")
     private AreaEntity area;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "default_language_id")
+    private LanguageEntity defaultLanguage;
+
     @ManyToMany(mappedBy = "owners")
     private Set<DashboardEntity> dashboards;
 
@@ -71,7 +75,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     private Set<RoleEntity> roles;
 
     public UserEntity() {
-        this.salt = UUID.randomUUID().toString();
+        //this.salt = UUID.randomUUID().toString();
     }
 
     public UserEntity(String username, String password) {
@@ -167,6 +171,14 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public LanguageEntity getDefaultLanguage() {
+        return defaultLanguage;
+    }
+
+    public void setDefaultLanguage(LanguageEntity defaultLanguage) {
+        this.defaultLanguage = defaultLanguage;
     }
 
     @JsonIgnore

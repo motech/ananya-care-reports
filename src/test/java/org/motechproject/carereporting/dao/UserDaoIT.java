@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareSqlRuntimeException;
@@ -55,6 +56,10 @@ public class UserDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
         UserEntity userEntity = new UserEntity(username, password);
         userEntity.setFirstName(username);
         userEntity.setLastName(username);
+
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setId(1);
+        userEntity.setDefaultLanguage(languageEntity);
         LevelEntity levelEntity = new LevelEntity(username, null);
         levelEntity.setId(id);
         AreaEntity areaEntity = new AreaEntity(username, levelEntity);

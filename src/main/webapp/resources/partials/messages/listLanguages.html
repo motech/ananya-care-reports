@@ -5,42 +5,37 @@
     <div class="row">
         <div class="span8 offset2">
             <div class="form-horizontal well well-large">
-                <div class="control-group">
-                    <label class="control-label" for="newLanguage">{{msg('common.define')}}</label>
-                    <div class="controls">
-                        <select id="newLanguage" ng-model="selectedUndefinedLanguage" ng-options="item.code as item.name for item in listUndefinedLanguages"></select>
+                <form name="defineLanguageForm" novalidate>
+                    <div class="control-group">
+                        <label class="control-label" for="definedLanguage">{{msg('languages.list.template')}}:</label>
+                        <div class="controls">
+                            <select id="definedLanguage" ng-model="selectedLanguage" ng-options="item.code as item.name for item in listLanguages" required></select>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="definedLanguage">{{msg('common.using')}}</label>
-                    <div class="controls">
-                        <select id="definedLanguage" ng-model="selectedDefinedLanguage" ng-options="item.code as item.name for item in listDefinedLanguages"></select>
-                        <span>{{msg('common.asTemplate')}}</span>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary" ng-click="defineLanguage()" ng-disabled="defineLanguageForm.$invalid">{{msg('languages.list.defineNew')}}</button>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-primary" ng-click="defineLanguage()">{{msg('common.ok')}}</button>
-                    </div>
-                </div>
+                </form>
             </div>
             <table class="table table-hover table-striped">
                 <thead>
-                    <th class="span2">{{msg('languages.list.code')}}</th>
-                    <th class="span6">{{msg('languages.list.name')}}</th>
+                    <th class="span2">{{msg('languages.code')}}</th>
+                    <th class="span6">{{msg('languages.name')}}</th>
                     <th class="span4">{{msg('common.actions')}}</th>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="item in listDefinedLanguages | orderBy:'item.name'">
+                    <tr ng-repeat="item in listLanguages | orderBy:'item.name'">
                         <td>
-                            <span class="text-error" ng-show="item.code == null">{{msg('common.none')}}</span>
-                            <span ng-show="item.code != null">{{item.code}}</span>
+                            <span class="text-error" ng-show="item.code == 'df'">{{msg('common.none')}}</span>
+                            <span ng-show="item.code != 'df'">{{item.code}}</span>
                         </td>
-                        <td ng-class="{ muted: item.code == null }">{{item.name}}</td>
+                        <td ng-class="{ muted: item.code == 'df' }">{{item.name}}</td>
                         <td>
-                            <button class="btn" ng-click="editLanguage(item)" ng-hide="!item.code">{{msg('common.edit')}}</button>
-                            <button class="btn btn-danger pull-right" ng-click="removeLanguage(item)" ng-hide="!item.code">{{msg('common.remove')}}</button>
-                            <span class="text-error" ng-show="!item.code">{{msg('languages.list.cannotModify')}}</span>
+                            <button class="btn" ng-click="editLanguage(item)" ng-hide="item.code == 'df'">{{msg('common.edit')}}</button>
+                            <button class="btn btn-danger pull-right" ng-click="removeLanguage(item)" ng-hide="item.code == 'df'">{{msg('common.remove')}}</button>
+                            <span class="text-error" ng-show="item.code == 'df'">{{msg('languages.list.cannotModify')}}</span>
                         </td>
                     </tr>
                 </tbody>

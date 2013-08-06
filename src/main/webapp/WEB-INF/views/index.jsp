@@ -134,7 +134,10 @@
                               <a href="#"><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
                               <ul class="dropdown-menu">
                                   <li ng-repeat="item in listLanguages">
-                                      <a href="#" ng-click="selectLanguage($index)">{{item.name}}</a>
+                                      <a href="#" ng-click="selectLanguage(item)">
+                                        <i class="icon-arrow-right" ng-show="defaultLanguage.code == item.code"></i>
+                                        {{item.name}}
+                                      </a>
                                   </li>
                               </ul>
                           </li>

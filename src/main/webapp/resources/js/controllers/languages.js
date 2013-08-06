@@ -16,40 +16,28 @@ care.controller('languageListController', function($scope, $rootScope, $simplifi
         });
     };
 
-    $scope.listDefinedLanguages = [];
-    $scope.listUndefinedLanguages = [];
-    $scope.selectedDefinedLanguage = null;
-    $scope.selectedUndefinedLanguage = null;
+    $scope.language = {
+        code: null
+    };
+    $scope.listLanguages = [];
+    $scope.selectedLanguage = null;
 
-    $scope.fetchDefinedLanguages = function() {
-        $simplifiedHttpService.get($scope, 'api/languages/defined',
+    $scope.fetchLanguages = function() {
+        $simplifiedHttpService.get($scope, 'api/languages',
                 'languages.cannotLoadLanguageList', function(languages) {
-            languages.sortByField('code');
-            $scope.listDefinedLanguages = languages;
+            languages.sortByField('name');
+            $scope.listLanguages = languages;
 
-            if (Object.keys($scope.listDefinedLanguages).length > 0) {
-                $scope.selectedDefinedLanguage = $scope.listDefinedLanguages[0].code;
+            if (Object.keys($scope.listLanguages).length > 0) {
+                $scope.selectedLanguage = $scope.listLanguages[0].code;
             }
         });
     };
-    $scope.fetchDefinedLanguages();
-
-    $scope.fetchUndefinedLanguages = function() {
-        $simplifiedHttpService.get($scope, 'api/languages/undefined',
-                'languages.cannotLoadLanguageList', function(languages) {
-            languages.sortByField('code');
-            $scope.listUndefinedLanguages = languages;
-
-            if (Object.keys($scope.listUndefinedLanguages).length > 0) {
-                $scope.selectedUndefinedLanguage = $scope.listUndefinedLanguages[0].code;
-            }
-        });
-    };
-    $scope.fetchUndefinedLanguages();
+    $scope.fetchLanguages();
 
     $scope.defineLanguage = function() {
-        $location.url('messages/' + $scope.selectedUndefinedLanguage
-            + '?templateCode=' + $scope.selectedDefinedLanguage + '&edit=false');
+        $location.url('messages/' + $scope.language.code
+            + '?templateCode=' + $scope.selectedLanguage + '&edit=false');
     };
 
     $scope.editLanguage = function(language) {
@@ -79,7 +67,7 @@ care.controller('languageListController', function($scope, $rootScope, $simplifi
 });
 
 care.controller('messageController', function($scope, $rootScope, $simplifiedHttpService,
-        $http, $dialog, $routeParams, $errorService, $location) {
+        $http, $dialog, $routeParams, $errorService, $location, $timeout) {
     $scope.title = $scope.msg('languages.edit.title');
 
     $scope.isEdit = ($routeParams['edit'] == 'true');
@@ -92,7 +80,7 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
     if ($scope.isEdit) {
         messageUrl = 'api/languages/messages/' + $scope.newCode;
     } else {
-        messageUrl = ($scope.templateCode == null || $scope.templateCode == 'null')
+        messageUrl = ($scope.templateCode == null || $scope.templateCode == 'df')
             ? 'api/languages/messages' : 'api/languages/messages/' + $scope.templateCode;
     }
     
@@ -101,7 +89,9 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
             $scope.language = language;
         });
     };
-    $scope.fetchLanguage();
+    if ($scope.isEdit) {
+        $scope.fetchLanguage();
+    }
 
     $scope.fetchMessages = function() {
         $simplifiedHttpService.get($scope, messageUrl, 'languages.cannotLoadMessageList', function(messages) {
@@ -109,7 +99,7 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
             $scope.constructMessages(messages);
         });
     };
-    $scope.fetchMessages();
+    $timeout($scope.fetchMessages, 100);
 
     $scope.constructMessages = function(messages) {
         for (var i = 0; i < messages.length; i++) {
@@ -119,8 +109,6 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
         $scope.nextId = 1;
         var div = $scope.constructMessageElements($scope.messages, 0, $('#messageContainer'));
         $('#messageContainer').append(div);
-
-        console.log($scope.messages['categories']);
     };
 
     $scope.constructMessage = function(message) {
@@ -148,7 +136,7 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
 
         for (var i = categoryName.length - 1; i > 0; i--) {
             var character = categoryName.charAt(i);
-            // Prevent adding spaces on characters that are not letters
+            // Prevent adding spaces before characters that are not letters
             if (character == character.toUpperCase() && character != character.toLowerCase()) {
                 categoryName = categoryName.substr(0, i) + categoryName.slice(i, 1) + ' ' + character
                     + categoryName.substr(i + 1, categoryName.length);
@@ -181,7 +169,6 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
                 .attr('data-code', code).val(message).on('change', function() {
                     var error = ($(this).val().length <= 0);
 
-                    $("#saveButton").prop('disabled', error);
                     $(this).parent().parent().toggleClass('alert alert-error', error);
             });
 
@@ -197,18 +184,7 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
                 parentElement.prepend(div);
             }
             return null;
-            //return div;
         }
-
-        $scope.validateForm = function() {
-            $('input').each(function(index, value) {
-                if ($(value).val().length <= 0) {
-                    return false;
-                }
-            });
-
-            return true;
-        };
 
         var keys = Object.keys(category);
         keys.sort();
@@ -235,9 +211,8 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
         var method = ($scope.isEdit) ? 'PUT' : 'POST';
         var url = ($scope.isEdit) ? 'api/languages/' + $scope.newCode : 'api/languages';
 
-        $scope.language.defined = true;
         $scope.language.messages = [];
-        $('input').each(function(index, value) {
+        $('#messageContainer').find('input').each(function(index, value) {
             var message = {
                 code: $(value).attr('data-code'),
                 value: $(value).val()
@@ -269,5 +244,11 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
                     $scope.constructMessages($scope.listMessages);
                 }
             });
+    };
+
+    $scope.validateForm = function() {
+        var emptyMessages = $('form').find('input:invalid');
+
+        return (emptyMessages.length <= 0);
     };
 });

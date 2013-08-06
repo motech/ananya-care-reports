@@ -9,10 +9,6 @@ public interface LanguageService {
 
     Set<LanguageEntity> getAllLanguages();
 
-    Set<LanguageEntity> getAllDefinedLanguages();
-
-    Set<LanguageEntity> getAllUndefinedLanguages();
-
     LanguageEntity getLanguageByCode(String languageCode);
 
     Set<MessageDto> getMessagesForLanguage(String languageCode);

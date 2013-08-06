@@ -9,10 +9,7 @@ localizationModule.factory("i18nService", function() {
     var service = {
         ready : false,
         loading : false,
-        languages : {
-            "en": "English (US)",
-            "pl": "Polski"
-        },
+        languages : {},
 
         getMessage : function(key, params) {
             var msg = key;
@@ -35,6 +32,7 @@ localizationModule.factory("i18nService", function() {
                 name:'messages',
                 path: 'api/languages/messages/plain/',
                 mode:'map',
+                cache: true,
                 language: lang || null,
                 callback: function() {
                     self.ready = true;
@@ -45,8 +43,8 @@ localizationModule.factory("i18nService", function() {
 
         getLanguage : function(locale) {
             return {
-                key: locale.toString() || "en",
-                value: this.languages[locale.fullName()] || this.languages[locale.withoutVariant()] || this.languages[locale.language] || "English (US)"
+                key: locale.toString() || "df",
+                value: this.languages[locale.fullName()] || this.languages[locale.withoutVariant()] || this.languages[locale.language] || "Default English"
             }
         }
     }
