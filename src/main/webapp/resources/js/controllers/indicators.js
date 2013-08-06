@@ -157,7 +157,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope.categoriesValid=true;
                 $scope.typeValid = true;
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadIndicatorDetails'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadIndicatorDetails'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -567,7 +567,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }).success(function() {
                 $location.path( "/indicators" );
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -876,7 +876,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 indicatorScope.fetchComplexConditions();
                 dialog.close();
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -893,7 +893,7 @@ care.controller('recalculateIndicatorsController', function($scope, $http, $dial
             data: null,
             headers: { 'Content-Type': 'application/json' }
         }).error(function() {
-            $dialog.messageBox("Error", $scope.msg('menu.recalculate.error'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            $dialog.messageBox("Error", $scope.msg('menu.recalculate.error'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
         });
     };
 
@@ -926,7 +926,7 @@ care.controller('calculatorController', function($scope, $http, $dialog, $locati
         }).success(function(data, status, headers, config) {
             config.dialog.dismiss();
         }).error(function(data, status, headers, config) {
-            $errorService.genericError($scope, 'indicatorCalculator.error.cannotSaveNmesTime');
+            $errorService.genericError($scope, 'indicatorCalculator.error.cannotSaveTime');
         });
     };
 });

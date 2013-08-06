@@ -73,7 +73,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
                     $scope.assignUser(user);
                 }
             }).error(function() {
-                $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotFetchUser'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotFetchUser'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -86,7 +86,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
                 $scope.roles = roles;
             })
             .error(function() {
-                $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotLoadRoles'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotLoadRoles'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
     };
 
@@ -115,7 +115,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
                 $scope.areas = arr;
            })
            .error(function() {
-               $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotLoadAreas'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+               $dialog.messageBox($scope.msg('common.error'), $scope.msg('users.form.error.cannotLoadAreas'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
            });
     }
 
@@ -128,7 +128,7 @@ care.controller('userController', function($scope, $http, $routeParams, $locatio
             .success(function(response) {
                 $location.path( "/users" );
             }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
 
     };

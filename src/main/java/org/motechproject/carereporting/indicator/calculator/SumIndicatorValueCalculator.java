@@ -1,35 +1,27 @@
 package org.motechproject.carereporting.indicator.calculator;
 
-import org.jooq.SelectQuery;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.indicator.query.CalculatorQueryBuilder;
 import org.motechproject.carereporting.service.FormsService;
+import org.motechproject.carereporting.service.IndicatorService;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.util.Set;
 
 public class SumIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
     public SumIndicatorValueCalculator(DataSource dataSource, IndicatorEntity indicator,
-                                       FormsService formsService) {
-        super(dataSource, indicator, formsService);
+                                       IndicatorService indicatorService, FormsService formsService) {
+        super(dataSource, indicator, indicatorService, formsService);
+        nominatorOperationType = CalculatorQueryBuilder.OperationType.Sum;
     }
 
     @Override
-    public BigDecimal calculateIndicatorValueForArea(AreaEntity area) {
-        SelectQuery query = calculatorQueryBuilder
-                .withIndicator(indicator)
-                .withComplexCondition(indicator.getComplexCondition())
-                .withArea(area)
-                .withFrequency(indicator.getFrequency())
-                .withOperation(CalculatorQueryBuilder.OperationType.Sum)
-                .build();
-
-        Object resultObj = query.fetch().getValue(0, 0);
-        String resultObjStr = (resultObj != null) ? resultObj.toString() : "0.0";
-
-        return new BigDecimal(resultObjStr);
+    protected BigDecimal getDenominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
+        return BigDecimal.ONE;
     }
 
 }

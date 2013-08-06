@@ -7,7 +7,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -24,12 +23,12 @@ public class FrequencyEntity extends AbstractEntity {
     @Column(name = "frequency_name", unique = true)
     private String frequencyName;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "parent_frequency_id")
     private FrequencyEntity parentFrequency;
 
-    @OneToMany(mappedBy = "parentFrequency")
-    private Set<FrequencyEntity> childFrequencies;
+    @OneToOne(mappedBy = "parentFrequency")
+    private FrequencyEntity childFrequency;
 
     @OneToOne(mappedBy = "frequency")
     private CronTaskEntity cronTask;
@@ -57,12 +56,12 @@ public class FrequencyEntity extends AbstractEntity {
         this.parentFrequency = parentFrequency;
     }
 
-    public Set<FrequencyEntity> getChildFrequencies() {
-        return childFrequencies;
+    public FrequencyEntity getChildFrequency() {
+        return childFrequency;
     }
 
-    public void setChildFrequencies(Set<FrequencyEntity> childFrequencies) {
-        this.childFrequencies = childFrequencies;
+    public void setChildFrequency(FrequencyEntity childFrequency) {
+        this.childFrequency = childFrequency;
     }
 
     public CronTaskEntity getCronTask() {

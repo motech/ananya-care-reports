@@ -5,6 +5,7 @@ import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.scheduler.jobs.IndicatorValueCalculatorJob;
 import org.motechproject.carereporting.service.CronService;
 import org.quartz.CronTrigger;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -34,9 +35,13 @@ public class CronScheduler {
         Set<CronTaskEntity> allCronTasks = cronService.getAllCronTasks();
 
         for (CronTaskEntity cronTaskEntity : allCronTasks) {
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put("frequency", cronTaskEntity.getFrequency());
+
             JobDetail job = new JobDetail();
             job.setName(cronTaskEntity.getFrequency().getFrequencyName());
             job.setJobClass(IndicatorValueCalculatorJob.class);
+            job.setJobDataMap(jobDataMap);
 
             Trigger trigger = prepareTrigger(cronTaskEntity);
             scheduler.scheduleJob(job, trigger);

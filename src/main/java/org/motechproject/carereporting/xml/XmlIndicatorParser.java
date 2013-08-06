@@ -62,6 +62,7 @@ public class XmlIndicatorParser {
     private IndicatorCategoryDao indicatorCategoryDao;
 
     @Transactional
+    @SuppressWarnings("unchecked")
     public IndicatorEntity parse(InputStream is) throws DocumentException, SAXException, IOException {
         Element indicator = new SAXReader().read(is).getRootElement();
         String name = getElementValue(indicator, NAME_FIELD);

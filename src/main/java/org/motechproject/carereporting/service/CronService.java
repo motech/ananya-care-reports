@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.CronTaskEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 
 import java.util.Set;
 
@@ -13,5 +14,7 @@ public interface CronService {
     CronTaskEntity getDailyCronTask();
 
     void updateCronTask(CronTaskEntity cronTaskEntity);
+
+    FrequencyEntity getFrequencyByName(String name);
 
 }

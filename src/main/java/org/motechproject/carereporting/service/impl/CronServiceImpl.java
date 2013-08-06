@@ -52,4 +52,9 @@ public class CronServiceImpl implements CronService {
         applicationContext.getBean(CronScheduler.class).updateJob(cronTaskEntity);
     }
 
+    @Override
+    public FrequencyEntity getFrequencyByName(String name) {
+        return frequencyDao.getByFrequencyName(name);
+    }
+
 }

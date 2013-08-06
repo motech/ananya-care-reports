@@ -55,7 +55,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                      }
                  }
             }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadPermissionList'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadPermissionList'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
     }
 
@@ -69,7 +69,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
                     $scope.role.permissions.sort(function(a, b) { return a.displayName > b.displayName; });
                     $scope.fetchPermissions();
                 }).error(function() {
-                    $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadRole'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                    $dialog.messageBox("Error", $scope.msg('roles.list.error.cannotLoadRole'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
                 });
         };
         $scope.fetchRole();
@@ -128,7 +128,7 @@ care.controller('roleController', function($scope, $http, $routeParams, $locatio
         }).success(function(response) {
                 $location.path("/users/roles");
         }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
         });
     };
 });

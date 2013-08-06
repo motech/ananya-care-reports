@@ -1,9 +1,8 @@
 package org.motechproject.carereporting.indicator;
 
 import org.apache.log4j.Logger;
-import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.indicator.calculator.AbstractIndicatorValueCalculator;
 import org.motechproject.carereporting.indicator.calculator.AverageIndicatorValueCalculator;
 import org.motechproject.carereporting.indicator.calculator.CountIndicatorValueCalculator;
@@ -17,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -37,65 +33,36 @@ public class IndicatorValueCalculator {
     @Autowired
     private FormsService formsService;
 
-    public void calculateIndicatorValues() {
+    public void calculateIndicatorValues(FrequencyEntity frequencyEntity) {
         LOG.info("Running scheduled indicator values calculation.");
-        int totalIndicatorValuesCalculated = calculateAllIndicatorValues();
+        int totalIndicatorValuesCalculated = calculateAllIndicatorValues(frequencyEntity);
         LOG.info("Scheduled indicator values calculation finished [total indicators values calculated = "
                 + totalIndicatorValuesCalculated + "].");
     }
 
     @Transactional(readOnly = false)
-    private int calculateAllIndicatorValues() {
+    private int calculateAllIndicatorValues(FrequencyEntity frequencyEntity) {
         int calculatedIndicatorsCount = 0;
         Set<IndicatorEntity> indicators = indicatorService.getAllIndicators();
         for (IndicatorEntity indicator: indicators) {
-            calculateAndPersistIndicatorValues(indicator);
+            AbstractIndicatorValueCalculator calculator = getIndicatorValueCalculator(indicator);
+            calculator.calculateAndPersistIndicatorValues(frequencyEntity);
             ++calculatedIndicatorsCount;
             LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
         }
         return calculatedIndicatorsCount;
     }
 
-    private void calculateAndPersistIndicatorValues(IndicatorEntity indicator) {
-
-        for (AreaEntity area: getAllAreasForIndicator(indicator)) {
-
-            AbstractIndicatorValueCalculator calculator = getIndicatorValueCalculator(indicator);
-            BigDecimal indicatorValue = calculator.calculateIndicatorValueForArea(area);
-
-            if (indicatorValue != null) {
-                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator, area, indicatorValue);
-                indicatorService.createNewIndicatorValue(indicatorValueEntity);
-            }
-        }
-    }
-
-    private List<AreaEntity> getAllAreasForIndicator(IndicatorEntity indicator) {
-        List<AreaEntity> areas = new ArrayList<>();
-        areas.add(indicator.getArea());
-        areas.addAll(getAllChildAreas(indicator.getArea()));
-        return areas;
-    }
-
-    private List<AreaEntity> getAllChildAreas(AreaEntity area) {
-        List<AreaEntity> childAreas = new ArrayList<>();
-        for (AreaEntity child: area.getChildAreas()) {
-            childAreas.add(child);
-            childAreas.addAll(getAllChildAreas(child));
-        }
-        return childAreas;
-    }
-
     private AbstractIndicatorValueCalculator getIndicatorValueCalculator(IndicatorEntity indicator) {
         switch (indicator.getIndicatorType().getName()) {
             case "Average":
-                return new AverageIndicatorValueCalculator(careDataSource, indicator, formsService);
+                return new AverageIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
             case "Count":
-                return new CountIndicatorValueCalculator(careDataSource, indicator, formsService);
+                return new CountIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
             case "Percentage":
-                return new PercentageIndicatorValueCalculator(careDataSource, indicator, formsService);
+                return new PercentageIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
             case "Sum":
-                return new SumIndicatorValueCalculator(careDataSource, indicator, formsService);
+                return new SumIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
             default:
                 throw new IllegalArgumentException("Indicator type " +
                         indicator.getIndicatorType().getName() + " not supported.");

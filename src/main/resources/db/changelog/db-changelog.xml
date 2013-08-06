@@ -342,4 +342,11 @@
         <addNotNullConstraint tableName="indicator_value" columnName="frequency_id" schemaName="dashboard_app"/>
     </changeSet>
 
+    <changeSet id="CARE #37" author="Adrian Boguszewski">
+        <sql>
+            insert into dashboard_app.frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values
+            ('default', null, now(), now());
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

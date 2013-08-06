@@ -47,10 +47,13 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     }
 
-    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal value) {
-        this.area = area;
+    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal nominator, BigDecimal denominator, BigDecimal value, FrequencyEntity frequency) {
         this.indicator = indicator;
+        this.area = area;
+        this.nominator = nominator;
+        this.denominator = denominator;
         this.value = value;
+        this.frequency = frequency;
     }
 
     public BigDecimal getNominator() {

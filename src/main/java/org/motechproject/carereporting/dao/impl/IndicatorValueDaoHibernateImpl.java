@@ -5,6 +5,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.springframework.stereotype.Component;
@@ -13,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<IndicatorValueEntity>
         implements IndicatorValueDao {
     
-    private static final String DATE = "date";
+    private static final String DATE = "modificationDate";
 
     @Override
     @SuppressWarnings("unchecked")
@@ -57,5 +59,17 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
             }
         }
         return value;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<IndicatorValueEntity> getValues(IndicatorEntity indicator, AreaEntity area, FrequencyEntity child, Date date) {
+        return new LinkedHashSet<IndicatorValueEntity>(getCurrentSession()
+                .createCriteria(IndicatorValueEntity.class)
+                .add(Restrictions.eq("indicator", indicator))
+                .add(Restrictions.eq("area", area))
+                .add(Restrictions.eq("frequency", child))
+                .add(Restrictions.between("modificationDate", date, new Date()))
+                .list());
     }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -80,4 +81,5 @@ public interface IndicatorService {
 
     Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(Integer indicatorId, Integer parentAreaId, Date startDate, Date endDate);
 
+    Set<IndicatorValueEntity> getIndicatorValues(IndicatorEntity indicator, AreaEntity area, FrequencyEntity child, Date date);
 }

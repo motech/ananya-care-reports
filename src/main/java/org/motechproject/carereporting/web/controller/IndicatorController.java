@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.CronTaskEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -37,6 +38,8 @@ import java.util.Set;
 public class IndicatorController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndicatorController.class);
+
+    private static final String UNDEFINED = "undefined";
 
     @Autowired
     private IndicatorService indicatorService;
@@ -184,7 +187,8 @@ public class IndicatorController extends BaseController {
     @RequestMapping(value = "/calculator/recalculate", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void recalculateAllIndicatorValues() {
-        indicatorValueCalculator.calculateIndicatorValues();
+        FrequencyEntity frequencyEntity = cronService.getFrequencyByName(UNDEFINED);
+        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity);
     }
 
     @RequestMapping(value = "/calculator/frequency/daily", method = RequestMethod.GET)

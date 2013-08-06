@@ -10,6 +10,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -409,6 +410,11 @@ public class IndicatorServiceImpl implements IndicatorService {
             areasTrends.put(area, trend);
         }
         return areasTrends;
+    }
+
+    @Override
+    public Set<IndicatorValueEntity> getIndicatorValues(IndicatorEntity indicator, AreaEntity area, FrequencyEntity child, Date date) {
+        return indicatorValueDao.getValues(indicator, area, child, date);
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {

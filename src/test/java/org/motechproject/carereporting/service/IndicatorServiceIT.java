@@ -159,8 +159,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setId(id);
         IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
-                indicator.getArea(), BigDecimal.ONE);
-        indicatorValueEntity.setFrequency(frequencyEntity);
+                indicator.getArea(), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.TEN, frequencyEntity);
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         assertNotNull(indicatorService.getAllIndicatorValues().iterator().next());
     }
@@ -172,8 +171,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setId(id);
         IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
-                indicator.getArea(), BigDecimal.ONE);
-        indicatorValueEntity.setFrequency(frequencyEntity);
+                indicator.getArea(), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, frequencyEntity);
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
         indicatorService.updateIndicatorValue(indicatorValueEntity);
