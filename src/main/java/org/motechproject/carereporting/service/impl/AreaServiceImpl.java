@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -40,8 +41,10 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional
-    public Set<AreaEntity> getAllChildAreasByParentAreaId(Integer areaId) {
-        return new LinkedHashSet<>(areaDao.getAllChildAreasByParentAreaId(areaId));
+    public Set<AreaEntity> getAllAreasByParentAreaId(Integer areaId) {
+        HashSet<AreaEntity> areaEntities = new LinkedHashSet<>(areaDao.getAllChildAreasByParentAreaId(areaId));
+        areaEntities.add(areaDao.getById(areaId));
+        return areaEntities;
     }
 
     @Override

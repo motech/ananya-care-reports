@@ -405,7 +405,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         Set<AreaEntity> areas;
         if (parentAreaId != null) {
-            areas = areaService.getAllChildAreasByParentAreaId(parentAreaId);
+            areas = areaService.getAllAreasByParentAreaId(parentAreaId);
         } else {
             areas = areaService.getAllTopLevelAreas();
         }

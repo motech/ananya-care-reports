@@ -10,7 +10,6 @@ function sortByDateComparisonFunction(a, b) {
 
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
     $scope.title = $scope.msg('dashboards.title');
-    $scope.areaId = 1;
 
     $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
     $scope.endDate = moment().format('DD-MM-YYYY');
@@ -20,33 +19,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
         return parseInt(dashboardA.tabPosition) - parseInt(dashboardB.tabPosition);
-    };
-
-    $scope.fetchAreas = function() {
-        $http.get('api/dashboards/user-areas')
-          .success(function(areas) {
-               areas.sort(function(a, b) {
-                   return a.name.localeCompare(b.name);
-               });
-               var arr = Array(),
-                   pushAllChildrenOf = function(arr, area) {
-                       for (var index=0; index<areas.length; index+=1) {
-                           if (areas[index].parentAreaId == area.id) {
-                               arr.push(areas[index]);
-                               pushAllChildrenOf(arr, areas[index]);
-                           }
-                       }
-                   };
-
-               for (var index=0; index<areas.length; index+=1) {
-                   if (areas[index].levelHierarchyDepth == 0) {
-                       arr.push(areas[index]);
-                       pushAllChildrenOf(arr, areas[index]);
-                   }
-               }
-               $scope.areas = arr;
-               $scope.area = arr[0];
-          });
     };
 
     $scope.fetchDashboards = function() {
@@ -98,6 +70,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         if (report.reportType.name.toLowerCase().endsWith('chart')) {
                             report.indicatorId = indicator.id;
                             report.needsRefreshing = true;
+                            report.indicatorAreaId = indicator.area.id;
                             report.indicatorName = indicator.name;
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
@@ -133,12 +106,27 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         }
     };
 
+    $scope.fetchAreas = function(report) {
+        $http.get('api/dashboards/user-areas/' + report.indicatorAreaId)
+          .success(function(areas) {
+               areas.sort(function(a, b) {
+                   return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
+               });
+               var arr = Array();
+
+               for (var index=0; index<areas.length; index++) {
+                   arr.push(areas[index]);
+               }
+               report.areas = arr;
+               report.minDepth = areas[0].levelHierarchyDepth;
+          });
+    };
+
     $scope.tabChanged = function(dashboard) {
         $scope.reportRows = [];
         $scope.charts = [];
         $("#mapReport1").html('');
         $("#mapReport2").html('');
-        $scope.previousAreaId = $scope.areaId;
         $scope.dashboard = dashboard;
         if (dashboard.name == "Performance summary") {
             $scope.fetchTrends();
@@ -150,24 +138,17 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
         } else {
             $scope.fetchReportRows();
-        }
-
-        $scope.$watch('areaId', function(newValue, oldValue) {
-            if ($scope.previousAreaId != $scope.areaId) {
-                $scope.fetchTrends();
-                $scope.fetchReportRows();
-                $scope.previousAreaId = $scope.areaId;
-                for (var i in $scope.maps) {
-                    if ($scope.maps.hasOwnProperty(i)) {
-                        $scope.fetchMapReport($scope.maps[i]);
-                    }
-                }
+            for (var i = 0; i < $scope.reportRows.length; i++) {
+                $scope.fetchAreas($scope.reportRows[i][0]);
             }
-        }, true);
+        }
+    };
+
+    $scope.changeChart = function() {
+        //TODO: change chart after area was selected
     };
 
     $scope.fetchDashboards();
-    $scope.fetchAreas();
 
     $scope.trendPerCategory = {};
 

@@ -54,7 +54,7 @@ public class IndicatorEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "area_id", referencedColumnName = "area_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private AreaEntity area;
 
     @ManyToOne

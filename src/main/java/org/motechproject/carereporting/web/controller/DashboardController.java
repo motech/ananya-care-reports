@@ -2,17 +2,16 @@ package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
-import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
-import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,9 +29,6 @@ public class DashboardController extends BaseController {
 
     @Autowired
     private DashboardService dashboardService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private AreaService areaService;
@@ -68,14 +64,11 @@ public class DashboardController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/user-areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/user-areas/{areaId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<AreaEntity> getCurrentUserAvailableAreas() {
-        UserEntity user = userService.getCurrentlyLoggedUser();
-        Set<AreaEntity> userAreas = areaService.getAllChildAreasByParentAreaId(user.getArea().getId());
-        userAreas.add(user.getArea());
-        return userAreas;
+    public Set<AreaEntity> getCurrentUserAvailableAreas(@PathVariable Integer areaId) {
+        return areaService.getAllAreasByParentAreaId(areaId);
     }
 
     @RequestMapping(value = "/save-positions", method = RequestMethod.POST)
