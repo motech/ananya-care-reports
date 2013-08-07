@@ -17,4 +17,7 @@ public interface CronService {
 
     FrequencyEntity getFrequencyByName(String name);
 
+    Set<FrequencyEntity> getAllFrequencies();
+
+    FrequencyEntity getFrequencyById(Integer frequencyId);
 }

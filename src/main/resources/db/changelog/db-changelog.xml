@@ -284,7 +284,6 @@
         </sql>
     </changeSet>
 
-    <!--TODO-->
     <changeSet id="CARE #?" author="Adrian Boguszewski">
         <sql>
             create table dashboard_app.frequency(
@@ -377,6 +376,13 @@
                     references dashboard_app.language (language_id) match full
                     on delete set default on update cascade;
         </sql>
+    </changeSet>
+
+    <changeSet id="CARE #37.1" author="Adrian Boguszewski">
+        <update tableName="frequency" schemaName="dashboard_app">
+            <column name="frequency_name" value="undefined"/>
+            <where>frequency_name = 'default'</where>
+        </update>
     </changeSet>
 
 </databaseChangeLog>

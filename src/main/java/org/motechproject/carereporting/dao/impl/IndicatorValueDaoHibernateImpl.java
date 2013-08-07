@@ -24,12 +24,13 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId,
+    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
                                                                 Date startDate, Date endDate) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorValueEntity.class)
                 .add(Restrictions.eq("indicator.id", indicatorId))
                 .add(Restrictions.eq("area.id", areaId))
+                .add(Restrictions.eq("frequency.id", frequencyId))
                 .add(Restrictions.ge(DATE, startDate))
                 .add(Restrictions.le(DATE, endDate))
                 .addOrder(Order.asc(DATE));

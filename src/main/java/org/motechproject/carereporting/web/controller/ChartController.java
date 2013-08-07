@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
@@ -21,13 +23,16 @@ import java.util.List;
 
 @RequestMapping("api/chart")
 @Controller
-public class ChartController {
+public class ChartController extends BaseController {
 
     @Autowired
     private IndicatorService indicatorService;
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private CronService cronService;
 
     @Autowired
     private UserService userService;
@@ -37,16 +42,17 @@ public class ChartController {
     @ResponseBody
     public Chart getChartData(@RequestParam Integer indicatorId,
                               @RequestParam(required = false) Integer areaId,
+                              @RequestParam Integer frequencyId,
                               @RequestParam String chartType,
                               @RequestParam Date startDate,
                               @RequestParam Date endDate) {
 
-        Integer area = areaId != null ? areaId :
-                userService.getCurrentlyLoggedUser().getArea().getId();
-
         IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
+        Integer area = areaId != null ? areaId : userService.getCurrentlyLoggedUser().getArea().getId();
+        FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);
+        Date finalDate = resolveEndDate(frequencyEntity, endDate);
         List<IndicatorValueEntity> indicatorValues =
-                indicatorService.getIndicatorValuesForArea(indicatorId, area, startDate, endDate);
+                indicatorService.getIndicatorValuesForArea(indicatorId, area, frequencyId, startDate, finalDate);
 
         return reportService.prepareChart(indicator, chartType, indicatorValues);
     }
@@ -56,13 +62,15 @@ public class ChartController {
     @ResponseBody
     public List<IndicatorValueEntity> getChartValues(@RequestParam Integer indicatorId,
             @RequestParam(required = false) Integer areaId,
+            @RequestParam Integer frequencyId,
             @RequestParam Date startDate,
             @RequestParam Date endDate) {
 
-        Integer area = areaId != null ? areaId :
-                userService.getCurrentlyLoggedUser().getArea().getId();
+        Integer area = areaId != null ? areaId : userService.getCurrentlyLoggedUser().getArea().getId();
 
-        return indicatorService.getIndicatorValuesForArea(indicatorId, area, startDate, endDate);
+        FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);
+        Date finalDate = resolveEndDate(frequencyEntity, endDate);
+        return indicatorService.getIndicatorValuesForArea(indicatorId, area, frequencyId, startDate, finalDate);
     }
 
 }

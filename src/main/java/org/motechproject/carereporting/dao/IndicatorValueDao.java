@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface IndicatorValueDao extends GenericDao<IndicatorValueEntity> {
 
-    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date startDate, Date endDate);
+    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
 
     IndicatorValueEntity getIndicatorValueClosestToDate(AreaEntity area, IndicatorEntity indicator, Date date);
 

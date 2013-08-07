@@ -7,9 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
@@ -51,6 +53,9 @@ public class ChartControllerTest {
     @Mock
     private IndicatorEntity indicatorEntity;
 
+    @Mock
+    private CronService cronService;
+
     @InjectMocks
     private ChartController chartController = new ChartController();
 
@@ -67,15 +72,16 @@ public class ChartControllerTest {
 
         mockMvc.perform(get("/api/chart")
                 .param("indicatorId", "1")
+                .param("frequencyId", "1")
                 .param("chartType", "pie chart")
-                .param("startDate", "01/01/2013")
-                .param("endDate", "01/02/2013")
+                .param("startDate", "01-01-2013")
+                .param("endDate", "01-02-2013")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
         verify(indicatorService, times(1)).getIndicatorById(anyInt());
-        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(),
+        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(),
                 (Date) anyObject(), (Date) anyObject());
     }
 
@@ -85,17 +91,21 @@ public class ChartControllerTest {
 
         mockMvc.perform(get("/api/chart/data")
                 .param("indicatorId", "1")
-                .param("startDate", "01/01/2013")
-                .param("endDate", "01/02/2013")
+                .param("startDate", "01-01-2013")
+                .param("endDate", "01-02-2013")
+                .param("frequencyId", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
-        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(),
+        verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(),
                 (Date) anyObject(), (Date) anyObject());
     }
 
     private void mockMethodCalls() {
+        FrequencyEntity frequencyEntity = new FrequencyEntity();
+        frequencyEntity.setFrequencyName("");
+        when(cronService.getFrequencyById(anyInt())).thenReturn(frequencyEntity);
         when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
         when(userEntity.getArea()).thenReturn(areaEntity);
         when(areaEntity.getId()).thenReturn(1);

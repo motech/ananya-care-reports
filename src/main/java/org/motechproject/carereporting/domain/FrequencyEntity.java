@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.views.BaseView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,6 +23,7 @@ public class FrequencyEntity extends AbstractEntity {
 
     @NotEmpty
     @Column(name = "frequency_name", unique = true)
+    @JsonView({BaseView.class})
     private String frequencyName;
 
     @OneToOne

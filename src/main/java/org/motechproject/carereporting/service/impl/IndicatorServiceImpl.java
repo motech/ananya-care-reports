@@ -365,9 +365,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId,
+    public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
                                                                 Date startDate, Date endDate) {
-        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, startDate, endDate);
+        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, frequencyId, startDate, endDate);
     }
 
     @Override

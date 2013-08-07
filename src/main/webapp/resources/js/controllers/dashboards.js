@@ -33,7 +33,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchChartData = function(element) {
         $rootScope.indicatorId = $(element).parents('td').attr('data-indicator-id');
-        $rootScope.areaId = $scope.areaId;
 
         $simplifiedHttpService.get($scope, 'resources/partials/dashboards/chartDetails.html',
                 'dashboards.charts.error.cannotLoadChartDetails', function(htmlData) {
@@ -118,6 +117,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                    arr.push(areas[index]);
                }
                report.areas = arr;
+               report.areaId = areas[0].id;
                report.minDepth = areas[0].levelHierarchyDepth;
           });
     };
@@ -163,9 +163,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             endDate = $scope.endDate;
         }
         url = 'api/trend?startDate=' + startDate + '&endDate=' + endDate;
-        if ($scope.areaId != undefined) {
-            url += '&areaId=' + $scope.areaId;
-        }
         $http.get(url)
                 .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;
@@ -252,9 +249,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchMapReport = function(map) {
         var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate + '&endDate=' + map.endDate;
-        if ($scope.areaId != undefined) {
-            url += '&areaId=' + $scope.areaId;
-        }
         $http.get(url).success(function(data) {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
@@ -330,17 +324,17 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.loadChartDetails = function(report) {
-        $scope.fetchChartData(report, $scope.areaId);
+        $scope.fetchChartData(report);
     };
 
-    $scope.fetchChartData = function(report, areaId) {
+    $scope.fetchChartData = function(report) {
         var indicatorId = report.indicatorId;
         var url = 'api/chart/data/?indicatorId=' + indicatorId
             + '&startDate=' + moment(report.from).format('L')
             + '&endDate=' + moment(report.to).format('L');
 
         if (!isNaN(areaId) && isFinite(areaId)) {
-            url += '&areaId=' + areaId;
+            url += '&areaId=' + report.areaId;
         }
 
         $simplifiedHttpService.get($scope, url, 'dashboards.charts.error.cannotLoadChartDetails', function(chartData) {

@@ -191,6 +191,13 @@ public class IndicatorController extends BaseController {
         indicatorValueCalculator.calculateIndicatorValues(frequencyEntity);
     }
 
+    @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getAllFrequencies() {
+        return writeAsString(BaseView.class, cronService.getAllFrequencies());
+    }
+
     @RequestMapping(value = "/calculator/frequency/daily", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

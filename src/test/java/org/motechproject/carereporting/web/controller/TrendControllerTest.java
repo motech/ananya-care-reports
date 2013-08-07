@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
@@ -19,6 +20,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,6 +49,12 @@ public class TrendControllerTest {
 
     @Test
     public void testGetTrends() throws Exception {
+        UserEntity userEntity = new UserEntity();
+        AreaEntity areaEntity = new AreaEntity();
+        areaEntity.setId(2);
+        userEntity.setArea(areaEntity);
+
+        when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
         mockMvc.perform(get("/api/trend")
                 .param("startDate", GET_TRENDS_START_DATE)
                 .param("endDate", GET_TRENDS_END_DATE)

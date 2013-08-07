@@ -75,7 +75,7 @@ public interface IndicatorService {
 
     void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
-    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Date startDate, Date endDate);
+    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
 
     Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId);
 

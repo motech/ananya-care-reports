@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.carereporting.domain.CronTaskEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -75,4 +76,21 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         assertEquals(5, cronTaskEntitySet.size());
     }
 
+    @Test
+    public void testGetAllFrequencies() {
+        Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
+
+        assertNotNull(frequencyEntities);
+        assertEquals(5, frequencyEntities.size());
+    }
+
+    @Test
+    public void testGetFrequencyById() {
+        Integer id = 6;
+        String name = "undefined";
+        FrequencyEntity frequencyEntity = cronService.getFrequencyById(id);
+
+        assertEquals(name, frequencyEntity.getFrequencyName());
+        assertEquals(id, frequencyEntity.getId());
+    }
 }
