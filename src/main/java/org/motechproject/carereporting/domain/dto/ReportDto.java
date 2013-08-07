@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportDto implements Serializable {
@@ -17,6 +18,14 @@ public class ReportDto implements Serializable {
 
     @NotNull
     private Integer reportTypeId;
+
+    private Integer areaId;
+
+    private Integer frequencyId;
+
+    private Date startDate;
+
+    private Date endDate;
 
     private String labelX;
 
@@ -40,5 +49,21 @@ public class ReportDto implements Serializable {
 
     public String getLabelY() {
         return labelY;
+    }
+
+    public Integer getAreaId() {
+        return areaId;
+    }
+
+    public Integer getFrequencyId() {
+        return frequencyId;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
     }
 }

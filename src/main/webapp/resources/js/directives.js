@@ -157,8 +157,8 @@
 
                             var url = 'api/chart?chartType=' + chartType
                                 + '&indicatorId=' + indicatorId
-                                + '&startDate=' + moment(report.from).format('dd-MM-yyyy')
-                                + '&endDate=' + moment(report.to).format('dd-MM-yyyy')
+                                + '&startDate=' + moment(report.from).format('DD-MM-YYYY')
+                                + '&endDate=' + moment(report.to).format('DD-MM-YYYY')
                                 + "&frequencyId=" + frequencyId;
 
                             if (areaId != undefined) {

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Component
@@ -89,9 +90,14 @@ public final class ChartFactory {
     }
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        BigDecimal latestIndicatorValue = values.size() != 0
-                ? values.get(values.size() - 1).getValue().divide(new BigDecimal(DIVIDE_BY_ONE_HUNDRED))
-                : BigDecimal.ZERO;
+        BigDecimal indicatorNumeratorsCombined = BigDecimal.ZERO;
+        BigDecimal indicatorDenominatorsCombined = BigDecimal.ZERO;
+        for (IndicatorValueEntity value : values){
+            indicatorNumeratorsCombined = indicatorNumeratorsCombined.add(value.getNominator());
+            indicatorDenominatorsCombined = indicatorDenominatorsCombined.add(value.getDenominator());
+        }
+        BigDecimal chartValue = indicatorNumeratorsCombined.divide(indicatorDenominatorsCombined, 4, RoundingMode.HALF_UP);
+        chartValue = chartValue.divide(new BigDecimal(DIVIDE_BY_ONE_HUNDRED), 4, RoundingMode.HALF_UP);
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
                 ReportType.PieChart, indicator.getId());
@@ -111,10 +117,10 @@ public final class ChartFactory {
                         .explode(EXPLOSION_NUMBER))
                 .serie(new SerieBuilder()
                         .label(labelX)
-                        .point(BigDecimal.ZERO, latestIndicatorValue))
+                        .point(BigDecimal.ZERO, chartValue))
                 .serie(new SerieBuilder()
                         .label(labelY)
-                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(latestIndicatorValue)))
+                        .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(chartValue)))
                 .build();
     }
 

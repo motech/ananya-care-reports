@@ -16,6 +16,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.indicatorCategories = [];
     $scope.charts = {};
+    $scope.frequencies = [];
 
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
         return parseInt(dashboardA.tabPosition) - parseInt(dashboardB.tabPosition);
@@ -41,6 +42,12 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         });
     };
 
+    $scope.fetchFrequencies = function() {
+        $http.get('/api/indicator/calculator/frequencies').success(function(frequencies) {
+            $scope.frequencies = frequencies;
+        });
+    };
+    $scope.fetchFrequencies();
     $scope.reportRows = [];
     $scope.fetchReportRows = function() {
         $scope.reportRows = [];
