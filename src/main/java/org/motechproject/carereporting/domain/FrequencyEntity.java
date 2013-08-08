@@ -23,7 +23,7 @@ public class FrequencyEntity extends AbstractEntity {
 
     @NotEmpty
     @Column(name = "frequency_name", unique = true)
-    @JsonView({BaseView.class})
+    @JsonView({ BaseView.class })
     private String frequencyName;
 
     @OneToOne

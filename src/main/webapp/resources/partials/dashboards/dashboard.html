@@ -160,7 +160,10 @@
                                                 <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.area')}}:</span>
                                             </div>
                                         </div>
-                                        <p class="text-center"><span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</span></p>
+                                        <p class="text-left">
+                                            <span ng-click="exportToCsv(report)" class="label label-info chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</span>
+                                            <span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</span>
+                                        </p>
                                         <div class="chart-container-wrapper">
                                             <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
                                             <div class="chart-container" ng-show="report.displayType == 'table'">

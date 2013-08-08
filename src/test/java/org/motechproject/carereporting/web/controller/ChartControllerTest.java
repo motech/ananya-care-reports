@@ -12,6 +12,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.service.CronService;
+import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
@@ -20,19 +21,24 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("unchecked")
 public class ChartControllerTest {
 
     @Mock
@@ -55,6 +61,9 @@ public class ChartControllerTest {
 
     @Mock
     private CronService cronService;
+
+    @Mock
+    private ExportService exportService;
 
     @InjectMocks
     private ChartController chartController = new ChartController();
@@ -102,9 +111,25 @@ public class ChartControllerTest {
                 (Date) anyObject(), (Date) anyObject());
     }
 
-    private void mockMethodCalls() {
+    @Test
+    public void testExportValuesToCsv() throws Exception {
+        mockMethodCalls();
+
+        mockMvc.perform(post("/api/chart/data/export")
+                .param("indicatorId", "1")
+                .param("startDate", "01-01-2013")
+                .param("endDate", "01-02-2013")
+                .param("frequencyId", "1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(exportService).exportIndicatorValues(anyList());
+    }
+
+    private void mockMethodCalls() throws IOException {
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setFrequencyName("");
+        doNothing().when(exportService).exportIndicatorValues(anyList());
         when(cronService.getFrequencyById(anyInt())).thenReturn(frequencyEntity);
         when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
         when(userEntity.getArea()).thenReturn(areaEntity);

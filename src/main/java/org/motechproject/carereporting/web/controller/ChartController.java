@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.service.CronService;
+import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,9 @@ public class ChartController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ExportService exportService;
+
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -48,11 +53,8 @@ public class ChartController extends BaseController {
                               @RequestParam Date endDate) {
 
         IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
-        Integer area = areaId != null ? areaId : userService.getCurrentlyLoggedUser().getArea().getId();
-        FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);
-        Date finalDate = resolveEndDate(frequencyEntity, endDate);
         List<IndicatorValueEntity> indicatorValues =
-                indicatorService.getIndicatorValuesForArea(indicatorId, area, frequencyId, startDate, finalDate);
+                getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
 
         return reportService.prepareChart(indicator, chartType, indicatorValues);
     }
@@ -61,11 +63,26 @@ public class ChartController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<IndicatorValueEntity> getChartValues(@RequestParam Integer indicatorId,
-            @RequestParam(required = false) Integer areaId,
-            @RequestParam Integer frequencyId,
-            @RequestParam Date startDate,
-            @RequestParam Date endDate) {
+                                                     @RequestParam(required = false) Integer areaId,
+                                                     @RequestParam Integer frequencyId,
+                                                     @RequestParam Date startDate,
+                                                     @RequestParam Date endDate) {
 
+        return getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
+    }
+
+    @RequestMapping(value = "/data/export", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public void exportValuesToCsv(@RequestParam Integer indicatorId,
+                                  @RequestParam(required = false) Integer areaId,
+                                  @RequestParam Integer frequencyId,
+                                  @RequestParam Date startDate,
+                                  @RequestParam Date endDate) throws IOException {
+        List<IndicatorValueEntity> indicatorValueEntities = getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
+        exportService.exportIndicatorValues(indicatorValueEntities);
+    }
+
+    private List<IndicatorValueEntity> getIndicatorValues(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate) {
         Integer area = areaId != null ? areaId : userService.getCurrentlyLoggedUser().getArea().getId();
 
         FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);

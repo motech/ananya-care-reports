@@ -81,8 +81,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
                             report.displayType = 'chart';
-                            report.from = moment().subtract('months', 1).format('L');
-                            report.to = moment().format('L');
+                            report.from = moment().subtract('months', 1).format('DD-MM-YYYY');
+                            report.to = moment().format('DD-MM-YYYY');
                         } else {
                             report = null;
                         }
@@ -99,7 +99,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.to = moment(report.to);
 
         if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.from = moment(report.to).subtract('days', 1).format('L');
+            report.from = moment(report.to).subtract('days', 1).format('DD-MM-YYYY');
         }
     };
 
@@ -108,7 +108,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.to = moment(report.to);
 
         if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.to = moment(report.from).add('days', 1).format('L');
+            report.to = moment(report.from).add('days', 1).format('DD-MM-YYYY');
         }
     };
 
@@ -316,6 +316,24 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.indicator = { name: null };
     $scope.chartData = [];
 
+    $scope.exportToCsv = function(report) {
+        var indicatorId = report.indicatorId;
+        var url = 'api/chart/data/export/?indicatorId=' + indicatorId
+            + '&startDate=' + report.from
+            + '&endDate=' + report.to
+            + '&frequencyId=' + report.frequencyId;
+
+        if (!isNaN(report.areaId) && isFinite(report.areaId)) {
+            url += '&areaId=' + report.areaId;
+        }
+        $http.post(url)
+            .success(function() {
+                $dialog.messageBox("Success", $scope.msg('dashboard.charts.error.successfulExport'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+            }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+            });
+    }
+
     $scope.toggleChartDisplay = function(report) {
         if (!report) {
             return;
@@ -337,10 +355,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchChartData = function(report) {
         var indicatorId = report.indicatorId;
         var url = 'api/chart/data/?indicatorId=' + indicatorId
-            + '&startDate=' + moment(report.from).format('L')
-            + '&endDate=' + moment(report.to).format('L');
+            + '&startDate=' + report.from
+            + '&endDate=' + report.to
+            + '&frequencyId=' + report.frequencyId;
 
-        if (!isNaN(areaId) && isFinite(areaId)) {
+        if (!isNaN(report.areaId) && isFinite(report.areaId)) {
             url += '&areaId=' + report.areaId;
         }
 

@@ -47,14 +47,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return responseErrors;
     }
 
-    @ExceptionHandler(value = CareSqlRuntimeException.class)
-    protected ResponseEntity<Object> handleSqlError(CareSqlRuntimeException ex, WebRequest request) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        return handleExceptionInternal(ex, ex.getMessage(), httpHeaders, HttpStatus.BAD_REQUEST, request);
-    }
-
     @ExceptionHandler(value = { CareResourceNotFoundRuntimeException.class })
     protected ResponseEntity<Object> handleResourceNotFoundError(CareResourceNotFoundRuntimeException ex, WebRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -83,11 +75,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
     }
 
-    @ExceptionHandler(value = CareMessageFileNotFoundRuntimeException.class)
+    @ExceptionHandler(value = { CareSqlRuntimeException.class, CareNoValuesException.class, CareMessageFileNotFoundRuntimeException.class })
     protected ResponseEntity<Object> handleCareMessageFileNotFoundException(
-            CareMessageFileNotFoundRuntimeException ex, WebRequest request) {
+            CareRuntimeException ex, WebRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         return handleExceptionInternal(ex, ex.getMessage(), httpHeaders, HttpStatus.NOT_FOUND, request);
     }

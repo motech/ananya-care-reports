@@ -9,4 +9,6 @@ public interface ExportService {
 
     void exportIndicatorValues(List<IndicatorValueEntity> indicatorValues, String filePath) throws IOException;
 
+    void exportIndicatorValues(List<IndicatorValueEntity> indicatorValues) throws IOException;
+
 }
