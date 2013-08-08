@@ -150,11 +150,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
         }
     };
-
-    $scope.changeChart = function() {
-        //TODO: change chart after area was selected
-    };
-
     $scope.fetchDashboards();
 
     $scope.trendPerCategory = {};
@@ -328,7 +323,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         }
         $http.post(url)
             .success(function() {
-                $dialog.messageBox("Success", $scope.msg('dashboard.charts.error.successfulExport'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+                $dialog.messageBox($scope.msg('common.success'), $scope.msg('dashboard.charts.error.successfulExport'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });
