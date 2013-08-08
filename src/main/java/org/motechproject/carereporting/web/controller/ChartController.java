@@ -10,8 +10,10 @@ import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.web.chart.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,15 +73,25 @@ public class ChartController extends BaseController {
         return getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
     }
 
-    @RequestMapping(value = "/data/export", method = RequestMethod.POST)
+    @RequestMapping(value = "/data/export", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void exportValuesToCsv(@RequestParam Integer indicatorId,
-                                  @RequestParam(required = false) Integer areaId,
-                                  @RequestParam Integer frequencyId,
-                                  @RequestParam Date startDate,
-                                  @RequestParam Date endDate) throws IOException {
+    public ResponseEntity<byte[]> exportValuesToCsv(@RequestParam Integer indicatorId,
+                                                    @RequestParam(required = false) Integer areaId,
+                                                    @RequestParam Integer frequencyId,
+                                                    @RequestParam Date startDate,
+                                                    @RequestParam Date endDate) throws IOException {
+
         List<IndicatorValueEntity> indicatorValueEntities = getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
-        exportService.exportIndicatorValues(indicatorValueEntities);
+        byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntities);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+
+        //TODO: Add filename consist of indicator name and creation date
+        //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy;HH:mm");
+        //        String path = directory + "/" + indicatorValueEntityList.get(0).getIndicator().getName() + "." + simpleDateFormat.format(new Date()) + ".csv";
+
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
     private List<IndicatorValueEntity> getIndicatorValues(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate) {

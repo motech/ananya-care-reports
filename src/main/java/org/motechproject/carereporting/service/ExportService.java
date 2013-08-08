@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface ExportService {
 
-    void exportIndicatorValues(List<IndicatorValueEntity> indicatorValues, String filePath) throws IOException;
-
-    void exportIndicatorValues(List<IndicatorValueEntity> indicatorValues) throws IOException;
+    byte[] convertIndicatorValuesToBytes(List<IndicatorValueEntity> indicatorValues) throws IOException;
 
 }

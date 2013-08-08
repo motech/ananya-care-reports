@@ -385,4 +385,11 @@
         </update>
     </changeSet>
 
+    <changeSet id="CARE #53" author="Adrian Boguszewski">
+        <sql>
+            insert into dashboard_app.indicator_value (indicator_id, area_id, frequency_id, value, nominator, denominator, modification_date, creation_date) values
+                (2, 1, 3, 23, 23, 1, now(), now());
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -15,20 +15,23 @@ import org.motechproject.carereporting.export.csv.CsvExportHelper;
 import org.motechproject.carereporting.service.impl.CsvExportServiceImpl;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(locations = "classpath:testContext.xml")
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
 public class ExportServiceTest {
+
+    private static final byte[] BYTES = {12, 13, 15, 100};
 
     @Mock
     private CsvExportHelper csvExportHelper;
@@ -54,25 +57,20 @@ public class ExportServiceTest {
         indicatorValueEntity.setValue(BigDecimal.TEN);
         indicatorValueEntityList = new ArrayList<IndicatorValueEntity>();
         indicatorValueEntityList.add(indicatorValueEntity);
-        doNothing().when(csvExportHelper).saveCsvFile(anyList(), anyString());
-    }
-
-    @Test
-    public void testExportIndicatorValuesWithDefaultPath() throws IOException {
-        exportService.exportIndicatorValues(indicatorValueEntityList);
-
-        verify(csvExportHelper).saveCsvFile(anyList(), anyString());
+        when(csvExportHelper.convertToCsvFile(anyList())).thenReturn(new ByteArrayInputStream(BYTES));
     }
 
     @Test
     public void testExportIndicatorValues() throws IOException {
-        exportService.exportIndicatorValues(indicatorValueEntityList, "path");
+        byte [] returned = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 
-        verify(csvExportHelper).saveCsvFile(anyList(), anyString());
+        verify(csvExportHelper).convertToCsvFile(anyList());
+
+        assertArrayEquals(BYTES, returned);
     }
 
     @Test(expected = CareNoValuesException.class)
     public void shouldThrowCareNoValuesExceptionWhenListOfIndicatorsValuesIsEmpty() throws IOException {
-        exportService.exportIndicatorValues(new ArrayList<IndicatorValueEntity>());
+        exportService.convertIndicatorValuesToBytes(new ArrayList<IndicatorValueEntity>());
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.io.IOException;
 import java.util.Date;
 
+import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
@@ -115,7 +116,7 @@ public class ChartControllerTest {
     public void testExportValuesToCsv() throws Exception {
         mockMethodCalls();
 
-        mockMvc.perform(post("/api/chart/data/export")
+        mockMvc.perform(get("/api/chart/data/export")
                 .param("indicatorId", "1")
                 .param("startDate", "01-01-2013")
                 .param("endDate", "01-02-2013")
@@ -123,14 +124,16 @@ public class ChartControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(exportService).exportIndicatorValues(anyList());
+        verify(exportService).convertIndicatorValuesToBytes(anyList());
     }
 
     private void mockMethodCalls() throws IOException {
+        Integer id = 1;
         FrequencyEntity frequencyEntity = new FrequencyEntity();
+        frequencyEntity.setId(id);
         frequencyEntity.setFrequencyName("");
-        doNothing().when(exportService).exportIndicatorValues(anyList());
-        when(cronService.getFrequencyById(anyInt())).thenReturn(frequencyEntity);
+        when(exportService.convertIndicatorValuesToBytes(anyList())).thenReturn(new byte[]{anyByte()});
+        when(cronService.getFrequencyById(id)).thenReturn(frequencyEntity);
         when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
         when(userEntity.getArea()).thenReturn(areaEntity);
         when(areaEntity.getId()).thenReturn(1);

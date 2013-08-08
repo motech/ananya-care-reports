@@ -3,32 +3,27 @@ package org.motechproject.carereporting.export.csv;
 import liquibase.util.csv.CSVWriter;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 
 @Component
 public class CsvExportHelper {
 
-    public void saveCsvFile(List<String[]> data, String filePath) throws IOException {
-        createDirectories(filePath);
-        CSVWriter writer = new CSVWriter(new FileWriter(filePath), '\t');
+    public ByteArrayInputStream convertToCsvFile(List<String[]> data) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Writer writer = new OutputStreamWriter(outputStream);
+        CSVWriter csvWriter = new CSVWriter(writer, '\t');
         try {
-            writer.writeAll(data);
-            writer.flush();
+            csvWriter.writeAll(data);
+            csvWriter.flush();
         } finally {
-            writer.close();
+            csvWriter.close();
         }
-    }
-
-    private void createDirectories(String filePath) {
-        File file = new File(filePath);
-        File parent = file.getParentFile();
-
-        if(!parent.exists()) {
-            parent.mkdirs();
-        }
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
 }

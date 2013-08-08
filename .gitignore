@@ -21,4 +21,3 @@ test-output/
 felix-cache/
 *.tmp
 *.orig
-src/main/resources/export
