@@ -3,6 +3,7 @@ package org.motechproject.carereporting.xml.mapping;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
 import java.util.List;
 
 @XmlRootElement
@@ -27,6 +28,8 @@ public class Indicator {
     private Union union;
 
     private Intersection intersection;
+
+    private BigDecimal trend;
 
     public String getName() {
         return name;
@@ -113,5 +116,13 @@ public class Indicator {
 
     public void setIntersection(Intersection intersection) {
         this.intersection = intersection;
+    }
+
+    public BigDecimal getTrend() {
+        return trend;
+    }
+
+    public void setTrend(BigDecimal trend) {
+        this.trend = trend;
     }
 }

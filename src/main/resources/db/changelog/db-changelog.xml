@@ -570,4 +570,69 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #57 (2)" author="Łukasz Gąsior">
+        <sql>
+            DROP TABLE dashboard_app.simple_dw_query_condition;
+
+            CREATE TABLE dashboard_app.dw_query_condition(
+                dw_query_id integer not null,
+                condition_id integer not null,
+                constraint dw_query_condition_pk primary key (dw_query_id, condition_id),
+                constraint dw_query_condition_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint dw_query_condition_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            ALTER TABLE dashboard_app.complex_dw_query
+                DROP COLUMN dimension_id;
+
+            ALTER TABLE dashboard_app.complex_dw_query
+                ADD COLUMN dimension varchar;
+
+            CREATE TABLE dashboard_app.where_group(
+                where_group_id serial not null,
+                operator varchar,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint where_group_pk primary key (where_group_id)
+            );
+
+            CREATE TABLE dashboard_app.where_group_condition(
+                where_group_id integer not null,
+                condition_id integer not null,
+                constraint where_group_condition_pk primary key (where_group_id, condition_id),
+                constraint where_group_condition_where_group_id foreign key (where_group_id)
+                references dashboard_app.where_group (where_group_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint dw_query_condition_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            CREATE TABLE dashboard_app.where_group_where_group(
+                where_group_id integer not null,
+                where_group2_id integer not null,
+                constraint where_group_where_group_pk primary key (where_group_id, where_group2_id),
+                constraint where_group_where_group_where_group_id foreign key (where_group_id)
+                references dashboard_app.where_group (where_group_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint where_group_where_group_where_group2_id foreign key (where_group2_id)
+                references dashboard_app.where_group (where_group_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            ALTER TABLE dashboard_app.dw_query
+                ADD COLUMN where_group_id integer;
+
+            ALTER TABLE dashboard_app.dw_query ADD CONSTRAINT
+                dw_query_where_group_id foreign key (where_group_id)
+                references dashboard_app.where_group (where_group_id) match full
+                on delete set null on update set null not deferrable;
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

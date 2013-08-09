@@ -18,9 +18,8 @@ import java.util.Set;
 })
 public class ComplexDwQueryEntity extends DwQueryEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "dimension_id", referencedColumnName = "dw_query_id", nullable = false)
-    private DwQueryEntity dimension;
+    @Column(name = "dimension")
+    private String dimension;
 
     @ManyToMany
     @JoinTable(name = "complex_dw_query_fact", joinColumns = { @JoinColumn(name = "complex_dw_query_id") },
@@ -35,11 +34,11 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
     @JoinColumn(name = "intersection_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity intersection;
 
-    public DwQueryEntity getDimension() {
+    public String getDimension() {
         return dimension;
     }
 
-    public void setDimension(DwQueryEntity dimension) {
+    public void setDimension(String dimension) {
         this.dimension = dimension;
     }
 

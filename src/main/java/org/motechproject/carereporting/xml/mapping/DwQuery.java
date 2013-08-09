@@ -12,6 +12,8 @@ public class DwQuery {
 
     private List<Fact> facts;
 
+    private WhereGroup whereGroup;
+
     public Dimension getDimension() {
         return dimension;
     }
@@ -28,5 +30,14 @@ public class DwQuery {
 
     public void setFacts(List<Fact> facts) {
         this.facts = facts;
+    }
+
+    @XmlElement(name = "where-group")
+    public WhereGroup getWhereGroup() {
+        return whereGroup;
+    }
+
+    public void setWhereGroup(WhereGroup whereGroup) {
+        this.whereGroup = whereGroup;
     }
 }

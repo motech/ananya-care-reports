@@ -30,6 +30,14 @@ public class DwQueryEntity extends AbstractEntity {
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")
     private CombinationEntity combination;
 
+    @ManyToOne
+    @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
+    private GroupedByEntity groupedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
+    private WhereGroupEntity whereGroup;
+
     public Set<SelectColumnEntity> getSelectColumns() {
         return selectColumns;
     }
@@ -44,5 +52,21 @@ public class DwQueryEntity extends AbstractEntity {
 
     public void setCombination(CombinationEntity combination) {
         this.combination = combination;
+    }
+
+    public GroupedByEntity getGroupedBy() {
+        return groupedBy;
+    }
+
+    public void setGroupedBy(GroupedByEntity groupedBy) {
+        this.groupedBy = groupedBy;
+    }
+
+    public WhereGroupEntity getWhereGroup() {
+        return whereGroup;
+    }
+
+    public void setWhereGroup(WhereGroupEntity whereGroup) {
+        this.whereGroup = whereGroup;
     }
 }

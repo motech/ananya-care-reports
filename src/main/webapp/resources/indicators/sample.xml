@@ -1,34 +1,56 @@
 <indicator>
-	<name>Sample Uploaded3 Indicator</name>
-	<frequency>monthly</frequency>
-    <type>count</type>
-	<computedField>eating</computedField>
-    <form>ebf_child_form</form>
-    <area>Bihar</area>
+    <name>Some indicator</name>
     <categories>
         <category name="IFA Tablets" />
     </categories>
-    <conditions>
-		<condition type="valueComparison">
-            <fieldName>couple_interested</fieldName>
-            <symbol>=</symbol>
-			<value>yes</value>
-		</condition>
-        <condition type="valueComparison">
-            <fieldName>couple_interested</fieldName>
-            <symbol>&lt;=</symbol>
-            <value>90</value>
-        </condition>
-        <condition type="fieldComparison">
-            <fieldName>couple_interested</fieldName>
-            <symbol>&lt;=</symbol>
-            <secondField>couple_interested</secondField>
-        </condition>
-        <condition type="dateDiff">
-            <fieldName>couple_interested</fieldName>
-            <secondField>couple_interested</secondField>
-            <symbol>&lt;=</symbol>
-            <value>90</value>
-        </condition>
-	</conditions>
+    <users>
+        <user login="userName" />
+    </users>
+    <roles>
+        <role name="roleName" />
+    </roles>
+    <trend>3</trend>
+    <area name="Bihar" level="State" />
+    <default-frequency>Daily</default-frequency>
+    <denominator>
+        <dw-query>
+            <dimension tableName="can be every table" />
+            <facts>
+                <fact>
+                    <name>(can be every table that has foreign-key to dimension)</name>
+                    <where-group>
+                        <where-condition type="valueComparison">
+                            <field>ifa_tablets_total</field>
+                            <operator>=</operator>
+                            <value>90</value>
+                        </where-condition>
+                    </where-group>
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="2" />
+                </fact>
+            </facts>
+            <where-group>
+                <group join="and">
+                    <where-condition type="valueComparison">
+                        <field>ifa_tablets_total</field>
+                        <operator>=</operator>
+                        <value>90</value>
+                    </where-condition>
+                </group>
+                <group join="or">
+                    <where-condition type="valueComparison">
+                        <field>ifa_tablets_total</field>
+                        <operator>=</operator>
+                        <value>90</value>
+                    </where-condition>
+                </group>
+            </where-group>
+        </dw-query>
+    </denominator>
+    <union>
+        <union-elements>
+            <union-element>
+                <indicator id="2" />
+            </union-element>
+        </union-elements>
+    </union>
 </indicator>

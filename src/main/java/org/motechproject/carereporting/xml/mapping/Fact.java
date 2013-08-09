@@ -1,16 +1,14 @@
 package org.motechproject.carereporting.xml.mapping;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 @XmlRootElement(name = "fact")
 public class Fact {
 
     private String name;
 
-    private List<WhereCondition> conditions;
+    private WhereGroup whereGroup;
 
     private GroupedBy groupedBy;
 
@@ -22,14 +20,13 @@ public class Fact {
         this.name = name;
     }
 
-    @XmlElementWrapper(name = "conditions")
-    @XmlElement(name = "where-condition")
-    public List<WhereCondition> getConditions() {
-        return conditions;
+    @XmlElement(name = "where-group")
+    public WhereGroup getWhereGroup() {
+        return whereGroup;
     }
 
-    public void setConditions(List<WhereCondition> conditions) {
-        this.conditions = conditions;
+    public void setWhereGroup(WhereGroup whereGroup) {
+        this.whereGroup = whereGroup;
     }
 
     @XmlElement(name = "groupedByDimensionFactRowsNumber")
