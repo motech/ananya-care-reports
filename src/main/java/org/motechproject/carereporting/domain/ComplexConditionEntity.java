@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
@@ -32,9 +31,6 @@ public class ComplexConditionEntity extends AbstractEntity {
     @OneToMany(mappedBy = "complexCondition", cascade = CascadeType.ALL)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private Set<ConditionEntity> conditions;
-
-    @OneToMany(mappedBy = "complexCondition")
-    private Set<IndicatorEntity> indicators;
 
     public ComplexConditionEntity() {
 
@@ -77,12 +73,4 @@ public class ComplexConditionEntity extends AbstractEntity {
         }
     }
 
-    @JsonIgnore
-    public Set<IndicatorEntity> getIndicators() {
-        return indicators;
-    }
-
-    public void setIndicators(Set<IndicatorEntity> indicators) {
-        this.indicators = indicators;
-    }
 }

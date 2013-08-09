@@ -284,6 +284,7 @@
         </sql>
     </changeSet>
 
+    <!--TODO-->
     <changeSet id="CARE #?" author="Adrian Boguszewski">
         <sql>
             create table dashboard_app.frequency(
@@ -389,6 +390,183 @@
         <sql>
             insert into dashboard_app.indicator_value (indicator_id, area_id, frequency_id, value, nominator, denominator, modification_date, creation_date) values
                 (2, 1, 3, 23, 23, 1, now(), now());
+        </sql>
+    </changeSet>
+
+    <changeSet id="CARE #57" author="Łukasz Gąsior">
+        <sql>
+
+            CREATE TABLE dashboard_app.select_column(
+                select_column_id serial not null,
+                name varchar not null,
+                function varchar default null,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint select_column_pk primary key (select_column_id)
+            );
+
+            CREATE TABLE dashboard_app.having(
+                having_id serial not null,
+                select_column_id integer not null,
+                operator varchar not null,
+                value varchar not null,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint having_pk primary key (having_id),
+                constraint having_select_column_id foreign key (select_column_id)
+                references dashboard_app.select_column (select_column_id) match full
+                on delete set null on update set null not deferrable
+            );
+
+            CREATE TABLE dashboard_app.grouped_by(
+                grouped_by_id serial not null,
+                having_id integer,
+                table_name varchar not null,
+                field_name varchar not null,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint grouped_by_pk primary key (grouped_by_id),
+                constraint grouped_by_having_id foreign key (having_id)
+                references dashboard_app.having (having_id) match full
+                on delete set null on update set null not deferrable
+            );
+
+            CREATE TABLE dashboard_app.dw_query (
+                dw_query_id serial not null,
+                combination_id integer default NULL,
+                grouped_by_id integer default NULL,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint dw_query_pk primary key (dw_query_id),
+                constraint dw_query_grouped_by_id foreign key (grouped_by_id)
+                references dashboard_app.grouped_by (grouped_by_id) match full
+                on delete set null on update set null not deferrable
+            );
+
+            CREATE TABLE dashboard_app.dw_query_select_column(
+                select_column_id integer not null,
+                dw_query_id integer not null,
+                constraint dw_query_select_column_pk primary key (select_column_id, dw_query_id),
+                constraint dw_query_select_column_select_column_id foreign key (select_column_id)
+                references dashboard_app.select_column (select_column_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint dw_query_select_column_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            CREATE TABLE dashboard_app.simple_dw_query(
+                simple_dw_query_id serial not null,
+                dw_query_id integer not null,
+                table_name varchar,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint simple_dw_query_pk primary key (simple_dw_query_id),
+                constraint simple_dw_query_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            CREATE TABLE dashboard_app.complex_dw_query(
+                complex_dw_query_id serial not null,
+                dw_query_id integer not null,
+                dimension_id integer,
+                union_id integer DEFAULT null,
+                intersection_id integer DEFAULT null,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint complex_dw_query_pk primary key (complex_dw_query_id),
+                constraint complex_dw_query_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint complex_dw_query_dimension_id foreign key (dimension_id)
+                references dashboard_app.simple_dw_query (simple_dw_query_id) match full
+                on delete set null on update set null not deferrable,
+                constraint complex_dw_query_union_id foreign key (union_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete set null on update set null not deferrable,
+                constraint complex_dw_query_intersection_id foreign key (intersection_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete set null on update set null not deferrable
+            );
+
+            CREATE TABLE dashboard_app.combination(
+                combination_id serial not null,
+                dw_query_id integer not null,
+                type varchar,
+                foreign_key varchar,
+                referenced_key varchar,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint combination_pk primary key (combination_id),
+                constraint combination_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            ALTER TABLE dashboard_app.dw_query ADD CONSTRAINT
+                dw_query_combination_id foreign key (combination_id)
+                references dashboard_app.combination (combination_id) match full
+                on delete set null on update set null not deferrable;
+
+            CREATE TABLE dashboard_app.fact(
+                fact_id serial not null,
+                table_id integer not null,
+                combine_type varchar default null,
+                creation_date timestamp,
+                modification_date timestamp,
+                constraint fact_pk primary key (fact_id),
+                constraint fact_table_id foreign key (table_id)
+                references dashboard_app.simple_dw_query (simple_dw_query_id) match full
+                on delete set null on update set null not deferrable
+            );
+
+            CREATE TABLE dashboard_app.fact_complex_dw_query(
+                complex_dw_query_id integer not null,
+                fact_id integer not null,
+                constraint complex_dw_query_fact_pk primary key (complex_dw_query_id, fact_id),
+                constraint complex_dw_query_fact_complex_dw_query_id foreign key (complex_dw_query_id)
+                references dashboard_app.complex_dw_query (complex_dw_query_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint complex_dw_query_fact_fact_id foreign key (fact_id)
+                references dashboard_app.fact (fact_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
+            ALTER TABLE dashboard_app.indicator
+                DROP column complex_condition_id;
+
+            ALTER TABLE dashboard_app.indicator
+                DROP column computed_field_id;
+
+            ALTER TABLE dashboard_app.indicator
+                ADD column denominator_id integer;
+
+            ALTER TABLE dashboard_app.indicator
+                ADD column numerator_id integer;
+
+            ALTER TABLE dashboard_app.indicator ADD CONSTRAINT
+                indicator_denominator_id foreign key (denominator_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete set null on update set null not deferrable;
+
+            ALTER TABLE dashboard_app.indicator ADD CONSTRAINT
+                indicator_numerator_id foreign key (numerator_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete set null on update set null not deferrable;
+
+            CREATE TABLE dashboard_app.simple_dw_query_condition(
+                dw_query_id integer not null,
+                condition_id integer not null,
+                constraint simple_dw_query_condition_pk primary key (dw_query_id, condition_id),
+                constraint simple_dw_query_condition_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint simple_dw_query_condition_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable
+            );
+
         </sql>
     </changeSet>
 

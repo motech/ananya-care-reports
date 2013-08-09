@@ -55,9 +55,6 @@ public class ComputedFieldEntity extends AbstractEntity {
     @OrderBy("field_operation_id")
     private Set<FieldOperationEntity> fieldOperations;
 
-    @OneToMany(mappedBy = "computedField")
-    private Set<IndicatorEntity> indicators;
-
     public ComputedFieldEntity() {
 
     }
@@ -100,15 +97,6 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     public void setFieldOperations(Set<FieldOperationEntity> fieldOperations) {
         this.fieldOperations = fieldOperations;
-    }
-
-    @JsonIgnore
-    public Set<IndicatorEntity> getIndicators() {
-        return indicators;
-    }
-
-    public void setIndicators(Set<IndicatorEntity> indicators) {
-        this.indicators = indicators;
     }
 
     @JsonIgnore

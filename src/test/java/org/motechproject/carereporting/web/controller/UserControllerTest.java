@@ -83,7 +83,7 @@ public class UserControllerTest {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setId(id);
         indicatorEntity.setName(indicatorName);
-        indicatorEntity.setFrequency(frequency);
+        indicatorEntity.setDefaultFrequency(frequency);
         Set<IndicatorEntity> indicatorEntities = new LinkedHashSet<>();
         indicatorEntities.add(indicatorEntity);
 

@@ -4,18 +4,10 @@ import org.apache.log4j.Logger;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.indicator.calculator.AbstractIndicatorValueCalculator;
-import org.motechproject.carereporting.indicator.calculator.AverageIndicatorValueCalculator;
-import org.motechproject.carereporting.indicator.calculator.CountIndicatorValueCalculator;
-import org.motechproject.carereporting.indicator.calculator.PercentageIndicatorValueCalculator;
-import org.motechproject.carereporting.indicator.calculator.SumIndicatorValueCalculator;
-import org.motechproject.carereporting.service.FormsService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.util.Set;
 
 @Component
@@ -24,14 +16,14 @@ public class IndicatorValueCalculator {
 
     private static final Logger LOG = Logger.getLogger(IndicatorValueCalculator.class);
 
-    @Resource(name = "careDataSource")
-    private DataSource careDataSource;
+    //@Resource(name = "careDataSource")
+    //private DataSource careDataSource;
 
     @Autowired
     private IndicatorService indicatorService;
 
-    @Autowired
-    private FormsService formsService;
+    //@Autowired
+    //private FormsService formsService;
 
     public void calculateIndicatorValues(FrequencyEntity frequencyEntity) {
         LOG.info("Running scheduled indicator values calculation.");
@@ -54,19 +46,8 @@ public class IndicatorValueCalculator {
     }
 
     private AbstractIndicatorValueCalculator getIndicatorValueCalculator(IndicatorEntity indicator) {
-        switch (indicator.getIndicatorType().getName()) {
-            case "Average":
-                return new AverageIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
-            case "Count":
-                return new CountIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
-            case "Percentage":
-                return new PercentageIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
-            case "Sum":
-                return new SumIndicatorValueCalculator(careDataSource, indicator, indicatorService, formsService);
-            default:
-                throw new IllegalArgumentException("Indicator type " +
-                        indicator.getIndicatorType().getName() + " not supported.");
-        }
+        return new AbstractIndicatorValueCalculator(null, indicator, null, null) {
+        };
     }
 
 }

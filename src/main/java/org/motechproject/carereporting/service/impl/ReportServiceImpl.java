@@ -100,7 +100,8 @@ public class ReportServiceImpl implements ReportService {
     private ReportEntity fetchAndUpdateReport(Integer reportId, Integer indicatorId, Integer reportTypeId,
             String labelX, String labelY) {
         ReportEntity reportEntity = reportDao.getById(reportId);
-        IndicatorEntity indicatorEntity = new IndicatorEntity(indicatorId);
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
+        indicatorEntity.setId(indicatorId);
         reportEntity.setIndicator(indicatorEntity);
         ReportTypeEntity reportTypeEntity = new ReportTypeEntity(reportTypeId);
         reportEntity.setReportType(reportTypeEntity);

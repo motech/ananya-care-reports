@@ -134,17 +134,7 @@ public abstract class AbstractIndicatorValueCalculator {
         BigDecimal result = BigDecimal.ZERO;
 
         if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
-            SelectQuery query = calculatorQueryBuilder
-                    .withIndicator(indicator)
-                    .withComplexCondition(indicator.getComplexCondition())
-                    .withArea(areaEntity)
-                    .withFrequency(indicator.getFrequency())
-                    .withOperation(nominatorOperationType)
-                    .build();
-
-            Object resultObj = query.fetch().getValue(0, 0);
-            String resultObjStr = (resultObj != null) ? resultObj.toString() : "0.0";
-            result = new BigDecimal(resultObjStr);
+            result = queryForResult(areaEntity);
         } else {
             for (IndicatorValueEntity indicatorValueEntity: values) {
                 result = result.add(indicatorValueEntity.getNominator());
@@ -158,16 +148,7 @@ public abstract class AbstractIndicatorValueCalculator {
         BigDecimal result = BigDecimal.ZERO;
 
         if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
-            SelectQuery query = calculatorQueryBuilder
-                    .withIndicator(indicator)
-                    .withArea(areaEntity)
-                    .withFrequency(indicator.getFrequency())
-                    .withOperation(nominatorOperationType)
-                    .build();
-
-            Object resultObj = query.fetch().getValue(0, 0);
-            String resultObjStr = (resultObj != null) ? resultObj.toString() : "0.0";
-            result = new BigDecimal(resultObjStr);
+            result = queryForResult(areaEntity);
         } else {
             for (IndicatorValueEntity indicatorValueEntity: values) {
                 result = result.add(indicatorValueEntity.getDenominator());
@@ -175,6 +156,24 @@ public abstract class AbstractIndicatorValueCalculator {
         }
 
         return result;
+    }
+
+    private BigDecimal queryForResult(AreaEntity area) {
+        SelectQuery query = createSelectQuery(area);
+        return calculateResult(query.fetch().getValue(0, 0));
+    }
+
+    private SelectQuery createSelectQuery(AreaEntity area) {
+        return calculatorQueryBuilder
+                .withIndicator(indicator)
+                .withArea(area)
+                .withFrequency(indicator.getDefaultFrequency())
+                .withOperation(nominatorOperationType)
+                .build();
+    }
+
+    private BigDecimal calculateResult(Object result) {
+        return result != null ? new BigDecimal(result.toString()) : BigDecimal.ZERO;
     }
 
 }

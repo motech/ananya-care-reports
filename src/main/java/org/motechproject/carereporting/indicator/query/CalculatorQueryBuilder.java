@@ -97,11 +97,6 @@ public class CalculatorQueryBuilder {
 
     public CalculatorQueryBuilder withIndicator(IndicatorEntity indicator) {
         this.indicator = indicator;
-
-        if (indicator != null) {
-            this.computedField = indicator.getComputedField();
-        }
-
         return this;
     }
 

@@ -7,8 +7,6 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
-import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
@@ -21,8 +19,6 @@ import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.service.AreaService;
-import org.motechproject.carereporting.service.ComplexConditionService;
-import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
@@ -63,12 +59,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private AreaService areaService;
-
-    @Autowired
-    private ComplexConditionService complexConditionService;
-
-    @Autowired
-    private ComputedFieldService computedFieldService;
 
     @Autowired
     private DashboardService dashboardService;
@@ -139,20 +129,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
 
-        IndicatorEntity indicatorEntity = new IndicatorEntity(
-                findIndicatorTypeEntityFromDto(indicatorDto),
-                findIndicatorCategoryEntitiesFromDto(indicatorDto),
-                findAreaEntityFromDto(indicatorDto),
-                findUserEntitiesFromDto(indicatorDto),
-                findComputedFieldEntityFromDto(indicatorDto),
-                findComplexConditionEntityFromDto(indicatorDto),
-                findIndicatorValueEntitiesFromDto(indicatorDto),
-                indicatorDto.getReports(),
-                indicatorDto.getFrequency(),
-                indicatorDto.getName());
-
+        IndicatorEntity indicatorEntity = new IndicatorEntity();
+        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
+        indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
+        indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto));
+        indicatorEntity.setReports(indicatorDto.getReports());
+        indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
+        indicatorEntity.setName(indicatorDto.getName());
         indicatorEntity.setTrend(indicatorDto.getTrend());
-
         createNewIndicator(indicatorEntity);
     }
 
@@ -167,16 +151,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorDto.getId());
 
-        indicatorEntity.setIndicatorType(findIndicatorTypeEntityFromDto(indicatorDto));
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
         indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto));
-        indicatorEntity.setComputedField(findComputedFieldEntityFromDto(indicatorDto));
-        indicatorEntity.setComplexCondition(findComplexConditionEntityFromDto(indicatorDto));
-        indicatorEntity.setValues(findIndicatorValueEntitiesFromDto(indicatorDto));
         indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
-        indicatorEntity.setFrequency(indicatorDto.getFrequency());
+        indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
         indicatorEntity.setName(indicatorDto.getName());
 
         indicatorDao.update(indicatorEntity);
@@ -203,10 +183,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         reportsToUpdate.removeAll(reportsUpdated);
         reportService.deleteReportSet(reportsToUpdate);
         return reportsUpdated;
-    }
-
-    private IndicatorTypeEntity findIndicatorTypeEntityFromDto(IndicatorDto indicatorDto) {
-        return getIndicatorTypeById(indicatorDto.getIndicatorType());
     }
 
     private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromDto(
@@ -236,33 +212,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
 
         return userEntities;
-    }
-
-    private ComputedFieldEntity findComputedFieldEntityFromDto(
-            IndicatorDto indicatorDto) {
-        return computedFieldService.getComputedFieldById(indicatorDto.getComputedField());
-    }
-
-    private ComplexConditionEntity findComplexConditionEntityFromDto(
-            IndicatorDto indicatorDto) {
-        if (indicatorDto.getComplexCondition() == null) {
-            return null;
-        }
-
-        return complexConditionService.getComplexConditionById(indicatorDto.getComplexCondition());
-    }
-
-    private Set<IndicatorValueEntity> findIndicatorValueEntitiesFromDto(
-            IndicatorDto indicatorDto) {
-        Set<IndicatorValueEntity> indicatorValueEntities = new LinkedHashSet<>();
-
-        for (Integer valueId : indicatorDto.getValues()) {
-            IndicatorValueEntity indicatorValueEntity = this.getIndicatorValueById(valueId);
-
-            indicatorValueEntities.add(indicatorValueEntity);
-        }
-
-        return indicatorValueEntities;
     }
 
     @Transactional(readOnly = false)

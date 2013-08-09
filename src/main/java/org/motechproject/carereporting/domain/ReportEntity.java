@@ -54,7 +54,8 @@ public class ReportEntity extends AbstractEntity {
     }
 
     public ReportEntity(Integer indicatorId, Integer reportTypeId) {
-        this.indicator = new IndicatorEntity(indicatorId);
+        this.indicator = new IndicatorEntity();
+        this.indicator.setId(indicatorId);
         this.reportType = new ReportTypeEntity(reportTypeId);
 
     }
