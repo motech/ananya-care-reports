@@ -16,7 +16,7 @@ public class CsvExportHelper {
     public ByteArrayInputStream convertToCsvFile(List<String[]> data) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Writer writer = new OutputStreamWriter(outputStream);
-        CSVWriter csvWriter = new CSVWriter(writer, '\t');
+        CSVWriter csvWriter = new CSVWriter(writer, ',');
         try {
             csvWriter.writeAll(data);
             csvWriter.flush();

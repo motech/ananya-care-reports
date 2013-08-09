@@ -22,7 +22,7 @@ import static org.junit.Assert.assertArrayEquals;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class ExportServiceIT {
 
-    private static final byte[] BYTES = {34, 110, 97, 109, 101, 34, 9, 34, 110, 97, 109, 101, 34, 9, 34, 49, 48, 34, 10};
+    private static final byte[] BYTES = {34, 110, 97, 109, 101, 34, 44, 34, 110, 97, 109, 101, 34, 44, 34, 49, 48, 34, 10};
 
     @Autowired
     private ExportService exportService;
@@ -48,6 +48,7 @@ public class ExportServiceIT {
     }
 
     @Test
+    // test won't pass if delimiter in csv file will be different than ','
     public void testExportIndicatorValues() throws IOException {
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 

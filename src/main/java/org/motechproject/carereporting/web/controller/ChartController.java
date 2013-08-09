@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -84,12 +85,12 @@ public class ChartController extends BaseController {
         List<IndicatorValueEntity> indicatorValueEntities = getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntities);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm");
+        String filename = indicatorValueEntities.get(0).getIndicator().getName() + "_" + simpleDateFormat.format(new Date()) + ".csv";
 
-        //TODO: Add filename consist of indicator name and creation date
-        //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy;HH:mm");
-        //        String path = directory + "/" + indicatorValueEntityList.get(0).getIndicator().getName() + "." + simpleDateFormat.format(new Date()) + ".csv";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment", filename);
 
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }

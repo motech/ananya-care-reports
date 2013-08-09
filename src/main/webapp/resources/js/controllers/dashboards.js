@@ -11,8 +11,8 @@ function sortByDateComparisonFunction(a, b) {
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
     $scope.title = $scope.msg('dashboards.title');
 
-    $scope.startDate = moment().subtract('months', 1).format('DD-MM-YYYY');
-    $scope.endDate = moment().format('DD-MM-YYYY');
+    $scope.startDate = moment().subtract('months', 1).format('L');
+    $scope.endDate = moment().format('L');
 
     $scope.indicatorCategories = [];
     $scope.charts = {};
@@ -81,8 +81,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
                             report.displayType = 'chart';
-                            report.from = moment().subtract('months', 1).format('DD-MM-YYYY');
-                            report.to = moment().format('DD-MM-YYYY');
+                            report.from = moment().subtract('months', 1).format('L');
+                            report.to = moment().format('L');
                         } else {
                             report = null;
                         }
@@ -99,7 +99,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.to = moment(report.to);
 
         if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.from = moment(report.to).subtract('days', 1).format('DD-MM-YYYY');
+            report.from = moment(report.to).subtract('days', 1).format('L');
         }
     };
 
@@ -108,7 +108,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.to = moment(report.to);
 
         if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.to = moment(report.from).add('days', 1).format('DD-MM-YYYY');
+            report.to = moment(report.from).add('days', 1).format('L');
         }
     };
 
@@ -211,8 +211,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.maps = [];
     for (i=0; i<2; i+=1) {
         $scope.maps[i] = {
-            startDate: moment().subtract('months', 1).format('DD-MM-YYYY'),
-            endDate: moment().format('DD-MM-YYYY'),
+            startDate: moment().subtract('months', 1).format('L'),
+            endDate: moment().format('L'),
             selectedIndicatorCategoryId: 1,
             selectedCategoryIndicators: [],
             selectedIndicatorId: 1,
@@ -321,12 +321,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if (!isNaN(report.areaId) && isFinite(report.areaId)) {
             url += '&areaId=' + report.areaId;
         }
-        $http.post(url)
-            .success(function() {
-                $dialog.messageBox($scope.msg('common.success'), $scope.msg('dashboard.charts.error.successfulExport'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
-            }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
-            });
+        window.open(url);
     }
 
     $scope.toggleChartDisplay = function(report) {

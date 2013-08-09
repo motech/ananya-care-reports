@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyInt;
@@ -61,6 +63,9 @@ public class ChartControllerTest {
     private IndicatorEntity indicatorEntity;
 
     @Mock
+    private IndicatorValueEntity indicatorValueEntity;
+
+    @Mock
     private CronService cronService;
 
     @Mock
@@ -84,8 +89,8 @@ public class ChartControllerTest {
                 .param("indicatorId", "1")
                 .param("frequencyId", "1")
                 .param("chartType", "pie chart")
-                .param("startDate", "01-01-2013")
-                .param("endDate", "01-02-2013")
+                .param("startDate", "01/01/2013")
+                .param("endDate", "01/02/2013")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
@@ -101,8 +106,8 @@ public class ChartControllerTest {
 
         mockMvc.perform(get("/api/chart/data")
                 .param("indicatorId", "1")
-                .param("startDate", "01-01-2013")
-                .param("endDate", "01-02-2013")
+                .param("startDate", "01/01/2013")
+                .param("endDate", "01/02/2013")
                 .param("frequencyId", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -115,11 +120,16 @@ public class ChartControllerTest {
     @Test
     public void testExportValuesToCsv() throws Exception {
         mockMethodCalls();
+        List<IndicatorValueEntity> indicatorValueEntityList = new LinkedList<>();
+        indicatorValueEntityList.add(indicatorValueEntity);
+        when(indicatorValueEntity.getIndicator()).thenReturn(indicatorEntity);
+        when(indicatorEntity.getName()).thenReturn("");
+        when(indicatorService.getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(), (Date) anyObject(), (Date) anyObject())).thenReturn(indicatorValueEntityList);
 
         mockMvc.perform(get("/api/chart/data/export")
                 .param("indicatorId", "1")
-                .param("startDate", "01-01-2013")
-                .param("endDate", "01-02-2013")
+                .param("startDate", "01/01/2013")
+                .param("endDate", "01/02/2013")
                 .param("frequencyId", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

@@ -27,9 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class TrendControllerTest {
 
-    private static final String GET_TRENDS_START_DATE = "23-05-2013";
+    private static final String GET_TRENDS_START_DATE = "23/05/2013";
 
-    private static final String GET_TRENDS_END_DATE = "25-06-2013";
+    private static final String GET_TRENDS_END_DATE = "25/06/2013";
 
     @Mock
     private IndicatorService indicatorService;
