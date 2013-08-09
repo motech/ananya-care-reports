@@ -52,17 +52,21 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     public Authentication authenticate(Authentication authentication) {
         Map<String,Object> result = null;
 
+        String login = ((String) authentication.getPrincipal()).split(";")[0];
+        String domain = ((String) authentication.getPrincipal()).split(";")[1];
+
         try {
-            RestTemplate restTemplate = new RestTemplate(createSecureTransport((String) authentication.getPrincipal(),
+            RestTemplate restTemplate = new RestTemplate(createSecureTransport(login,
                     (String) authentication.getCredentials()));
 
             String commCareUrl = commCareConfiguration.getProperty("commcare.authentication.url");
+            commCareUrl = commCareUrl.replaceAll("\\{domain\\}", domain);
 
             String userJson = restTemplate.getForObject(commCareUrl, String.class);
 
             result = new ObjectMapper().readValue(userJson, Map.class);
 
-            UserEntity user = userService.login((String) authentication.getPrincipal(),
+            UserEntity user = userService.login(login,
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         } catch (EntityException e) {
@@ -75,7 +79,7 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             Set<RoleEntity> roles = userService.getAllRoles();
 
             userService.register(userName, password, firstName, lastName, area, roles);
-            UserEntity userDashboard = userService.login((String) authentication.getPrincipal(),
+            UserEntity userDashboard = userService.login(login,
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(userDashboard, null, userDashboard.getAuthorities());
         } catch (HttpClientErrorException e) {

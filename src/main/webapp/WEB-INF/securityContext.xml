@@ -14,7 +14,7 @@
         <intercept-url pattern="/**" access="isFullyAuthenticated()" />
 		<form-login login-page='/login' default-target-url="/"
 			authentication-failure-url="/login?e=1" always-use-default-target="false"
-			username-parameter="login" password-parameter="password" />
+			username-parameter="loginWithDomain" password-parameter="password" />
 		<logout logout-url="/logout" logout-success-url="/" />
 	</http>
 	
