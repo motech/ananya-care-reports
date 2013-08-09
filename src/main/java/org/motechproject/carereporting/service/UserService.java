@@ -22,7 +22,6 @@ public interface UserService {
 
     UserEntity getCurrentlyLoggedUser();
 
-    @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
@@ -31,7 +30,6 @@ public interface UserService {
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void updateUser(UserEntity user);
 
-    @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     Set<RoleEntity> getAllRoles();
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)

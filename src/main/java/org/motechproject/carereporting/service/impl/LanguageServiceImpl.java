@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.motechproject.carereporting.context.ServletContextProvider;
 import org.motechproject.carereporting.dao.LanguageDao;
 import org.motechproject.carereporting.domain.LanguageEntity;
@@ -9,6 +8,7 @@ import org.motechproject.carereporting.domain.dto.MessageDto;
 import org.motechproject.carereporting.exception.CareMessageFileNotFoundRuntimeException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.service.LanguageService;
+import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +37,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     private static final String DEFAULT_LANGUAGE_CODE = "df";
     private static final String INVALID_CODE = "Invalid language code specified.";
-    private static final String CARE_MESSAGE_DIRECTORY = SystemUtils.getUserHome().getAbsolutePath()
-            + File.separatorChar + ".care" + File.separatorChar + "messages" + File.separatorChar;
+    private static final String CARE_MESSAGE_DIRECTORY = ConfigurationLocator.getCareLanguagesDirectory();
     private static final String FILE_NAME = "messages_%s.properties";
 
     @Autowired

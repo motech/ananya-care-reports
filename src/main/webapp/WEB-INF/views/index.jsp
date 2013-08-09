@@ -10,7 +10,7 @@
     <c:set var="uri" value="${req.requestURI}" />
     <c:set var="url">${req.requestURL}</c:set>
     <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
-    <title ng:bind-template="{{pageTitle}} - Care Reporting"></title>
+    <title ng:bind-template="{{pageTitle}} - CARE Reporting"></title>
 
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-multiselect.css" />
@@ -60,7 +60,7 @@
 <body>
     <div class="navbar" bs-navbar ng-controller="navController">
          <div class="navbar-inner">
-             <a class="brand" style="font-size: 13px;" href="#">{{msg('menu.welcome', '<sec:authentication property="principal.firstName" /> <sec:authentication property="principal.lastName" />')}}</a>
+             <a class="brand" href="https://www.commcarehq.org/"><img src="resources/images/commcare-logo.png" alt="CommCare HQ Logo" /></a>
              <ul class="nav">
                  <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
                  <!-- TODO: Add `Manage reports` menu option when this feature is implemented. -->
