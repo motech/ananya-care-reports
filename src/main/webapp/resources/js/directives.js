@@ -158,8 +158,8 @@
                             if(frequencyId != undefined) {
                                 var url = 'api/chart?chartType=' + chartType
                                     + '&indicatorId=' + indicatorId
-                                    + '&startDate=' + report.from
-                                    + '&endDate=' + report.to
+                                    + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
+                                    + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
                                     + "&frequencyId=" + frequencyId;
 
                                 if (areaId != undefined) {

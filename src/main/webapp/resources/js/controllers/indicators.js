@@ -593,13 +593,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
     $scope.launchDialog = function() {
         $rootScope.indicatorScope = $scope;
-// TODO
-//        var dialog = $modal({
-//            template: "resources/partials/indicators/newComplexConditionDialog.html",
-//            persist: true,
-//            show: true,
-//            backdrop: "static"
-//        });
 
         var opts = {
             backdrop: true,

@@ -75,11 +75,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
     }
 
-    @ExceptionHandler(value = { CareSqlRuntimeException.class, CareNoValuesException.class, CareMessageFileNotFoundRuntimeException.class })
-    protected ResponseEntity<Object> handleCareMessageFileNotFoundException(
-            CareRuntimeException ex, WebRequest request) {
+    @ExceptionHandler(value = { CareSqlRuntimeException.class, CareNoValuesException.class })
+    protected ResponseEntity<Object> handleAnyError(CareRuntimeException ex, WebRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return handleExceptionInternal(ex, ex.getMessage(), httpHeaders, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = CareMessageFileNotFoundRuntimeException.class)
+    protected ResponseEntity<Object> handleCareMessageFileNotFoundException(CareMessageFileNotFoundRuntimeException ex, WebRequest request) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
 
         return handleExceptionInternal(ex, ex.getMessage(), httpHeaders, HttpStatus.NOT_FOUND, request);
     }

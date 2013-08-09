@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.types.ReportType;
+import org.motechproject.carereporting.exception.CareNoValuesException;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.web.chart.builder.AxisBuilder;
 import org.motechproject.carereporting.web.chart.builder.BarsBuilder;
@@ -37,6 +38,10 @@ public final class ChartFactory {
     private static final int SELECTION_FPS = 30;
 
     public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+        if(values.size() == 0) {
+            throw new CareNoValuesException();
+        }
+        
         return createTemplateChart(indicator.getName())
                 .xAxis(new AxisBuilder()
                         .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
@@ -90,6 +95,10 @@ public final class ChartFactory {
     }
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
+        if(values.size() == 0) {
+            throw new CareNoValuesException();
+        }
+
         BigDecimal indicatorNumeratorsCombined = BigDecimal.ZERO;
         BigDecimal indicatorDenominatorsCombined = BigDecimal.ZERO;
         for (IndicatorValueEntity value : values){

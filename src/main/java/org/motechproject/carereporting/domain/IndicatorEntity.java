@@ -35,12 +35,16 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
+    // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
+    //@NotNull
     @ManyToOne
-    @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id", nullable = false)
+    @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
+    // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
+    //@NotNull
     @ManyToOne
-    @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id", nullable = false)
+    @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
 
     @NotNull

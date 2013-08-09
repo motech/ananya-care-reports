@@ -284,7 +284,6 @@
         </sql>
     </changeSet>
 
-    <!--TODO-->
     <changeSet id="CARE #?" author="Adrian Boguszewski">
         <sql>
             create table dashboard_app.frequency(
@@ -633,6 +632,10 @@
                 on delete set null on update set null not deferrable;
 
         </sql>
+    </changeSet>
+
+    <changeSet id="CARE #10.1" author="Adrian Boguszewski">
+        <dropColumn tableName="indicator" columnName="type_id" schemaName="dashboard_app"/>
     </changeSet>
 
 </databaseChangeLog>
