@@ -2,11 +2,11 @@ package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.dwQueryBuilder.data.queries.DwQuery;
 
 public class DwQueryCombinationBuilder {
     private CombineType combineType;
-    private SimpleDwQuery dwQuery;
+    private DwQuery dwQuery;
     private String foreignKeyFieldName;
     private String referencedFieldName;
 
@@ -15,12 +15,17 @@ public class DwQueryCombinationBuilder {
         return this;
     }
 
-    public DwQueryCombinationBuilder withDwQuery(SimpleDwQuery dwQuery) {
+    public DwQueryCombinationBuilder withDwQuery(DwQuery dwQuery) {
         this.dwQuery = dwQuery;
         return this;
     }
 
     public DwQueryCombinationBuilder withDwQuery(SimpleDwQueryBuilder dwQueryBuilder) {
+        this.dwQuery = dwQueryBuilder.build();
+        return this;
+    }
+
+    public DwQueryCombinationBuilder withDwQuery(ComplexDwQueryBuilder dwQueryBuilder) {
         this.dwQuery = dwQueryBuilder.build();
         return this;
     }

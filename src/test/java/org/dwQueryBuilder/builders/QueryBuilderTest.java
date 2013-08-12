@@ -2,12 +2,12 @@ package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.SelectColumn;
-import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
+import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
 import org.jooq.SQLDialect;
@@ -23,6 +23,9 @@ public class QueryBuilderTest {
     private static final String TEST_SCHEMA_NAME = "report";
     private static final String BP_FORM = "bp_form";
     private static final String IFA_TABLETS_ISSUED = "ifa_tablets_issued";
+    private static final String CLOSE_CHILD_FORM = "close_child_form";
+    private static final String CHILD_CASE = "child_case";
+    private static final String MOTHER_ID = "mother_id";
     private static final String MOTHER_CASE = "mother_case";
     private static final String ADD = "add";
     private static final String EDD = "edd";
@@ -42,6 +45,13 @@ public class QueryBuilderTest {
     private static final Integer DATE_OFFSET_TEN_DAYS = 10;
     private static final Integer DIFFERENCE = 500;
 
+    private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING =
+            "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join " +
+                    "(select * from \"report\".\"close_child_form\") as \"facts\" on " +
+                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join (select * from " +
+                    "\"report\".\"child_case\" join (select * from \"report\".\"close_child_form\") as " +
+                    "\"facts\" on \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\") as " +
+                    "\"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\"";
     private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_SQL_STRING =
             "select * from \"report\".\"mother_case\" join ((select \"report\".\"bp_form\".\"case_id\" " +
                     "from \"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" " +
@@ -343,5 +353,56 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_INDICATOR_COUNT_OF_CASES_IN_A_PERIOD_DD_OFFSET_BASED, sqlString);
+    }
+
+    @Test
+    public void testComplexDwQueryCombination() {
+        SelectColumn selectAllMothers = new SelectColumnBuilder()
+                .withField(MOTHER_CASE, ID)
+                .build();
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withField(null, WILDCARD)
+                .build();
+
+        ComplexDwQuery childCaseQuery = new ComplexDwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withDimension(CHILD_CASE)
+                .withFact(
+                        new FactBuilder()
+                            .withTable(
+                                    new SimpleDwQueryBuilder()
+                                            .withSelectColumn(selectAll)
+                                            .withTableName(CLOSE_CHILD_FORM)
+                            )
+                )
+                .withKeys(ID, CASE_ID)
+                .build();
+
+        DwQueryCombination childCaseQueryCombination = new DwQueryCombinationBuilder()
+                .withDwQuery(childCaseQuery)
+                .withCombineType(CombineType.Join)
+                .withKeys(MOTHER_ID, ID)
+                .build();
+
+        DwQuery dwQuery = new ComplexDwQueryBuilder()
+                .withSelectColumn(selectAllMothers)
+                .withDimension(MOTHER_CASE)
+                .withFact(
+                        new FactBuilder()
+                            .withTable(
+                                    new SimpleDwQueryBuilder()
+                                        .withSelectColumn(selectAll)
+                                        .withTableName(CLOSE_CHILD_FORM)
+                            )
+                )
+                .withKeys(ID, CASE_ID)
+                .withCombination(childCaseQueryCombination)
+                .build();
+
+        String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlQuery);
+        assertEquals(EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING, sqlQuery);
     }
 }

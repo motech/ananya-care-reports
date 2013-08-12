@@ -208,14 +208,13 @@ public final class QueryBuilder {
                         referencedTableName = ((SimpleDwQuery) dwQuery).getTableName();
                     }
 
+                    String tableName = getTableNameForDwQuery(combineWith.getDwQuery());
                     return selectJoinStep.join(buildFromDwQuery(combineWith.getDwQuery())
-                            .asTable(
-                                    combineWith.getDwQuery().getTableName()
-                            ))
+                            .asTable(tableName))
                             .on(
                                     buildCondition(
                                             fieldByName(
-                                                    combineWith.getDwQuery().getTableName(),
+                                                    tableName,
                                                     combineWith.getForeignKeyFieldName()
                                             ),
                                             OperatorType.Equal,
@@ -237,6 +236,17 @@ public final class QueryBuilder {
         } catch (Exception e) {
             throw new QueryBuilderException(e);
         }
+    }
+
+    private static String getTableNameForDwQuery(DwQuery dwQuery) {
+
+        if (dwQuery instanceof SimpleDwQuery) {
+            return ((SimpleDwQuery) dwQuery).getTableName();
+        } else if (dwQuery instanceof ComplexDwQuery) {
+            return ((ComplexDwQuery) dwQuery).getDimension();
+        }
+
+        return null;
     }
 
     private static SelectConditionStep buildWhereConditionGroup(SelectConditionStep selectConditionStep,
