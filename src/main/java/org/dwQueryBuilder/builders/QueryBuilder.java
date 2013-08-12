@@ -6,10 +6,12 @@ import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.HavingCondition;
+import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
@@ -35,6 +37,8 @@ import java.math.BigDecimal;
 
 import static org.jooq.impl.DSL.avg;
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.dateDiff;
+import static org.jooq.impl.DSL.falseCondition;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.fieldByName;
 import static org.jooq.impl.DSL.max;
@@ -165,15 +169,24 @@ public final class QueryBuilder {
         
         for (SelectColumn selectColumn : dwQuery.getSelectColumns()) {
             if (selectColumn.getFunction() != null) {
-                AggregateFunction aggregateFunction = buildSelectColumnFunction(selectColumn);
+
+                AggregateFunction aggregateFunction;
+                if (selectColumn.getFieldName().equals(WILDCARD)) {
+                    aggregateFunction = buildSelectColumnFunctionForWildcard(selectColumn);
+                } else {
+                    aggregateFunction = buildSelectColumnFunction(selectColumn);
+                }
                 step = step.select(aggregateFunction);
+
             } else {
+
                 if (selectColumn.getFieldName().equals(WILDCARD)) {
                     step = step.select(field(WILDCARD));
                 } else {
                     step = step.select(fieldByName(schemaName,
                             selectColumn.getTableName(), selectColumn.getFieldName()));
                 }
+
             }
         }
         
@@ -229,19 +242,79 @@ public final class QueryBuilder {
                                                                 WhereConditionGroup group) {
         SelectConditionStep step = selectConditionStep;
 
-        if (group.getConditionGroups() != null) {
-            for (WhereConditionGroup whereConditionGroup : group.getConditionGroups()) {
-                step = buildWhereConditionGroup(step, whereConditionGroup);
-            }
-        }
-
-        if (group.getConditions() != null) {
-            for (WhereCondition whereCondition : group.getConditions()) {
-                step = step.and(buildWhereCondition(whereCondition));
-            }
+        if (group != null) {
+            step = step.and(getConditionsRecursive(group));
         }
 
         return step;
+    }
+
+    private static Condition getConditionsRecursive(WhereConditionGroup whereConditionGroup) {
+        Condition condition = null;
+
+        if (whereConditionGroup == null) {
+            return falseCondition();
+        }
+
+        if (whereConditionGroup.getConditions() != null) {
+            for (WhereCondition whereCondition : whereConditionGroup.getConditions()) {
+                condition = resolveConditionJoinType(whereConditionGroup, whereCondition, condition);
+            }
+        }
+
+        if (whereConditionGroup.getConditionGroups() != null) {
+            for (WhereConditionGroup group : whereConditionGroup.getConditionGroups()) {
+                if (condition == null) {
+                    condition = getConditionsRecursive(group);
+                } else {
+                    if (group.getJoinType() == null || group.getJoinType().equals(WhereConditionJoinType.AND)) {
+                        condition = condition.and(getConditionsRecursive(group));
+                    } else if (group.getJoinType().equals(WhereConditionJoinType.OR)) {
+                        condition = condition.or(getConditionsRecursive(group));
+                    }
+                }
+            }
+        }
+
+        return condition;
+    }
+
+    private static Condition resolveConditionJoinType(WhereConditionGroup whereConditionGroup,
+                                                      WhereCondition whereCondition, Condition condition) {
+        Condition newCondition = condition;
+
+        if (whereConditionGroup.getJoinType() == null
+                || whereConditionGroup.getJoinType().equals(WhereConditionJoinType.AND)) {
+            newCondition = buildWhereConditionAnd(whereCondition, condition);
+        } else if (whereConditionGroup.getJoinType().equals(WhereConditionJoinType.OR)) {
+            newCondition = buildWhereConditionOr(whereCondition, condition);
+        }
+
+        return newCondition;
+    }
+
+    private static Condition buildWhereConditionAnd(WhereCondition whereCondition, Condition condition) {
+        Condition newCondition = condition;
+
+        if (newCondition == null) {
+            newCondition = buildWhereCondition(whereCondition);
+        } else {
+            newCondition = newCondition.and(buildWhereCondition(whereCondition));
+        }
+
+        return newCondition;
+    }
+
+    private static Condition buildWhereConditionOr(WhereCondition whereCondition, Condition condition) {
+        Condition newCondition = condition;
+
+        if (newCondition == null) {
+            newCondition = buildWhereCondition(whereCondition);
+        } else {
+            newCondition = newCondition.or(buildWhereCondition(whereCondition));
+        }
+
+        return newCondition;
     }
 
     private static Condition buildWhereCondition(WhereCondition whereCondition) {
@@ -254,6 +327,13 @@ public final class QueryBuilder {
             ValueComparison valueComparison = (ValueComparison) whereCondition;
 
             condition = buildCondition(field1, valueComparison.getOperator(), valueComparison.getValue());
+        } else if (whereCondition instanceof DateDiffComparison) {
+            DateDiffComparison dateDiffComparison = (DateDiffComparison) whereCondition;
+            Field field2 = fieldByName(dateDiffComparison.getTable2Name(), dateDiffComparison.getField2Name());
+
+            condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
+                    field2, dateDiffComparison.getValue(), dateDiffComparison.getField1Offset(),
+                    dateDiffComparison.getField2Offset());
         }
 
         return condition;
@@ -289,7 +369,20 @@ public final class QueryBuilder {
         return selectHavingStep.having();
     }
 
-    private static AggregateFunction buildSelectColumnFunction(final SelectColumn selectColumn) {
+    private static AggregateFunction buildSelectColumnFunctionForWildcard(SelectColumn selectColumn) {
+        try {
+            switch (selectColumn.getFunction()) {
+                case Count:
+                    return count(field(WILDCARD));
+                default:
+                    throw new NotImplementedException();
+            }
+        } catch (Exception e) {
+            throw new QueryBuilderException(e);
+        }
+    }
+
+    private static AggregateFunction buildSelectColumnFunction(SelectColumn selectColumn) {
         try {
             switch (selectColumn.getFunction()) {
                 case Average:
@@ -358,6 +451,35 @@ public final class QueryBuilder {
                     return field.greaterThan(value);
                 case GreaterEqual:
                     return field.greaterOrEqual(value);
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            throw new QueryBuilderException(e);
+        }
+    }
+
+    private static Condition buildDateDiffCondition(Field date1, OperatorType operatorType,
+                                                    Field date2, String value,
+                                                    String date1Offset, String date2Offset) {
+        try {
+            Param param = val(value);
+            Param offset1 = val(date1Offset);
+            Param offset2 = val(date2Offset);
+
+            switch (operatorType) {
+                case Less:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).lessThan(param);
+                case LessEqual:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).lessOrEqual(param);
+                case Equal:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).equal(param);
+                case NotEqual:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).notEqual(param);
+                case Greater:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).greaterThan(param);
+                case GreaterEqual:
+                    return dateDiff(date1.add(offset1), date2.add(offset2)).greaterOrEqual(param);
                 default:
                     return null;
             }

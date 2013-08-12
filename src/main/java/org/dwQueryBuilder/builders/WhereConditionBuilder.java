@@ -1,6 +1,7 @@
 package org.dwQueryBuilder.builders;
 
 import org.apache.commons.lang.StringUtils;
+import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.OperatorType;
@@ -9,13 +10,16 @@ import org.dwQueryBuilder.exceptions.QueryBuilderException;
 public class WhereConditionBuilder {
 
     // TODO : Uncomment lines after implementing remaining comparison types
+    // TODO : Implement dateDiff, fieldComparison, dateWithOffsetDiff, dateRange
 
     private String table1Name;
     private String field1Name;
-//    private String table2Name;
-//    private String field2Name;
     private OperatorType operator;
+    private String table2Name;
+    private String field2Name;
     private String value;
+    private String field1Offset;
+    private String field2Offset;
 
     public WhereConditionBuilder withValueComparison(String table1Name,
             String field1Name, OperatorType operator, String value) {
@@ -29,31 +33,91 @@ public class WhereConditionBuilder {
         return this;
     }
 
+    public WhereConditionBuilder withDateDiffComparison(String table1Name,
+            String field1Name, OperatorType operator, String table2Name, String field2Name,
+            Integer seconds) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.operator = operator;
+        this.table2Name = table2Name;
+        this.field2Name = field2Name;
+        this.value = seconds.toString();
+        this.field1Offset = "0";
+        this.field2Offset = "0";
+
+        return this;
+    }
+
+    public WhereConditionBuilder withDateDiffComparison(String table1Name,
+            String field1Name, OperatorType operator, String table2Name, String field2Name,
+            Integer seconds, Integer field1Offset, Integer field2Offset) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.operator = operator;
+        this.table2Name = table2Name;
+        this.field2Name = field2Name;
+        this.value = seconds.toString();
+        this.field1Offset = field1Offset.toString();
+        this.field2Offset = field2Offset.toString();
+
+        return this;
+    }
+
     private void reset() {
         this.table1Name = null;
         this.field1Name = null;
-//        this.table2Name = null;
-//        this.field2Name = null;
+        this.table2Name = null;
+        this.field2Name = null;
         this.operator = null;
         this.value = null;
+        this.field1Offset = null;
+        this.field2Offset = null;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends WhereCondition> T build() {
+    public WhereCondition build() {
         try {
             WhereCondition whereCondition = null;
 
-            if (StringUtils.isNotBlank(table1Name)
-                    && StringUtils.isNotBlank(field1Name)
-                    && operator != null
-                    && StringUtils.isNotBlank(value)) {
+            if (isDateDiffComparison()) {
+                // Date Diff Comparison
+
+                whereCondition = new DateDiffComparison(table1Name, field1Name,
+                        operator, table2Name, field2Name, value, field1Offset, field2Offset);
+
+            } else if (isValueComparison()) {
+                // Value Comparison
+
                 whereCondition = new ValueComparison(table1Name, field1Name,
                         operator, value);
+
             }
 
-            return (T) whereCondition;
+            return whereCondition;
         } catch (Exception e) {
             throw new QueryBuilderException(e);
         }
+    }
+
+    private Boolean isDateDiffComparison() {
+        Boolean isField1NotBlank = StringUtils.isNotBlank(table1Name) && StringUtils.isNotBlank(field1Name);
+        Boolean isField2NotBlank = StringUtils.isNotBlank(table2Name) && StringUtils.isNotBlank(field2Name);
+        Boolean isValueValid = StringUtils.isNotBlank(value) && StringUtils.isNumeric(value);
+
+        return (isField1NotBlank
+                && isField2NotBlank
+                && operator != null
+                && isValueValid);
+    }
+
+    private Boolean isValueComparison() {
+        return (StringUtils.isNotBlank(table1Name)
+                && StringUtils.isNotBlank(field1Name)
+                && operator != null
+                && StringUtils.isNotBlank(value));
     }
 }
