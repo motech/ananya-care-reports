@@ -97,25 +97,6 @@
                          <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                      </ul>
                  </li>
-                 <sec:authorize access="hasRole('CAN_MANAGE_SYSTEM_USERS')">
-                     <li class="dropdown">
-                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.users')}}<b class="caret"></b></a>
-                         <ul class="dropdown-menu">
-                             <li><a href="#/users"><i class="icon-list"></i> {{msg('menu.users.list')}}</a></li>
-                             <li><a href="#/users/new"><i class="icon-plus-sign"></i> {{msg('menu.users.add')}}</a></li>
-                             <li class="divider"></li>
-                             <li class="dropdown-submenu">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.roles')}}</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#/users/roles"><i class="icon-list"></i> {{msg('menu.roles.list')}}</a></li>
-                                    <sec:authorize access="hasRole('CAN_CREATE_ROLE')">
-                                        <li><a href="#/users/roles/new"><i class="icon-plus-sign"></i> {{msg('menu.roles.add')}}</a></li>
-                                    </sec:authorize>
-                                </ul>
-                             </li>
-                         </ul>
-                     </li>
-                 </sec:authorize>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
