@@ -74,6 +74,7 @@
                         <li class="dropdown-submenu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
                                 <ul class="dropdown-menu">
+                                    <li><a href="#/indicators/recalculate"><i class="icon-calculator"></i> {{msg('menu.recalculate')}}</a></li>
                                     <li><a href="" ng-click="launchFrequencyDialog()"><i class="icon-time"></i> {{msg('menu.calculator.frequency')}}</a></li>
                                 </ul>
                         </li>
@@ -115,38 +116,33 @@
                          </ul>
                      </li>
                  </sec:authorize>
-                 <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.forms')}} <b class="caret"></b></a>
-                     <ul class="dropdown-menu">
-                         <li><a href="#/forms"><i class="icon-list"></i> {{msg('menu.forms.list')}}</a></li>
-                     </ul>
-                 </li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                       <li><a href="#/admin/computed-fields">{{msg('menu.admin.computedFields')}}</a></li>
+                      <li><a href="#/forms">{{msg('menu.forms')}}</a></li>
+                      <li class="dropdown-submenu">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-submenu">
+                                  <a href="#"><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
+                                  <ul class="dropdown-menu">
+                                      <li ng-repeat="item in listLanguages">
+                                          <a href="#" ng-click="selectLanguage(item)">
+                                            <i class="icon-arrow-right" ng-show="defaultLanguage.code == item.code"></i>
+                                            {{item.name}}
+                                          </a>
+                                      </li>
+                                  </ul>
+                              </li>
+                              <li><a href="#/messages"><i class="icon-list"></i> {{msg('menu.languages.list')}}</a></li>
+                          </ul>
+                      </li>
                   </ul>
                 </li>
-                <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}} <b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                          <li class="dropdown-submenu">
-                              <a href="#"><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
-                              <ul class="dropdown-menu">
-                                  <li ng-repeat="item in listLanguages">
-                                      <a href="#" ng-click="selectLanguage(item)">
-                                        <i class="icon-arrow-right" ng-show="defaultLanguage.code == item.code"></i>
-                                        {{item.name}}
-                                      </a>
-                                  </li>
-                              </ul>
-                          </li>
-                          <li><a href="#/messages"><i class="icon-list"></i> {{msg('menu.languages.list')}}</a></li>
-                      </ul>
-                  </li>
+
              </ul>
              <div class="pull-right">
-                 <a href="#/indicators/recalculate" class="btn">{{msg('menu.recalculate')}}</a>
                  <a href="logout" class="btn btn-info">{{msg('menu.logout')}}</a>
              </div>
          </div>
