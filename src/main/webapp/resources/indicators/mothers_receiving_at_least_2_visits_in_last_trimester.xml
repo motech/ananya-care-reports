@@ -1,0 +1,31 @@
+<indicator>
+    <name>Mothers with at least one bp visit</name>
+    <categories>
+        <category name="Birth preparedness plan"/>
+    </categories>
+    <user login="mrcaretest@gmail.com"/>
+    <roles>
+        <role name="Manager"/>
+    </roles>
+    <trend>3</trend>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <denominator>
+        <dw-query>
+            <dimension tableName="mother_case"/>
+            <facts>
+                <fact>
+                    <name>bp_form</name>
+                    <where-group>
+                        <where-condition type="valueComparison">
+                            <field>add_offset</field>
+                            <operator>&lt;=</operator>
+                            <value>90</value>
+                        </where-condition>
+                    </where-group>
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="2"/>
+                </fact>
+            </facts>
+        </dw-query>
+    </denominator>
+</indicator>
