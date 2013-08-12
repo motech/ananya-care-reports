@@ -2,6 +2,8 @@ package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.SelectColumn;
+import org.dwQueryBuilder.data.conditions.where.ValueComparison;
+import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
@@ -22,6 +24,8 @@ public class QueryBuilderTest {
     private static final String BP_FORM = "bp_form";
     private static final String IFA_TABLETS_ISSUED = "ifa_tablets_issued";
     private static final String MOTHER_CASE = "mother_case";
+    private static final String ADD = "add";
+    private static final String EDD = "edd";
     private static final String USER_ID = "user_id";
     private static final String ID = "id";
     private static final String CASE_ID = "case_id";
@@ -31,8 +35,11 @@ public class QueryBuilderTest {
     private static final String FLW_DISTRICT_NAME = "Bihar";
     private static final String TIME_START = "time_start";
     private static final String TIME_END = "time_end";
+    private static final String FIRST_DATE = "02-02-2013";
+    private static final String SECOND_DATE = "04-02-2013";
     private static final Integer DATE_OFFSET_1 = -120;
     private static final Integer DATE_OFFSET_2 = 360;
+    private static final Integer DATE_OFFSET_TEN_DAYS = 10;
     private static final Integer DIFFERENCE = 500;
 
     private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_SQL_STRING =
@@ -57,6 +64,12 @@ public class QueryBuilderTest {
                     "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join " +
                     "(select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
                     "\"report\".\"mother_case\".\"user_id\" where \"flw\".\"district\" = 'Bihar'";
+    private static final String EXPECTED_POSTGRESQL_INDICATOR_COUNT_OF_CASES_IN_A_PERIOD_DD_OFFSET_BASED =
+            "select count(*) from \"report\".\"mother_case\" join (select * from \"report\".\"flw\") as " +
+                    "\"flw\" on \"flw\".\"id\" = \"report\".\"mother_case\".\"user_id\" where " +
+                    "((((\"mother_case\".\"add\" + 10) >= '02-02-2013' and (\"mother_case\".\"add\" + 10) " +
+                    "<= '04-02-2013') or ((\"mother_case\".\"edd\" + 10) >= '02-02-2013' and " +
+                    "(\"mother_case\".\"edd\" + 10) <= '04-02-2013')) and \"flw\".\"district\" = 'Bihar')";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -262,5 +275,73 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_INDICATOR_NON_PERIOD_SPECIFIC_COUNT_OF_CASES_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testCareIndicatorCountOfCasesInAPeriodDdOffsetBased() {
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withField(null, WILDCARD)
+                .build();
+        SelectColumn selectCountAll = new SelectColumnBuilder()
+                .withFieldAndFunction(null, WILDCARD, SelectColumnFunctionType.Count)
+                .build();
+
+        SimpleDwQuery flwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(FLW)
+                .build();
+
+        DwQueryCombination flwJoin = new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.Join)
+                .withDwQuery(flwQuery)
+                .withKeys(ID, USER_ID)
+                .build();
+
+        WhereConditionGroup whereConditionGroup = new WhereConditionGroupBuilder()
+                .withGroup(
+                        new WhereConditionGroupBuilder()
+                            .withCondition(
+                                    new WhereConditionBuilder()
+                                            .withDateValueComparison(MOTHER_CASE, ADD, OperatorType.GreaterEqual,
+                                                    FIRST_DATE, DATE_OFFSET_TEN_DAYS)
+                            )
+                            .withCondition(
+                                    new WhereConditionBuilder()
+                                            .withDateValueComparison(MOTHER_CASE, ADD, OperatorType.LessEqual,
+                                                    SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                            )
+                )
+                .withGroup(
+                        new WhereConditionGroupBuilder()
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateValueComparison(MOTHER_CASE, EDD, OperatorType.GreaterEqual,
+                                                        FIRST_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateValueComparison(MOTHER_CASE, EDD, OperatorType.LessEqual,
+                                                        SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
+                                .withJoinType(WhereConditionJoinType.OR)
+                )
+                .withCondition(
+                        new WhereConditionBuilder()
+                                .withValueComparison(FLW, FLW_DISTRICT, OperatorType.Equal, FLW_DISTRICT_NAME)
+                )
+                .build();
+
+        DwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectCountAll)
+                .withTableName(MOTHER_CASE)
+                .withCombination(flwJoin)
+                .withWhereConditionGroup(whereConditionGroup)
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_INDICATOR_COUNT_OF_CASES_IN_A_PERIOD_DD_OFFSET_BASED, sqlString);
     }
 }

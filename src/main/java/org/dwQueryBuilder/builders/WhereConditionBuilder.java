@@ -2,6 +2,7 @@ package org.dwQueryBuilder.builders;
 
 import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
+import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.OperatorType;
@@ -9,8 +10,7 @@ import org.dwQueryBuilder.exceptions.QueryBuilderException;
 
 public class WhereConditionBuilder {
 
-    // TODO : Uncomment lines after implementing remaining comparison types
-    // TODO : Implement dateDiff, fieldComparison, dateWithOffsetDiff, dateRange
+    // TODO : Implement fieldComparison, dateRange, enumRange(CARE #71?)
 
     private String table1Name;
     private String field1Name;
@@ -29,6 +29,32 @@ public class WhereConditionBuilder {
         this.field1Name = field1Name;
         this.operator = operator;
         this.value = value;
+
+        return this;
+    }
+
+    public WhereConditionBuilder withDateValueComparison(String table1Name,
+            String field1Name, OperatorType operator, String value) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.operator = operator;
+        this.value = value;
+        this.field1Offset = "0";
+
+        return this;
+    }
+
+    public WhereConditionBuilder withDateValueComparison(String table1Name,
+            String field1Name, OperatorType operator, String value, Integer offset) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.operator = operator;
+        this.value = value;
+        this.field1Offset = offset.toString();
 
         return this;
     }
@@ -78,16 +104,21 @@ public class WhereConditionBuilder {
         this.field2Offset = null;
     }
 
-    @SuppressWarnings("unchecked")
     public WhereCondition build() {
         try {
             WhereCondition whereCondition = null;
 
             if (isDateDiffComparison()) {
-                // Date Diff Comparison
+                // Date Diff Comparison With Optional Offsets
 
                 whereCondition = new DateDiffComparison(table1Name, field1Name,
                         operator, table2Name, field2Name, value, field1Offset, field2Offset);
+
+            } else if (isDateValueComparison()) {
+                // Date Value Comparison With Optional Offset
+
+                whereCondition = new DateValueComparison(table1Name, field1Name,
+                        operator, value, Integer.parseInt(field1Offset));
 
             } else if (isValueComparison()) {
                 // Value Comparison
@@ -112,6 +143,15 @@ public class WhereConditionBuilder {
                 && isField2NotBlank
                 && operator != null
                 && isValueValid);
+    }
+
+    private Boolean isDateValueComparison() {
+        Boolean isComparisonValid = operator != null && StringUtils.isNotBlank(value)
+                && StringUtils.isNotBlank(field1Offset);
+
+        return (StringUtils.isNotBlank(table1Name)
+                && StringUtils.isNotBlank(field1Name)
+                && isComparisonValid);
     }
 
     private Boolean isValueComparison() {

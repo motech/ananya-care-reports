@@ -7,6 +7,7 @@ import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.HavingCondition;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
+import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
@@ -256,62 +257,38 @@ public final class QueryBuilder {
             return falseCondition();
         }
 
-        if (whereConditionGroup.getConditions() != null) {
-            for (WhereCondition whereCondition : whereConditionGroup.getConditions()) {
-                condition = resolveConditionJoinType(whereConditionGroup, whereCondition, condition);
+        if (whereConditionGroup.getConditionGroups() != null) {
+            for (WhereConditionGroup group : whereConditionGroup.getConditionGroups()) {
+                Condition subCondition = getConditionsRecursive(group);
+
+                if (condition == null) {
+                    condition = subCondition;
+                } else {
+                    if (group.getJoinType() == null || group.getJoinType().equals(WhereConditionJoinType.AND)) {
+                        condition = condition.and(subCondition);
+                    } else if (group.getJoinType().equals(WhereConditionJoinType.OR)) {
+                        condition = condition.or(subCondition);
+                    }
+                }
             }
         }
 
-        if (whereConditionGroup.getConditionGroups() != null) {
-            for (WhereConditionGroup group : whereConditionGroup.getConditionGroups()) {
-                if (condition == null) {
-                    condition = getConditionsRecursive(group);
-                } else {
-                    if (group.getJoinType() == null || group.getJoinType().equals(WhereConditionJoinType.AND)) {
-                        condition = condition.and(getConditionsRecursive(group));
-                    } else if (group.getJoinType().equals(WhereConditionJoinType.OR)) {
-                        condition = condition.or(getConditionsRecursive(group));
-                    }
-                }
+        if (whereConditionGroup.getConditions() != null) {
+            for (WhereCondition whereCondition : whereConditionGroup.getConditions()) {
+                condition = buildWhereConditionAnd(whereCondition, condition);
             }
         }
 
         return condition;
     }
 
-    private static Condition resolveConditionJoinType(WhereConditionGroup whereConditionGroup,
-                                                      WhereCondition whereCondition, Condition condition) {
-        Condition newCondition = condition;
-
-        if (whereConditionGroup.getJoinType() == null
-                || whereConditionGroup.getJoinType().equals(WhereConditionJoinType.AND)) {
-            newCondition = buildWhereConditionAnd(whereCondition, condition);
-        } else if (whereConditionGroup.getJoinType().equals(WhereConditionJoinType.OR)) {
-            newCondition = buildWhereConditionOr(whereCondition, condition);
-        }
-
-        return newCondition;
-    }
-
     private static Condition buildWhereConditionAnd(WhereCondition whereCondition, Condition condition) {
         Condition newCondition = condition;
 
-        if (newCondition == null) {
+        if (condition == null) {
             newCondition = buildWhereCondition(whereCondition);
         } else {
             newCondition = newCondition.and(buildWhereCondition(whereCondition));
-        }
-
-        return newCondition;
-    }
-
-    private static Condition buildWhereConditionOr(WhereCondition whereCondition, Condition condition) {
-        Condition newCondition = condition;
-
-        if (newCondition == null) {
-            newCondition = buildWhereCondition(whereCondition);
-        } else {
-            newCondition = newCondition.or(buildWhereCondition(whereCondition));
         }
 
         return newCondition;
@@ -324,16 +301,22 @@ public final class QueryBuilder {
                 whereCondition.getField1Name());
 
         if (whereCondition instanceof ValueComparison) {
-            ValueComparison valueComparison = (ValueComparison) whereCondition;
 
+            ValueComparison valueComparison = (ValueComparison) whereCondition;
             condition = buildCondition(field1, valueComparison.getOperator(), valueComparison.getValue());
+
+        } else if (whereCondition instanceof DateValueComparison) {
+
+            condition = buildDateValueCondition((DateValueComparison) whereCondition);
+
         } else if (whereCondition instanceof DateDiffComparison) {
+
             DateDiffComparison dateDiffComparison = (DateDiffComparison) whereCondition;
             Field field2 = fieldByName(dateDiffComparison.getTable2Name(), dateDiffComparison.getField2Name());
-
             condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
                     field2, dateDiffComparison.getValue(), dateDiffComparison.getField1Offset(),
                     dateDiffComparison.getField2Offset());
+
         }
 
         return condition;
@@ -480,6 +463,33 @@ public final class QueryBuilder {
                     return dateDiff(date1.add(offset1), date2.add(offset2)).greaterThan(param);
                 case GreaterEqual:
                     return dateDiff(date1.add(offset1), date2.add(offset2)).greaterOrEqual(param);
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            throw new QueryBuilderException(e);
+        }
+    }
+
+    private static Condition buildDateValueCondition(DateValueComparison comparison) {
+        try {
+            Field field = fieldByName(comparison.getTable1Name(), comparison.getField1Name());
+            Integer offset = comparison.getOffset();
+            String value = comparison.getValue();
+
+            switch (comparison.getOperator()) {
+                case Less:
+                    return field.add(offset).lessThan(value);
+                case LessEqual:
+                    return field.add(offset).lessOrEqual(value);
+                case Equal:
+                    return field.add(offset).equal(value);
+                case NotEqual:
+                    return field.add(offset).notEqual(value);
+                case Greater:
+                    return field.add(offset).greaterThan(value);
+                case GreaterEqual:
+                    return field.add(offset).greaterOrEqual(value);
                 default:
                     return null;
             }
