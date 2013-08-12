@@ -695,4 +695,13 @@
                                  referencedColumnNames="frequency_id"/>
     </changeSet>
 
+    <changeSet id="CARE #10 (2)" author="Pawel Reise">
+        <delete schemaName="dashboard_app" tableName="dashboard_user">
+            <where>dashboard_id = (select dashboard_id from dashboard_app.dashboard where name = 'Map report')</where>
+        </delete>
+        <delete schemaName="dashboard_app" tableName="dashboard">
+            <where>name = 'Map report'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>
