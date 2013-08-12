@@ -2,7 +2,6 @@ package org.motechproject.carereporting.indicator.query;
 
 import org.apache.commons.lang.StringUtils;
 import org.jooq.AggregateFunction;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.SQLDialect;
@@ -16,17 +15,12 @@ import org.jooq.impl.DSL;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
-import org.motechproject.carereporting.domain.ConditionEntity;
-import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
-import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.service.FormsService;
 
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -187,9 +181,9 @@ public class CalculatorQueryBuilder {
                 fieldByName(computedFieldTable.getName(), "case_id")
                         .equal(fieldByName(caseAlias, "id")));
 
-        if (complexCondition == null || complexCondition.getConditions().isEmpty()) {
-            return step;
-        }
+    //    if (complexCondition == null || complexCondition.getConditions().isEmpty()) {
+      //      return step;
+        //}
 
         for (Map.Entry<String, String> entry : tableNameToCaseName.entrySet()) {
             if (entry.getKey().equals(computedField.getForm().getTableName())) {
@@ -238,6 +232,7 @@ public class CalculatorQueryBuilder {
     private SelectConditionStep buildWhereForConditions(SelectConditionStep selectConditionStep) {
         SelectConditionStep step = selectConditionStep;
 
+        /*
         for (ConditionEntity conditionEntity : complexCondition.getConditions()) {
             ComputedFieldEntity field1 = conditionEntity.getField1();
             ComputedFieldEntity field2;
@@ -279,62 +274,9 @@ public class CalculatorQueryBuilder {
                         operator));
             }
         }
+        */
 
         return step;
-    }
-
-    @SuppressWarnings(UNCHECKED)
-    private Condition getConditionByOperator(Field field1, Object value, String operator) {
-        Condition condition = null;
-
-        switch (operator) {
-            case "<":
-                condition = field1.lessThan(val(value.toString()));
-                break;
-            case "<=":
-                condition = field1.lessOrEqual(val(value.toString()));
-                break;
-            case "=":
-                condition = field1.equal(val(value.toString()));
-                break;
-            case ">":
-                condition = field1.greaterThan(val(value.toString()));
-                break;
-            case ">=":
-                condition = field1.greaterOrEqual(val(value.toString()));
-                break;
-            default:
-                break;
-        }
-
-        return condition;
-    }
-
-    @SuppressWarnings(UNCHECKED)
-    private Condition getConditionByOperator(Field field1, Field field2, String operator) {
-        Condition condition = null;
-
-        switch (operator) {
-            case "<":
-                condition = field1.lessThan(field2);
-                break;
-            case "<=":
-                condition = field1.lessOrEqual(field2);
-                break;
-            case "=":
-                condition = field1.equal(field2);
-                break;
-            case ">":
-                condition = field1.greaterThan(field2);
-                break;
-            case ">=":
-                condition = field1.greaterOrEqual(field2);
-                break;
-            default:
-                break;
-        }
-
-        return condition;
     }
 
     private void validateBuilder() {
@@ -342,9 +284,9 @@ public class CalculatorQueryBuilder {
             throw new CareRuntimeException("Indicator must not be null.");
         } else if (operation == OperationType.Undefined) {
             throw new CareRuntimeException("Operation type must be defined.");
-        } else if (complexCondition != null && (complexCondition.getConditions() == null
-                || complexCondition.getConditions().size() <= 0)) {
-            throw new CareRuntimeException("Complex condition must have at least one condition.");
+        //} else if (complexCondition != null && (complexCondition.getConditions() == null
+          //      || complexCondition.getConditions().size() <= 0)) {
+            //throw new CareRuntimeException("Complex condition must have at least one condition.");
         } else if (computedField == null) {
             throw new CareRuntimeException("Computed field must not be null.");
         }
@@ -355,6 +297,7 @@ public class CalculatorQueryBuilder {
             return;
         }
 
+        /*
         for (ConditionEntity conditionEntity : complexCondition.getConditions()) {
             ComputedFieldEntity field2 = null;
             String field1ForeignKey = formsService.getForeignKeyForTable(
@@ -378,18 +321,7 @@ public class CalculatorQueryBuilder {
 
             addTableNameToCaseEntry(field1TableName, field1ForeignKey, field2TableName, field2ForeignKey);
         }
+        */
     }
 
-    private void addTableNameToCaseEntry(String field1TableName, String field1ForeignKey,
-                                         String field2TableName, String field2ForeignKey) {
-        if (StringUtils.isNotEmpty(field1TableName)
-                && StringUtils.isNotEmpty(field1ForeignKey)) {
-            tableNameToCaseName.put(field1TableName, field1ForeignKey);
-        }
-
-        if (StringUtils.isNotEmpty(field2TableName)
-                && StringUtils.isNotEmpty(field2ForeignKey)) {
-            tableNameToCaseName.put(field2TableName, field2ForeignKey);
-        }
-    }
 }

@@ -2,8 +2,11 @@ package org.motechproject.carereporting.domain;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +16,8 @@ import javax.persistence.Table;
 })
 public class FactEntity extends AbstractEntity {
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_id", referencedColumnName = "dw_query_id")
     private SimpleDwQueryEntity table;
 
     @Column(name = "combine_type")

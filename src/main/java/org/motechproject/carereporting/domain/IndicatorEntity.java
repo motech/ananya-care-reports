@@ -37,13 +37,13 @@ public class IndicatorEntity extends AbstractEntity {
 
     // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
     //@NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
     // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
     //@NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
 
@@ -60,14 +60,15 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private AreaEntity area;
 
-    @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "indicator_user", joinColumns = { @JoinColumn(name = "indicator_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") })
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
-    private Set<UserEntity> owners;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity owner;
 
-    @NotNull
+    @ManyToMany
+    @JoinTable(name = "indicator_role", joinColumns = { @JoinColumn(name = "indicator_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    private Set<RoleEntity> roles;
+
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
@@ -119,14 +120,6 @@ public class IndicatorEntity extends AbstractEntity {
         this.area = area;
     }
 
-    public Set<UserEntity> getOwners() {
-        return owners;
-    }
-
-    public void setOwners(Set<UserEntity> owners) {
-        this.owners = owners;
-    }
-
     public Set<ReportEntity> getReports() {
         return reports;
     }
@@ -157,5 +150,21 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setTrend(BigDecimal trend) {
         this.trend = trend;
+    }
+
+    public UserEntity getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
+    }
+
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
     }
 }

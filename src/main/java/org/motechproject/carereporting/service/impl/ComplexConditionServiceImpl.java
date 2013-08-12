@@ -49,8 +49,7 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
     @Transactional(readOnly = false)
     public void createNewComplexCondition(ComplexConditionDto complexConditionDto) {
         ComplexConditionEntity complexConditionEntity = new ComplexConditionEntity(
-                complexConditionDto.getName(),
-                complexConditionDto.getConditions()
+                complexConditionDto.getName()
         );
 
         complexConditionDao.save(complexConditionEntity);
@@ -68,7 +67,6 @@ public class ComplexConditionServiceImpl implements ComplexConditionService {
         ComplexConditionEntity complexConditionEntity = this.getComplexConditionById(complexConditionDto.getId());
 
         complexConditionEntity.setName(complexConditionDto.getName());
-        complexConditionEntity.setConditions(complexConditionDto.getConditions());
 
         complexConditionDao.update(complexConditionEntity);
     }

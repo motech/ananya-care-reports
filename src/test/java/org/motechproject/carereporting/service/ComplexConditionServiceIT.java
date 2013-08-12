@@ -211,7 +211,6 @@ public class ComplexConditionServiceIT extends AbstractTransactionalJUnit4Spring
 
         ComplexConditionEntity complexConditionEntity = new ComplexConditionEntity();
         complexConditionEntity.setName(COMPLEX_CONDITION_NAME);
-        complexConditionEntity.setConditions(conditionEntities);
 
         complexConditionService.createNewComplexCondition(complexConditionEntity);
         newComplexConditionId = complexConditionEntity.getId();

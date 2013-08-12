@@ -638,4 +638,48 @@
         <dropColumn tableName="indicator" columnName="type_id" schemaName="dashboard_app"/>
     </changeSet>
 
+	<changeSet id="CARE #57 (3)" author="Łukasz Gąsior">
+        <sql>
+
+            DROP TABLE dashboard_app.indicator_user;
+
+            CREATE TABLE IF NOT EXISTS dashboard_app.indicator_role(
+                indicator_id integer NOT NULL,
+                role_id integer NOT NULL,
+                CONSTRAINT indicator_role_indicator_id_fk FOREIGN KEY (indicator_id)
+                REFERENCES dashboard_app.indicator (indicator_id) MATCH FULL
+                ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+                CONSTRAINT indicator_role_role_id_fk FOREIGN KEY (role_id)
+                REFERENCES dashboard_app.care_user (user_id) MATCH FULL
+                ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE,
+                CONSTRAINT indicator_user_uk UNIQUE (indicator_id, role_id)
+            );
+
+            ALTER TABLE dashboard_app.indicator
+                ADD column user_id integer;
+
+            ALTER TABLE dashboard_app.indicator ADD CONSTRAINT
+                indicator_user_id foreign key (user_id)
+                references dashboard_app.care_user (user_id) match full
+                on delete set null on update set null not deferrable;
+
+            ALTER TABLE dashboard_app.condition DROP COLUMN complex_condition_id;
+
+            ALTER TABLE dashboard_app.fact_complex_dw_query DROP CONSTRAINT complex_dw_query_fact_complex_dw_query_id;
+
+            ALTER TABLE dashboard_app.fact_complex_dw_query ADD CONSTRAINT
+                complex_dw_query_fact_complex_dw_query_id foreign key (complex_dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable;
+
+            ALTER TABLE dashboard_app.fact DROP CONSTRAINT fact_table_id;
+
+            ALTER TABLE dashboard_app.fact ADD CONSTRAINT
+                fact_table_id foreign key (table_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete set null on update set null not deferrable;
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -13,7 +13,7 @@ public class Indicator {
 
     private List<Category> categories;
 
-    private List<User> users;
+    private User user;
 
     private List<Role> roles;
 
@@ -49,14 +49,12 @@ public class Indicator {
         this.categories = categories;
     }
 
-    @XmlElementWrapper(name = "users")
-    @XmlElement(name = "user")
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @XmlElementWrapper(name = "roles")

@@ -3,11 +3,9 @@
     <categories>
         <category name="IFA Tablets" />
     </categories>
-    <users>
-        <user login="userName" />
-    </users>
+    <user login="userName" />
     <roles>
-        <role name="roleName" />
+        <role name="Manager" />
     </roles>
     <trend>3</trend>
     <area name="Bihar" level="State" />

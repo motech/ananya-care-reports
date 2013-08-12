@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 })
 public class HavingEntity extends AbstractEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "select_column_id", referencedColumnName = "select_column_id")
     private SelectColumnEntity selectColumnEntity;
 

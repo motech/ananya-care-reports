@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,8 +22,8 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
     @Column(name = "dimension")
     private String dimension;
 
-    @ManyToMany
-    @JoinTable(name = "complex_dw_query_fact", joinColumns = { @JoinColumn(name = "complex_dw_query_id") },
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "fact_complex_dw_query", joinColumns = { @JoinColumn(name = "complex_dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "fact_id") })
     private Set<FactEntity> facts;
 

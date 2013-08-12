@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @ManyToMany(mappedBy = "owners")
     private Set<DashboardEntity> dashboards;
 
-    @ManyToMany(mappedBy = "owners")
+    @OneToMany(mappedBy = "owner")
     private Set<IndicatorEntity> indicators;
 
     @ManyToMany(fetch = FetchType.EAGER)

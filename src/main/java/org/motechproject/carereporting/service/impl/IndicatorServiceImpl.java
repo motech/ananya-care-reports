@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -132,7 +133,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
-        indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto));
+        //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setReports(indicatorDto.getReports());
         indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
         indicatorEntity.setName(indicatorDto.getName());
@@ -153,7 +154,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
-        indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto));
+        //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
         indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
@@ -200,18 +201,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private AreaEntity findAreaEntityFromDto(IndicatorDto indicatorDto) {
         return areaService.getAreaById(indicatorDto.getArea());
-    }
-
-    private Set<UserEntity> findUserEntitiesFromDto(IndicatorDto indicatorDto) {
-        Set<UserEntity> userEntities = new LinkedHashSet<>();
-
-        for (Integer ownerId : indicatorDto.getOwners()) {
-            UserEntity userEntity = userService.getUserById(ownerId);
-
-            userEntities.add(userEntity);
-        }
-
-        return userEntities;
     }
 
     @Transactional(readOnly = false)
@@ -334,7 +323,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
-                if (indicator.getOwners().contains(user) && indicator.getTrend() != null) {
+                if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
                             getTrendForIndicator(area, indicator, startDate, endDate));
                     trendCategory.getIndicators().add(trendIndicator);
@@ -342,6 +331,15 @@ public class IndicatorServiceImpl implements IndicatorService {
             }
         }
         return categories;
+    }
+
+    private boolean isIndicatorAccessibleForUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
+        return userEntity.equals(indicatorEntity.getOwner()) ||
+                hasIndicatorCommonRoleWithUser(indicatorEntity, userEntity);
+    }
+
+    private boolean hasIndicatorCommonRoleWithUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
+        return !Collections.disjoint(indicatorEntity.getRoles(), userEntity.getRoles());
     }
 
     @Override

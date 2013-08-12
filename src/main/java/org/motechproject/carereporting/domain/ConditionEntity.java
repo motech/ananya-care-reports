@@ -42,10 +42,6 @@ public abstract class ConditionEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private ComputedFieldEntity field1;
 
-    @ManyToOne
-    @JoinColumn(name = "complex_condition_id")
-    private ComplexConditionEntity complexCondition;
-
     public ComparisonSymbolEntity getComparisonSymbol() {
         return comparisonSymbol;
     }
@@ -62,11 +58,4 @@ public abstract class ConditionEntity extends AbstractEntity {
         this.field1 = field1;
     }
 
-    public ComplexConditionEntity getComplexCondition() {
-        return complexCondition;
-    }
-
-    public void setComplexCondition(ComplexConditionEntity complexCondition) {
-        this.complexCondition = complexCondition;
-    }
 }

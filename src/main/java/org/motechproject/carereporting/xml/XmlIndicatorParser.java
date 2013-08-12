@@ -6,6 +6,8 @@ import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.LevelDao;
+import org.motechproject.carereporting.dao.RoleDao;
+import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
@@ -18,7 +20,10 @@ import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.RoleEntity;
+import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
+import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.xml.mapping.Category;
@@ -27,6 +32,8 @@ import org.motechproject.carereporting.xml.mapping.DwQuery;
 import org.motechproject.carereporting.xml.mapping.Fact;
 import org.motechproject.carereporting.xml.mapping.Indicator;
 import org.motechproject.carereporting.xml.mapping.Numerator;
+import org.motechproject.carereporting.xml.mapping.Role;
+import org.motechproject.carereporting.xml.mapping.User;
 import org.motechproject.carereporting.xml.mapping.WhereCondition;
 import org.motechproject.carereporting.xml.mapping.WhereGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +73,12 @@ public class XmlIndicatorParser {
     @Autowired
     private ComputedFieldDao computedFieldDao;
 
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private RoleDao roleDao;
+
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
@@ -77,6 +90,10 @@ public class XmlIndicatorParser {
     private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(indicator.getName());
+        if (indicator.getUser() != null) {
+            indicatorEntity.setOwner(prepareOwner(indicator.getUser()));
+        }
+        indicatorEntity.setRoles(prepareRoles(indicator.getRoles()));
         indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
         indicatorEntity.setDefaultFrequency(indicator.getDefaultFrequency().getValue());
@@ -91,9 +108,21 @@ public class XmlIndicatorParser {
     private AreaEntity findAreaByNameAndLevelName(String name, String levelName) {
         Map<String, Object> fields = new HashMap<>();
         fields.put("name", name);
-        LevelEntity level = levelDao.getByField("name", levelName);
+        LevelEntity level = levelDao.getByField("name", levelName.toLowerCase());
         fields.put("level", level);
         return areaDao.getByFields(fields);
+    }
+
+    private UserEntity prepareOwner(User user) {
+        return userDao.getByField("username", user.getLogin());
+    }
+
+    private Set<RoleEntity> prepareRoles(List<Role> roles) {
+        Set<RoleEntity> roleEntities = new HashSet<>();
+        for (Role role: roles) {
+            roleEntities.add(roleDao.getByField("name", role.getName()));
+        }
+        return roleEntities;
     }
 
     private Set<IndicatorCategoryEntity> prepareIndicatorCategories(List<Category> categories) {
@@ -127,10 +156,13 @@ public class XmlIndicatorParser {
         switch (condition.getType()) {
             case VALUE_COMPARISON:
                 conditionEntity = createValueComparisonCondition(condition);
+                break;
             case DATE_DIFF:
                 conditionEntity = createDateDiffComparisonCondition(condition);
+                break;
             case FIELD_COMPARISON:
                 conditionEntity = createFieldComparisonCondition(condition);
+                break;
             case DATE_WITH_OFFSET_DIFF:
             case DATE_RANGE:
             case ENUM_RANGE:
@@ -225,7 +257,7 @@ public class XmlIndicatorParser {
 
     private GroupedByEntity prepareGroupedBy(Fact fact) {
         GroupedByEntity groupedByEntity = new GroupedByEntity();
-        groupedByEntity.setFieldName(null); //what field name? fact's one?
+        groupedByEntity.setFieldName(fact.getName()); //TODO: what field name? fact's one?
         groupedByEntity.setHaving(prepareHaving(fact));
         groupedByEntity.setTableName(fact.getName());
         return groupedByEntity;
@@ -235,6 +267,10 @@ public class XmlIndicatorParser {
         HavingEntity having = new HavingEntity();
         having.setOperator(fact.getGroupedBy().getComparisonSymbol());
         having.setValue(fact.getGroupedBy().getValue());
+        SelectColumnEntity selectCol = new SelectColumnEntity();
+        selectCol.setFunctionName("count");
+        selectCol.setName("*");
+        having.setSelectColumnEntity(selectCol);
         return having;
     }
 

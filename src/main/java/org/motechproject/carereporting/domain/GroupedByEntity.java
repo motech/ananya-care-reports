@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,7 +22,7 @@ public class GroupedByEntity extends AbstractEntity {
     @Column(name = "field_name")
     private String fieldName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "having_id", referencedColumnName = "having_id")
     private HavingEntity having;
 
