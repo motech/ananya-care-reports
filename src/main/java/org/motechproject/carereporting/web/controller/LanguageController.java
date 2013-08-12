@@ -21,6 +21,8 @@ import java.util.Set;
 @RequestMapping("/api/languages")
 public class LanguageController {
 
+    private static final String TEXT_PLAIN_UTF_8 = "text/plain;charset=UTF-8";
+
     @Autowired
     private LanguageService messageService;
 
@@ -54,7 +56,7 @@ public class LanguageController {
     }
 
     @RequestMapping(value = "/messages/plain/{languageCode}", method = RequestMethod.GET,
-            produces = { MediaType.TEXT_PLAIN_VALUE })
+            produces = { TEXT_PLAIN_UTF_8 })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getPlainMessagesForLanguage(@PathVariable String languageCode) {
