@@ -7,6 +7,7 @@ import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.HavingCondition;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
+import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
@@ -33,6 +34,7 @@ import org.jooq.conf.ParamType;
 import org.jooq.conf.Settings;
 import org.jooq.conf.StatementType;
 import org.jooq.impl.DSL;
+import org.jooq.types.DayToSecond;
 
 import java.math.BigDecimal;
 
@@ -315,6 +317,10 @@ public final class QueryBuilder {
             ValueComparison valueComparison = (ValueComparison) whereCondition;
             condition = buildCondition(field1, valueComparison.getOperator(), valueComparison.getValue());
 
+        } else if (whereCondition instanceof DateRangeComparison) {
+
+            condition = buildDateRangeCondition((DateRangeComparison) whereCondition);
+
         } else if (whereCondition instanceof DateValueComparison) {
 
             condition = buildDateValueCondition((DateValueComparison) whereCondition);
@@ -382,8 +388,14 @@ public final class QueryBuilder {
                     return avg(fieldByName(BigDecimal.class, schemaName, selectColumn.getTableName(),
                             selectColumn.getFieldName()));
                 case Count:
-                    return count(fieldByName(schemaName, selectColumn.getTableName(),
-                            selectColumn.getFieldName()));
+                    if (selectColumn.getFieldName().equals(WILDCARD)) {
+                        return count(field(
+                                "\"" + schemaName + "\".\"" + selectColumn.getTableName()
+                                        + "\"." + WILDCARD));
+                    } else {
+                        return count(fieldByName(schemaName, selectColumn.getTableName(),
+                                selectColumn.getFieldName()));
+                    }
                 case Max:
                     return max(fieldByName(BigDecimal.class, schemaName, selectColumn.getTableName(),
                             selectColumn.getFieldName()));
@@ -483,26 +495,42 @@ public final class QueryBuilder {
 
     private static Condition buildDateValueCondition(DateValueComparison comparison) {
         try {
+            DayToSecond dayToSecond = new DayToSecond(comparison.getOffset());
+
             Field field = fieldByName(comparison.getTable1Name(), comparison.getField1Name());
-            Integer offset = comparison.getOffset();
             String value = comparison.getValue();
 
             switch (comparison.getOperator()) {
                 case Less:
-                    return field.add(offset).lessThan(value);
+                    return field.add(dayToSecond).lessThan(value);
                 case LessEqual:
-                    return field.add(offset).lessOrEqual(value);
+                    return field.add(dayToSecond).lessOrEqual(value);
                 case Equal:
-                    return field.add(offset).equal(value);
+                    return field.add(dayToSecond).equal(value);
                 case NotEqual:
-                    return field.add(offset).notEqual(value);
+                    return field.add(dayToSecond).notEqual(value);
                 case Greater:
-                    return field.add(offset).greaterThan(value);
+                    return field.add(dayToSecond).greaterThan(value);
                 case GreaterEqual:
-                    return field.add(offset).greaterOrEqual(value);
+                    return field.add(dayToSecond).greaterOrEqual(value);
                 default:
                     return null;
             }
+        } catch (Exception e) {
+            throw new QueryBuilderException(e);
+        }
+    }
+
+    private static Condition buildDateRangeCondition(DateRangeComparison whereCondition) {
+        try {
+            DayToSecond dayToSecond = new DayToSecond(whereCondition.getField1Offset());
+
+            Field field = fieldByName(whereCondition.getTable1Name(), whereCondition.getField1Name());
+            Param date1 = val(whereCondition.getDate1());
+            Param date2 = val(whereCondition.getDate2());
+
+            return field.add(dayToSecond).between(date1, date2);
+
         } catch (Exception e) {
             throw new QueryBuilderException(e);
         }

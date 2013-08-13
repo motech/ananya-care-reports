@@ -75,11 +75,24 @@ public class QueryBuilderTest {
                     "(select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
                     "\"report\".\"mother_case\".\"user_id\" where \"flw\".\"district\" = 'Bihar'";
     private static final String EXPECTED_POSTGRESQL_INDICATOR_COUNT_OF_CASES_IN_A_PERIOD_DD_OFFSET_BASED =
-            "select count(*) from \"report\".\"mother_case\" join (select * from \"report\".\"flw\") as " +
-                    "\"flw\" on \"flw\".\"id\" = \"report\".\"mother_case\".\"user_id\" where " +
-                    "((((\"mother_case\".\"add\" + 10) >= '02-02-2013' and (\"mother_case\".\"add\" + 10) " +
-                    "<= '04-02-2013') or ((\"mother_case\".\"edd\" + 10) >= '02-02-2013' and " +
-                    "(\"mother_case\".\"edd\" + 10) <= '04-02-2013')) and \"flw\".\"district\" = 'Bihar')";
+            "select count(*) from \"report\".\"mother_case\" join (select * from \"report\".\"flw\") as \"flw\" on " +
+                    "\"flw\".\"id\" = \"report\".\"mother_case\".\"user_id\" where ((((\"mother_case\".\"add\"" +
+                    " + cast('+10 00:00:00.000000000' as interval day to second)) >= '02-02-2013' and " +
+                    "(\"mother_case\".\"add\" + cast('+10 00:00:00.000000000' as interval day to second))" +
+                    " <= '04-02-2013') or ((\"mother_case\".\"edd\" + cast('+10 00:00:00.000000000' " +
+                    "as interval day to second)) >= '02-02-2013' and (\"mother_case\".\"edd\"" +
+                    " + cast('+10 00:00:00.000000000' as interval day to second)) <= '04-02-2013'))" +
+                    " and \"flw\".\"district\" = 'Bihar')";
+    private static final String EXPECTED_POSTGRESQL_DATE_RANGE_COMPARISON_SQL_STRING =
+            "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\"" +
+                    " where (\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
+                    " day to second)) between '02-02-2013' and '04-02-2013'";
+    private static final String EXPECTED_POSTGRESQL_HAVING_COUNT_WILDCARD_SQL_STRING =
+            "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\"" +
+                    " where (\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
+                    " day to second)) between '02-02-2013' and '04-02-2013' group by " +
+                    "\"report\".\"bp_form\".\"ifa_tablets_issued\" having" +
+                    " count(\"report\".\"bp_form\".*) >= '1'";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -404,5 +417,68 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlQuery);
         assertEquals(EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING, sqlQuery);
+    }
+
+    @Test
+    public void testDateRangeComparison() {
+        DwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(
+                        new SelectColumnBuilder()
+                            .withFieldAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
+                )
+                .withTableName(BP_FORM)
+                .withWhereConditionGroup(
+                        new WhereConditionGroupBuilder()
+                            .withCondition(
+                                    new WhereConditionBuilder()
+                                        .withDateRangeComparison(BP_FORM, TIME_START, FIRST_DATE,
+                                                SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                            )
+                )
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_DATE_RANGE_COMPARISON_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testHavingCountWildcard() {
+        DwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(
+                        new SelectColumnBuilder()
+                                .withFieldAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
+                )
+                .withTableName(BP_FORM)
+                .withWhereConditionGroup(
+                        new WhereConditionGroupBuilder()
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateRangeComparison(BP_FORM, TIME_START, FIRST_DATE,
+                                                        SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
+                )
+                .withGroupBy(
+                        new GroupByConditionBuilder()
+                            .withField(BP_FORM, IFA_TABLETS_ISSUED)
+                            .withHaving(
+                                    new HavingConditionBuilder()
+                                        .withSelectColumn(
+                                                new SelectColumnBuilder()
+                                                    .withFieldAndFunction(BP_FORM, WILDCARD,
+                                                            SelectColumnFunctionType.Count)
+                                        )
+                                        .withComparison(OperatorType.GreaterEqual, ONE)
+                            )
+                )
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_HAVING_COUNT_WILDCARD_SQL_STRING, sqlString);
     }
 }
