@@ -63,7 +63,7 @@ public class CronServiceImpl implements CronService {
     public Set<FrequencyEntity> getAllFrequencies() {
         Set<FrequencyEntity> frequencyEntities = frequencyDao.getAll();
         Iterator<FrequencyEntity> it = frequencyEntities.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             if (UNDEFINED.equals(it.next().getFrequencyName())) {
                 it.remove();
             }

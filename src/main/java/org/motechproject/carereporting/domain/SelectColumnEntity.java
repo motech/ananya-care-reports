@@ -13,10 +13,10 @@ import javax.persistence.Table;
 })
 public class SelectColumnEntity extends AbstractEntity {
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="function")
+    @Column(name = "function")
     private String functionName;
 
     public String getName() {

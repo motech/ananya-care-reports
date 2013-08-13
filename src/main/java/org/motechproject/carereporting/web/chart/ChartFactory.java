@@ -38,7 +38,7 @@ public final class ChartFactory {
     private static final int SELECTION_FPS = 30;
 
     public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        if(values.size() == 0) {
+        if (values.size() == 0) {
             throw new CareNoValuesException();
         }
         
@@ -60,7 +60,7 @@ public final class ChartFactory {
         SerieBuilder serieBuilder = new SerieBuilder();
 
         for (IndicatorValueEntity value: values) {
-            serieBuilder.point(BigDecimal.valueOf(value.getModificationDate().getTime()), value.getValue());
+            serieBuilder.point(BigDecimal.valueOf(value.getDate().getTime()), value.getValue());
         }
 
         return serieBuilder.build();
@@ -95,13 +95,13 @@ public final class ChartFactory {
     }
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        if(values.size() == 0) {
+        if (values.size() == 0) {
             throw new CareNoValuesException();
         }
 
         BigDecimal indicatorNumeratorsCombined = BigDecimal.ZERO;
         BigDecimal indicatorDenominatorsCombined = BigDecimal.ZERO;
-        for (IndicatorValueEntity value : values){
+        for (IndicatorValueEntity value : values) {
             indicatorNumeratorsCombined = indicatorNumeratorsCombined.add(value.getNominator());
             indicatorDenominatorsCombined = indicatorDenominatorsCombined.add(value.getDenominator());
         }

@@ -78,6 +78,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.needsRefreshing = true;
                             report.indicatorAreaId = indicator.area.id;
                             report.indicatorName = indicator.name;
+                            report.frequencyId = indicator.defaultFrequency.id;
                             report.rowIndex = $scope.reportRows.length;
                             report.index = reportRow.length;
                             report.displayType = 'chart';

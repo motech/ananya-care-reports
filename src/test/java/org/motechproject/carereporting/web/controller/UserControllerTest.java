@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
@@ -79,11 +80,12 @@ public class UserControllerTest {
         areaEntity.setId(id);
         userEntity.setArea(areaEntity);
         String indicatorName = "indicatorName";
-        Integer frequency = 2;
+        FrequencyEntity frequencyEntity = new FrequencyEntity();
+        frequencyEntity.setId(id);
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setId(id);
         indicatorEntity.setName(indicatorName);
-        indicatorEntity.setDefaultFrequency(frequency);
+        indicatorEntity.setDefaultFrequency(frequencyEntity);
         Set<IndicatorEntity> indicatorEntities = new LinkedHashSet<>();
         indicatorEntities.add(indicatorEntity);
 

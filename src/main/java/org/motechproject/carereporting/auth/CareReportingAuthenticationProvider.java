@@ -49,8 +49,9 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Authentication authenticate(Authentication authentication) {
-        Map<String,Object> result = null;
+        Map<String, Object> result = null;
 
         String login = ((String) authentication.getPrincipal()).split(";")[0];
         String domain = ((String) authentication.getPrincipal()).split(";")[1];
@@ -70,7 +71,7 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         } catch (EntityException e) {
-            Map<String, String> user = ((ArrayList<Map<String, String>>)result.get("objects")).get(0);
+            Map<String, String> user = ((ArrayList<Map<String, String>>) result.get("objects")).get(0);
             String userName = user.get("email");
             String password = (String) authentication.getCredentials();
             String firstName = user.get("first_name");
@@ -93,9 +94,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         }
     }
 
-    protected ClientHttpRequestFactory createSecureTransport(String username, String password){
+    @SuppressWarnings("unchecked")
+    protected ClientHttpRequestFactory createSecureTransport(String username, String password) {
         HttpClient client = new HttpClient();
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username,password);
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         String commCareHost = commCareConfiguration.getProperty("commcare.authentication.host");
         String commCarePort = commCareConfiguration.getProperty("commcare.authentication.port");
         client.getState().setCredentials(new AuthScope(commCareHost, Integer.valueOf(commCarePort)), credentials);

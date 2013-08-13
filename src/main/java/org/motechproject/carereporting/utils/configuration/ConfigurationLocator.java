@@ -40,15 +40,15 @@ public final class ConfigurationLocator {
     }
 
     private static InputStream getCommCareConfigurationInputStream(ClassLoader loader) {
-        File customProperties = new File(getCommcareCustomPropertiesFilePath());
+        File customProperties = new File(getCommCareCustomPropertiesFilePath());
         if (customProperties.exists()) {
-            return loader.getResourceAsStream(getCommcareCustomPropertiesFilePath());
+            return loader.getResourceAsStream(getCommCareCustomPropertiesFilePath());
         } else {
             return loader.getResourceAsStream(getCommCareDefaultPropertiesFileName());
         }
     }
 
-    private static String getCommcareCustomPropertiesFilePath() {
+    private static String getCommCareCustomPropertiesFilePath() {
         return getCareConfigurationDirectory() + File.separator + COMMCARE_CUSTOM_PROPERTIES_FILE_NAME;
     }
 

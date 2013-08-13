@@ -3,6 +3,7 @@ package org.motechproject.carereporting.xml;
 import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
+import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.LevelDao;
@@ -15,6 +16,7 @@ import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
@@ -79,6 +81,9 @@ public class XmlIndicatorParser {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private FrequencyDao frequencyDao;
+
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
@@ -96,13 +101,17 @@ public class XmlIndicatorParser {
         indicatorEntity.setRoles(prepareRoles(indicator.getRoles()));
         indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
-        indicatorEntity.setDefaultFrequency(indicator.getDefaultFrequency().getValue());
+        indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
         indicatorEntity.setDenominator(prepareDenominator(indicator.getDenominator()));
         indicatorEntity.setTrend(indicator.getTrend());
         if (indicator.getNumerator() != null) {
             indicatorEntity.setNumerator(prepareNumerator(indicator.getNumerator()));
         }
         return indicatorEntity;
+    }
+
+    private FrequencyEntity findFrequencyById(int id) {
+        return frequencyDao.getById(id);
     }
 
     private AreaEntity findAreaByNameAndLevelName(String name, String levelName) {

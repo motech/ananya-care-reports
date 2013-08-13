@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.indicator.calculator;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.jooq.SelectQuery;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -9,6 +8,7 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.indicator.query.CalculatorQueryBuilder;
 import org.motechproject.carereporting.service.FormsService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.utils.date.DateResolver;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -16,7 +16,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public abstract class AbstractIndicatorValueCalculator {
 
@@ -37,11 +36,11 @@ public abstract class AbstractIndicatorValueCalculator {
         this.calculatorQueryBuilder = new CalculatorQueryBuilder(dataSource, formsService);
     }
 
-    public void calculateAndPersistIndicatorValues(FrequencyEntity frequency) {
+    public void calculateAndPersistIndicatorValues(FrequencyEntity frequency, Date startDate) {
         frequencyEntity = frequency;
 
         for (AreaEntity area: getAllAreasForIndicator(indicator)) {
-            Set<IndicatorValueEntity> values = getValuesFromDatabase(area);
+            List<IndicatorValueEntity> values = getValuesFromDatabase(area, startDate);
             BigDecimal nominator = getNominator(area, values);
             BigDecimal denominator = getDenominator(area, values);
 
@@ -51,7 +50,7 @@ public abstract class AbstractIndicatorValueCalculator {
                 if (this instanceof  PercentageIndicatorValueCalculator) {
                     value = value.multiply(new BigDecimal(100));
                 }
-                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator, area, nominator, denominator, value, frequencyEntity);
+                IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator, area, nominator, denominator, value, frequencyEntity, startDate);
                 indicatorService.createNewIndicatorValue(indicatorValueEntity);
             }
         }
@@ -73,13 +72,13 @@ public abstract class AbstractIndicatorValueCalculator {
         return childAreas;
     }
 
-    private Set<IndicatorValueEntity> getValuesFromDatabase(AreaEntity area) {
-        Set<IndicatorValueEntity> values = null;
+    private List<IndicatorValueEntity> getValuesFromDatabase(AreaEntity area, Date startDate) {
+        List<IndicatorValueEntity> values = null;
 
         if (!"defined".equals(frequencyEntity.getFrequencyName()) && !"daily".equals(frequencyEntity.getFrequencyName())) {
-            Date date = resolveDate();
+            Date[] dates = DateResolver.resolveDates(frequencyEntity, startDate);
             FrequencyEntity child = resolveChild();
-            values = indicatorService.getIndicatorValues(indicator, area, child, date);
+            values = indicatorService.getIndicatorValuesForArea(indicator.getId(), area.getId(), child.getId(), dates[0], dates[1]);
         }
 
         return values;
@@ -103,34 +102,7 @@ public abstract class AbstractIndicatorValueCalculator {
         return child;
     }
 
-    private Date resolveDate() {
-        Date date = new Date();
-
-        switch(frequencyEntity.getFrequencyName()) {
-            case "weekly":
-                date = DateUtils.addWeeks(date, -1);
-                date = DateUtils.addSeconds(date, -10);
-                break;
-            case "monthly":
-                date = DateUtils.addMonths(date, -1);
-                date = DateUtils.addSeconds(date, -15);
-                break;
-            case "quarterly":
-                date = DateUtils.addMonths(date, -3);
-                date = DateUtils.addSeconds(date, -20);
-                break;
-            case "yearly":
-                date = DateUtils.addYears(date, -1);
-                date = DateUtils.addSeconds(date, -25);
-                break;
-            default:
-                break;
-        }
-
-        return date;
-    }
-
-    protected BigDecimal getNominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
+    protected BigDecimal getNominator(AreaEntity areaEntity, List<IndicatorValueEntity> values) {
         BigDecimal result = BigDecimal.ZERO;
 
         if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
@@ -144,7 +116,7 @@ public abstract class AbstractIndicatorValueCalculator {
         return result;
     }
 
-    protected BigDecimal getDenominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
+    protected BigDecimal getDenominator(AreaEntity areaEntity, List<IndicatorValueEntity> values) {
         BigDecimal result = BigDecimal.ZERO;
 
         if ("defined".equals(frequencyEntity.getFrequencyName()) || "daily".equals(frequencyEntity.getFrequencyName())) {
@@ -167,7 +139,7 @@ public abstract class AbstractIndicatorValueCalculator {
         return calculatorQueryBuilder
                 .withIndicator(indicator)
                 .withArea(area)
-                .withFrequency(indicator.getDefaultFrequency())
+                .withFrequency(indicator.getDefaultFrequency().getId())
                 .withOperation(nominatorOperationType)
                 .build();
     }

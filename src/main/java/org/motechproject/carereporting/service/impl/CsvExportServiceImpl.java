@@ -23,14 +23,14 @@ public class CsvExportServiceImpl implements ExportService {
 
     @Override
     public byte[] convertIndicatorValuesToBytes(List<IndicatorValueEntity> indicatorValues) throws IOException {
-        if(indicatorValues.size() == 0) {
+        if (indicatorValues.size() == 0) {
             throw new CareNoValuesException();
         }
 
         List<String[]> lines = prepareCsvLines(indicatorValues);
 
         byte[] bytes;
-        try(ByteArrayInputStream inputStream = csvExportHelper.convertToCsvFile(lines)) {
+        try (ByteArrayInputStream inputStream = csvExportHelper.convertToCsvFile(lines)) {
             bytes = IOUtils.toByteArray(inputStream);
         }
 

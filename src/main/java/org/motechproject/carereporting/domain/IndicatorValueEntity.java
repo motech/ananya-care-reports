@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "indicator_value")
@@ -29,7 +30,7 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "area_id")
     private AreaEntity area;
 
-    @Column(name = "nominator")
+    @Column(name = "numerator")
     private BigDecimal nominator;
 
     @Column(name = "denominator")
@@ -43,17 +44,22 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "frequency_id")
     private FrequencyEntity frequency;
 
+    @NotNull
+    @Column(name = "date")
+    private Date date;
+
     public IndicatorValueEntity() {
 
     }
 
-    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal nominator, BigDecimal denominator, BigDecimal value, FrequencyEntity frequency) {
+    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal nominator, BigDecimal denominator, BigDecimal value, FrequencyEntity frequency, Date date) {
         this.indicator = indicator;
         this.area = area;
         this.nominator = nominator;
         this.denominator = denominator;
         this.value = value;
         this.frequency = frequency;
+        this.date = date;
     }
 
     public BigDecimal getNominator() {
@@ -112,5 +118,13 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

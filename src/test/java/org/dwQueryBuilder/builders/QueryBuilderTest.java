@@ -13,8 +13,8 @@ import org.dwQueryBuilder.data.queries.SimpleDwQuery;
 import org.jooq.SQLDialect;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class QueryBuilderTest {
 

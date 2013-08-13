@@ -21,14 +21,7 @@
                 <div class="nested-well">
                     <fieldset>
                         <legend>{{msg('indicators.form.defineFrequency')}}:</legend>
-                        <div class="scroll">
-                            <ul class="unstyled">
-                                <li ng-repeat="item in listFrequencies">
-                                    <input id="indicatorFrequency_{{item.value}}" type="radio" ng-model="indicator.frequency" value="{{item.value}}" />
-                                    <label class="inline" for="indicatorFrequency_{{item.value}}">{{item.name}}</label>
-                                </li>
-                            </ul>
-                        </div>
+                        <select id="indicatorFrequency" ng-model="indicator.frequency" ng-options="item.id as item.frequencyName for item in listFrequencies" class="input-block-level" required/>
                     </fieldset>
                 </div>
                 <div class="nested-well">

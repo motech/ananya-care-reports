@@ -678,8 +678,21 @@
                 fact_table_id foreign key (table_id)
                 references dashboard_app.dw_query (dw_query_id) match full
                 on delete set null on update set null not deferrable;
-
         </sql>
+    </changeSet>
+
+    <changeSet id="CARE #37.2" author="Adrian Boguszewski">
+        <update tableName="indicator" schemaName="dashboard_app">
+            <column name="frequency" value="3"/>
+        </update>
+        <renameColumn tableName="indicator_value" oldColumnName="nominator" newColumnName="numerator" schemaName="dashboard_app"/>
+        <renameColumn tableName="indicator" oldColumnName="frequency" newColumnName="frequency_id" schemaName="dashboard_app"/>
+        <addColumn tableName="indicator_value">
+            <column name="date" type="timestamp"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="indicator" baseColumnNames="frequency_id" constraintName="frequency_fk"
+                                 referencedTableName="frequency"
+                                 referencedColumnNames="frequency_id"/>
     </changeSet>
 
 </databaseChangeLog>

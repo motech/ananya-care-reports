@@ -19,6 +19,7 @@ import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
@@ -57,6 +58,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private IndicatorValueDao indicatorValueDao;
+
+    @Autowired
+    private CronService cronService;
 
     @Autowired
     private AreaService areaService;
@@ -126,7 +130,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorDao.save(indicatorEntity);
     }
 
-    @Transactional(readOnly = false)
     @Override
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
 
@@ -135,10 +138,14 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
         //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setReports(indicatorDto.getReports());
-        indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
+        indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
         indicatorEntity.setName(indicatorDto.getName());
         indicatorEntity.setTrend(indicatorDto.getTrend());
         createNewIndicator(indicatorEntity);
+    }
+
+    private FrequencyEntity findFrequencyEntityFromDto(IndicatorDto indicatorDto) {
+        return cronService.getFrequencyById(indicatorDto.getFrequency());
     }
 
     @Transactional(readOnly = false)
@@ -157,7 +164,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
-        indicatorEntity.setDefaultFrequency(indicatorDto.getFrequency());
+        indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
         indicatorEntity.setName(indicatorDto.getName());
 
         indicatorDao.update(indicatorEntity);
@@ -361,11 +368,6 @@ public class IndicatorServiceImpl implements IndicatorService {
             areasTrends.put(area, trend);
         }
         return areasTrends;
-    }
-
-    @Override
-    public Set<IndicatorValueEntity> getIndicatorValues(IndicatorEntity indicator, AreaEntity area, FrequencyEntity child, Date date) {
-        return indicatorValueDao.getValues(indicator, area, child, date);
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {

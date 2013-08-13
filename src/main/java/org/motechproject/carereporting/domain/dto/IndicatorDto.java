@@ -40,7 +40,6 @@ public class IndicatorDto implements Serializable {
     private Set<ReportEntity> reports;
 
     @NotNull
-    @Min(1)
     private Integer frequency;
 
     @NotNull

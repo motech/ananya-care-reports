@@ -1,9 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -44,27 +42,4 @@ public abstract class BaseController {
         binder.registerCustomEditor(Date.class, editor);
     }
 
-    protected Date resolveEndDate(FrequencyEntity frequencyEntity, Date endDate) {
-        Date date = DateUtils.addHours(endDate, 2);
-        switch(frequencyEntity.getFrequencyName()) {
-            case "daily":
-                date = DateUtils.addDays(date, 1);
-                break;
-            case "weekly":
-                date = DateUtils.addWeeks(date, 1);
-                break;
-            case "monthly":
-                date = DateUtils.addMonths(date, 1);
-                break;
-            case "quarterly":
-                date = DateUtils.addMonths(date, 3);
-                break;
-            case "yearly":
-                date = DateUtils.addYears(date, 1);
-                break;
-            default:
-                break;
-        }
-        return date;
-    }
 }

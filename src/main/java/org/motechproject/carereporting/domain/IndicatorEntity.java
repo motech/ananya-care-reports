@@ -74,9 +74,10 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<ReportEntity> reports;
 
     @NotNull
-    @Column(name = "frequency", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
-    private Integer defaultFrequency;
+    @ManyToOne
+    @JoinColumn(name = "frequency_id", nullable = false)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
+    private FrequencyEntity defaultFrequency;
 
     @NotNull
     @NotEmpty
@@ -128,11 +129,11 @@ public class IndicatorEntity extends AbstractEntity {
         this.reports = reports;
     }
 
-    public Integer getDefaultFrequency() {
+    public FrequencyEntity getDefaultFrequency() {
         return defaultFrequency;
     }
 
-    public void setDefaultFrequency(Integer defaultFrequency) {
+    public void setDefaultFrequency(FrequencyEntity defaultFrequency) {
         this.defaultFrequency = defaultFrequency;
     }
 

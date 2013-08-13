@@ -9,7 +9,7 @@ import org.motechproject.carereporting.service.IndicatorService;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalculator {
 
@@ -20,7 +20,7 @@ public class CountIndicatorValueCalculator extends AbstractIndicatorValueCalcula
     }
 
     @Override
-    protected BigDecimal getDenominator(AreaEntity areaEntity, Set<IndicatorValueEntity> values) {
+    protected BigDecimal getDenominator(AreaEntity areaEntity, List<IndicatorValueEntity> values) {
         return BigDecimal.ONE;
     }
 

@@ -139,7 +139,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                 $scope.indicator.id = indicator.id;
                 $scope.indicator.name = indicator.name;
                 $scope.indicator.area = indicator.area;
-                $scope.indicator.frequency = indicator.frequency;
+                $scope.indicator.frequency = indicator.defaultFrequency;
                 $scope.indicator.computedField=indicator.computedField.id;
                 $scope.indicator.reports=indicator.reports;
                 $scope.indicator.complexCondition = indicator.complexCondition.id;
@@ -172,6 +172,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             }
         }
     }
+
+    $scope.fetchFrequencies = function() {
+        $http.get('/api/indicator/calculator/frequencies').success(function(frequencies) {
+            $scope.listFrequencies = frequencies;
+        });
+    };
+    $scope.fetchFrequencies();
 
     $scope.setAreas = function() {
         switch ($scope.indicator.area.level.id){
@@ -384,15 +391,6 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             });
     }
     $scope.fetchComplexConditions();
-
-    $scope.listFrequencies = [
-        { name: "1 day", value: "1" },
-        { name: "2 days", value: "2" },
-        { name: "30 days", value: "30" },
-        { name: "60 days", value: "60" },
-        { name: "180 days", value: "180" }
-    ];
-    $scope.indicator.frequency = "30";
 
     $scope.validateOwners = function() {
         $scope.ownersValid = false;

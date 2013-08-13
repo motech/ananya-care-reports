@@ -106,6 +106,9 @@
 
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer" init-method="loadFormsFromDB" />
 
+    <!--TODO: Uncomment, when properly indicator value calculator exists-->
+    <!--<bean id="indicatorValuesInitializer" class="org.motechproject.carereporting.initializers.IndicatorValuesInitializer" init-method="precomputeIndicators" depends-on="liquibase, formEntityInitializer"/>-->
+
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
     <bean id="multipartResolver"
