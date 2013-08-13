@@ -43,7 +43,7 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Autowired
     private SessionFactory sessionFactory;
 
-    private final static int EXPECTED_DASHBOARDS_ALL = 6;
+    private final static int EXPECTED_DASHBOARDS_ALL = 5;
     private final static String DASHBOARD_NAME = "DASHBOARD_TEST_1";
     private final static Short DASHBOARD_TAB_POSITION = 99;
     private final static Short DASHBOARD_NEW_TAB_POSITION = 98;
