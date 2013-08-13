@@ -67,10 +67,6 @@
                  <li class="dropdown">
                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.indicators')}}<b class="caret"></b></a>
                      <ul class="dropdown-menu">
-                        <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
-                            <li><a href="#/indicators/new"><i class="icon-list"></i> {{msg('menu.indicators.manager')}}</a></li>
-                        </sec:authorize>
-                        <li class="divider"></li>
                         <li class="dropdown-submenu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
                                 <ul class="dropdown-menu">
@@ -87,12 +83,6 @@
                                 </sec:authorize>
                              </ul>
                         </li>
-                        <li class="dropdown-submenu">
-                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.reports')}}</a>
-                             <ul class="dropdown-menu">
-                                 <li><a href="#/reports"><i class="icon-list"></i> {{msg('menu.reports.list')}}</a></li>
-                             </ul>
-                         </li>
                          <li class="divider"></li>
                          <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                      </ul>
