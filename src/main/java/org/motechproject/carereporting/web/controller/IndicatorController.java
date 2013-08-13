@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -185,7 +184,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public void recalculateAllIndicatorValues() {
         FrequencyEntity frequencyEntity = cronService.getFrequencyByName(UNDEFINED);
-        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity, new Date());
+        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity);
     }
 
     @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET)

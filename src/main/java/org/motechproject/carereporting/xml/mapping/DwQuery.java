@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.xml.mapping;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,6 +14,12 @@ public class DwQuery {
     private List<Fact> facts;
 
     private WhereGroup whereGroup;
+
+    private List<SelectColumn> selectColumns;
+
+    private String dimensionKey;
+
+    private String factKey;
 
     public Dimension getDimension() {
         return dimension;
@@ -39,5 +46,33 @@ public class DwQuery {
 
     public void setWhereGroup(WhereGroup whereGroup) {
         this.whereGroup = whereGroup;
+    }
+
+    @XmlElementWrapper(name = "select-columns")
+    @XmlElement(name = "select-column")
+    public List<SelectColumn> getSelectColumns() {
+        return selectColumns;
+    }
+
+    public void setSelectColumns(List<SelectColumn> selectColumns) {
+        this.selectColumns = selectColumns;
+    }
+
+    @XmlAttribute(name = "dimension-key")
+    public String getDimensionKey() {
+        return dimensionKey;
+    }
+
+    public void setDimensionKey(String dimensionKey) {
+        this.dimensionKey = dimensionKey;
+    }
+
+    @XmlAttribute(name = "fact-key")
+    public String getFactKey() {
+        return factKey;
+    }
+
+    public void setFactKey(String factKey) {
+        this.factKey = factKey;
     }
 }

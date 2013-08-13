@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -27,13 +26,11 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
             inverseJoinColumns = { @JoinColumn(name = "fact_id") })
     private Set<FactEntity> facts;
 
-    @ManyToOne
-    @JoinColumn(name = "union_id", referencedColumnName = "dw_query_id")
-    private DwQueryEntity union;
+    @Column(name = "dimension_key")
+    private String dimensionKey;
 
-    @ManyToOne
-    @JoinColumn(name = "intersection_id", referencedColumnName = "dw_query_id")
-    private DwQueryEntity intersection;
+    @Column(name = "fact_key")
+    private String factKey;
 
     public String getDimension() {
         return dimension;
@@ -51,19 +48,19 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
         this.facts = facts;
     }
 
-    public DwQueryEntity getUnion() {
-        return union;
+    public String getDimensionKey() {
+        return dimensionKey;
     }
 
-    public void setUnion(DwQueryEntity union) {
-        this.union = union;
+    public void setDimensionKey(String dimensionKey) {
+        this.dimensionKey = dimensionKey;
     }
 
-    public DwQueryEntity getIntersection() {
-        return intersection;
+    public String getFactKey() {
+        return factKey;
     }
 
-    public void setIntersection(DwQueryEntity intersection) {
-        this.intersection = intersection;
+    public void setFactKey(String factKey) {
+        this.factKey = factKey;
     }
 }

@@ -10,6 +10,8 @@ public class GroupedBy {
 
     private String value;
 
+    private String groupBy;
+
     @XmlAttribute(name = "compSymbol")
     public String getComparisonSymbol() {
         return comparisonSymbol;
@@ -26,5 +28,14 @@ public class GroupedBy {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @XmlAttribute
+    public String getGroupBy() {
+        return groupBy;
+    }
+
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
     }
 }

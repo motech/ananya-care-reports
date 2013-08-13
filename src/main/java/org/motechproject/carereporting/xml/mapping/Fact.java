@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.xml.mapping;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name = "fact")
 public class Fact {
@@ -11,6 +13,8 @@ public class Fact {
     private WhereGroup whereGroup;
 
     private GroupedBy groupedBy;
+
+    private List<SelectColumn> selectColumns;
 
     public String getName() {
         return name;
@@ -36,5 +40,15 @@ public class Fact {
 
     public void setGroupedBy(GroupedBy groupedBy) {
         this.groupedBy = groupedBy;
+    }
+
+    @XmlElementWrapper(name = "select-columns")
+    @XmlElement(name = "select-column")
+    public List<SelectColumn> getSelectColumns() {
+        return selectColumns;
+    }
+
+    public void setSelectColumns(List<SelectColumn> selectColumns) {
+        this.selectColumns = selectColumns;
     }
 }

@@ -11,11 +11,18 @@
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <denominator>
-        <dw-query>
-            <dimension tableName="mother_case"/>
+        <dw-query dimension-key="id" fact-key="case_id">
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
             <facts>
                 <fact>
                     <name>bp_form</name>
+                    <select-columns>
+                        <select-column fieldName="case_id" />
+                        <select-column aggregation="Count" fieldName="case_id" />
+                    </select-columns>
                     <where-group>
                         <where-condition type="valueComparison">
                             <field>add_offset</field>
@@ -23,7 +30,7 @@
                             <value>90</value>
                         </where-condition>
                     </where-group>
-                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="2"/>
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="2" groupBy="case_id" />
                 </fact>
             </facts>
         </dw-query>

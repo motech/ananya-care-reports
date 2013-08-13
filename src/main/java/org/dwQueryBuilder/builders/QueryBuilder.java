@@ -169,7 +169,7 @@ public final class QueryBuilder {
     
     private static SelectSelectStep buildSelectColumns(SelectSelectStep selectSelectStep, DwQuery dwQuery) {
         SelectSelectStep step = selectSelectStep;
-        
+
         for (SelectColumn selectColumn : dwQuery.getSelectColumns()) {
             if (selectColumn.getFunction() != null) {
 

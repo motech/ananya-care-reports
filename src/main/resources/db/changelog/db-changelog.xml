@@ -704,4 +704,20 @@
         </delete>
     </changeSet>
 
+    <changeSet id="CARE #57 (4)" author="Łukasz Gąsior">
+        <sql>
+            DELETE FROM dashboard_app.indicator_value WHERE indicator_id IN (1, 2);
+            DELETE FROM dashboard_app.indicator WHERE indicator_id IN (1, 2);
+            ALTER TABLE dashboard_app.complex_dw_query DROP COLUMN union_id;
+            ALTER TABLE dashboard_app.complex_dw_query DROP COLUMN intersection_id;
+            ALTER TABLE dashboard_app.select_column ADD COLUMN table_name varchar;
+
+            ALTER TABLE dashboard_app.complex_dw_query
+                ADD COLUMN dimension_key varchar;
+
+            ALTER TABLE dashboard_app.complex_dw_query
+                ADD COLUMN fact_key varchar;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

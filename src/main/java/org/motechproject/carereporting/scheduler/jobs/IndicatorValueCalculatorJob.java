@@ -8,8 +8,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Date;
-
 public class IndicatorValueCalculatorJob implements Job {
 
     private static final String FREQUENCY = "frequency";
@@ -25,6 +23,6 @@ public class IndicatorValueCalculatorJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         FrequencyEntity frequencyEntity = (FrequencyEntity) jobExecutionContext.getJobDetail().getJobDataMap().get(FREQUENCY);
-        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity, new Date());
+        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity);
     }
 }

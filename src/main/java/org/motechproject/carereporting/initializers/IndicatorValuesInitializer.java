@@ -31,7 +31,7 @@ public class IndicatorValuesInitializer {
 
             while (date.before(endDate)) {
                 Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
-                indicatorValueCalculator.calculateIndicatorValues(frequencyEntity, dates[1]);
+                indicatorValueCalculator.calculateIndicatorValues(frequencyEntity);
                 date = DateUtils.addHours(dates[1], 6);
             }
         }

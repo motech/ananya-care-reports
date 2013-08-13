@@ -19,6 +19,9 @@ public class SelectColumnEntity extends AbstractEntity {
     @Column(name = "function")
     private String functionName;
 
+    @Column(name="table_name")
+    private String tableName;
+
     public String getName() {
         return name;
     }
@@ -33,5 +36,13 @@ public class SelectColumnEntity extends AbstractEntity {
 
     public void setFunctionName(String functionName) {
         this.functionName = functionName;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

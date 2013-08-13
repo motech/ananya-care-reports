@@ -35,12 +35,14 @@ import org.motechproject.carereporting.xml.mapping.Fact;
 import org.motechproject.carereporting.xml.mapping.Indicator;
 import org.motechproject.carereporting.xml.mapping.Numerator;
 import org.motechproject.carereporting.xml.mapping.Role;
+import org.motechproject.carereporting.xml.mapping.SelectColumn;
 import org.motechproject.carereporting.xml.mapping.User;
 import org.motechproject.carereporting.xml.mapping.WhereCondition;
 import org.motechproject.carereporting.xml.mapping.WhereGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -216,6 +218,12 @@ public class XmlIndicatorParser {
         if (dwQuery.getWhereGroup() != null) {
             dwQueryEntity.setWhereGroup(prepareWhereGroup(dwQuery.getWhereGroup()));
         }
+        dwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
+        for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
+            dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn));
+        }
+        dwQueryEntity.setDimensionKey(dwQuery.getDimensionKey());
+        dwQueryEntity.setFactKey(dwQuery.getFactKey());
         return dwQueryEntity;
     }
 
@@ -225,6 +233,13 @@ public class XmlIndicatorParser {
             factEntities.add(prepareFact(fact));
         }
         return factEntities;
+    }
+
+    private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn) {
+        SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
+        selectColumnEntity.setFunctionName(selectColumn.getAggregation());
+        selectColumnEntity.setName(selectColumn.getFieldName());
+        return selectColumnEntity;
     }
 
     private FactEntity prepareFact(Fact fact) {
@@ -239,6 +254,14 @@ public class XmlIndicatorParser {
         simpleDwQueryEntity.setTableName(fact.getName());
         if (fact.getWhereGroup() != null) {
             simpleDwQueryEntity.setWhereGroup(prepareWhereGroup(fact.getWhereGroup()));
+        }
+        simpleDwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
+        for (SelectColumn selectColumn: fact.getSelectColumns()) {
+            SelectColumnEntity col = prepareSelectColumn(selectColumn);
+            if (StringUtils.isEmpty(col.getTableName())) {
+                col.setTableName(fact.getName());
+            }
+            simpleDwQueryEntity.getSelectColumns().add(col);
         }
         simpleDwQueryEntity.setGroupedBy(prepareGroupedBy(fact));
         return simpleDwQueryEntity;
@@ -266,7 +289,7 @@ public class XmlIndicatorParser {
 
     private GroupedByEntity prepareGroupedBy(Fact fact) {
         GroupedByEntity groupedByEntity = new GroupedByEntity();
-        groupedByEntity.setFieldName(fact.getName()); //TODO: what field name? fact's one?
+        groupedByEntity.setFieldName(fact.getGroupedBy().getGroupBy());
         groupedByEntity.setHaving(prepareHaving(fact));
         groupedByEntity.setTableName(fact.getName());
         return groupedByEntity;
@@ -277,8 +300,9 @@ public class XmlIndicatorParser {
         having.setOperator(fact.getGroupedBy().getComparisonSymbol());
         having.setValue(fact.getGroupedBy().getValue());
         SelectColumnEntity selectCol = new SelectColumnEntity();
-        selectCol.setFunctionName("count");
+        selectCol.setFunctionName("Count");
         selectCol.setName("*");
+        selectCol.setTableName(fact.getName());
         having.setSelectColumnEntity(selectCol);
         return having;
     }

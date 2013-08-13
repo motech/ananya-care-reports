@@ -1,0 +1,171 @@
+package org.motechproject.carereporting.indicator;
+
+import org.apache.commons.lang.StringUtils;
+import org.dwQueryBuilder.builders.ComplexDwQueryBuilder;
+import org.dwQueryBuilder.builders.DwQueryCombinationBuilder;
+import org.dwQueryBuilder.builders.FactBuilder;
+import org.dwQueryBuilder.builders.GroupByConditionBuilder;
+import org.dwQueryBuilder.builders.HavingConditionBuilder;
+import org.dwQueryBuilder.builders.SelectColumnBuilder;
+import org.dwQueryBuilder.builders.SimpleDwQueryBuilder;
+import org.dwQueryBuilder.builders.WhereConditionBuilder;
+import org.dwQueryBuilder.builders.WhereConditionGroupBuilder;
+import org.dwQueryBuilder.data.GroupBy;
+import org.dwQueryBuilder.data.enums.CombineType;
+import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
+import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
+import org.dwQueryBuilder.data.queries.ComplexDwQuery;
+import org.dwQueryBuilder.data.queries.DwQuery;
+import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.motechproject.carereporting.domain.CombinationEntity;
+import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
+import org.motechproject.carereporting.domain.ConditionEntity;
+import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.FactEntity;
+import org.motechproject.carereporting.domain.GroupedByEntity;
+import org.motechproject.carereporting.domain.HavingEntity;
+import org.motechproject.carereporting.domain.SelectColumnEntity;
+import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
+import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
+import org.motechproject.carereporting.domain.WhereGroupEntity;
+
+public class DwQueryHelper {
+
+    private static final int SECONDS_PER_DAY = 86_400;
+
+    public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity) {
+        if (dwQueryEntity instanceof ComplexDwQueryEntity) {
+            return buildComplexDwQuery((ComplexDwQueryEntity) dwQueryEntity);
+        } else {
+            return buildSimpleDwQuery((SimpleDwQueryEntity) dwQueryEntity);
+        }
+    }
+
+    private SimpleDwQuery buildSimpleDwQuery(SimpleDwQueryEntity simpleDwQueryEntity) {
+        SimpleDwQueryBuilder dwQueryBuilder = new SimpleDwQueryBuilder();
+        if (simpleDwQueryEntity.getCombination() != null) {
+            dwQueryBuilder.withCombination(prepareCombination(simpleDwQueryEntity.getCombination()));
+        }
+        if (simpleDwQueryEntity.getGroupedBy() != null) {
+            dwQueryBuilder.withGroupBy(prepareGroupBy(simpleDwQueryEntity.getGroupedBy()));
+        }
+        for (SelectColumnEntity selectColumn: simpleDwQueryEntity.getSelectColumns()) {
+            dwQueryBuilder.withSelectColumn(prepareSelectColumn(selectColumn));
+        }
+        dwQueryBuilder.withTableName(simpleDwQueryEntity.getTableName());
+        if (simpleDwQueryEntity.getWhereGroup() != null) {
+            dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(simpleDwQueryEntity.getWhereGroup()));
+        }
+        return dwQueryBuilder.build();
+    }
+
+    private ComplexDwQuery buildComplexDwQuery(ComplexDwQueryEntity complexDwQueryEntity) {
+        ComplexDwQueryBuilder dwQueryBuilder = new ComplexDwQueryBuilder();
+
+        for (FactEntity fact: complexDwQueryEntity.getFacts()) {
+            dwQueryBuilder.withFact(buildFact(fact));
+        }
+        dwQueryBuilder.withDimension(complexDwQueryEntity.getDimension());
+        if (complexDwQueryEntity.getGroupedBy() != null) {
+            dwQueryBuilder.withGroupBy(prepareGroupBy(complexDwQueryEntity.getGroupedBy()));
+        }
+        if (complexDwQueryEntity.getCombination() != null) {
+            dwQueryBuilder.withCombination(prepareCombination(complexDwQueryEntity.getCombination()));
+        }
+        for (SelectColumnEntity selectColumn: complexDwQueryEntity.getSelectColumns()) {
+            dwQueryBuilder.withSelectColumn(prepareSelectColumn(selectColumn));
+        }
+        if (complexDwQueryEntity.getWhereGroup() != null) {
+            dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(complexDwQueryEntity.getWhereGroup()));
+        }
+        dwQueryBuilder.withKeys(complexDwQueryEntity.getDimensionKey(), complexDwQueryEntity.getFactKey());
+        return dwQueryBuilder.build();
+    }
+
+    private FactBuilder buildFact(FactEntity fact) {
+        FactBuilder builder = new FactBuilder()
+                .withTable(buildSimpleDwQuery(fact.getTable()));
+        if (fact.getCombineType() != null) {
+            builder.withCombineType(CombineType.valueOf(fact.getCombineType()));
+        }
+        return builder;
+    }
+
+    private GroupBy prepareGroupBy(GroupedByEntity groupByEntity) {
+        return new GroupByConditionBuilder()
+                .withField(groupByEntity.getTableName(), groupByEntity.getFieldName())
+                .withHaving(prepareHaving(groupByEntity.getHaving()))
+                .build();
+    }
+
+    private HavingConditionBuilder prepareHaving(HavingEntity havingEntity) {
+        return new HavingConditionBuilder()
+                .withComparison(OperatorType.fromSymbol(havingEntity.getOperator()), havingEntity.getValue())
+                .withSelectColumn(prepareSelectColumn(havingEntity.getSelectColumnEntity()));
+    }
+
+    private SelectColumnBuilder prepareSelectColumn(SelectColumnEntity selectColumnEntity) {
+        SelectColumnBuilder builder = new SelectColumnBuilder()
+                .withField(
+                        selectColumnEntity.getTableName(),
+                        selectColumnEntity.getName());
+        if (StringUtils.isNotEmpty(selectColumnEntity.getFunctionName())) {
+            builder.withFunction(
+                    SelectColumnFunctionType.valueOf(selectColumnEntity.getFunctionName()));
+        }
+        return builder;
+    }
+
+    private DwQueryCombinationBuilder prepareCombination(CombinationEntity combinationEntity) {
+        return new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.valueOf(combinationEntity.getType()))
+                .withDwQuery(buildDwQuery(combinationEntity.getDwQuery()))
+                .withKeys(combinationEntity.getForeignKey(), combinationEntity.getReferencedKey());
+    }
+
+    private WhereConditionGroupBuilder prepareWhereConditionGroup(WhereGroupEntity whereGroupEntity) {
+        WhereConditionGroupBuilder builder = new WhereConditionGroupBuilder();
+        for (WhereGroupEntity nestedGroup: whereGroupEntity.getWhereGroups()) {
+            builder.withGroup(prepareWhereConditionGroup(nestedGroup));
+        }
+        for (ConditionEntity condition: whereGroupEntity.getConditions()) {
+            builder.withCondition(prepareCondition(condition));
+        }
+        if (whereGroupEntity.getOperator() != null) {
+            builder.withJoinType(WhereConditionJoinType.valueOf(whereGroupEntity.getOperator()));
+        }
+        return builder;
+    }
+
+    private WhereConditionBuilder prepareCondition(ConditionEntity condition) {
+        if (condition instanceof ValueComparisonConditionEntity) {
+            return prepareValueComparisonCondition((ValueComparisonConditionEntity) condition);
+        } else if (condition instanceof DateDiffComparisonConditionEntity) {
+            return prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition);
+        }
+        throw new IllegalArgumentException("Condition type not supported.");
+    }
+
+    private WhereConditionBuilder prepareValueComparisonCondition(ValueComparisonConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withValueComparison(
+                        condition.getField1().getForm().getTableName(),
+                        condition.getField1().getName(),
+                        OperatorType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        condition.getValue());
+    }
+
+    private WhereConditionBuilder prepareDateDiffComparisonCondition(DateDiffComparisonConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateDiffComparison(
+                        condition.getField1().getForm().getTableName(),
+                        condition.getField1().getName(),
+                        OperatorType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        condition.getField2().getForm().getTableName(),
+                        condition.getField2().getName(),
+                        SECONDS_PER_DAY * condition.getValue());
+    }
+
+}
