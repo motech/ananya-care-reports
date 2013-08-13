@@ -1,23 +1,32 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.dwQueryBuilder.builders.QueryBuilder;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.jooq.SQLDialect;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
+import org.motechproject.carereporting.domain.SelectColumnEntity;
+import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
+import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
@@ -25,10 +34,16 @@ import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -46,6 +61,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
+    private static final SQLDialect SQL_DIALECT = SQLDialect.POSTGRES;
+    private static final String WILDCARD = "*";
+
+    @Value("${care.jdbc.schema}")
+    private String schemaName;
+
+    @Resource(name = "careDataSource")
+    private DataSource careDataSource;
 
     @Autowired
     private IndicatorDao indicatorDao;
@@ -368,6 +391,74 @@ public class IndicatorServiceImpl implements IndicatorService {
             areasTrends.put(area, trend);
         }
         return areasTrends;
+    }
+
+    @Override
+    public byte[] getCaseListReportAsCsv(Integer indicatorId) {
+        List<Byte> csvBytes = new ArrayList<>();
+
+        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorId);
+        DwQueryEntity denominator = indicatorEntity.getDenominator();
+        DwQueryHelper dwQueryHelper = new DwQueryHelper();
+
+        changeSelectColumnsRecursive(denominator);
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
+                schemaName, dwQueryHelper.buildDwQuery(denominator), false);
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
+        List<Map<String, Object>> rowMap = jdbcTemplate.queryForList(sqlString);
+        if (rowMap.size() > 0) {
+            for (Map<String, Object> row : rowMap) {
+                constructCsvRow(row, csvBytes);
+            }
+        }
+
+        return ArrayUtils.toPrimitive(csvBytes.toArray(new Byte[] {}));
+    }
+
+    private void changeSelectColumnsRecursive(DwQueryEntity dwQueryEntity) {
+        String tableName = null;
+        if (dwQueryEntity instanceof SimpleDwQueryEntity) {
+            tableName = ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
+        } else if (dwQueryEntity instanceof ComplexDwQueryEntity) {
+            tableName = ((ComplexDwQueryEntity) dwQueryEntity).getDimension();
+        }
+
+        SelectColumnEntity wildCardEntity = new SelectColumnEntity();
+        wildCardEntity.setTableName(tableName);
+        wildCardEntity.setName(WILDCARD);
+
+        dwQueryEntity.getSelectColumns().clear();
+        dwQueryEntity.getSelectColumns().add(wildCardEntity);
+
+        if (dwQueryEntity.getCombination() != null) {
+            changeSelectColumnsRecursive(dwQueryEntity.getCombination().getDwQuery());
+        }
+    }
+
+    private void constructCsvRow(Map<String, Object> row, List<Byte> csvRows) {
+
+        Set<String> headers = new LinkedHashSet<>();
+        List<Object> values = new ArrayList<>();
+
+        for (Map.Entry<String, Object> entry : row.entrySet()) {
+            if (csvRows.isEmpty()) {
+                headers.add(entry.getKey());
+            }
+            values.add(entry.getValue());
+        }
+
+        if (csvRows.isEmpty()) {
+            String headersRow = StringUtils.join(headers, ",");
+            headersRow += '\n';
+            csvRows.addAll(CollectionUtils.arrayToList(ArrayUtils.toObject(
+                    headersRow.getBytes(Charset.defaultCharset()))));
+        }
+
+        String valuesRow = StringUtils.join(values, ",");
+        valuesRow += '\n';
+        csvRows.addAll(CollectionUtils.arrayToList(ArrayUtils.toObject(
+                valuesRow.getBytes(Charset.defaultCharset()))));
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {

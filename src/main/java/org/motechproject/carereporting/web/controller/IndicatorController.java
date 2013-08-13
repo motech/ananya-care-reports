@@ -14,8 +14,10 @@ import org.motechproject.carereporting.xml.XmlIndicatorParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -208,6 +212,21 @@ public class IndicatorController extends BaseController {
             LOG.warn("", e);
             throw e;
         }
+    }
+
+    @RequestMapping(value = "{indicatorId}/export/caselistreport", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> exportCaseListReport(@PathVariable Integer indicatorId) {
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
+        String filename = "indicator_" + indicatorId + "_" + simpleDateFormat.format(new Date()) + ".csv";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", filename);
+
+        return new ResponseEntity<>(indicatorService.getCaseListReportAsCsv(indicatorId),
+                headers, HttpStatus.OK);
     }
 
 }
