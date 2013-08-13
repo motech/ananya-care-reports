@@ -86,8 +86,8 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testGetFrequencyById() {
-        Integer id = 6;
-        String name = "undefined";
+        Integer id = 1;
+        String name = "yearly";
         FrequencyEntity frequencyEntity = cronService.getFrequencyById(id);
 
         assertEquals(name, frequencyEntity.getFrequencyName());

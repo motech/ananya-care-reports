@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.CronTaskEntity;
-import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -9,7 +8,6 @@ import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
-import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.xml.XmlIndicatorParser;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -39,13 +36,8 @@ public class IndicatorController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndicatorController.class);
 
-    private static final String UNDEFINED = "undefined";
-
     @Autowired
     private IndicatorService indicatorService;
-
-    @Autowired
-    private IndicatorValueCalculator indicatorValueCalculator;
 
     @Autowired
     private CronService cronService;
@@ -179,13 +171,6 @@ public class IndicatorController extends BaseController {
         IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 
         indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
-    }
-
-    @RequestMapping(value = "/calculator/recalculate", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public void recalculateAllIndicatorValues() {
-        FrequencyEntity frequencyEntity = cronService.getFrequencyByName(UNDEFINED);
-        indicatorValueCalculator.calculateIndicatorValues(frequencyEntity, new Date());
     }
 
     @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET)

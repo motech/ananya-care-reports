@@ -70,7 +70,6 @@
                         <li class="dropdown-submenu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#/indicators/recalculate"><i class="icon-calculator"></i> {{msg('menu.recalculate')}}</a></li>
                                     <li><a href="" ng-click="launchFrequencyDialog()"><i class="icon-time"></i> {{msg('menu.calculator.frequency')}}</a></li>
                                 </ul>
                         </li>
@@ -90,8 +89,8 @@
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                      <li><a href="#/admin/computed-fields">{{msg('menu.admin.computedFields')}}</a></li>
-                      <li><a href="#/forms">{{msg('menu.forms')}}</a></li>
+                      <li><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
+                      <li><a href="#/forms"><i class="icon-briefcase"></i> {{msg('menu.forms')}}</a></li>
                       <li class="dropdown-submenu">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
                           <ul class="dropdown-menu">

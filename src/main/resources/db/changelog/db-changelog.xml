@@ -720,4 +720,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #37.3" author="Adrian Boguszewski">
+        <delete tableName="frequency" schemaName="dashboard_app">
+            <where>frequency_name = 'undefined'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>
