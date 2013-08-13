@@ -5,11 +5,11 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 @XmlEnum
 public enum Frequency {
-    @XmlEnumValue("Daily") DAILY(1),
-    @XmlEnumValue("Weekly") WEEKLY(7),
-    @XmlEnumValue("Monthly") MONTHLY(30),
-    @XmlEnumValue("Quarterly") QUARTERLY(90),
-    @XmlEnumValue("Yearly") YEARLY(360);
+    @XmlEnumValue("Daily") DAILY(5),
+    @XmlEnumValue("Weekly") WEEKLY(4),
+    @XmlEnumValue("Monthly") MONTHLY(3),
+    @XmlEnumValue("Quarterly") QUARTERLY(2),
+    @XmlEnumValue("Yearly") YEARLY(1);
 
     private int value;
 

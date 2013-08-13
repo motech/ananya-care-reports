@@ -11,6 +11,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -33,7 +35,7 @@ public class IndicatorValueCalculator {
     private String schemaName;
 
     @Resource(name = "careDataSource")
-    private javax.sql.DataSource careDataSource;
+    private DataSource careDataSource;
 
     @Autowired
     private IndicatorService indicatorService;
@@ -44,11 +46,11 @@ public class IndicatorValueCalculator {
     private DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
     @Transactional(readOnly = false)
-    public void calculateIndicatorValues(FrequencyEntity frequency) {
-        LOG.info("Running indicator values calculation.");
+    public void calculateIndicatorValues(FrequencyEntity frequency, Date date) {
+        LOG.info("Running indicator values calculation for " + frequency.getFrequencyName() + " frequency.");
         int totalIndicatorValuesCalculated = 0;
         for (IndicatorEntity indicator: indicatorService.getAllIndicators()) {
-            calculateAndPersistIndicatorValue(indicator, frequency);
+            calculateAndPersistIndicatorValue(indicator, frequency, date);
             ++totalIndicatorValuesCalculated;
             LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
         }
@@ -56,11 +58,12 @@ public class IndicatorValueCalculator {
                 + totalIndicatorValuesCalculated + "].");
     }
 
-    private void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency) {
-        for (AreaEntity area: areaService.getAllAreas()) {
-            IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area);
+    private void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date date) {
+        Date[] dates = DateResolver.resolveDates(frequency, date);
+        for (AreaEntity area : areaService.getAllAreas()) {
+            IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area, dates);
             value.setArea(area);
-            value.setDate(new Date());
+            value.setDate(date);
             value.setFrequency(frequency);
             value.setIndicator(indicator);
             persistIndicatorValue(value);
@@ -68,16 +71,17 @@ public class IndicatorValueCalculator {
     }
 
     private IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator,
-                                                                AreaEntity area) {
-        BigDecimal denominatorValue = calculateDwQueryValue(indicator.getDenominator(), area);
+                                                                AreaEntity area, Date[] dates) {
+        BigDecimal denominatorValue = calculateDwQueryValue(indicator.getDenominator(), area, dates);
         BigDecimal numeratorValue = indicator.getNumerator() != null
-                ? calculateDwQueryValue(indicator.getNumerator(), area)
+                ? calculateDwQueryValue(indicator.getNumerator(), area, dates)
                 : null;
         return prepareIndicatorValueEntity(denominatorValue, numeratorValue);
     }
 
+    // TODO: Add possibility to compute value for area and between dates[0] and dates[1], where dates[0] is earlier than dates[1]
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area) {
+    private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area, Date[] date) {
         DwQuery query = dwQueryHelper.buildDwQuery(dwQueryEntity);
         String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
                 schemaName, query, false);
