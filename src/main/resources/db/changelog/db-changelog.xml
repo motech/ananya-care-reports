@@ -726,4 +726,24 @@
         </delete>
     </changeSet>
 
+    <changeSet id="CARE #57 (5)" author="Łukasz Gąsior">
+        <sql>
+            ALTER TABLE dashboard_app.dw_query ADD COLUMN has_period_condition boolean;
+
+            CREATE TABLE dashboard_app.period_comparison (
+                period_comparison_id serial not null,
+                condition_id integer not null,
+                column_name varchar not null,
+                start_offset integer not null,
+                table_name varchar,
+                constraint period_comparison_pk primary key (period_comparison_id),
+                constraint period_comparison_condition_id foreign key (condition_id)
+                references dashboard_app.condition (condition_id) match full
+                on delete cascade on update cascade not deferrable);
+
+            ALTER TABLE dashboard_app.condition ALTER COLUMN field_1_id DROP NOT NULL;
+            ALTER TABLE dashboard_app.condition ALTER COLUMN comparison_symbol_id DROP NOT NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

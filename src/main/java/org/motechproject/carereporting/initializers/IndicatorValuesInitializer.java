@@ -51,7 +51,7 @@ public class IndicatorValuesInitializer implements Runnable {
 
             while (date.before(endDate)) {
                 Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
-                indicatorValueCalculator.calculateAndPersistIndicatorValue(indicatorEntity, frequencyEntity, dates);
+                indicatorValueCalculator.calculateAndPersistIndicatorValue(indicatorEntity, frequencyEntity, dates[0], dates[1]);
                 date = dates[1];
             }
         }

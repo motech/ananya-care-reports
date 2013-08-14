@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.xml.mapping;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "where-condition")
@@ -15,6 +16,12 @@ public class WhereCondition {
     private String operator;
 
     private String value;
+
+    private String columnName;
+
+    private Integer offset;
+
+    private String tableName;
 
     @XmlAttribute
     public WhereConditionType getType() {
@@ -55,5 +62,31 @@ public class WhereCondition {
 
     public void setSecondField(String secondField) {
         this.secondField = secondField;
+    }
+
+    @XmlElement(name = "column-name")
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    @XmlElement(name = "table-name")
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

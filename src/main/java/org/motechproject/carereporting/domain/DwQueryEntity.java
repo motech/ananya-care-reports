@@ -39,6 +39,9 @@ public class DwQueryEntity extends AbstractEntity {
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 
+    @Column(name = "has_period_condition")
+    private boolean hasPeriodCondition;
+
     public Set<SelectColumnEntity> getSelectColumns() {
         return selectColumns;
     }
@@ -69,5 +72,13 @@ public class DwQueryEntity extends AbstractEntity {
 
     public void setWhereGroup(WhereGroupEntity whereGroup) {
         this.whereGroup = whereGroup;
+    }
+
+    public boolean getHasPeriodCondition() {
+        return hasPeriodCondition;
+    }
+
+    public void setHasPeriodCondition(boolean hasPeriodCondition) {
+        this.hasPeriodCondition = hasPeriodCondition;
     }
 }

@@ -1,11 +1,14 @@
 package org.motechproject.carereporting.indicator;
 
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
@@ -21,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 
 @Component
 @Transactional
@@ -45,14 +51,15 @@ public class IndicatorValueCalculator {
 
     private DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
-    // TODO: remove info
     @Transactional(readOnly = false)
     public void calculateIndicatorValues(FrequencyEntity frequency, Date date) {
         LOG.info("Running indicator values calculation for " + frequency.getFrequencyName() + " frequency.");
         int totalIndicatorValuesCalculated = 0;
         Date[] dates = DateResolver.resolveDates(frequency, date);
+        Date from = dates[0];
+        Date to = dates[1];
         for (IndicatorEntity indicator: indicatorService.getAllIndicators()) {
-            calculateAndPersistIndicatorValue(indicator, frequency, dates);
+            calculateAndPersistIndicatorValue(indicator, frequency, from, to);
             ++totalIndicatorValuesCalculated;
             LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
         }
@@ -60,11 +67,11 @@ public class IndicatorValueCalculator {
                 + totalIndicatorValuesCalculated + "].");
     }
 
-    public void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date[] dates) {
+    public void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {
         for (AreaEntity area : areaService.getAllAreas()) {
-            IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area, dates);
+            IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area, from, to);
             value.setArea(area);
-            value.setDate(dates[0]);
+            value.setDate(from);
             value.setFrequency(frequency);
             value.setIndicator(indicator);
             persistIndicatorValue(value);
@@ -72,23 +79,60 @@ public class IndicatorValueCalculator {
     }
 
     private IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator,
-                                                                AreaEntity area, Date[] dates) {
-        BigDecimal denominatorValue = calculateDwQueryValue(indicator.getDenominator(), area, dates);
+                                                                AreaEntity area, Date from, Date to) {
+        BigDecimal denominatorValue = calculateDwQueryValue(indicator.getDenominator(), area, from, to);
         BigDecimal numeratorValue = indicator.getNumerator() != null
-                ? calculateDwQueryValue(indicator.getNumerator(), area, dates)
+                ? calculateDwQueryValue(indicator.getNumerator(), area, from, to)
                 : null;
         return prepareIndicatorValueEntity(denominatorValue, numeratorValue);
     }
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area, Date[] date) {
-        DwQuery query = dwQueryHelper.buildDwQuery(dwQueryEntity);
+    private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area, Date from, Date to) {
+        DwQuery query = dwQueryHelper.buildDwQuery(dwQueryEntity, area);
         String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
                 schemaName, query, false);
+        if (shouldBindDatesTo(dwQueryEntity)) {
+            sqlQuery = formatFromDateAndToDate(sqlQuery, from, to);
+        }
         return executeQuery(sqlQuery);
     }
 
+    private String formatFromDateAndToDate(String query, Date from, Date to) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Map<String, String> params = new HashMap<>();
+        params.put("fromDate", dateFormat.format(from));
+        params.put("toDate", dateFormat.format(to));
+        return formatNamesParams(query, params);
+    }
+
+    private String formatNamesParams(String strToFormat, Map<String, String> params) {
+        StrSubstitutor sub = new StrSubstitutor(params, "%(", ")");
+        return sub.replace(strToFormat);
+    }
+
+    private boolean shouldBindDatesTo(DwQueryEntity dwQueryEntity) {
+        return dwQueryEntity.getHasPeriodCondition()
+                || shouldBindToCombination(dwQueryEntity)
+                || shouldBindToOneOfFacts(dwQueryEntity);
+    }
+
+    private boolean shouldBindToCombination(DwQueryEntity dwQueryEntity) {
+        return (dwQueryEntity.getCombination() != null && shouldBindDatesTo(dwQueryEntity.getCombination().getDwQuery()));
+    }
+
+    private boolean shouldBindToOneOfFacts(DwQueryEntity dwQueryEntity) {
+        if (dwQueryEntity instanceof ComplexDwQueryEntity) {
+            for (FactEntity fact: ((ComplexDwQueryEntity) dwQueryEntity).getFacts()) {
+                if (shouldBindDatesTo(fact.getTable())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private BigDecimal executeQuery(String query) {
+        LOG.info("Executing query: " + query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         return jdbcTemplate.queryForObject(query, BigDecimal.class);
     }

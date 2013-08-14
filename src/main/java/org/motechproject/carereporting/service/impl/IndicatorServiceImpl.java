@@ -410,7 +410,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         changeSelectColumnsRecursive(denominator);
         String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
-                schemaName, dwQueryHelper.buildDwQuery(denominator), false);
+                schemaName, dwQueryHelper.buildDwQuery(denominator, null), false);
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));

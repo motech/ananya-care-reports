@@ -22,6 +22,7 @@ import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
@@ -174,6 +175,9 @@ public class XmlIndicatorParser {
             case FIELD_COMPARISON:
                 conditionEntity = createFieldComparisonCondition(condition);
                 break;
+            case PERIOD:
+                conditionEntity = createPeriodCondition(condition);
+                break;
             case DATE_WITH_OFFSET_DIFF:
             case DATE_RANGE:
             case ENUM_RANGE:
@@ -203,6 +207,14 @@ public class XmlIndicatorParser {
         return fieldComparisonConditionEntity;
     }
 
+    private ConditionEntity createPeriodCondition(WhereCondition condition) {
+        PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
+        periodConditionEntity.setColumnName(condition.getColumnName());
+        periodConditionEntity.setOffset(condition.getOffset());
+        periodConditionEntity.setTableName(condition.getTableName());
+        return periodConditionEntity;
+    }
+
     private DwQueryEntity prepareNumerator(Numerator numerator) {
         if (numerator.getIndicatorId() != null) {
             return indicatorDao.getByIdWithFields(numerator.getIndicatorId(), "denominator").getDenominator();
@@ -216,7 +228,9 @@ public class XmlIndicatorParser {
         dwQueryEntity.setDimension(dwQuery.getDimension().getName());
         dwQueryEntity.setFacts(prepareFacts(dwQuery.getFacts()));
         if (dwQuery.getWhereGroup() != null) {
-            dwQueryEntity.setWhereGroup(prepareWhereGroup(dwQuery.getWhereGroup()));
+            WhereGroupEntity whereGroup = prepareWhereGroup(dwQuery.getWhereGroup());
+            dwQueryEntity.setWhereGroup(whereGroup);
+            dwQueryEntity.setHasPeriodCondition(hasPeriodCondition(whereGroup));
         }
         dwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
@@ -225,6 +239,20 @@ public class XmlIndicatorParser {
         dwQueryEntity.setDimensionKey(dwQuery.getDimensionKey());
         dwQueryEntity.setFactKey(dwQuery.getFactKey());
         return dwQueryEntity;
+    }
+
+    private boolean hasPeriodCondition(WhereGroupEntity whereGroup) {
+        for (ConditionEntity condition: whereGroup.getConditions()) {
+            if (condition instanceof PeriodConditionEntity) {
+                return true;
+            }
+        }
+        for (WhereGroupEntity whereGroupEntity: whereGroup.getWhereGroups()) {
+            if (hasPeriodCondition(whereGroupEntity)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<FactEntity> prepareFacts(List<Fact> facts) {
@@ -253,7 +281,9 @@ public class XmlIndicatorParser {
         SimpleDwQueryEntity simpleDwQueryEntity = new SimpleDwQueryEntity();
         simpleDwQueryEntity.setTableName(fact.getName());
         if (fact.getWhereGroup() != null) {
-            simpleDwQueryEntity.setWhereGroup(prepareWhereGroup(fact.getWhereGroup()));
+            WhereGroupEntity whereGroup = prepareWhereGroup(fact.getWhereGroup());
+            simpleDwQueryEntity.setWhereGroup(whereGroup);
+            simpleDwQueryEntity.setHasPeriodCondition(hasPeriodCondition(whereGroup));
         }
         simpleDwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: fact.getSelectColumns()) {

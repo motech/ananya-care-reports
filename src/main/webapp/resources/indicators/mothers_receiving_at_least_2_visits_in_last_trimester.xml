@@ -33,6 +33,13 @@
                     <groupedByDimensionFactRowsNumber compSymbol=">=" value="2" groupBy="case_id" />
                 </fact>
             </facts>
+            <where-group>
+                <where-condition type="period">
+                    <table-name>mother_case</table-name>
+                    <column-name>add</column-name>
+                    <offset>90</offset>
+                </where-condition>
+            </where-group>
         </dw-query>
     </denominator>
 </indicator>

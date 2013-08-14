@@ -12,5 +12,6 @@ public enum WhereConditionType {
     @XmlEnumValue("fieldComparison") FIELD_COMPARISON,
     @XmlEnumValue("dateWithOffsetDiff") DATE_WITH_OFFSET_DIFF,
     @XmlEnumValue("dateRange") DATE_RANGE,
-    @XmlEnumValue("enumRange") ENUM_RANGE
+    @XmlEnumValue("enumRange") ENUM_RANGE,
+    @XmlEnumValue("period") PERIOD
 }

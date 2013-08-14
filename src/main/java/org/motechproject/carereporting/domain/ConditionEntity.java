@@ -15,7 +15,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "condition")
@@ -31,7 +30,6 @@ import javax.validation.constraints.NotNull;
 })
 public abstract class ConditionEntity extends AbstractEntity {
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })

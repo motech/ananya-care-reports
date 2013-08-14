@@ -11,6 +11,7 @@ import org.dwQueryBuilder.builders.SimpleDwQueryBuilder;
 import org.dwQueryBuilder.builders.WhereConditionBuilder;
 import org.dwQueryBuilder.builders.WhereConditionGroupBuilder;
 import org.dwQueryBuilder.data.GroupBy;
+import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
@@ -18,6 +19,7 @@ import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
@@ -26,6 +28,7 @@ import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
+import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
@@ -35,7 +38,13 @@ public class DwQueryHelper {
 
     private static final int SECONDS_PER_DAY = 86_400;
 
-    public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity) {
+    public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
+        DwQuery dwQuery = buildDwQuery(dwQueryEntity);
+        addAreaWhereCondition(dwQuery, area);
+        return dwQuery;
+    }
+
+    private DwQuery buildDwQuery(DwQueryEntity dwQueryEntity) {
         if (dwQueryEntity instanceof ComplexDwQueryEntity) {
             return buildComplexDwQuery((ComplexDwQueryEntity) dwQueryEntity);
         } else {
@@ -131,7 +140,7 @@ public class DwQueryHelper {
             builder.withGroup(prepareWhereConditionGroup(nestedGroup));
         }
         for (ConditionEntity condition: whereGroupEntity.getConditions()) {
-            builder.withCondition(prepareCondition(condition));
+            addCondition(builder, condition);
         }
         if (whereGroupEntity.getOperator() != null) {
             builder.withJoinType(WhereConditionJoinType.valueOf(whereGroupEntity.getOperator()));
@@ -139,11 +148,17 @@ public class DwQueryHelper {
         return builder;
     }
 
-    private WhereConditionBuilder prepareCondition(ConditionEntity condition) {
+    private void addCondition(WhereConditionGroupBuilder builder, ConditionEntity condition) {
         if (condition instanceof ValueComparisonConditionEntity) {
-            return prepareValueComparisonCondition((ValueComparisonConditionEntity) condition);
+            builder.withCondition(prepareValueComparisonCondition((ValueComparisonConditionEntity) condition));
+            return;
         } else if (condition instanceof DateDiffComparisonConditionEntity) {
-            return prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition);
+            builder.withCondition(prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition));
+            return;
+        } else if (condition instanceof PeriodConditionEntity) {
+            builder.withCondition(preparePeriodConditionWithOffset((PeriodConditionEntity) condition));
+            builder.withCondition(preparePeriodCondition((PeriodConditionEntity) condition));
+            return;
         }
         throw new IllegalArgumentException("Condition type not supported.");
     }
@@ -168,4 +183,34 @@ public class DwQueryHelper {
                         SECONDS_PER_DAY * condition.getValue());
     }
 
+    private WhereConditionBuilder preparePeriodConditionWithOffset(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        condition.getTableName(),
+                        condition.getColumnName(),
+                        OperatorType.GreaterEqual,
+                        "%(fromDate)",
+                        condition.getOffset());
+    }
+
+    private WhereConditionBuilder preparePeriodCondition(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        condition.getTableName(),
+                        condition.getColumnName(),
+                        OperatorType.LessEqual,
+                        "%(toDate)");
+    }
+
+    @SuppressWarnings("PMD.UnusedFormalParameter")
+    private void addAreaWhereCondition(DwQuery dwQuery, AreaEntity area) {
+        //dwQuery.getWhereConditionGroup().addCondition(prepareAreaWhereCondition(area));
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
+        return new WhereConditionBuilder()
+                .withValueComparison("flw", "state", OperatorType.Equal, area.getName())
+                .build();
+    }
 }
