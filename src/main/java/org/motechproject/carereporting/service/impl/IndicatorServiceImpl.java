@@ -352,10 +352,16 @@ public class IndicatorServiceImpl implements IndicatorService {
         } else {
             area = user.getArea();
         }
+        Set<AreaEntity> childAreas = getAllChildEntities(area);
+
         for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
             TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
+                if (!childAreas.contains(indicator.getArea())) {
+                    continue;
+                }
+
                 if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
                             getTrendForIndicator(area, indicator, startDate, endDate));

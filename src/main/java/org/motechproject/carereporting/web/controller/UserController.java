@@ -56,6 +56,16 @@ public class UserController extends BaseController {
                 indicatorService.getAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
     }
 
+    @RequestMapping(value = "/logged_in/area", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getCurrentlyLoggedInUserArea() {
+        AreaEntity areaEntity = userService.getCurrentlyLoggedUser().getArea();
+
+        return this.writeAsString(BaseView.class, areaEntity);
+    }
+
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

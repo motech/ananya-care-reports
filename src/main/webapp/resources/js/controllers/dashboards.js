@@ -113,9 +113,33 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         }
     };
 
+    $scope.fetchTrendAreas = function(area) {
+        $http.get('api/dashboards/user-areas/' + area.id)
+            .success(function(areas) {
+               areas.sort(function(a, b) {
+                   return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
+               });
+               var arr = Array();
+
+               for (var index=0; index<areas.length; index++) {
+                   arr.push(areas[index]);
+               }
+               $scope.areas = arr;
+               $scope.areaId = areas[0].id;
+        });
+    };
+
+    $scope.fetchCurrentUserAreas = function() {
+        $http.get('api/users/logged_in/area')
+            .success(function(areaId) {
+                $scope.fetchTrendAreas(areaId);
+            });
+    };
+    $scope.fetchCurrentUserAreas();
+
     $scope.fetchAreas = function(report) {
         $http.get('api/dashboards/user-areas/' + report.indicatorAreaId)
-          .success(function(areas) {
+            .success(function(areas) {
                areas.sort(function(a, b) {
                    return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
                });
@@ -165,7 +189,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if (endDate == undefined) {
             endDate = $scope.endDate;
         }
-        url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") + '&endDate=' + moment(endDate).format("DD/MM/YYYY");
+        url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") + '&endDate=' + moment(endDate).format("DD/MM/YYYY") + '&areaId=' + $scope.areaId;
         $http.get(url)
                 .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;

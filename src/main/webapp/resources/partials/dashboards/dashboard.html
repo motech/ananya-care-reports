@@ -21,6 +21,12 @@
                     <input class="span2" size="16" type="text" value="{{endDate}}">
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
+                <div class="pull-right input-prepend">
+                    <select class="pull-right" ng-model="areaId" required>
+                        <option value="{{area.id}}" style="padding-left: {{(area.levelHierarchyDepth) * 15 + 5 }}px" ng-repeat="area in areas">{{area.name}}</option>
+                    </select>
+                    <span class="add-on text-success date-label">{{msg('dashboards.trends.area')}}:</span>
+                </div>
                 <span ng-click="analyze()" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('dashboards.trends.analyze')}}</span>
                 <script>
                     $("#start-date").datepicker();

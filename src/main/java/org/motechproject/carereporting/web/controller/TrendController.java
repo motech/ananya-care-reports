@@ -31,10 +31,13 @@ public class TrendController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getTrends(@RequestParam Date startDate,
-                            @RequestParam Date endDate) {
+                            @RequestParam Date endDate,
+                            @RequestParam(required = false) Integer areaId) {
         UserEntity user = userService.getCurrentlyLoggedUser();
+        Integer trendAreaId = (areaId == null) ? user.getArea().getId() : areaId;
+
         return writeAsString(TrendJsonView.class,
-                indicatorService.getIndicatorsWithTrendsUnderUser(user, startDate, endDate, user.getArea().getId()));
+                indicatorService.getIndicatorsWithTrendsUnderUser(user, startDate, endDate, trendAreaId));
     }
 
 }
