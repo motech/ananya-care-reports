@@ -156,8 +156,13 @@ public class DwQueryHelper {
             builder.withCondition(prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition));
             return;
         } else if (condition instanceof PeriodConditionEntity) {
-            builder.withCondition(preparePeriodConditionWithOffset((PeriodConditionEntity) condition));
-            builder.withCondition(preparePeriodCondition((PeriodConditionEntity) condition));
+            PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
+            if (periodCondition.getOffset() != null) {
+                builder.withCondition(preparePeriodConditionWithOffset(periodCondition));
+                builder.withCondition(preparePeriodCondition(periodCondition));
+            } else {
+                builder.withCondition(prepareDateBetweenCondition(periodCondition));
+            }
             return;
         }
         throw new IllegalArgumentException("Condition type not supported.");
@@ -199,6 +204,15 @@ public class DwQueryHelper {
                         condition.getTableName(),
                         condition.getColumnName(),
                         OperatorType.LessEqual,
+                        "%(toDate)");
+    }
+
+    private WhereConditionBuilder prepareDateBetweenCondition(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateRangeComparison(
+                        condition.getTableName(),
+                        condition.getColumnName(),
+                        "%(fromDate)",
                         "%(toDate)");
     }
 

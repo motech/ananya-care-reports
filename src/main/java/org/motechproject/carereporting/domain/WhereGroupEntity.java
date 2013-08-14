@@ -5,6 +5,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,12 +23,12 @@ public class WhereGroupEntity extends AbstractEntity {
     @Column(name = "operator")
     private String operator;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "where_group_where_group", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "where_group2_id") })
     private Set<WhereGroupEntity> whereGroups;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "where_group_condition", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "condition_id") })
     private Set<ConditionEntity> conditions;

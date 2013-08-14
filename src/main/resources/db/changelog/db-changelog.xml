@@ -746,4 +746,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #57 (6)" author="Łukasz Gąsior">
+        <sql>
+            ALTER TABLE dashboard_app.period_comparison ALTER COLUMN start_offset DROP NOT NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
