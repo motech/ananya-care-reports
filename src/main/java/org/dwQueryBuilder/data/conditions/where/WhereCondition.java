@@ -3,8 +3,8 @@ package org.dwQueryBuilder.data.conditions.where;
 import org.dwQueryBuilder.data.conditions.BaseCondition;
 
 public abstract class WhereCondition extends BaseCondition {
-    protected String table1Name;
-    protected String field1Name;
+    private String table1Name;
+    private String field1Name;
 
     protected WhereCondition() {
         super();

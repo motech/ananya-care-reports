@@ -8,10 +8,10 @@ import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import java.util.Set;
 
 public abstract class DwQuery {
-    protected Set<SelectColumn> selectColumns;
-    protected GroupBy groupBy;
-    protected DwQueryCombination combineWith;
-    protected WhereConditionGroup whereConditionGroup;
+    private Set<SelectColumn> selectColumns;
+    private GroupBy groupBy;
+    private DwQueryCombination combineWith;
+    private WhereConditionGroup whereConditionGroup;
 
     public DwQuery() {
 
