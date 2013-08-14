@@ -218,8 +218,9 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<byte[]> exportCaseListReport(@PathVariable Integer indicatorId) {
 
+        IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
-        String filename = "indicator_" + indicatorId + "_" + simpleDateFormat.format(new Date()) + ".csv";
+        String filename = indicatorEntity.getName() + "_" + simpleDateFormat.format(new Date()) + ".csv";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

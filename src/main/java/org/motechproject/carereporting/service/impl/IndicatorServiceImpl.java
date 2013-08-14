@@ -1,7 +1,5 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -31,6 +29,7 @@ import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
+import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
@@ -39,12 +38,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -59,11 +56,11 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl implements IndicatorService {
 
+    private static final String WILDCARD = "*";
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
     private static final SQLDialect SQL_DIALECT = SQLDialect.POSTGRES;
-    private static final String WILDCARD = "*";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -97,6 +94,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private ExportService csvExportService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -404,8 +404,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public byte[] getCaseListReportAsCsv(Integer indicatorId) {
-        List<Byte> csvBytes = new ArrayList<>();
-
         IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorId);
         DwQueryEntity denominator = indicatorEntity.getDenominator();
         DwQueryHelper dwQueryHelper = new DwQueryHelper();
@@ -415,14 +413,7 @@ public class IndicatorServiceImpl implements IndicatorService {
                 schemaName, dwQueryHelper.buildDwQuery(denominator), false);
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
-        List<Map<String, Object>> rowMap = jdbcTemplate.queryForList(sqlString);
-        if (rowMap.size() > 0) {
-            for (Map<String, Object> row : rowMap) {
-                constructCsvRow(row, csvBytes);
-            }
-        }
-
-        return ArrayUtils.toPrimitive(csvBytes.toArray(new Byte[] {}));
+        return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));
     }
 
     private void changeSelectColumnsRecursive(DwQueryEntity dwQueryEntity) {
@@ -443,31 +434,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         if (dwQueryEntity.getCombination() != null) {
             changeSelectColumnsRecursive(dwQueryEntity.getCombination().getDwQuery());
         }
-    }
-
-    private void constructCsvRow(Map<String, Object> row, List<Byte> csvRows) {
-
-        Set<String> headers = new LinkedHashSet<>();
-        List<Object> values = new ArrayList<>();
-
-        for (Map.Entry<String, Object> entry : row.entrySet()) {
-            if (csvRows.isEmpty()) {
-                headers.add(entry.getKey());
-            }
-            values.add(entry.getValue());
-        }
-
-        if (csvRows.isEmpty()) {
-            String headersRow = StringUtils.join(headers, ",");
-            headersRow += '\n';
-            csvRows.addAll(CollectionUtils.arrayToList(ArrayUtils.toObject(
-                    headersRow.getBytes(Charset.defaultCharset()))));
-        }
-
-        String valuesRow = StringUtils.join(values, ",");
-        valuesRow += '\n';
-        csvRows.addAll(CollectionUtils.arrayToList(ArrayUtils.toObject(
-                valuesRow.getBytes(Charset.defaultCharset()))));
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {
