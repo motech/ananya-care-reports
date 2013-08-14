@@ -7,6 +7,7 @@ import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.LevelDao;
+import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -23,6 +24,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
+import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
@@ -35,6 +37,7 @@ import org.motechproject.carereporting.xml.mapping.DwQuery;
 import org.motechproject.carereporting.xml.mapping.Fact;
 import org.motechproject.carereporting.xml.mapping.Indicator;
 import org.motechproject.carereporting.xml.mapping.Numerator;
+import org.motechproject.carereporting.xml.mapping.Report;
 import org.motechproject.carereporting.xml.mapping.Role;
 import org.motechproject.carereporting.xml.mapping.SelectColumn;
 import org.motechproject.carereporting.xml.mapping.User;
@@ -87,6 +90,9 @@ public class XmlIndicatorParser {
     @Autowired
     private FrequencyDao frequencyDao;
 
+    @Autowired
+    private ReportTypeDao reportTypeDao;
+
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
@@ -107,6 +113,10 @@ public class XmlIndicatorParser {
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
         indicatorEntity.setDenominator(prepareDenominator(indicator.getDenominator()));
         indicatorEntity.setTrend(indicator.getTrend());
+        indicatorEntity.setReports(prepareReports(indicator.getReports()));
+        for (ReportEntity report: indicatorEntity.getReports()) {
+            report.setIndicator(indicatorEntity);
+        }
         if (indicator.getNumerator() != null) {
             indicatorEntity.setNumerator(prepareNumerator(indicator.getNumerator()));
         }
@@ -152,6 +162,24 @@ public class XmlIndicatorParser {
         } else {
             return prepareDwQuery(denominator.getDwQuery());
         }
+    }
+
+    private Set<ReportEntity> prepareReports(List<Report> reports) {
+        Set<ReportEntity> reportEntities = new HashSet<>();
+        if (reports != null) {
+            for (Report report: reports) {
+                reportEntities.add(prepareReport(report));
+            }
+        }
+        return reportEntities;
+    }
+
+    private ReportEntity prepareReport(Report report) {
+        ReportEntity reportEntity = new ReportEntity();
+        reportEntity.setReportType(reportTypeDao.getByField("name", report.getType()));
+        reportEntity.setLabelX(report.getLabelX());
+        reportEntity.setLabelY(report.getLabelY());
+        return reportEntity;
     }
 
     private Set<ConditionEntity> prepareWhereConditions(List<WhereCondition> whereConditions) {

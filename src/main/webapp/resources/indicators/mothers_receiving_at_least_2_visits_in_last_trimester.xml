@@ -8,6 +8,11 @@
         <role name="Manager"/>
     </roles>
     <trend>3</trend>
+    <reports>
+        <report type="Bar Chart" />
+        <report type="Line Chart" label-x="Time" label-y="Value" />
+        <report type="Pie Chart" />
+    </reports>
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <denominator>

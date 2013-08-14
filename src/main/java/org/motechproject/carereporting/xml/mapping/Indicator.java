@@ -31,6 +31,8 @@ public class Indicator {
 
     private BigDecimal trend;
 
+    private List<Report> reports;
+
     public String getName() {
         return name;
     }
@@ -122,5 +124,15 @@ public class Indicator {
 
     public void setTrend(BigDecimal trend) {
         this.trend = trend;
+    }
+
+    @XmlElementWrapper(name = "reports")
+    @XmlElement(name = "report")
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
     }
 }
