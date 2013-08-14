@@ -358,7 +358,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.loadChartDetails(report);
         } else if (report.displayType == 'table') {
             report.displayType = 'chart';
-            $scope.loadChartDetails(report);
         }
     };
 
@@ -379,7 +378,12 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
         $simplifiedHttpService.get($scope, url, 'dashboards.charts.error.cannotLoadChartDetails', function(chartData) {
             chartData.sort(sortByDateComparisonFunction);
-           report.chart = chartData;
+            if(report.reportType.name == 'Pie Chart') {
+                for(var i = 0; i < chartData.length; i++) {
+                    chartData[i].value *= 100;
+                }
+            }
+            report.chart = chartData;
         });
     };
 

@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -37,6 +39,7 @@ public class IndicatorValueEntity extends AbstractEntity {
     private BigDecimal denominator;
 
     @Column(name = "value")
+    @JsonView({ DashboardJsonView.class })
     private BigDecimal value;
 
     @NotNull
@@ -46,6 +49,7 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "date")
+    @JsonView({ DashboardJsonView.class })
     private Date date;
 
     public IndicatorValueEntity() {

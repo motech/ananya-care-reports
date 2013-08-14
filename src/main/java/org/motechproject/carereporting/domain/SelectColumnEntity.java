@@ -19,7 +19,7 @@ public class SelectColumnEntity extends AbstractEntity {
     @Column(name = "function")
     private String functionName;
 
-    @Column(name="table_name")
+    @Column(name = "table_name")
     private String tableName;
 
     public String getName() {

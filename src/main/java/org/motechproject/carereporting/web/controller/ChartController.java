@@ -3,6 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -66,13 +67,14 @@ public class ChartController extends BaseController {
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<IndicatorValueEntity> getChartValues(@RequestParam Integer indicatorId,
-                                                     @RequestParam(required = false) Integer areaId,
-                                                     @RequestParam Integer frequencyId,
-                                                     @RequestParam Date startDate,
-                                                     @RequestParam Date endDate) {
+    public String getChartValues(@RequestParam Integer indicatorId,
+                                 @RequestParam(required = false) Integer areaId,
+                                 @RequestParam Integer frequencyId,
+                                 @RequestParam Date startDate,
+                                 @RequestParam Date endDate) {
 
-        return getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
+        return this.writeAsString(DashboardJsonView.class,
+                getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate));
     }
 
     @RequestMapping(value = "/data/export", method = RequestMethod.GET)
