@@ -45,6 +45,7 @@ public class IndicatorValueCalculator {
 
     private DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
+    // TODO: remove info
     @Transactional(readOnly = false)
     public void calculateIndicatorValues(FrequencyEntity frequency, Date date) {
         LOG.info("Running indicator values calculation for " + frequency.getFrequencyName() + " frequency.");
@@ -79,7 +80,6 @@ public class IndicatorValueCalculator {
         return prepareIndicatorValueEntity(denominatorValue, numeratorValue);
     }
 
-    // TODO: Add possibility to compute value for area and between dates[0] and dates[1], where dates[0] is earlier than dates[1]
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area, Date[] date) {
         DwQuery query = dwQueryHelper.buildDwQuery(dwQueryEntity);
@@ -89,7 +89,6 @@ public class IndicatorValueCalculator {
     }
 
     private BigDecimal executeQuery(String query) {
-        LOG.info("Executing query: " + query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         return jdbcTemplate.queryForObject(query, BigDecimal.class);
     }

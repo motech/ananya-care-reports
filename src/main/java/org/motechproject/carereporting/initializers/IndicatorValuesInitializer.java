@@ -11,11 +11,12 @@ import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.context.ApplicationContext;
 
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
 public class IndicatorValuesInitializer implements Runnable {
+
+    private static final Logger LOG = Logger.getLogger(IndicatorValuesInitializer.class);
 
     private ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
@@ -31,28 +32,29 @@ public class IndicatorValuesInitializer implements Runnable {
         indicatorValueCalculator = applicationContext.getBean(IndicatorValueCalculator.class);
     }
 
+    // TODO: remove info
     @Override
     public void run() {
+        LOG.info("Start calculation");
         Date startDate = null;
         try {
-            // TODO: change date
-            // the earliest date (date_modified) in database is 02.01.1980, but from 01.12.2011 dates were inserted regularly
-            startDate = DateUtils.parseDate("01/08/2013/06", new String[]{"dd/MM/yyyy/HH"});
+            // in database the earliest date (date_modified) is 02.01.1980, but from 01.12.2011 dates were inserted regularly
+            startDate = DateUtils.parseDate("01/01/2012", new String[]{"dd/MM/yyyy"});
         } catch (ParseException e) {
             Logger.getLogger(IndicatorValuesInitializer.class).error(e);
         }
-        Date endDate = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
-
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
 
         for (FrequencyEntity frequencyEntity: frequencyEntities) {
+            Date endDate = DateResolver.resolveDates(frequencyEntity, new Date())[1];
             Date date = new Date(startDate.getTime());
 
             while (date.before(endDate)) {
                 Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
                 indicatorValueCalculator.calculateAndPersistIndicatorValue(indicatorEntity, frequencyEntity, dates);
-                date = DateUtils.addHours(dates[1], 6);
+                date = dates[1];
             }
         }
+        LOG.info("Calculation finished");
     }
 }

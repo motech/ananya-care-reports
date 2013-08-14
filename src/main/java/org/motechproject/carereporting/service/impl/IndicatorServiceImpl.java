@@ -328,12 +328,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorValueDao.update(indicatorValueEntity);
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteAllIndicatorValues() {
-        indicatorValueDao.removeAll();
-    }
-
     @Transactional(readOnly = false)
     @Override
     public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {

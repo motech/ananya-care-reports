@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +25,6 @@ public class IndicatorServiceTest {
     private final static String TEST_INDICATOR_NAME = "TEST_INDICATOR_1";
     private final static Integer TEST_INDICATOR_ID = 1;
     private final static String TEST_INDICATOR_1_UPDATED_NAME = "TEST_INDICATOR_1_UPDATED";
-    private final static String EXPRESSION = "* * * * * ?";
     private final static String WITH_FIELDS_REPORTS = "reports";
 
     @Mock
@@ -38,10 +35,11 @@ public class IndicatorServiceTest {
 
     private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
 
+    // TODO: Mock thread creation if you can, I can't :(
+    // Tip: use powermock
     @Test
-    //TODO
     @Ignore
-    public void testCreateNewIndicator() {
+    public void testCreateNewIndicator() throws Exception {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
 
@@ -52,8 +50,9 @@ public class IndicatorServiceTest {
         assertEquals(indicatorEntity, indicatorEntities.get(0));
     }
 
+    // TODO: Mock thread creation if you can, I can't :(
+    // Tip: use powermock
     @Test
-    //TODO
     @Ignore
     public void testUpdateIndicator() {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
@@ -96,8 +95,9 @@ public class IndicatorServiceTest {
         assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());
     }
 
+    // TODO: Mock thread creation if you can, I can't :(
+    // Tip: use powermock
     @Test
-    //TODO
     @Ignore
     public void testDeleteIndicator() {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
