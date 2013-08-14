@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
+import org.dwQueryBuilder.data.conditions.where.FieldComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.OperatorType;
@@ -122,6 +123,19 @@ public class WhereConditionBuilder {
         return this;
     }
 
+    public WhereConditionBuilder withFieldComparison(String table1Name,
+            String field1Name, OperatorType operator, String table2Name, String field2Name) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.operator = operator;
+        this.table2Name = table2Name;
+        this.field2Name = field2Name;
+
+        return this;
+    }
+
     private void reset() {
         this.table1Name = null;
         this.field1Name = null;
@@ -162,6 +176,12 @@ public class WhereConditionBuilder {
 
                 whereCondition = new ValueComparison(table1Name, field1Name,
                         operator, value);
+
+            } else if (isFieldComparison()) {
+                // Field Comparison
+
+                whereCondition = new FieldComparison(table1Name, field1Name,
+                        operator, table2Name, field2Name);
 
             }
 
@@ -206,5 +226,14 @@ public class WhereConditionBuilder {
                 && StringUtils.isNotBlank(field1Name)
                 && operator != null
                 && StringUtils.isNotBlank(value));
+    }
+
+    private Boolean isFieldComparison() {
+        Boolean isField1NotBlank = StringUtils.isNotBlank(table1Name) && StringUtils.isNotBlank(field1Name);
+        Boolean isField2NotBlank = StringUtils.isNotBlank(table2Name) && StringUtils.isNotBlank(field2Name);
+
+        return (isField1NotBlank
+                && isField2NotBlank
+                && operator != null);
     }
 }

@@ -9,6 +9,7 @@ import org.dwQueryBuilder.data.conditions.HavingCondition;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
+import org.dwQueryBuilder.data.conditions.where.FieldComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
@@ -332,6 +333,12 @@ public final class QueryBuilder {
             condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
                     field2, dateDiffComparison.getValue(), dateDiffComparison.getField1Offset(),
                     dateDiffComparison.getField2Offset());
+
+        } else if (whereCondition instanceof FieldComparison) {
+
+            FieldComparison fieldComparison = (FieldComparison) whereCondition;
+            Field field2 = fieldByName(fieldComparison.getTable2Name(), fieldComparison.getField2Name());
+            condition = buildCondition(field1, fieldComparison.getOperator(), field2);
 
         }
 
