@@ -11,10 +11,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ComplexDwQueryBuilder {
-    protected Set<SelectColumn> selectColumns;
-    protected GroupBy groupBy;
-    protected WhereConditionGroup whereConditionGroup;
-    protected DwQueryCombination combineWith;
+    private Set<SelectColumn> selectColumns;
+    private GroupBy groupBy;
+    private WhereConditionGroup whereConditionGroup;
+    private DwQueryCombination combineWith;
     private String dimension;
     private Set<Fact> facts;
     private String dimensionKey;
