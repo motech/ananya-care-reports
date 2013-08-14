@@ -25,7 +25,7 @@ public class DwQueryEntity extends AbstractEntity {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
-    protected Set<SelectColumnEntity> selectColumns;
+    private Set<SelectColumnEntity> selectColumns;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")

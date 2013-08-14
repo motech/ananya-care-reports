@@ -16,7 +16,11 @@ import java.util.Date;
 @SuppressWarnings("PMD.UnusedPrivateMethod")
 public abstract class BaseController {
 
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    protected ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
 
     @PostConstruct
     public void initialize() {

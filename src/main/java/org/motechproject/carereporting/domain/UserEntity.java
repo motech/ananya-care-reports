@@ -76,7 +76,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     private Set<RoleEntity> roles;
 
     public UserEntity() {
-        //this.salt = UUID.randomUUID().toString();
+
     }
 
     public UserEntity(String username, String password) {

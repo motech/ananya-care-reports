@@ -8,8 +8,16 @@ import java.util.Map;
 
 public abstract class AbstractWhereCondition<E extends ConditionEntity> {
 
-    protected ComputedFieldEntity field;
-    protected E condition;
+    private ComputedFieldEntity field;
+    private E condition;
+
+    protected ComputedFieldEntity getField() {
+        return field;
+    }
+
+    protected E getCondition() {
+        return condition;
+    }
 
     public AbstractWhereCondition(ComputedFieldEntity field, E condition) {
         this.field = field;

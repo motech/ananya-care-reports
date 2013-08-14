@@ -25,9 +25,6 @@ import java.util.List;
 @Component
 public final class ChartFactory {
 
-    private ChartFactory() {
-    }
-
     @Autowired
     private ReportService reportService;
 

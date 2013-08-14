@@ -23,9 +23,9 @@ public class FieldComparisonWhereCondition extends AbstractWhereCondition<FieldC
     @Override
     protected Map<String, String> getSqlQueryParams() {
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("firstField", field.getFieldSql());
-        params.put("comparisonSymbol", condition.getComparisonSymbol().getName());
-        params.put("secondField", condition.getField2().getFieldSql());
+        params.put("firstField", getField().getFieldSql());
+        params.put("comparisonSymbol", getCondition().getComparisonSymbol().getName());
+        params.put("secondField", getCondition().getField2().getFieldSql());
         return params;
     }
 

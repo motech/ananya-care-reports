@@ -23,10 +23,10 @@ public class DateDiffComparisonWhereCondition extends AbstractWhereCondition<Dat
     @Override
     protected Map<String, String> getSqlQueryParams() {
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("firstDate", field.getFieldSql());
-        params.put("secondDate", condition.getField2().getFieldSql());
-        params.put("comparisonSymbol", condition.getComparisonSymbol().getName());
-        params.put("value", condition.getValue().toString());
+        params.put("firstDate", getField().getFieldSql());
+        params.put("secondDate", getCondition().getField2().getFieldSql());
+        params.put("comparisonSymbol", getCondition().getComparisonSymbol().getName());
+        params.put("value", getCondition().getValue().toString());
         return params;
     }
 
