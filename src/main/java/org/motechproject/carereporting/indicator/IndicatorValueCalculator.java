@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.indicator;
 
-import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
 import org.dwQueryBuilder.data.queries.DwQuery;
@@ -24,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
 
 @Component
 @Transactional
@@ -92,22 +88,9 @@ public class IndicatorValueCalculator {
         String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
                 schemaName, query, false);
         if (shouldBindDatesTo(dwQueryEntity)) {
-            sqlQuery = formatFromDateAndToDate(sqlQuery, from, to);
+            sqlQuery = dwQueryHelper.formatFromDateAndToDate(sqlQuery, from, to);
         }
         return executeQuery(sqlQuery);
-    }
-
-    private String formatFromDateAndToDate(String query, Date from, Date to) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Map<String, String> params = new HashMap<>();
-        params.put("fromDate", dateFormat.format(from));
-        params.put("toDate", dateFormat.format(to));
-        return formatNamesParams(query, params);
-    }
-
-    private String formatNamesParams(String strToFormat, Map<String, String> params) {
-        StrSubstitutor sub = new StrSubstitutor(params, "%(", ")");
-        return sub.replace(strToFormat);
     }
 
     private boolean shouldBindDatesTo(DwQueryEntity dwQueryEntity) {

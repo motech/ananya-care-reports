@@ -80,6 +80,6 @@ public interface IndicatorService {
 
     Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(Integer indicatorId, Integer parentAreaId, Date startDate, Date endDate);
 
-    byte[] getCaseListReportAsCsv(Integer indicatorId);
+    byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Date fromDate, Date toDate);
 
 }

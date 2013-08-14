@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -216,7 +217,11 @@ public class IndicatorController extends BaseController {
 
     @RequestMapping(value = "{indicatorId}/export/caselistreport", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> exportCaseListReport(@PathVariable Integer indicatorId) {
+    @Transactional
+    public ResponseEntity<byte[]> exportCaseListReport(
+            @PathVariable Integer indicatorId,
+            @RequestParam(required = false) Date fromDate,
+            @RequestParam(required = false) Date toDate) {
 
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
@@ -226,7 +231,7 @@ public class IndicatorController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", filename);
 
-        return new ResponseEntity<>(indicatorService.getCaseListReportAsCsv(indicatorId),
+        return new ResponseEntity<>(indicatorService.getCaseListReportAsCsv(indicatorEntity, fromDate, toDate),
                 headers, HttpStatus.OK);
     }
 

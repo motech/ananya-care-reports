@@ -5,6 +5,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -22,7 +23,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class DwQueryEntity extends AbstractEntity {
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
     private Set<SelectColumnEntity> selectColumns;
@@ -35,7 +36,7 @@ public class DwQueryEntity extends AbstractEntity {
     @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
     private GroupedByEntity groupedBy;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 

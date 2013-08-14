@@ -9,7 +9,6 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
-import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -18,12 +17,11 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
-import org.motechproject.carereporting.domain.SelectColumnEntity;
-import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
+import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
@@ -56,11 +54,12 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl implements IndicatorService {
 
-    private static final String WILDCARD = "*";
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
     private static final SQLDialect SQL_DIALECT = SQLDialect.POSTGRES;
+    private static final String REPLACE_SELECT_WITH_SELECT_ALL =
+            "(\\s)?select(((?!from).)*)?from\\s+(\\\"\\w*?\\\"\\.\\\"\\w*?_case\\\")\\s?";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -403,37 +402,24 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public byte[] getCaseListReportAsCsv(Integer indicatorId) {
-        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorId);
+    public byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Date fromDate, Date toDate) {
         DwQueryEntity denominator = indicatorEntity.getDenominator();
         DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
-        changeSelectColumnsRecursive(denominator);
         String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
                 schemaName, dwQueryHelper.buildDwQuery(denominator, null), false);
+        if (fromDate != null && toDate != null) {
+            if (fromDate.compareTo(toDate) >= 0) {
+                throw new CareRuntimeException("Field 'fromDate' must be before 'toDate'.");
+            }
+
+            sqlString = dwQueryHelper.formatFromDateAndToDate(sqlString, fromDate, toDate);
+        }
+
+        sqlString = sqlString.replaceAll(REPLACE_SELECT_WITH_SELECT_ALL, "$1select * from $4");
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));
-    }
-
-    private void changeSelectColumnsRecursive(DwQueryEntity dwQueryEntity) {
-        String tableName = null;
-        if (dwQueryEntity instanceof SimpleDwQueryEntity) {
-            tableName = ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
-        } else if (dwQueryEntity instanceof ComplexDwQueryEntity) {
-            tableName = ((ComplexDwQueryEntity) dwQueryEntity).getDimension();
-        }
-
-        SelectColumnEntity wildCardEntity = new SelectColumnEntity();
-        wildCardEntity.setTableName(tableName);
-        wildCardEntity.setName(WILDCARD);
-
-        dwQueryEntity.getSelectColumns().clear();
-        dwQueryEntity.getSelectColumns().add(wildCardEntity);
-
-        if (dwQueryEntity.getCombination() != null) {
-            changeSelectColumnsRecursive(dwQueryEntity.getCombination().getDwQuery());
-        }
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {

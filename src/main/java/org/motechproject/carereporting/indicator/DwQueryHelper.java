@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.indicator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.dwQueryBuilder.builders.ComplexDwQueryBuilder;
 import org.dwQueryBuilder.builders.DwQueryCombinationBuilder;
 import org.dwQueryBuilder.builders.FactBuilder;
@@ -34,6 +35,11 @@ import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class DwQueryHelper {
 
     private static final int SECONDS_PER_DAY = 86_400;
@@ -42,6 +48,19 @@ public class DwQueryHelper {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
         addAreaWhereCondition(dwQuery, area);
         return dwQuery;
+    }
+
+    public String formatFromDateAndToDate(String query, Date from, Date to) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Map<String, String> params = new HashMap<>();
+        params.put("fromDate", dateFormat.format(from));
+        params.put("toDate", dateFormat.format(to));
+        return formatNamesParams(query, params);
+    }
+
+    private String formatNamesParams(String strToFormat, Map<String, String> params) {
+        StrSubstitutor sub = new StrSubstitutor(params, "%(", ")");
+        return sub.replace(strToFormat);
     }
 
     private DwQuery buildDwQuery(DwQueryEntity dwQueryEntity) {
