@@ -84,6 +84,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                             report.displayType = 'chart';
                             report.from = moment().subtract('months', 1).format("L");
                             report.to = moment().format("L");
+                            report.canExportCaseListReport = true;
                         } else {
                             report = null;
                         }
@@ -347,6 +348,15 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         }
         window.open(url);
     }
+
+    $scope.exportCaseListReportToCsv = function(report) {
+            var indicatorId = report.indicatorId;
+            var url = 'api/indicator/' + indicatorId + '/export/caselistreport'
+                + '?fromDate=' + moment(report.from).format("DD/MM/YYYY")
+                + '&toDate=' + moment(report.to).format("DD/MM/YYYY");
+
+            window.open(url);
+        }
 
     $scope.toggleChartDisplay = function(report) {
         if (!report) {

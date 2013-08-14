@@ -73,8 +73,11 @@
                                             </div>
                                         </div>
                                         <p class="text-left">
-                                            <span ng-click="exportToCsv(report)" class="label label-info chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</span>
-                                            <span ng-click="toggleChartDisplay(report)" class="label label-info chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</span>
+                                            <div class="btn-group">
+                                                <button type="button" ng-click="exportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</button>
+                                                <button type="button" ng-click="exportCaseListReportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined && report.canExportCaseListReport">{{msg('dashboards.charts.exportCaseListReport')}}</button>
+                                                <button type="button" ng-click="toggleChartDisplay(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</button>
+                                            </div>
                                         </p>
                                         <div class="chart-container-wrapper">
                                             <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
