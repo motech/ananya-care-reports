@@ -49,8 +49,9 @@ public class IndicatorValueCalculator {
     public void calculateIndicatorValues(FrequencyEntity frequency, Date date) {
         LOG.info("Running indicator values calculation for " + frequency.getFrequencyName() + " frequency.");
         int totalIndicatorValuesCalculated = 0;
+        Date[] dates = DateResolver.resolveDates(frequency, date);
         for (IndicatorEntity indicator: indicatorService.getAllIndicators()) {
-            calculateAndPersistIndicatorValue(indicator, frequency, date);
+            calculateAndPersistIndicatorValue(indicator, frequency, dates);
             ++totalIndicatorValuesCalculated;
             LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
         }
@@ -58,12 +59,11 @@ public class IndicatorValueCalculator {
                 + totalIndicatorValuesCalculated + "].");
     }
 
-    private void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date date) {
-        Date[] dates = DateResolver.resolveDates(frequency, date);
+    public void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date[] dates) {
         for (AreaEntity area : areaService.getAllAreas()) {
             IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area, dates);
             value.setArea(area);
-            value.setDate(date);
+            value.setDate(dates[0]);
             value.setFrequency(frequency);
             value.setIndicator(indicator);
             persistIndicatorValue(value);

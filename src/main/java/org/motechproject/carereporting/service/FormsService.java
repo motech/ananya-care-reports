@@ -37,5 +37,6 @@ public interface FormsService {
     String getForeignKeyForTable(String tableName);
 
     Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId);
+
 }
 

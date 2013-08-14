@@ -9,6 +9,8 @@ public interface GenericDao<T extends AbstractEntity> {
 
     Set<T> getAll();
 
+    Set<T> getAllSortBy(String field);
+
     Set<T> getAllWithFields(String... fieldNames);
 
     T getById(Integer id);

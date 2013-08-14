@@ -35,14 +35,11 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
-    // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
-    //@NotNull
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
-    // TODO: Add NotNull annotation when you are sure that any DwQuery exists in database!
-    //@NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
@@ -72,6 +69,9 @@ public class IndicatorEntity extends AbstractEntity {
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
+
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private Set<IndicatorValueEntity> indicatorValues;
 
     @NotNull
     @ManyToOne
@@ -143,6 +143,14 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<IndicatorValueEntity> getIndicatorValues() {
+        return indicatorValues;
+    }
+
+    public void setIndicatorValues(Set<IndicatorValueEntity> indicatorValues) {
+        this.indicatorValues = indicatorValues;
     }
 
     public BigDecimal getTrend() {

@@ -6,6 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
+import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
-
 
     @Autowired
     private IndicatorService indicatorService;
@@ -78,10 +79,16 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testGetAllFrequencies() {
-        Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
+        String[] names = {"daily", "weekly", "monthly", "quarterly", "yearly"};
+        FrequencyEntity[] frequencyEntities = cronService.getAllFrequencies().toArray(new FrequencyEntity[]{});
 
         assertNotNull(frequencyEntities);
-        assertEquals(5, frequencyEntities.size());
+        assertEquals(5, frequencyEntities.length);
+        assertEquals(names[0], frequencyEntities[0].getFrequencyName());
+        assertEquals(names[1], frequencyEntities[1].getFrequencyName());
+        assertEquals(names[2], frequencyEntities[2].getFrequencyName());
+        assertEquals(names[3], frequencyEntities[3].getFrequencyName());
+        assertEquals(names[4], frequencyEntities[4].getFrequencyName());
     }
 
     @Test
@@ -93,4 +100,5 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         assertEquals(name, frequencyEntity.getFrequencyName());
         assertEquals(id, frequencyEntity.getId());
     }
+
 }

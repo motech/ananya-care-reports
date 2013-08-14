@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,11 @@ public class WhereGroupEntity extends AbstractEntity {
     @JoinTable(name = "where_group_condition", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "condition_id") })
     private Set<ConditionEntity> conditions;
+
+    public WhereGroupEntity() {
+        whereGroups = new LinkedHashSet<>();
+        conditions = new LinkedHashSet<>();
+    }
 
     public String getOperator() {
         return operator;

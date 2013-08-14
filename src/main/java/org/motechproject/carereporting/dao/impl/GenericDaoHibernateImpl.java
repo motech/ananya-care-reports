@@ -6,6 +6,7 @@ import org.hibernate.JDBCException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.GenericDao;
 import org.motechproject.carereporting.domain.AbstractEntity;
@@ -46,6 +47,12 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     public Set<T> getAll() {
         return new LinkedHashSet<T>(sessionFactory.getCurrentSession()
                 .createCriteria(type).list());
+    }
+
+    @Override
+    public Set<T> getAllSortBy(String field) {
+        return new LinkedHashSet<T>(sessionFactory.getCurrentSession()
+                .createCriteria(type).addOrder(Order.desc(field)).list());
     }
 
     @Override
@@ -159,7 +166,7 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     @Override
     public void removeAll() {
         sessionFactory.getCurrentSession()
-                .createQuery("delete from " + type)
+                .createQuery("delete from " + type.getName())
                 .executeUpdate();
     }
 

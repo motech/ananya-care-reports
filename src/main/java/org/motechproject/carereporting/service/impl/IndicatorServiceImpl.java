@@ -27,6 +27,7 @@ import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
+import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
@@ -151,6 +152,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
         indicatorDao.save(indicatorEntity);
+        Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
+        thread.start();
     }
 
     @Override
@@ -323,6 +326,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
         indicatorValueDao.update(indicatorValueEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteAllIndicatorValues() {
+        indicatorValueDao.removeAll();
     }
 
     @Transactional(readOnly = false)

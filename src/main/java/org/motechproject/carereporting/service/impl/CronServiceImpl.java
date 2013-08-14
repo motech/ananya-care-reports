@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
 import java.util.Set;
 
 @Service
@@ -20,7 +19,6 @@ import java.util.Set;
 public class CronServiceImpl implements CronService {
 
     private static final String DAILY_TASK_NAME = "daily";
-    private static final String UNDEFINED = "undefined";
 
     private ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
@@ -61,14 +59,7 @@ public class CronServiceImpl implements CronService {
 
     @Override
     public Set<FrequencyEntity> getAllFrequencies() {
-        Set<FrequencyEntity> frequencyEntities = frequencyDao.getAll();
-        Iterator<FrequencyEntity> it = frequencyEntities.iterator();
-        while (it.hasNext()) {
-            if (UNDEFINED.equals(it.next().getFrequencyName())) {
-                it.remove();
-            }
-        }
-        return frequencyEntities;
+        return frequencyDao.getAllSortBy("id");
     }
 
     @Override

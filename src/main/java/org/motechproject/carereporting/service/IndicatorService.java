@@ -72,6 +72,8 @@ public interface IndicatorService {
 
     void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
+    void deleteAllIndicatorValues();
+
     void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
