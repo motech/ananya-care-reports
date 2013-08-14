@@ -32,7 +32,7 @@ public class IndicatorValuesInitializer implements Runnable {
         indicatorValueCalculator = applicationContext.getBean(IndicatorValueCalculator.class);
     }
 
-    // TODO: remove info
+    // TODO: remove info and change date to 01/01/2012
     @Override
     public void run() {
         LOG.info("Start calculation");

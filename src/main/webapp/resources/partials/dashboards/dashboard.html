@@ -11,12 +11,12 @@
         </ul>
         <div class="tab-content">
             <div class="row text-center" ng-show="dashboard.name == 'Performance summary'">
-                <div class="input-append input-prepend date" id="start-date" data-date="{{startDate}" data-date-format="dd-mm-yyyy">
+                <div class="input-append input-prepend date" id="start-date" data-date="{{startDate}">
                     <span class="add-on text-success date-label">{{msg('dashboards.trends.from')}}:</span>
                     <input class="span2" size="16" type="text" value="{{startDate}}">
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
-                <div style="margin-left: 50px;" class="input-append input-prepend date" id="end-date" data-date="{{endDate}" data-date-format="dd-mm-yyyy">
+                <div style="margin-left: 50px;" class="input-append input-prepend date" id="end-date" data-date="{{endDate}">
                     <span class="add-on text-success date-label">{{msg('dashboards.trends.to')}}:</span>
                     <input class="span2" size="16" type="text" value="{{endDate}}">
                     <span class="add-on"><i class="icon-calendar"></i></span>
@@ -63,16 +63,12 @@
                                                 <input type="date" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
                                                 <span class="add-on"><i class="icon-calendar"></i></span>
                                             </div>
-                                            <div class="input-prepend">
-                                                <select class="pull-right" ng-model="report.frequencyId" required>
-                                                    <option value="{{frequency.id}}" ng-repeat="frequency in frequencies">{{frequency.frequencyName}}</option>
-                                                </select>
+                                            <div class="input-prepend input-append">
+                                                <select class="pull-right" ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
                                                 <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.frequency')}}:</span>
                                             </div>
-                                            <div class="input-prepend">
-                                                <select class="pull-right" ng-model="report.areaId" required>
-                                                    <option value="{{area.id}}" style="padding-left: {{(area.levelHierarchyDepth - report.minDepth) * 15 + 5 }}px" ng-repeat="area in report.areas">{{area.name}}</option>
-                                                </select>
+                                            <div class="input-prepend input-append">
+                                                <select class="pull-right" ng-model="report.areaId" ng-options="item.id as item.name for item in report.areas"/>
                                                 <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.area')}}:</span>
                                             </div>
                                         </div>

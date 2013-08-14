@@ -31,7 +31,7 @@ public class IndicatorValueEntity extends AbstractEntity {
     private AreaEntity area;
 
     @Column(name = "numerator")
-    private BigDecimal nominator;
+    private BigDecimal numerator;
 
     @Column(name = "denominator")
     private BigDecimal denominator;
@@ -52,22 +52,22 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     }
 
-    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal nominator, BigDecimal denominator, BigDecimal value, FrequencyEntity frequency, Date date) {
+    public IndicatorValueEntity(IndicatorEntity indicator, AreaEntity area, BigDecimal numerator, BigDecimal denominator, BigDecimal value, FrequencyEntity frequency, Date date) {
         this.indicator = indicator;
         this.area = area;
-        this.nominator = nominator;
+        this.numerator = numerator;
         this.denominator = denominator;
         this.value = value;
         this.frequency = frequency;
         this.date = date;
     }
 
-    public BigDecimal getNominator() {
-        return nominator;
+    public BigDecimal getNumerator() {
+        return numerator;
     }
 
-    public void setNominator(BigDecimal nominator) {
-        this.nominator = nominator;
+    public void setNumerator(BigDecimal numerator) {
+        this.numerator = numerator;
     }
 
     public BigDecimal getDenominator() {

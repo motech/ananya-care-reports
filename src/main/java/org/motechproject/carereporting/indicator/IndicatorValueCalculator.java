@@ -132,7 +132,6 @@ public class IndicatorValueCalculator {
     }
 
     private BigDecimal executeQuery(String query) {
-        LOG.info("Executing query: " + query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         return jdbcTemplate.queryForObject(query, BigDecimal.class);
     }
@@ -141,7 +140,7 @@ public class IndicatorValueCalculator {
                                                              BigDecimal numeratorValue) {
         IndicatorValueEntity value = new IndicatorValueEntity();
         value.setDenominator(denominatorValue);
-        value.setNominator(numeratorValue);
+        value.setNumerator(numeratorValue);
 
         BigDecimal indicatorValue = numeratorValue == null
                 ? denominatorValue

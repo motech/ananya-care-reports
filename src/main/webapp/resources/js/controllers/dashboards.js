@@ -150,7 +150,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                }
                report.areas = arr;
                report.areaId = areas[0].id;
-               report.minDepth = areas[0].levelHierarchyDepth;
           });
     };
 
