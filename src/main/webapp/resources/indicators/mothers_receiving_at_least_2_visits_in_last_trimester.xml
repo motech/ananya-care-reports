@@ -15,7 +15,7 @@
     </reports>
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
-    <denominator>
+    <numerator>
         <dw-query dimension-key="id" fact-key="case_id">
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
@@ -46,5 +46,5 @@
                 </where-condition>
             </where-group>
         </dw-query>
-    </denominator>
+    </numerator>
 </indicator>

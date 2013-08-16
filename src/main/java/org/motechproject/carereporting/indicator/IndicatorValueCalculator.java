@@ -77,11 +77,11 @@ public class IndicatorValueCalculator {
 
     private IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator,
                                                                 AreaEntity area, Date from, Date to) {
-        BigDecimal denominatorValue = calculateDwQueryValue(indicator.getDenominator(), area, from, to);
-        BigDecimal numeratorValue = indicator.getNumerator() != null
-                ? calculateDwQueryValue(indicator.getNumerator(), area, from, to)
+        BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
+        BigDecimal denominatorValue = indicator.getDenominator() != null
+                ? calculateDwQueryValue(indicator.getDenominator(), area, from, to)
                 : null;
-        return prepareIndicatorValueEntity(denominatorValue, numeratorValue);
+        return prepareIndicatorValueEntity(numeratorValue, denominatorValue);
     }
 
     private BigDecimal calculateDwQueryValue(DwQueryEntity dwQueryEntity, AreaEntity area, Date from, Date to) {
@@ -120,14 +120,13 @@ public class IndicatorValueCalculator {
         return jdbcTemplate.queryForObject(query, BigDecimal.class);
     }
 
-    private IndicatorValueEntity prepareIndicatorValueEntity(BigDecimal denominatorValue,
-                                                             BigDecimal numeratorValue) {
+    private IndicatorValueEntity prepareIndicatorValueEntity(BigDecimal numeratorValue, BigDecimal denominatorValue) {
         IndicatorValueEntity value = new IndicatorValueEntity();
-        value.setDenominator(denominatorValue);
         value.setNumerator(numeratorValue);
+        value.setDenominator(denominatorValue);
 
-        BigDecimal indicatorValue = numeratorValue == null
-                ? denominatorValue
+        BigDecimal indicatorValue = denominatorValue == null
+                ? numeratorValue
                 : numeratorValue.divide(denominatorValue);
 
         value.setValue(indicatorValue);

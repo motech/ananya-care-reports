@@ -111,14 +111,14 @@ public class XmlIndicatorParser {
         indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
-        indicatorEntity.setDenominator(prepareDenominator(indicator.getDenominator()));
+        indicatorEntity.setNumerator(prepareNumerator(indicator.getNumerator()));
         indicatorEntity.setTrend(indicator.getTrend());
         indicatorEntity.setReports(prepareReports(indicator.getReports()));
         for (ReportEntity report: indicatorEntity.getReports()) {
             report.setIndicator(indicatorEntity);
         }
-        if (indicator.getNumerator() != null) {
-            indicatorEntity.setNumerator(prepareNumerator(indicator.getNumerator()));
+        if (indicator.getDenominator() != null) {
+            indicatorEntity.setDenominator(prepareDenominator(indicator.getDenominator()));
         }
         return indicatorEntity;
     }
@@ -158,9 +158,17 @@ public class XmlIndicatorParser {
 
     private DwQueryEntity prepareDenominator(Denominator denominator) {
         if (denominator.getIndicatorId() != null) {
-            return indicatorDao.getByIdWithFields(denominator.getIndicatorId(), "denominator").getDenominator();
+            return indicatorDao.getByIdWithFields(denominator.getIndicatorId(), "numerator").getNumerator();
         } else {
             return prepareDwQuery(denominator.getDwQuery());
+        }
+    }
+
+    private DwQueryEntity prepareNumerator(Numerator numerator) {
+        if (numerator.getIndicatorId() != null) {
+            return indicatorDao.getByIdWithFields(numerator.getIndicatorId(), "numerator").getNumerator();
+        } else {
+            return prepareDwQuery(numerator.getDwQuery());
         }
     }
 
@@ -241,14 +249,6 @@ public class XmlIndicatorParser {
         periodConditionEntity.setOffset(condition.getOffset());
         periodConditionEntity.setTableName(condition.getTableName());
         return periodConditionEntity;
-    }
-
-    private DwQueryEntity prepareNumerator(Numerator numerator) {
-        if (numerator.getIndicatorId() != null) {
-            return indicatorDao.getByIdWithFields(numerator.getIndicatorId(), "denominator").getDenominator();
-        } else {
-            return prepareDwQuery(numerator.getDwQuery());
-        }
     }
 
     private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
