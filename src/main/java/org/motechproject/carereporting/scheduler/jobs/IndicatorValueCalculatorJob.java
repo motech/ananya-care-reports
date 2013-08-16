@@ -2,7 +2,7 @@ package org.motechproject.carereporting.scheduler.jobs;
 
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
-import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
+import org.motechproject.carereporting.indicator.IndicatorCalculator;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,10 +16,10 @@ public class IndicatorValueCalculatorJob implements Job {
 
     private ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
 
-    private IndicatorValueCalculator indicatorValueCalculator;
+    private IndicatorCalculator indicatorValueCalculator;
 
     public IndicatorValueCalculatorJob() {
-        indicatorValueCalculator = applicationContext.getBean(IndicatorValueCalculator.class);
+        indicatorValueCalculator = applicationContext.getBean(IndicatorCalculator.class);
     }
 
     @Override

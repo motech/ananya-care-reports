@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.indicator.IndicatorValueCalculator;
+import org.motechproject.carereporting.indicator.IndicatorCalculator;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.context.ApplicationContext;
@@ -24,21 +24,22 @@ public class IndicatorValuesInitializer implements Runnable {
 
     private CronService cronService;
 
-    private IndicatorValueCalculator indicatorValueCalculator;
+    private IndicatorCalculator indicatorCalculator;
 
     public IndicatorValuesInitializer(IndicatorEntity indicatorEntity) {
         this.indicatorEntity = indicatorEntity;
         cronService = applicationContext.getBean(CronService.class);
-        indicatorValueCalculator = applicationContext.getBean(IndicatorValueCalculator.class);
+        indicatorCalculator = applicationContext.getBean(IndicatorCalculator.class);
     }
 
-    // TODO: remove info and change date to 01/01/2012
     @Override
     public void run() {
         LOG.info("Start calculation");
+
         Date startDate = null;
         try {
             // in database the earliest date (date_modified) is 02.01.1980, but from 01.12.2011 dates were inserted regularly
+            // TODO: change date to 01/01/2012
             startDate = DateUtils.parseDate("01/07/2013", new String[]{"dd/MM/yyyy"});
         } catch (ParseException e) {
             Logger.getLogger(IndicatorValuesInitializer.class).error(e);
@@ -51,7 +52,7 @@ public class IndicatorValuesInitializer implements Runnable {
 
             while (date.before(endDate)) {
                 Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
-                indicatorValueCalculator.calculateAndPersistIndicatorValue(indicatorEntity, frequencyEntity, dates[0], dates[1]);
+                indicatorCalculator.calculateIndicatorValues(indicatorEntity, frequencyEntity, dates[0], dates[1]);
                 date = dates[1];
             }
         }

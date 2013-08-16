@@ -30,7 +30,7 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
                 .add(Restrictions.eq("area.id", areaId))
                 .add(Restrictions.eq("frequency.id", frequencyId))
                 .add(Restrictions.ge(DATE, startDate))
-                .add(Restrictions.le(DATE, endDate))
+                .add(Restrictions.lt(DATE, endDate))
                 .addOrder(Order.asc(DATE));
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
     }
