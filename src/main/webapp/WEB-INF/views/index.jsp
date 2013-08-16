@@ -96,7 +96,7 @@
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
                           <ul class="dropdown-menu">
                               <li class="dropdown-submenu">
-                                  <a href="#"><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
+                                  <a href=""><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
                                   <ul class="dropdown-menu">
                                       <li ng-repeat="item in listLanguages">
                                           <a href="#" ng-click="selectLanguage(item)">

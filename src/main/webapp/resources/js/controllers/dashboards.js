@@ -138,8 +138,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
     $scope.fetchCurrentUserAreas();
 
-    $scope.fetchAreas = function(report) {
-        $http.get('api/dashboards/user-areas/' + report.indicatorAreaId)
+    $scope.fetchAreas = function(reportRow) {
+        $http.get('api/dashboards/user-areas/' + reportRow[0].indicatorAreaId)
             .success(function(areas) {
                areas.sort(function(a, b) {
                    return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
@@ -149,8 +149,13 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                for (var index=0; index<areas.length; index++) {
                    arr.push(areas[index]);
                }
-               report.areas = arr;
-               report.areaId = areas[0].id;
+
+               for(var i = 0; i < reportRow.length; i++) {
+                    if(reportRow[i] != null) {
+                        reportRow[i].areas = arr;
+                        reportRow[i].areaId = arr[0].id;
+                    }
+               }
           });
     };
 
@@ -171,7 +176,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         } else {
             $scope.fetchReportRows();
             for (var i = 0; i < $scope.reportRows.length; i++) {
-                $scope.fetchAreas($scope.reportRows[i][0]);
+                $scope.fetchAreas($scope.reportRows[i]);
             }
         }
     };

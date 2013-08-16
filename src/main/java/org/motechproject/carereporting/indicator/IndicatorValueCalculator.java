@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.indicator;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
 import org.dwQueryBuilder.data.queries.DwQuery;
@@ -67,7 +68,7 @@ public class IndicatorValueCalculator {
         for (AreaEntity area : areaService.getAllAreas()) {
             IndicatorValueEntity value = calculateIndicatorValueForArea(indicator, area, from, to);
             value.setArea(area);
-            value.setDate(from);
+            value.setDate(DateUtils.addSeconds(to, -1));
             value.setFrequency(frequency);
             value.setIndicator(indicator);
             persistIndicatorValue(value);

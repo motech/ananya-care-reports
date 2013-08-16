@@ -170,9 +170,15 @@
                                     var graph, title, chart, wrapper, titleElement,
                                         isLineChart = chart.settings.pie == undefined && chart.settings.bars == undefined,
                                         drawChart = function(opts) {
+                                            chart.settings.mouse.trackFormatter = trackFormatter;
                                             var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
                                             Flotr.draw(element[0], chart.data, o);
                                         };
+
+                                    var trackFormatter = function(obj) {
+                                        var date = new Date(parseInt(obj.x));
+                                        return '('+moment(date).format("MM/DD/YYYY")+', '+obj.y+')';
+                                    }
 
                                     if (chart.settings.title != undefined) {
                                         title = chart.settings.title;

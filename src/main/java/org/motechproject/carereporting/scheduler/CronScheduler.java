@@ -48,6 +48,7 @@ public class CronScheduler {
         }
 
         scheduler.start();
+        scheduler.shutdown(true);
     }
 
     public void updateJob(CronTaskEntity cronTaskEntity) {

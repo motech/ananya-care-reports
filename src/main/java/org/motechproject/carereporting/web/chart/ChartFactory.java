@@ -137,6 +137,7 @@ public final class ChartFactory {
                         .backgroundColor("#D2E8FF"))
                 .mouse(new MouseBuilder()
                         .track(true)
-                        .relative(true));
+                        .relative(true)
+                        .position("s"));
     }
 }
