@@ -80,7 +80,7 @@ public class IndicatorValueCalculator {
         BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
         BigDecimal denominatorValue = indicator.getDenominator() != null
                 ? calculateDwQueryValue(indicator.getDenominator(), area, from, to)
-                : null;
+                : BigDecimal.ONE;
         return prepareIndicatorValueEntity(numeratorValue, denominatorValue);
     }
 
@@ -128,9 +128,7 @@ public class IndicatorValueCalculator {
         value.setNumerator(numeratorValue);
         value.setDenominator(denominatorValue);
 
-        BigDecimal indicatorValue = denominatorValue == null
-                ? numeratorValue
-                : numeratorValue.divide(denominatorValue);
+        BigDecimal indicatorValue = numeratorValue.divide(denominatorValue);
 
         value.setValue(indicatorValue);
         return value;

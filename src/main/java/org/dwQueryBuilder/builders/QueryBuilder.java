@@ -536,7 +536,7 @@ public final class QueryBuilder {
             Param date1 = val(whereCondition.getDate1());
             Param date2 = val(whereCondition.getDate2());
 
-            return field.add(dayToSecond).between(date1, date2);
+            return field.add(dayToSecond).greaterOrEqual(date1).and(field.add(dayToSecond).lessThan(date2));
 
         } catch (Exception e) {
             throw new QueryBuilderException(e);

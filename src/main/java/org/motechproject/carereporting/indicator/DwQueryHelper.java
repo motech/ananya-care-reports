@@ -51,7 +51,7 @@ public class DwQueryHelper {
     }
 
     public String formatFromDateAndToDate(String query, Date from, Date to) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Map<String, String> params = new HashMap<>();
         params.put("fromDate", dateFormat.format(from));
         params.put("toDate", dateFormat.format(to));

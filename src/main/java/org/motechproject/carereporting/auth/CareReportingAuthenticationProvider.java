@@ -3,8 +3,6 @@ package org.motechproject.carereporting.auth;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -54,9 +52,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         Map<String, Object> result = null;
 
         String login = ((String) authentication.getPrincipal()).split(";")[0];
-        String domain = ((String) authentication.getPrincipal()).split(";")[1];
 
         try {
+            String domain = ((String) authentication.getPrincipal()).split(";")[1];
+
             RestTemplate restTemplate = new RestTemplate(createSecureTransport(login,
                     (String) authentication.getCredentials()));
 
@@ -83,12 +82,8 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             UserEntity userDashboard = userService.login(login,
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(userDashboard, null, userDashboard.getAuthorities());
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | ArrayIndexOutOfBoundsException e) {
             throw new BadCredentialsException("Bad CommCare username / password!", e);
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e);
-        } catch (JsonParseException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

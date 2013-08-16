@@ -86,12 +86,14 @@ public class QueryBuilderTest {
                     " and \"flw\".\"district\" = 'Bihar')";
     private static final String EXPECTED_POSTGRESQL_DATE_RANGE_COMPARISON_SQL_STRING =
             "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\"" +
-                    " where (\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
-                    " day to second)) between '02-02-2013' and '04-02-2013'";
+                    " where ((\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
+                    " day to second)) >= '02-02-2013' and (\"bp_form\".\"time_start\" + " +
+                    "cast('+10 00:00:00.000000000' as interval day to second)) < '04-02-2013')";
     private static final String EXPECTED_POSTGRESQL_HAVING_COUNT_WILDCARD_SQL_STRING =
             "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\"" +
-                    " where (\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
-                    " day to second)) between '02-02-2013' and '04-02-2013' group by " +
+                    " where ((\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
+                    " day to second)) >= '02-02-2013' and (\"bp_form\".\"time_start\" + " +
+                    "cast('+10 00:00:00.000000000' as interval day to second)) < '04-02-2013') group by " +
                     "\"report\".\"bp_form\".\"ifa_tablets_issued\" having" +
                     " count(\"report\".\"bp_form\".*) >= '1'";
     private static final String EXPECTED_POSTGRESQL_FIELD_COMPARISON_SQL_STRING =
