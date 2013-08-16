@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="item in indicators | orderBy:'+name'">
-                    <td><a href="#/indicators/{{item.id}}">{{item.name}}</a></td>
+                    <td>{{item.name}}</td>
                     <td><span class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
                 </tr>
             </tbody>
@@ -29,5 +29,5 @@
 </div>
 <p class="text-center">
 
-    <a class="btn btn-primary" href="#/indicators/new">{{msg('indicators.list.addNew')}}</a>
+    <a class="btn btn-primary" href="#/indicator/upload-xml">{{msg('indicators.list.addNew')}}</a>
 </p>

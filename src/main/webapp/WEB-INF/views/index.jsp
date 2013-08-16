@@ -83,6 +83,7 @@
                              </ul>
                         </li>
                          <li class="divider"></li>
+                         <li><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
                          <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                      </ul>
                  </li>
