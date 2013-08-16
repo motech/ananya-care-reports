@@ -22,7 +22,7 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void testGetTables() {
-        int tablesNumber = 23;
+        int tablesNumber = 25;
         String[] tab = new String[]{
                 "cf_child_form",
                 "bp_form",
@@ -46,7 +46,9 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
                 "death_mother_form",
                 "death_child_form",
                 "close_mother_form",
-                "close_child_form"
+                "close_child_form",
+                "mother_case",
+                "child_case"
         };
         Set<String> tables = formsService.getTables();
 

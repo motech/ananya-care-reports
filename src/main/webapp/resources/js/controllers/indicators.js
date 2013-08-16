@@ -18,6 +18,7 @@ Array.prototype.notEmpty = function() {
 
 care.controller('uploadIndicatorController', function($scope) {
     $scope.title = $scope.msg('indicators.uploadXml.title');
+    $scope.error = typeof springError != 'undefined' ? springError : undefined;
 });
 
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {

@@ -11,8 +11,6 @@ import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.xml.XmlIndicatorParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,8 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import javax.xml.bind.UnmarshalException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -38,8 +38,6 @@ import java.util.Set;
 @RequestMapping("api/indicator")
 @Controller
 public class IndicatorController extends BaseController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(IndicatorController.class);
 
     @Autowired
     private IndicatorService indicatorService;
@@ -203,16 +201,27 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file) throws Exception {
+    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttrs) {
         try {
             IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
             indicatorService.createNewIndicator(indicatorEntity);
-            return "redirect:/#/indicators";
+            return "redirect:/#";
+        } catch (UnmarshalException e) {
+            String message;
+            if (e.getLinkedException() != null) {
+                if (e.getLinkedException().getCause() != null) {
+                    message = e.getLinkedException().getCause().getMessage();
+                } else {
+                    message = e.getLinkedException().getMessage();
+                }
+            } else {
+                message = e.getMessage();
+            }
+            redirectAttrs.addFlashAttribute("error", message);
         } catch (Exception e) {
-            LOG.warn("", e);
-            throw e;
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/#/indicator/upload-xml";
     }
 
     @RequestMapping(value = "{indicatorId}/export/caselistreport", method = RequestMethod.GET)

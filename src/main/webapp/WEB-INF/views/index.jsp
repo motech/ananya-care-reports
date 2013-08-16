@@ -9,6 +9,11 @@
     <c:set var="req" value="${pageContext.request}" />
     <c:set var="uri" value="${req.requestURI}" />
     <c:set var="url">${req.requestURL}</c:set>
+    <c:if test="${error != null}">
+        <script>
+            springError = "${error}";
+        </script>
+    </c:if>
     <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
     <title ng:bind-template="{{pageTitle}} - CARE Reporting"></title>
 

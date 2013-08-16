@@ -17,8 +17,6 @@ public class WhereCondition {
 
     private String value;
 
-    private String columnName;
-
     private Integer offset;
 
     private String tableName;
@@ -62,15 +60,6 @@ public class WhereCondition {
 
     public void setSecondField(String secondField) {
         this.secondField = secondField;
-    }
-
-    @XmlElement(name = "column-name")
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
     }
 
     public Integer getOffset() {

@@ -1,7 +1,7 @@
 <indicator>
-    <name>Mothers receiving at least 2 visits in last trimester</name>
+    <name>Mothers delivering receiving at least 90 IFA tablets</name>
     <categories>
-        <category name="Birth preparedness plan"/>
+        <category name="IFA Tablets" />
     </categories>
     <user login="mrcaretest@gmail.com"/>
     <roles>
@@ -9,9 +9,7 @@
     </roles>
     <trend>3</trend>
     <reports>
-        <report type="Bar Chart" />
-        <report type="Line Chart" label-x="Time" label-y="Value" />
-        <report type="Pie Chart" />
+        <report type="Line Chart" label-x="Time" label-y="Mothers count" />
     </reports>
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
@@ -23,27 +21,25 @@
             <dimension tableName="mother_case" />
             <facts>
                 <fact>
-                    <name>bp_form</name>
+                    <name>delivery_mother_form</name>
                     <select-columns>
                         <select-column fieldName="case_id" />
                         <select-column aggregation="Count" fieldName="case_id" />
                     </select-columns>
-                    <where-group>
-                        <where-condition type="valueComparison">
-                            <table-name>bp_form</table-name>
-                            <field>add_offset</field>
-                            <operator>&lt;=</operator>
-                            <value>90</value>
-                        </where-condition>
-                    </where-group>
-                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="2" groupBy="case_id" />
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="0" groupBy="case_id" />
                 </fact>
             </facts>
             <where-group>
+                <where-condition type="valueComparison">
+                    <table-name>mother_case</table-name>
+                    <field>ifa_tablets</field>
+                    <operator>&gt;=</operator>
+                    <value>90</value>
+                </where-condition>
                 <where-condition type="period">
+                    <!--ADD falls in period -->
                     <table-name>mother_case</table-name>
                     <field>add</field>
-                    <offset>90</offset>
                 </where-condition>
             </where-group>
         </dw-query>

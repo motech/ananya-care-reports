@@ -3,6 +3,7 @@ package org.motechproject.carereporting.xml;
 import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
+import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
@@ -17,6 +18,7 @@ import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
+import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
@@ -31,6 +33,7 @@ import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
+import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.xml.mapping.Category;
 import org.motechproject.carereporting.xml.mapping.Denominator;
 import org.motechproject.carereporting.xml.mapping.DwQuery;
@@ -44,13 +47,20 @@ import org.motechproject.carereporting.xml.mapping.User;
 import org.motechproject.carereporting.xml.mapping.WhereCondition;
 import org.motechproject.carereporting.xml.mapping.WhereGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -93,12 +103,27 @@ public class XmlIndicatorParser {
     @Autowired
     private ReportTypeDao reportTypeDao;
 
+    @Autowired
+    private FormDao formDao;
+
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
+        unmarshaller.setSchema(getSchema());
         Indicator indicator = (Indicator) unmarshaller.unmarshal(is);
         return createIndicatorEntityFromXmlIndicator(indicator);
+    }
+
+    private Schema getSchema() {
+        try {
+            Resource schemaFile = new ClassPathResource("indicator.xsd");
+            return SchemaFactory
+                    .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                    .newSchema(schemaFile.getFile());
+        } catch (IOException | SAXException e) {
+            throw new CareRuntimeException("Cannot open indicator schema file.", e);
+        }
     }
 
     private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
@@ -220,7 +245,11 @@ public class XmlIndicatorParser {
             default:
         }
         conditionEntity.setComparisonSymbol(comparisonSymbolDao.getByField("name", condition.getOperator()));
-        conditionEntity.setField1(computedFieldDao.getByField("name", condition.getField()));
+        Map<String, Object> findBy = new HashMap<>();
+        findBy.put("name", condition.getField());
+        FormEntity form = formDao.getByField("tableName", condition.getTableName());
+        findBy.put("form", form);
+        conditionEntity.setField1(computedFieldDao.getByFields(findBy));
         return conditionEntity;
     }
 
@@ -245,7 +274,7 @@ public class XmlIndicatorParser {
 
     private ConditionEntity createPeriodCondition(WhereCondition condition) {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
-        periodConditionEntity.setColumnName(condition.getColumnName());
+        periodConditionEntity.setColumnName(condition.getField());
         periodConditionEntity.setOffset(condition.getOffset());
         periodConditionEntity.setTableName(condition.getTableName());
         return periodConditionEntity;

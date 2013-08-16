@@ -34,7 +34,7 @@ public class FormsServiceImpl implements FormsService {
     private String careSchemaName;
 
     private static final String TABLE_LIST_SQL =
-            "SELECT table_name FROM information_schema.tables WHERE table_name like '%_form' and table_schema = ?";
+            "SELECT table_name FROM information_schema.tables WHERE (table_name like '%_form' OR table_name like '%_case') and table_schema = ?";
 
     private static final String COLUMNS_IN_TABLE_SQL =
             "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema= ? AND TABLE_NAME = ?";

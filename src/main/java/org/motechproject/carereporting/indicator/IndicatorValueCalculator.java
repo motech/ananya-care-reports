@@ -117,7 +117,10 @@ public class IndicatorValueCalculator {
 
     private BigDecimal executeQuery(String query) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
-        return jdbcTemplate.queryForObject(query, BigDecimal.class);
+        LOG.debug("Executing reporting db query: " + query);
+        BigDecimal result = jdbcTemplate.queryForObject(query, BigDecimal.class);
+        LOG.debug("Query executed, the result is: " + result.toString());
+        return result;
     }
 
     private IndicatorValueEntity prepareIndicatorValueEntity(BigDecimal numeratorValue, BigDecimal denominatorValue) {
