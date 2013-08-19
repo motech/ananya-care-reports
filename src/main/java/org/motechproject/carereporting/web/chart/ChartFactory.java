@@ -28,6 +28,7 @@ public final class ChartFactory {
     @Autowired
     private ReportService reportService;
 
+    private static final int SCALE = 4;
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
     private static final double BAR_WIDTH = .5;
     private static final int EXPLOSION_NUMBER = 6;
@@ -101,7 +102,7 @@ public final class ChartFactory {
             indicatorNumeratorsCombined = indicatorNumeratorsCombined.add(value.getNumerator());
             indicatorDenominatorsCombined = indicatorDenominatorsCombined.add(value.getDenominator());
         }
-        BigDecimal chartValue = indicatorNumeratorsCombined.divide(indicatorDenominatorsCombined, 4, RoundingMode.HALF_UP);
+        BigDecimal chartValue = indicatorNumeratorsCombined.divide(indicatorDenominatorsCombined, SCALE, RoundingMode.HALF_UP);
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
                 ReportType.PieChart, indicator.getId());

@@ -38,9 +38,7 @@ public class IndicatorValuesInitializer implements Runnable {
 
         Date startDate = null;
         try {
-            // in database the earliest date (date_modified) is 02.01.1980, but from 01.12.2011 dates were inserted regularly
-            // TODO: change date to 01/01/2012
-            startDate = DateUtils.parseDate("01/07/2013", new String[]{"dd/MM/yyyy"});
+            startDate = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
         } catch (ParseException e) {
             Logger.getLogger(IndicatorValuesInitializer.class).error(e);
         }

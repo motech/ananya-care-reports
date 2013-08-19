@@ -16,11 +16,9 @@ public class HibernateListenersConfigurer {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private AbstractEntityEventListener listener;
-
     @PostConstruct
     public void registerListeners() {
-        listener = new AbstractEntityEventListener();
+        AbstractEntityEventListener listener = new AbstractEntityEventListener();
 
         EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
         registry.getEventListenerGroup(EventType.PRE_INSERT).appendListener(listener);

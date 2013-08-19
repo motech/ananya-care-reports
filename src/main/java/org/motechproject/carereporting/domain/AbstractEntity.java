@@ -23,10 +23,10 @@ public abstract class AbstractEntity implements Serializable {
     protected Integer id;
 
     @Column(name = "creation_date")
-    protected Date creationDate;
+    private Date creationDate;
 
     @Column(name = "modification_date")
-    protected Date modificationDate;
+    private Date modificationDate;
 
     public Integer getId() {
         return id;

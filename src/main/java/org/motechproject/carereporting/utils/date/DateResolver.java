@@ -8,6 +8,11 @@ import java.util.Date;
 
 public final class DateResolver {
 
+    // in database the earliest date (date_modified) is 02.01.1980, but from 01.12.2011 dates were inserted regularly
+    public static final String START_DATE = "01/01/2012";
+
+    private static final int MONTHS_IN_QUARTER = 3;
+
     private DateResolver() {
 
     }
@@ -33,9 +38,9 @@ public final class DateResolver {
                 break;
             case "quarterly":
                 int monthOfYear = DateUtils.toCalendar(date).get(Calendar.MONTH);
-                end = DateUtils.addMonths(date, -(monthOfYear % 3));
+                end = DateUtils.addMonths(date, -(monthOfYear % MONTHS_IN_QUARTER));
                 end = DateUtils.truncate(end, Calendar.MONTH);
-                start = DateUtils.addMonths(end, -3);
+                start = DateUtils.addMonths(end, -MONTHS_IN_QUARTER);
                 break;
             case "yearly":
                 end = DateUtils.truncate(date, Calendar.YEAR);
@@ -73,12 +78,12 @@ public final class DateResolver {
                 break;
             case "quarterly":
                 int monthOfStartYear = DateUtils.toCalendar(startDate).get(Calendar.MONTH);
-                start = DateUtils.addMonths(startDate, -(monthOfStartYear % 3));
+                start = DateUtils.addMonths(startDate, -(monthOfStartYear % MONTHS_IN_QUARTER));
                 int monthOfEndYear = DateUtils.toCalendar(endDate).get(Calendar.MONTH);
-                end = DateUtils.addMonths(endDate, -(monthOfEndYear % 3));
+                end = DateUtils.addMonths(endDate, -(monthOfEndYear % MONTHS_IN_QUARTER));
                 start = DateUtils.truncate(start, Calendar.MONTH);
                 end = DateUtils.truncate(end, Calendar.MONTH);
-                end = DateUtils.addMonths(end, 3);
+                end = DateUtils.addMonths(end, MONTHS_IN_QUARTER);
                 break;
             case "yearly":
                 start = DateUtils.truncate(startDate, Calendar.YEAR);

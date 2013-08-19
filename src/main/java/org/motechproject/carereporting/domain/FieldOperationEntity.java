@@ -18,6 +18,8 @@ import javax.persistence.Table;
 })
 public class FieldOperationEntity extends AbstractEntity {
 
+    private static final int HASH_NUMBER = 31;
+
     @ManyToOne
     @JoinColumn(name = "field_1_id")
     @JsonView(ComputedFieldView.class)
@@ -95,8 +97,8 @@ public class FieldOperationEntity extends AbstractEntity {
             return 0;
         }
         int result = field1.hashCode();
-        result = 31 * result + field2.hashCode();
-        result = 31 * result + operatorType.hashCode();
+        result = HASH_NUMBER * result + field2.hashCode();
+        result = HASH_NUMBER * result + operatorType.hashCode();
         return result;
     }
 }
