@@ -1,0 +1,36 @@
+<indicator>
+    <name>% mothers receiving at least 2 visits in last trimester</name>
+    <categories>
+        <category name="Birth preparedness plan"/>
+    </categories>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <roles>
+            <role name="Manager"/>
+        </roles>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Pie Chart"/>
+    </reports>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <indicator-name>Mothers receiving at least 2 visits in last trimester</indicator-name>
+    </numerator>
+    <denominator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <where-group>
+                <where-condition type="period">
+                    <table-name>mother_case</table-name>
+                    <field>add</field>
+                    <offset>90</offset>
+                </where-condition>
+            </where-group>
+        </dw-query>
+    </denominator>
+</indicator>

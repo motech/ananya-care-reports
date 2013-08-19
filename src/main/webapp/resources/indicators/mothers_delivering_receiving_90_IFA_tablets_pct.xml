@@ -17,7 +17,7 @@
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <indicator-id>14</indicator-id>
+        <indicator-name>Mothers delivering receiving at least 90 IFA tablets</indicator-name>
     </numerator>
     <denominator>
         <dw-query dimension-key="id" fact-key="case_id">
