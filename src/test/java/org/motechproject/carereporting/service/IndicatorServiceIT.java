@@ -42,6 +42,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     private static final Date START_DATE = new Date();
     private static final Date END_DATE = new Date();
     private static final String NEW_INDICATOR_NAME = "new name";
+    private static final Integer FREQUENCY_ID = 1;
 
     @Autowired
     private IndicatorService indicatorService;
@@ -95,7 +96,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testGetIndicatorTrendForChildAreas() {
-        assertNotNull(indicatorService.getIndicatorTrendForChildAreas(INDICATOR_ID, PARENT_AREA_ID, START_DATE, END_DATE));
+        assertNotNull(indicatorService.getIndicatorTrendForChildAreas(INDICATOR_ID, PARENT_AREA_ID, FREQUENCY_ID, START_DATE, END_DATE));
     }
 
     @Test
@@ -183,7 +184,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testGetIndicatorsWithTrendsUnderUser() {
-        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), null));
+        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), null, null));
     }
 
 }

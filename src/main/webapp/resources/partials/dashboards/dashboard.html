@@ -21,9 +21,13 @@
                     <input class="span2" size="16" type="text" value="{{endDate}}">
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
-                <div class="pull-right input-prepend">
-                    <select class="pull-right" ng-model="areaId" ng-options="item.id as item.name for item in areas"/>
+                <div style="margin-left: 50px;" class="input-append input-prepend">
+                    <span class="add-on text-success date-label">{{msg('dashboards.trends.frequency')}}:</span>
+                    <select ng-model="frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
+                </div>
+                <div style="margin-left: 50px;" class="input-append input-prepend">
                     <span class="add-on text-success date-label">{{msg('dashboards.trends.area')}}:</span>
+                    <select ng-model="areaId" ng-options="item.id as item.name for item in areas"/>
                 </div>
                 <span ng-click="analyze()" class="btn btn-warning" style="margin-left: 20px; margin-bottom: 10px;">{{msg('dashboards.trends.analyze')}}</span>
                 <script>

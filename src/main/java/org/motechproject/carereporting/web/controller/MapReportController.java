@@ -31,9 +31,9 @@ public class MapReportController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Map<AreaEntity, Integer> getMapReportData(@RequestParam Integer indicatorId,
+    public Map<AreaEntity, Integer> getMapReportData(@RequestParam Integer indicatorId, @RequestParam Integer frequencyId,
                                                  @RequestParam Date startDate, @RequestParam Date endDate) {
         UserEntity user = userService.getCurrentlyLoggedUser();
-        return indicatorService.getIndicatorTrendForChildAreas(indicatorId, user.getArea().getId(), startDate, endDate);
+        return indicatorService.getIndicatorTrendForChildAreas(indicatorId, user.getArea().getId(), frequencyId, startDate, endDate);
     }
 }

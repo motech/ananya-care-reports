@@ -58,12 +58,14 @@ public class TrendControllerTest {
         mockMvc.perform(get("/api/trend")
                 .param("startDate", GET_TRENDS_START_DATE)
                 .param("endDate", GET_TRENDS_END_DATE)
+                .param("areaId", "1")
+                .param("frequencyId", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(userService, times(1)).getCurrentlyLoggedUser();
         verify(indicatorService, times(1)).getIndicatorsWithTrendsUnderUser((UserEntity) anyObject(),
-                (Date) anyObject(), (Date) anyObject(), anyInt());
+                (Date) anyObject(), (Date) anyObject(), anyInt(), anyInt());
     }
 
 }

@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.controller;
 
+import org.apache.log4j.Logger;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
@@ -219,6 +220,7 @@ public class IndicatorController extends BaseController {
             }
             redirectAttrs.addFlashAttribute("error", message);
         } catch (Exception e) {
+            Logger.getLogger(IndicatorController.class).error("", e);
             redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/#/indicator/upload-xml";

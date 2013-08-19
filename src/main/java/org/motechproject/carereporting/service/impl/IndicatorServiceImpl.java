@@ -31,6 +31,7 @@ import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.service.UserService;
+import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -342,7 +343,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId) {
+    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId, Integer frequencyId) {
         Set<TrendIndicatorCategoryDto> categories = new LinkedHashSet<>();
         Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
         AreaEntity area;
@@ -363,7 +364,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
                 if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
-                            getTrendForIndicator(area, indicator, startDate, endDate));
+                            getTrendForIndicator(area, indicator, frequencyId, startDate, endDate));
                     trendCategory.getIndicators().add(trendIndicator);
                 }
             }
@@ -382,7 +383,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(
-            Integer indicatorId, Integer parentAreaId, Date startDate, Date endDate) {
+            Integer indicatorId, Integer parentAreaId, Integer frequencyId, Date startDate, Date endDate) {
         IndicatorEntity indicator = getIndicatorById(indicatorId);
         Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
         if (indicator.getTrend() == null) {
@@ -395,7 +396,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             areas = areaService.getAllTopLevelAreas();
         }
         for (AreaEntity area: areas) {
-            int trend = getTrendForIndicator(area, indicator, startDate, endDate);
+            int trend = getTrendForIndicator(area, indicator, frequencyId, startDate, endDate);
             areasTrends.put(area, trend);
         }
         return areasTrends;
@@ -422,20 +423,21 @@ public class IndicatorServiceImpl implements IndicatorService {
         return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));
     }
 
-    private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Date startDate, Date endDate) {
+    private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
 
         if (indicator.getTrend() == null) {
             throw new IllegalArgumentException("Cannot calculate trend value for indicator with null trend.");
         }
+        FrequencyEntity frequency = cronService.getFrequencyById(frequencyId);
+        Date[] dates = DateResolver.resolveDates(frequency, startDate, endDate);
 
-        IndicatorValueEntity startValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, startDate);
-        IndicatorValueEntity endValue = indicatorValueDao.getIndicatorValueClosestToDate(area, indicator, endDate);
+        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicator.getId(), area.getId(), frequencyId, dates[0], dates[1]);
 
-        if (startValue == null || endValue == null) {
+        if (values.size() < 2) {
             return TREND_NEUTRAL;
         }
 
-        BigDecimal diff = endValue.getValue().subtract(startValue.getValue());
+        BigDecimal diff = values.get(values.size() - 1).getValue().subtract(values.get(0).getValue());
 
         if (diff.compareTo(indicator.getTrend().negate()) < 0) {
             return TREND_NEGATIVE;

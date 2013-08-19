@@ -10,9 +10,12 @@ import org.motechproject.carereporting.service.IndicatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 public abstract class IndicatorValueCalculator {
+
+    private static final int SCALE = 4;
 
     @Autowired
     private IndicatorService indicatorService;
@@ -40,7 +43,7 @@ public abstract class IndicatorValueCalculator {
         value.setNumerator(numeratorValue);
         value.setDenominator(denominatorValue);
 
-        BigDecimal indicatorValue = numeratorValue.divide(denominatorValue);
+        BigDecimal indicatorValue = numeratorValue.divide(denominatorValue, SCALE, RoundingMode.HALF_UP);
 
         value.setValue(indicatorValue);
         return value;

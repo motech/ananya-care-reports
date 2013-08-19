@@ -45,6 +45,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchFrequencies = function() {
         $http.get('/api/indicator/calculator/frequencies').success(function(frequencies) {
             $scope.frequencies = frequencies;
+            $scope.frequencyId = frequencies[0].id;
         });
     };
     $scope.fetchFrequencies();
@@ -100,8 +101,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.from = moment(report.from);
         report.to = moment(report.to);
 
-        if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.from = moment(report.to).subtract('days', 1).format("L");
+        if (moment(report.to).diff(report.from, 'days') < 0) {
+            report.from = moment(report.to).format("L");
         }
     };
 
@@ -109,8 +110,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         report.from = moment(report.from);
         report.to = moment(report.to);
 
-        if (moment(report.to).diff(report.from, 'days') <= 0) {
-            report.to = moment(report.from).add('days', 1).format("L");
+        if (moment(report.to).diff(report.from, 'days') < 0) {
+            report.to = moment(report.from).format("L");
         }
     };
 
@@ -194,7 +195,10 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if (endDate == undefined) {
             endDate = $scope.endDate;
         }
-        url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") + '&endDate=' + moment(endDate).format("DD/MM/YYYY") + '&areaId=' + $scope.areaId;
+        url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") +
+                '&endDate=' + moment(endDate).format("DD/MM/YYYY") +
+                '&areaId=' + $scope.areaId +
+                '&frequencyId=' + $scope.frequencyId;
         $http.get(url)
                 .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;
