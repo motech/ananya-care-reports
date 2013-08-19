@@ -168,7 +168,6 @@
 
                                 $http.get(url).success(function(chart) {
                                     var graph, title, chart, wrapper, titleElement,
-                                        isLineChart = chart.settings.pie == undefined && chart.settings.bars == undefined,
                                         drawChart = function(opts) {
                                             chart.settings.mouse.trackFormatter = trackFormatter;
                                             var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
@@ -184,27 +183,7 @@
                                         title = chart.settings.title;
                                         delete chart.settings.title;
                                     }
-
                                     drawChart();
-
-                                    if (isLineChart) {
-                                        Flotr.EventAdapter.observe(element[0], 'flotr:select', function(area) {
-                                            drawChart({
-                                                xaxis: {
-                                                    min: area.x1,
-                                                    max: area.x2
-                                                },
-                                                yaxis: {
-                                                    min: area.y1,
-                                                    max: area.y2
-                                                }
-                                            });
-                                        });
-
-                                        Flotr.EventAdapter.observe(element[0], 'flotr:click', function() {
-                                            drawChart();
-                                        });
-                                    }
                                 }).error(function(data, status, headers, config) {
                                     $dialog.messageBox(scope.msg('common.error'), data, [{label: scope.msg('common.ok'), cssClass: 'btn'}]).open();
                                 });
