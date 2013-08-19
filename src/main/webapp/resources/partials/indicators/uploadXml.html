@@ -2,7 +2,7 @@
 <div class="container">
     <div class="well span7 offset2">
         <h1 class="text-center">{{msg('indicators.uploadXml.title')}}</h1>
-        <form method="post" action="/api/indicator/upload" enctype="multipart/form-data">
+        <form method="post" action="api/indicator/upload" enctype="multipart/form-data">
             <input type="file" name="file" />
             <input type="submit" value="{{msg('indicators.uploadXml.submit')}}" />
         </form>
