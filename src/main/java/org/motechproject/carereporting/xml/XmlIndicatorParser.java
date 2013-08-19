@@ -12,6 +12,7 @@ import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
@@ -35,11 +36,11 @@ import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.xml.mapping.Category;
-import org.motechproject.carereporting.xml.mapping.Denominator;
+import org.motechproject.carereporting.xml.mapping.CombineWith;
+import org.motechproject.carereporting.xml.mapping.Query;
 import org.motechproject.carereporting.xml.mapping.DwQuery;
 import org.motechproject.carereporting.xml.mapping.Fact;
 import org.motechproject.carereporting.xml.mapping.Indicator;
-import org.motechproject.carereporting.xml.mapping.Numerator;
 import org.motechproject.carereporting.xml.mapping.Report;
 import org.motechproject.carereporting.xml.mapping.Role;
 import org.motechproject.carereporting.xml.mapping.SelectColumn;
@@ -136,14 +137,14 @@ public class XmlIndicatorParser {
         indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
-        indicatorEntity.setNumerator(prepareNumerator(indicator.getNumerator()));
+        indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
         indicatorEntity.setTrend(indicator.getTrend());
         indicatorEntity.setReports(prepareReports(indicator.getReports()));
         for (ReportEntity report: indicatorEntity.getReports()) {
             report.setIndicator(indicatorEntity);
         }
         if (indicator.getDenominator() != null) {
-            indicatorEntity.setDenominator(prepareDenominator(indicator.getDenominator()));
+            indicatorEntity.setDenominator(prepareQuery(indicator.getDenominator()));
         }
         return indicatorEntity;
     }
@@ -179,22 +180,6 @@ public class XmlIndicatorParser {
             indicatorCategories.add(indicatorCategory);
         }
         return indicatorCategories;
-    }
-
-    private DwQueryEntity prepareDenominator(Denominator denominator) {
-        if (denominator.getIndicatorId() != null) {
-            return indicatorDao.getByIdWithFields(denominator.getIndicatorId(), "numerator").getNumerator();
-        } else {
-            return prepareDwQuery(denominator.getDwQuery());
-        }
-    }
-
-    private DwQueryEntity prepareNumerator(Numerator numerator) {
-        if (numerator.getIndicatorId() != null) {
-            return indicatorDao.getByIdWithFields(numerator.getIndicatorId(), "numerator").getNumerator();
-        } else {
-            return prepareDwQuery(numerator.getDwQuery());
-        }
     }
 
     private Set<ReportEntity> prepareReports(List<Report> reports) {
@@ -280,6 +265,14 @@ public class XmlIndicatorParser {
         return periodConditionEntity;
     }
 
+    private DwQueryEntity prepareQuery(Query query) {
+        if (query.getIndicatorId() != null) {
+            return indicatorDao.getByIdWithFields(query.getIndicatorId(), "numerator").getNumerator();
+        } else {
+            return prepareDwQuery(query.getDwQuery());
+        }
+    }
+
     private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
         ComplexDwQueryEntity dwQueryEntity = new ComplexDwQueryEntity();
         dwQueryEntity.setDimension(dwQuery.getDimension().getName());
@@ -293,9 +286,21 @@ public class XmlIndicatorParser {
         for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
             dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn));
         }
+        if (dwQuery.getCombineWith() != null) {
+            dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
+        }
         dwQueryEntity.setDimensionKey(dwQuery.getDimensionKey());
         dwQueryEntity.setFactKey(dwQuery.getFactKey());
         return dwQueryEntity;
+    }
+
+    private CombinationEntity prepareCombination(CombineWith combineWith) {
+        CombinationEntity combination = new CombinationEntity();
+        combination.setDwQuery(prepareQuery(combineWith));
+        combination.setForeignKey(combineWith.getForeignKey());
+        combination.setReferencedKey(combineWith.getDimensionKey());
+        combination.setType(combineWith.getType());
+        return combination;
     }
 
     private boolean hasPeriodCondition(WhereGroupEntity whereGroup) {
@@ -314,8 +319,10 @@ public class XmlIndicatorParser {
 
     private Set<FactEntity> prepareFacts(List<Fact> facts) {
         Set<FactEntity> factEntities = new HashSet<>();
-        for (Fact fact: facts) {
-            factEntities.add(prepareFact(fact));
+        if (facts != null) {
+            for (Fact fact: facts) {
+                factEntities.add(prepareFact(fact));
+            }
         }
         return factEntities;
     }

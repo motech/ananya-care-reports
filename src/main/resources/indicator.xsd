@@ -68,13 +68,13 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="numerator" type="denom_num" />
-                <xs:element name="denominator" minOccurs="0" type="denom_num" />
+                <xs:element name="numerator" type="query" />
+                <xs:element name="denominator" minOccurs="0" type="query" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="denom_num">
+    <xs:complexType name="query">
         <xs:choice>
             <xs:element name="indicator">
                 <xs:complexType>
@@ -93,7 +93,22 @@
                     <xs:attribute name="tableName" use="required" type="xs:string" />
                 </xs:complexType>
             </xs:element>
-            <xs:element name="facts">
+            <xs:element name="combineWith" minOccurs="0">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="indicator">
+                            <xs:complexType>
+                                <xs:attribute name="id" use="required" type="xs:integer" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="dw-query" type="dw_query" />
+                    </xs:choice>
+                    <xs:attribute name="type" use="required" type="xs:string" />
+                    <xs:attribute name="dimension-key" use="required" type="xs:string" />
+                    <xs:attribute name="foreign-key" use="required" type="xs:string" />
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="facts" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="fact" minOccurs="1" maxOccurs="unbounded">

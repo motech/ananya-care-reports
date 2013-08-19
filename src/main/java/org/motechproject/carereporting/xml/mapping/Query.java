@@ -1,10 +1,8 @@
 package org.motechproject.carereporting.xml.mapping;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "denominator")
-public class Denominator {
+public class Query {
 
     private Integer indicatorId;
 

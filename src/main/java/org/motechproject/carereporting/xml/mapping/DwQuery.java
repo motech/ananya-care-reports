@@ -15,6 +15,8 @@ public class DwQuery {
 
     private WhereGroup whereGroup;
 
+    private CombineWith combineWith;
+
     private List<SelectColumn> selectColumns;
 
     private String dimensionKey;
@@ -74,5 +76,14 @@ public class DwQuery {
 
     public void setFactKey(String factKey) {
         this.factKey = factKey;
+    }
+
+    @XmlElement(name = "combineWith")
+    public CombineWith getCombineWith() {
+        return combineWith;
+    }
+
+    public void setCombineWith(CombineWith combineWith) {
+        this.combineWith = combineWith;
     }
 }

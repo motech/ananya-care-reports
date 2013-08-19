@@ -19,9 +19,9 @@ public class Indicator {
 
     private Frequency defaultFrequency;
 
-    private Denominator denominator;
+    private Query denominator;
 
-    private Numerator numerator;
+    private Query numerator;
 
     private Union union;
 
@@ -66,19 +66,19 @@ public class Indicator {
         this.defaultFrequency = defaultFrequency;
     }
 
-    public Denominator getDenominator() {
+    public Query getDenominator() {
         return denominator;
     }
 
-    public void setDenominator(Denominator denominator) {
+    public void setDenominator(Query denominator) {
         this.denominator = denominator;
     }
 
-    public Numerator getNumerator() {
+    public Query getNumerator() {
         return numerator;
     }
 
-    public void setNumerator(Numerator numerator) {
+    public void setNumerator(Query numerator) {
         this.numerator = numerator;
     }
 
