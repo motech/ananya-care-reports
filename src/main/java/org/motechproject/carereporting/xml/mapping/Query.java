@@ -8,13 +8,16 @@ public class Query {
 
     private DwQuery dwQuery;
 
+    private String indicatorName;
+
     @XmlElement(name = "indicator-id")
     public Integer getIndicatorId() {
         return indicatorId;
     }
 
-    public void setIndicatorId(Integer indicatorId) {
-        this.indicatorId = indicatorId;
+    @XmlElement(name = "indicator-name")
+    public String getIndicatorName() {
+        return indicatorName;
     }
 
     @XmlElement(name = "dw-query")

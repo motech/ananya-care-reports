@@ -266,8 +266,8 @@ public class XmlIndicatorParser {
     }
 
     private DwQueryEntity prepareQuery(Query query) {
-        if (query.getIndicatorId() != null) {
-            return indicatorDao.getByIdWithFields(query.getIndicatorId(), "numerator").getNumerator();
+        if (query.getIndicatorName() != null) {
+            return indicatorDao.getIndicatorByName(query.getIndicatorName()).getNumerator();
         } else {
             return prepareDwQuery(query.getDwQuery());
         }

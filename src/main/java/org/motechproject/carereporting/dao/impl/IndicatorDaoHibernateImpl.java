@@ -23,4 +23,12 @@ public class IndicatorDaoHibernateImpl extends GenericDaoHibernateImpl<Indicator
                 .add(Restrictions.eq("category.id", categoryId));
         return new LinkedHashSet<IndicatorEntity>(criteria.list());
     }
+
+    @Override
+    public IndicatorEntity getIndicatorByName(String name) {
+        Criteria criteria = getCurrentSession()
+                .createCriteria(IndicatorEntity.class)
+                .add(Restrictions.eq("name", name));
+        return (IndicatorEntity) criteria.uniqueResult();
+    }
 }
