@@ -54,6 +54,7 @@ public class WhereCondition {
         this.value = value;
     }
 
+    @XmlElement(name = "second-field")
     public String getSecondField() {
         return secondField;
     }

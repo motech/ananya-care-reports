@@ -3,10 +3,12 @@
     <categories>
         <category name="Birth preparedness plan"/>
     </categories>
-    <user login="mrcaretest@gmail.com"/>
-    <roles>
-        <role name="Manager"/>
-    </roles>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <roles>
+            <role name="Manager"/>
+        </roles>
+    </owners>
     <trend>3</trend>
     <reports>
         <report type="Bar Chart" />

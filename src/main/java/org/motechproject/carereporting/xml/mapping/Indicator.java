@@ -13,9 +13,7 @@ public class Indicator {
 
     private List<Category> categories;
 
-    private User user;
-
-    private List<Role> roles;
+    private Owners owners;
 
     private Area area;
 
@@ -49,24 +47,6 @@ public class Indicator {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @XmlElementWrapper(name = "roles")
-    @XmlElement(name = "role")
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
     }
 
     public Area getArea() {
@@ -134,5 +114,13 @@ public class Indicator {
 
     public void setReports(List<Report> reports) {
         this.reports = reports;
+    }
+
+    public Owners getOwners() {
+        return owners;
+    }
+
+    public void setOwners(Owners owners) {
+        this.owners = owners;
     }
 }
