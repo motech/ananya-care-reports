@@ -16,6 +16,8 @@ public class Fact {
 
     private List<SelectColumn> selectColumns;
 
+    private CombineType combineType;
+
     public String getName() {
         return name;
     }
@@ -50,5 +52,14 @@ public class Fact {
 
     public void setSelectColumns(List<SelectColumn> selectColumns) {
         this.selectColumns = selectColumns;
+    }
+
+    @XmlElement(name = "combine-type")
+    public CombineType getCombineType() {
+        return combineType;
+    }
+
+    public void setCombineType(CombineType combineType) {
+        this.combineType = combineType;
     }
 }

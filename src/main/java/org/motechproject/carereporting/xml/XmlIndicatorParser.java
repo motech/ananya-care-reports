@@ -274,9 +274,12 @@ public class XmlIndicatorParser {
     }
 
     private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
-        ComplexDwQueryEntity dwQueryEntity = new ComplexDwQueryEntity();
-        dwQueryEntity.setDimension(dwQuery.getDimension().getName());
-        dwQueryEntity.setFacts(prepareFacts(dwQuery.getFacts()));
+        DwQueryEntity dwQueryEntity;
+        if (dwQuery.getFacts() != null && dwQuery.getFacts().size() > 0) {
+            dwQueryEntity = prepareComplexDwQuery(dwQuery);
+        } else {
+            dwQueryEntity = prepareSimpleDwQuery(dwQuery);
+        }
         if (dwQuery.getWhereGroup() != null) {
             WhereGroupEntity whereGroup = prepareWhereGroup(dwQuery.getWhereGroup());
             dwQueryEntity.setWhereGroup(whereGroup);
@@ -289,8 +292,21 @@ public class XmlIndicatorParser {
         if (dwQuery.getCombineWith() != null) {
             dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
         }
+        return dwQueryEntity;
+    }
+
+    private ComplexDwQueryEntity prepareComplexDwQuery(DwQuery dwQuery) {
+        ComplexDwQueryEntity dwQueryEntity = new ComplexDwQueryEntity();
+        dwQueryEntity.setDimension(dwQuery.getDimension().getName());
+        dwQueryEntity.setFacts(prepareFacts(dwQuery.getFacts()));
         dwQueryEntity.setDimensionKey(dwQuery.getDimensionKey());
         dwQueryEntity.setFactKey(dwQuery.getFactKey());
+        return dwQueryEntity;
+    }
+
+    private SimpleDwQueryEntity prepareSimpleDwQuery(DwQuery dwQuery) {
+        SimpleDwQueryEntity dwQueryEntity = new SimpleDwQueryEntity();
+        dwQueryEntity.setTableName(dwQuery.getDimension().getName());
         return dwQueryEntity;
     }
 
@@ -336,7 +352,9 @@ public class XmlIndicatorParser {
 
     private FactEntity prepareFact(Fact fact) {
         FactEntity factEntity = new FactEntity();
-        factEntity.setCombineType(null);
+        if (fact.getCombineType() != null) {
+            factEntity.setCombineType(fact.getCombineType().toString());
+        }
         factEntity.setTable(prepareFactDwQuery(fact));
         return factEntity;
     }
@@ -357,7 +375,9 @@ public class XmlIndicatorParser {
             }
             simpleDwQueryEntity.getSelectColumns().add(col);
         }
-        simpleDwQueryEntity.setGroupedBy(prepareGroupedBy(fact));
+        if (fact.getGroupedBy() != null) {
+            simpleDwQueryEntity.setGroupedBy(prepareGroupedBy(fact));
+        }
         return simpleDwQueryEntity;
     }
 

@@ -109,7 +109,7 @@
                                     <xs:element name="name" type="xs:string" />
                                     <xs:element name="select-columns" type="select_columns" />
                                     <xs:element name="where-group" type="where_group" minOccurs="0" />
-                                    <xs:element name="groupedByDimensionFactRowsNumber">
+                                    <xs:element name="groupedByDimensionFactRowsNumber" minOccurs="0" maxOccurs="1">
                                         <xs:complexType>
                                             <xs:attribute name="compSymbol" use="optional">
                                                 <xs:simpleType>
@@ -130,6 +130,16 @@
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
+                    <xs:attribute name="combine-type" use="optional">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="Union" />
+                                <xs:enumeration value="UnionAll" />
+                                <xs:enumeration value="Intersect" />
+                                <xs:enumeration value="Join" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
             <xs:element name="where-group" minOccurs="0" type="where_group" />
