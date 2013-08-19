@@ -89,6 +89,18 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private BigDecimal trend;
 
+    @Column(name = "is_computing", nullable = false)
+    @JsonView({ DashboardJsonView.class })
+    private Boolean isComputing;
+
+    public Boolean getComputing() {
+        return isComputing;
+    }
+
+    public void setComputing(Boolean computing) {
+        isComputing = computing;
+    }
+
     public DwQueryEntity getDenominator() {
         return denominator;
     }

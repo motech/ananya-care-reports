@@ -7,6 +7,7 @@ import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.indicator.IndicatorCalculator;
 import org.motechproject.carereporting.service.CronService;
+import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.context.ApplicationContext;
 
@@ -24,10 +25,13 @@ public class IndicatorValuesInitializer implements Runnable {
 
     private CronService cronService;
 
+    private IndicatorService indicatorService;
+
     private IndicatorCalculator indicatorCalculator;
 
     public IndicatorValuesInitializer(IndicatorEntity indicatorEntity) {
         this.indicatorEntity = indicatorEntity;
+        indicatorService = applicationContext.getBean(IndicatorService.class);
         cronService = applicationContext.getBean(CronService.class);
         indicatorCalculator = applicationContext.getBean(IndicatorCalculator.class);
     }
@@ -38,7 +42,7 @@ public class IndicatorValuesInitializer implements Runnable {
 
         Date startDate = null;
         try {
-            startDate = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
+            startDate = DateUtils.parseDate("01/07/2013", new String[]{"dd/MM/yyyy"});
         } catch (ParseException e) {
             Logger.getLogger(IndicatorValuesInitializer.class).error(e);
         }
@@ -54,6 +58,7 @@ public class IndicatorValuesInitializer implements Runnable {
                 date = dates[1];
             }
         }
+        indicatorService.setComputingForIndicator(indicatorEntity.getId());
         LOG.info("Calculation finished");
     }
 }

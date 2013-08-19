@@ -187,4 +187,11 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), null, null));
     }
 
+    @Test
+    public void testSetComputingForIndicator() {
+        indicatorService.setComputingForIndicator(INDICATOR_ID);
+        IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(INDICATOR_ID);
+        assertEquals(Boolean.TRUE, indicatorEntity.getComputing());
+    }
+
 }

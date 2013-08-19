@@ -50,65 +50,66 @@
                 </div>
                 <div class="row" ng-show="reportRows.length > 0">
                     <div style="overflow: auto;">
-                        <table class="span12">
+                        <table class="span8">
                             <tbody>
                                 <tr ng-repeat="reportRow in reportRows">
-                                    <td class="span4" ng-repeat="report in reportRow">
-                                        <div ng-show="report != undefined">
-                                            <div class="input-prepend input-append">
-                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.from')}}:</span>
-                                                <input type="date" ng-model="report.from" bs-datepicker ng-change="reportFromDateChanged(report)" />
-                                                <span class="add-on"><i class="icon-calendar"></i></span>
-                                            </div>
-                                            <div class="input-prepend input-append">
-                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.to')}}:</span>
-                                                <input type="date" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
-                                                <span class="add-on"><i class="icon-calendar"></i></span>
-                                            </div>
-                                            <div class="input-prepend input-append">
-                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.frequency')}}:</span>
-                                                <select ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
-                                            </div>
-                                            <div class="input-prepend input-append">
-                                                <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.area')}}:</span>
-                                                <select ng-model="report.areaId" ng-options="item.id as item.name for item in report.areas"/>
-                                            </div>
+                                    <td ng-repeat="report in reportRow" ng-show="report != undefined">
+                                        <div ng-hide="report.computing || $index > 0" class="alert alert-info">
+                                            {{msg('dashboards.charts.computed1')}} {{report.indicatorName}} {{msg('dashboards.charts.computed2')}}
                                         </div>
-                                        <p class="text-left">
-                                            <div class="btn-group">
-                                                <button type="button" ng-click="exportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</button>
-                                                <button type="button" ng-click="exportCaseListReportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined && report.canExportCaseListReport">{{msg('dashboards.charts.exportCaseListReport')}}</button>
-                                                <button type="button" ng-click="toggleChartDisplay(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</button>
-                                            </div>
-                                        </p>
-                                        <div class="chart-container-wrapper">
-                                            <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
-                                            <div class="chart-container" ng-show="report.displayType == 'table'">
-                                                <div class="row-fluid">
-                                                    <table class="span11 table table-hover table-striped table-bordered centered" ng-show="report.chart.length > 0">
-                                                        <thead>
-                                                        <th>{{msg('dashboards.charts.details.table.header.date')}}</th>
-                                                        <th>{{msg('dashboards.charts.details.table.header.value')}}</th>
-                                                        </thead>
-                                                        <tbody>
-                                                        <tr ng-repeat="item in report.chart">
-                                                            <td class="span8">{{formatDate(item.date)}}</td>
-                                                            <td class="span4">{{item.value}}{{report.reportType.name == 'Pie Chart' && '%' || '' }}</td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
+                                        <div ng-show="report.computing">
+                                            <div>
+                                                <div class="input-prepend input-append">
+                                                    <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.from')}}:</span>
+                                                    <input type="date" ng-model="report.from" bs-datepicker ng-change="reportFromDateChanged(report)" />
+                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                </div>
+                                                <div class="input-prepend input-append">
+                                                    <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.to')}}:</span>
+                                                    <input type="date" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
+                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                </div>
+                                                <div class="input-prepend input-append">
+                                                    <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.frequency')}}:</span>
+                                                    <select ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
+                                                </div>
+                                                <div class="input-prepend input-append">
+                                                    <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.area')}}:</span>
+                                                    <select ng-model="report.areaId" ng-options="item.id as item.name for item in report.areas"/>
                                                 </div>
                                             </div>
+                                            <p class="text-left">
+                                                <div class="btn-group">
+                                                    <button type="button" ng-click="exportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</button>
+                                                    <button type="button" ng-click="exportCaseListReportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined && report.canExportCaseListReport">{{msg('dashboards.charts.exportCaseListReport')}}</button>
+                                                    <button type="button" ng-click="toggleChartDisplay(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</button>
+                                                </div>
+                                            </p>
+                                            <div class="chart-container-wrapper">
+                                                <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
+                                                <div class="chart-container" ng-show="report.displayType == 'table'">
+                                                    <div class="row-fluid">
+                                                        <table class="span11 table table-hover table-striped table-bordered centered" ng-show="report.chart.length > 0">
+                                                            <thead>
+                                                            <th>{{msg('dashboards.charts.details.table.header.date')}}</th>
+                                                            <th>{{msg('dashboards.charts.details.table.header.value')}}</th>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr ng-repeat="item in report.chart">
+                                                                <td class="span8">{{formatDate(item.date)}}</td>
+                                                                <td class="span4">{{item.value}}{{report.reportType.name == 'Pie Chart' && '%' || '' }}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="chart-title pull-left">{{report.indicatorName}}</p>
                                         </div>
-                                        <p class="chart-title">{{report.indicatorName}}</p>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="alert alert-info">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>{{msg('common.tip')}}:</strong> {{msg('dashboards.charts.tip.zoom')}}
                     </div>
                 </div>
             </div>

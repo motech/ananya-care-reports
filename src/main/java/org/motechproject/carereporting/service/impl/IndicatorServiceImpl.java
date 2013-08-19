@@ -182,6 +182,14 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    public void setComputingForIndicator(Integer id) {
+        IndicatorEntity indicatorEntity = indicatorDao.getById(id);
+        indicatorEntity.setComputing(Boolean.TRUE);
+        indicatorDao.update(indicatorEntity);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
     public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorDto.getId());
 

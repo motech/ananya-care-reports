@@ -752,4 +752,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #10.3" author="Adrian Boguszewski">
+        <addColumn tableName="indicator" schemaName="dashboard_app">
+            <column name="is_computing" type="boolean" defaultValue="f" />
+        </addColumn>
+        <update tableName="indicator" schemaName="dashboard_app">
+            <column name="is_computing" value="t"/>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

@@ -41,6 +41,8 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicator(IndicatorEntity indicatorEntity);
 
+    void setComputingForIndicator(Integer id);
+
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicatorFromDto(IndicatorDto indicatorDto);
 
