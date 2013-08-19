@@ -1,0 +1,40 @@
+<indicator>
+    <name>% mothers delivering receiving at least 90 IFA tablets</name>
+    <categories>
+        <category name="IFA Tablets" />
+    </categories>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <roles>
+            <role name="Manager"/>
+        </roles>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Pie Chart" />
+        <report type="Line Chart" label-x="Time" label-y="% mothers" />
+    </reports>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <indicator-id>14</indicator-id>
+    </numerator>
+    <denominator>
+        <dw-query dimension-key="id" fact-key="case_id">
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <facts>
+                <fact>
+                    <name>delivery_mother_form</name>
+                    <select-columns>
+                        <select-column fieldName="case_id" />
+                        <select-column aggregation="Count" fieldName="case_id" />
+                    </select-columns>
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="0" groupBy="case_id" />
+                </fact>
+            </facts>
+        </dw-query>
+    </denominator>
+</indicator>
