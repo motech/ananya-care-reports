@@ -212,9 +212,9 @@ public class DwQueryHelper {
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.GreaterEqual,
+                        OperatorType.Less,
                         "%(fromDate)",
-                        condition.getOffset());
+                        -Math.abs(condition.getOffset()));
     }
 
     private WhereConditionBuilder preparePeriodCondition(PeriodConditionEntity condition) {
@@ -222,7 +222,7 @@ public class DwQueryHelper {
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.LessEqual,
+                        OperatorType.GreaterEqual,
                         "%(toDate)");
     }
 
