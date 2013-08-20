@@ -39,14 +39,16 @@ public class IndicatorCalculator {
     }
 
     public void calculateIndicatorValues(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {
-        IndicatorValueCalculator indicatorValueCalculator;
+        IndicatorValueCalculator indicatorValueCalculator = null;
 
         if (DAILY.equals(frequency.getFrequencyName())) {
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(DailyValueCalculator.class);
-        } else {
+        } else if (indicator.getAdditive() == Boolean.TRUE){
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(OtherPeriodValueCalculator.class);
         }
 
-        indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, from, to);
+        if(indicatorValueCalculator != null) {
+            indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, from, to);
+        }
     }
 }

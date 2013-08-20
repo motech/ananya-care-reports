@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.xml.mapping;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -8,6 +9,8 @@ import java.util.List;
 
 @XmlRootElement
 public class Indicator {
+
+    private Boolean additive;
 
     private String name;
 
@@ -30,6 +33,15 @@ public class Indicator {
     private BigDecimal trend;
 
     private List<Report> reports;
+
+    @XmlAttribute
+    public Boolean getAdditive() {
+        return additive;
+    }
+
+    public void setAdditive(Boolean additive) {
+        this.additive = additive;
+    }
 
     public String getName() {
         return name;

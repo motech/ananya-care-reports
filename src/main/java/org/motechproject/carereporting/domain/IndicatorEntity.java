@@ -93,6 +93,18 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ DashboardJsonView.class })
     private Boolean isComputing;
 
+    @Column(name = "is_additive", nullable = false)
+    @JsonView({ DashboardJsonView.class })
+    private Boolean isAdditive;
+
+    public Boolean getAdditive() {
+        return isAdditive;
+    }
+
+    public void setAdditive(Boolean additive) {
+        isAdditive = additive;
+    }
+
     public Boolean getComputing() {
         return isComputing;
     }

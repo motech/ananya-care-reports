@@ -71,7 +71,7 @@
                                                 </div>
                                                 <div class="input-prepend input-append">
                                                     <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.frequency')}}:</span>
-                                                    <select ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
+                                                    <select ng-disabled="!report.additive" ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
                                                 </div>
                                                 <div class="input-prepend input-append">
                                                     <span class="add-on text-success date-label label-fixed-width">{{msg('dashboards.trends.area')}}:</span>

@@ -1,4 +1,4 @@
-<indicator>
+<indicator additive="false">
     <name>% mothers receiving at least 2 visits in last trimester</name>
     <categories>
         <category name="Birth preparedness plan"/>

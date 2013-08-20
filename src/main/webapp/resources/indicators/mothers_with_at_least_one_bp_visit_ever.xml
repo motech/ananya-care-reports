@@ -1,4 +1,4 @@
-<indicator>
+<indicator additive="false">
     <name>Mothers with at least one bp visit</name>
     <categories>
         <category name="Birth preparedness plan"/>

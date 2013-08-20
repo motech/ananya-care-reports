@@ -1,4 +1,4 @@
-<indicator>
+<indicator additive="true">
     <name>Mothers delivering receiving at least 90 IFA tablets</name>
     <categories>
         <category name="IFA Tablets" />

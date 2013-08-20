@@ -141,6 +141,7 @@ public class XmlIndicatorParser {
         indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
         indicatorEntity.setTrend(indicator.getTrend());
         indicatorEntity.setReports(prepareReports(indicator.getReports()));
+        indicatorEntity.setAdditive(indicator.getAdditive());
         for (ReportEntity report: indicatorEntity.getReports()) {
             report.setIndicator(indicatorEntity);
         }

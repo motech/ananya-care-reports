@@ -760,5 +760,11 @@
             <column name="is_computing" value="t"/>
         </update>
     </changeSet>
+    
+    <changeSet id="CARE #37.4" author="Adrian Boguszewski">
+        <addColumn tableName="indicator" schemaName="dashboard_app">
+            <column name="is_additive" type="boolean" defaultValue="f"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
