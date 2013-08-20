@@ -15,6 +15,7 @@ import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
+import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
@@ -50,6 +51,12 @@ public class DwQueryHelper {
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
         addAreaJoinAndCondition(dwQuery, area);
+        if (!dwQueryEntity.getHasPeriodCondition()) {
+            String tableName = dwQuery instanceof ComplexDwQuery
+                    ? ((ComplexDwQueryEntity) dwQueryEntity).getDimension()
+                    : ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
+            addTimeCondition(dwQuery, tableName);
+        }        
         return dwQuery;
     }
 
@@ -180,8 +187,8 @@ public class DwQueryHelper {
         } else if (condition instanceof PeriodConditionEntity) {
             PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
             if (periodCondition.getOffset() != null) {
-                builder.withCondition(preparePeriodConditionWithOffset(periodCondition));
-                builder.withCondition(preparePeriodCondition(periodCondition));
+                builder.withCondition(preparePeriodConditionFromDate(periodCondition));
+                builder.withCondition(preparePeriodConditionToDate(periodCondition));
             } else {
                 builder.withCondition(prepareDateBetweenCondition(periodCondition));
             }
@@ -210,7 +217,7 @@ public class DwQueryHelper {
                         SECONDS_PER_DAY * condition.getValue());
     }
 
-    private WhereConditionBuilder preparePeriodConditionWithOffset(PeriodConditionEntity condition) {
+    private WhereConditionBuilder preparePeriodConditionFromDate(PeriodConditionEntity condition) {
         return new WhereConditionBuilder()
                 .withDateValueComparison(
                         condition.getTableName(),
@@ -220,7 +227,7 @@ public class DwQueryHelper {
                         condition.getOffset() < 0 ? condition.getOffset() : 0);
     }
 
-    private WhereConditionBuilder preparePeriodCondition(PeriodConditionEntity condition) {
+    private WhereConditionBuilder preparePeriodConditionToDate(PeriodConditionEntity condition) {
         return new WhereConditionBuilder()
                 .withDateValueComparison(
                         condition.getTableName(),
@@ -294,6 +301,23 @@ public class DwQueryHelper {
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
         return new WhereConditionBuilder()
                 .withValueComparison("flw", area.getLevel().getName(), OperatorType.Equal, area.getName())
+                .build();
+    }
+
+    private void addTimeCondition(DwQuery dwQuery, String tableName) {
+        if (dwQuery.getWhereConditionGroup() == null) {
+            dwQuery.setWhereConditionGroup(new WhereConditionGroup());
+        }
+        dwQuery.getWhereConditionGroup().addCondition(prepareTimeCondition(tableName));
+    }
+
+    private WhereCondition prepareTimeCondition(String tableName) {
+        return new WhereConditionBuilder()
+                .withDateRangeComparison(
+                        tableName,
+                        "creation_time",
+                        "%(fromDate)",
+                        "%(toDate)")
                 .build();
     }
 }

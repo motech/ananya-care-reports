@@ -5,9 +5,7 @@ import org.dwQueryBuilder.builders.QueryBuilder;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.domain.AreaEntity;
-import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
-import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
@@ -51,31 +49,8 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
         DwQuery query = dwQueryHelper.buildDwQuery(dwQueryEntity, area);
         String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
                 schemaName, query, false);
-        if (shouldBindDatesTo(dwQueryEntity)) {
-            sqlQuery = dwQueryHelper.formatFromDateAndToDate(sqlQuery, from, to);
-        }
+        sqlQuery = dwQueryHelper.formatFromDateAndToDate(sqlQuery, from, to);
         return executeQuery(sqlQuery);
-    }
-
-    private boolean shouldBindDatesTo(DwQueryEntity dwQueryEntity) {
-        return dwQueryEntity.getHasPeriodCondition()
-                || shouldBindToCombination(dwQueryEntity)
-                || shouldBindToOneOfFacts(dwQueryEntity);
-    }
-
-    private boolean shouldBindToCombination(DwQueryEntity dwQueryEntity) {
-        return (dwQueryEntity.getCombination() != null && shouldBindDatesTo(dwQueryEntity.getCombination().getDwQuery()));
-    }
-
-    private boolean shouldBindToOneOfFacts(DwQueryEntity dwQueryEntity) {
-        if (dwQueryEntity instanceof ComplexDwQueryEntity) {
-            for (FactEntity fact: ((ComplexDwQueryEntity) dwQueryEntity).getFacts()) {
-                if (shouldBindDatesTo(fact.getTable())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private BigDecimal executeQuery(String query) {
