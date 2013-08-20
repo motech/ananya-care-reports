@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +25,7 @@ import static org.junit.Assert.assertArrayEquals;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class ExportServiceIT {
 
-    private static final byte[] BYTES = {34,110,97,109,101,34,44,34,110,97,109,101,34,
-            44,34,50,48,49,51,45,48,56,45,50,48,34,44,34,49,48,34,10};
+    private static final String csvValue = "\"Area\",\"Frequency\",\"Date\",\"Value\"\n\"name\",\"name\",\"2013-08-20\",\"10\"\n";
 
     @Autowired
     private ExportService exportService;
@@ -33,7 +33,7 @@ public class ExportServiceIT {
     private List<IndicatorValueEntity> indicatorValueEntityList;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() throws IOException, ParseException {
         String name = "name";
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(name);
@@ -46,8 +46,8 @@ public class ExportServiceIT {
         indicatorValueEntity.setFrequency(frequencyEntity);
         indicatorValueEntity.setArea(areaEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
-        indicatorValueEntity.setDate(new Date());
-        indicatorValueEntityList = new ArrayList<IndicatorValueEntity>();
+        indicatorValueEntity.setDate(DateUtils.parseDate("20/08/2013", new String[] {"dd/MM/yyyy"}));
+        indicatorValueEntityList = new ArrayList<>();
         indicatorValueEntityList.add(indicatorValueEntity);
     }
 
@@ -56,6 +56,6 @@ public class ExportServiceIT {
     public void testExportIndicatorValues() throws IOException, ParseException {
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 
-        assertArrayEquals(BYTES, bytes);
+        assertArrayEquals(csvValue.getBytes(), bytes);
     }
 }

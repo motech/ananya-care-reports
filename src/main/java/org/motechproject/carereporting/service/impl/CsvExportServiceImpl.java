@@ -42,6 +42,14 @@ public class CsvExportServiceImpl implements ExportService {
 
     private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) throws ParseException {
         List<String[]> csvLines = new ArrayList<String[]>();
+
+        List<String> header = new ArrayList<String>();
+        header.add("Area");
+        header.add("Frequency");
+        header.add("Date");
+        header.add("Value");
+        csvLines.add(header.toArray(new String[header.size()]));
+
         for (IndicatorValueEntity indicatorValue : indicatorValues) {
             List<String> line = new ArrayList<String>();
             line.add(indicatorValue.getArea().getName());
