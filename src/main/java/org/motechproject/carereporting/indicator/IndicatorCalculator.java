@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.indicator;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.Date;
 
 @Component
@@ -40,15 +42,24 @@ public class IndicatorCalculator {
 
     public void calculateIndicatorValues(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {
         IndicatorValueCalculator indicatorValueCalculator = null;
+        Date start = from;
 
         if (DAILY.equals(frequency.getFrequencyName())) {
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(DailyValueCalculator.class);
+
+            if(!indicator.getNumerator().getHasPeriodCondition() && !indicator.getAdditive()) {
+                try {
+                    start = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
+                } catch (ParseException e) {
+                    LOG.error("", e);
+                }
+            }
         } else if (indicator.getAdditive() == Boolean.TRUE){
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(OtherPeriodValueCalculator.class);
         }
 
         if(indicatorValueCalculator != null) {
-            indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, from, to);
+            indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, start, to);
         }
     }
 }
