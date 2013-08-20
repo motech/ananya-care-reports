@@ -118,7 +118,7 @@
 
              </ul>
              <div class="pull-right">
-                 <a href="logout" class="btn btn-info">{{msg('menu.logout')}}</a>
+                 <a href="logout" class="btn btn-primary">{{msg('menu.logout')}}</a>
              </div>
          </div>
      </div>
