@@ -129,19 +129,19 @@
                                         </xs:complexType>
                                     </xs:element>
                                 </xs:sequence>
+                                <xs:attribute name="combine-type" use="optional">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="Union" />
+                                            <xs:enumeration value="UnionAll" />
+                                            <xs:enumeration value="Intersect" />
+                                            <xs:enumeration value="Join" />
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
-                    <xs:attribute name="combine-type" use="optional">
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string">
-                                <xs:enumeration value="Union" />
-                                <xs:enumeration value="UnionAll" />
-                                <xs:enumeration value="Intersect" />
-                                <xs:enumeration value="Join" />
-                            </xs:restriction>
-                        </xs:simpleType>
-                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
             <xs:element name="where-group" minOccurs="0" type="where_group" />
@@ -153,13 +153,7 @@
     <xs:complexType name="where_group">
         <xs:sequence>
             <xs:element name="where-condition" type="where_condition" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="where-groups" maxOccurs="unbounded" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="where-group" type="where_group" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="where-group" type="where_group" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="join" use="optional">
             <xs:simpleType>
@@ -201,6 +195,7 @@
             <xs:element name="select-column" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:attribute name="fieldName" use="required" type="xs:string" />
+                    <xs:attribute name="tableName" use="optional" type="xs:string" />
                     <xs:attribute name="aggregation" use="optional" type="xs:string" />
                 </xs:complexType>
             </xs:element>

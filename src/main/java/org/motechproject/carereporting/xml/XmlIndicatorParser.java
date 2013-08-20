@@ -65,6 +65,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
@@ -201,7 +202,7 @@ public class XmlIndicatorParser {
     }
 
     private Set<ConditionEntity> prepareWhereConditions(List<WhereCondition> whereConditions) {
-        Set<ConditionEntity> conditions = new HashSet<>();
+        Set<ConditionEntity> conditions = new LinkedHashSet<>();
         for (WhereCondition condition: whereConditions) {
             ConditionEntity conditionEntity = createCondition(condition);
             conditions.add(conditionEntity);
@@ -285,7 +286,7 @@ public class XmlIndicatorParser {
             dwQueryEntity.setWhereGroup(whereGroup);
             dwQueryEntity.setHasPeriodCondition(hasPeriodCondition(whereGroup));
         }
-        dwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
+        dwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
             dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn));
         }
@@ -334,7 +335,7 @@ public class XmlIndicatorParser {
     }
 
     private Set<FactEntity> prepareFacts(List<Fact> facts) {
-        Set<FactEntity> factEntities = new HashSet<>();
+        Set<FactEntity> factEntities = new LinkedHashSet<>();
         if (facts != null) {
             for (Fact fact: facts) {
                 factEntities.add(prepareFact(fact));
@@ -367,7 +368,7 @@ public class XmlIndicatorParser {
             simpleDwQueryEntity.setWhereGroup(whereGroup);
             simpleDwQueryEntity.setHasPeriodCondition(hasPeriodCondition(whereGroup));
         }
-        simpleDwQueryEntity.setSelectColumns(new HashSet<SelectColumnEntity>());
+        simpleDwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: fact.getSelectColumns()) {
             SelectColumnEntity col = prepareSelectColumn(selectColumn);
             if (StringUtils.isEmpty(col.getTableName())) {
@@ -394,7 +395,7 @@ public class XmlIndicatorParser {
     }
 
     private Set<WhereGroupEntity> prepareWhereGroups(List<WhereGroup> whereGroups) {
-        Set<WhereGroupEntity> whereGroupEntities = new HashSet<>();
+        Set<WhereGroupEntity> whereGroupEntities = new LinkedHashSet<>();
         for (WhereGroup whereGroup: whereGroups) {
             whereGroupEntities.add(prepareWhereGroup(whereGroup));
         }

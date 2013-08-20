@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.xml.mapping;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -54,7 +55,7 @@ public class Fact {
         this.selectColumns = selectColumns;
     }
 
-    @XmlElement(name = "combine-type")
+    @XmlAttribute(name = "combine-type")
     public CombineType getCombineType() {
         return combineType;
     }

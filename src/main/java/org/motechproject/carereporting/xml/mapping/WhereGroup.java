@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-@XmlRootElement(name = "group")
+@XmlRootElement(name = "where-group")
 public class WhereGroup {
 
     private List<WhereGroup> groups;
@@ -14,7 +14,7 @@ public class WhereGroup {
 
     private String join;
 
-    @XmlElement(name = "group")
+    @XmlElement(name = "where-group")
     public List<WhereGroup> getGroups() {
         return groups;
     }
