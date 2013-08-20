@@ -18,7 +18,9 @@ import org.springframework.test.context.ContextConfiguration;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -55,13 +57,14 @@ public class ExportServiceTest {
         indicatorValueEntity.setFrequency(frequencyEntity);
         indicatorValueEntity.setArea(areaEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
+        indicatorValueEntity.setDate(new Date());
         indicatorValueEntityList = new ArrayList<IndicatorValueEntity>();
         indicatorValueEntityList.add(indicatorValueEntity);
         when(csvExportHelper.convertToCsvFile(anyList())).thenReturn(new ByteArrayInputStream(BYTES));
     }
 
     @Test
-    public void testExportIndicatorValues() throws IOException {
+    public void testExportIndicatorValues() throws IOException, ParseException {
         byte [] returned = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 
         verify(csvExportHelper).convertToCsvFile(anyList());
@@ -70,7 +73,7 @@ public class ExportServiceTest {
     }
 
     @Test(expected = CareNoValuesException.class)
-    public void shouldThrowCareNoValuesExceptionWhenListOfIndicatorsValuesIsEmpty() throws IOException {
+    public void shouldThrowCareNoValuesExceptionWhenListOfIndicatorsValuesIsEmpty() throws IOException, ParseException {
         exportService.convertIndicatorValuesToBytes(new ArrayList<IndicatorValueEntity>());
     }
 }

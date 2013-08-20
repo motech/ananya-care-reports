@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ChartController extends BaseController {
                                                     @RequestParam(required = false) Integer areaId,
                                                     @RequestParam Integer frequencyId,
                                                     @RequestParam Date startDate,
-                                                    @RequestParam Date endDate) throws IOException {
+                                                    @RequestParam Date endDate) throws IOException, ParseException {
 
         List<IndicatorValueEntity> indicatorValueEntities = getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntities);

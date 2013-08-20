@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class CsvExportServiceImpl implements ExportService {
     private CsvExportHelper csvExportHelper;
 
     @Override
-    public byte[] convertIndicatorValuesToBytes(List<IndicatorValueEntity> indicatorValues) throws IOException {
+    public byte[] convertIndicatorValuesToBytes(List<IndicatorValueEntity> indicatorValues) throws IOException, ParseException {
         if (indicatorValues.size() == 0) {
             throw new CareNoValuesException();
         }
@@ -39,12 +40,13 @@ public class CsvExportServiceImpl implements ExportService {
         return bytes;
     }
 
-    private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) {
+    private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) throws ParseException {
         List<String[]> csvLines = new ArrayList<String[]>();
         for (IndicatorValueEntity indicatorValue : indicatorValues) {
             List<String> line = new ArrayList<String>();
             line.add(indicatorValue.getArea().getName());
             line.add(indicatorValue.getFrequency().getFrequencyName());
+            line.add(indicatorValue.getDateString());
             line.add(indicatorValue.getValue().toString());
             csvLines.add(line.toArray(new String[line.size()]));
         }

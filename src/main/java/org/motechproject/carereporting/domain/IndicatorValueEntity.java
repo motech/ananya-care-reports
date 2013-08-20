@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -126,6 +128,10 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getDateString() throws ParseException {
+        return new SimpleDateFormat("yyyy-MM-dd").format(getDate());
     }
 
     public void setDate(Date date) {

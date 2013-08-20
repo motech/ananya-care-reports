@@ -13,7 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -22,7 +24,8 @@ import static org.junit.Assert.assertArrayEquals;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class ExportServiceIT {
 
-    private static final byte[] BYTES = {34, 110, 97, 109, 101, 34, 44, 34, 110, 97, 109, 101, 34, 44, 34, 49, 48, 34, 10};
+    private static final byte[] BYTES = {34,110,97,109,101,34,44,34,110,97,109,101,34,
+            44,34,50,48,49,51,45,48,56,45,50,48,34,44,34,49,48,34,10};
 
     @Autowired
     private ExportService exportService;
@@ -43,13 +46,14 @@ public class ExportServiceIT {
         indicatorValueEntity.setFrequency(frequencyEntity);
         indicatorValueEntity.setArea(areaEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
+        indicatorValueEntity.setDate(new Date());
         indicatorValueEntityList = new ArrayList<IndicatorValueEntity>();
         indicatorValueEntityList.add(indicatorValueEntity);
     }
 
     @Test
     // test won't pass if delimiter in csv file will be different than ','
-    public void testExportIndicatorValues() throws IOException {
+    public void testExportIndicatorValues() throws IOException, ParseException {
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 
         assertArrayEquals(BYTES, bytes);

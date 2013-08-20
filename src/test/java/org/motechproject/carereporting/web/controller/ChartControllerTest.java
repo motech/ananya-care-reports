@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class ChartControllerTest {
         verify(exportService).convertIndicatorValuesToBytes(anyList());
     }
 
-    private void mockMethodCalls() throws IOException {
+    private void mockMethodCalls() throws IOException, ParseException {
         Integer id = 1;
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setId(id);
