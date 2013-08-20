@@ -95,7 +95,6 @@
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                      <li><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
                       <li><a href="#/forms"><i class="icon-briefcase"></i> {{msg('menu.forms')}}</a></li>
                       <li class="dropdown-submenu">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
