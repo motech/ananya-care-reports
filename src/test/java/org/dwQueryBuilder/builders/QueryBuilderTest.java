@@ -24,6 +24,7 @@ public class QueryBuilderTest {
     private static final String BP_FORM = "bp_form";
     private static final String IFA_TABLETS_ISSUED = "ifa_tablets_issued";
     private static final String IFA_TABLETS_TOTAL = "ifa_tablets_total";
+    private static final String CLOSE_MOTHER_FORM = "close_mother_form";
     private static final String CLOSE_CHILD_FORM = "close_child_form";
     private static final String CHILD_CASE = "child_case";
     private static final String MOTHER_ID = "mother_id";
@@ -47,12 +48,13 @@ public class QueryBuilderTest {
     private static final Integer DIFFERENCE = 500;
 
     private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING =
-            "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join " +
-                    "(select * from \"report\".\"close_child_form\") as \"facts\" on " +
-                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join (select * from " +
-                    "\"report\".\"child_case\" join (select * from \"report\".\"close_child_form\") as " +
-                    "\"facts\" on \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\") as " +
-                    "\"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\"";
+            "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join" +
+                    " (select * from \"report\".\"close_mother_form\") as \"facts\" on" +
+                    " \"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join" +
+                    " (select * from \"report\".\"child_case\" join" +
+                    " (select * from \"report\".\"close_child_form\") as \"facts\" on" +
+                    " \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\")" +
+                    " as \"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\"";
     private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_SQL_STRING =
             "select * from \"report\".\"mother_case\" join ((select \"report\".\"bp_form\".\"case_id\" " +
                     "from \"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" " +
@@ -101,6 +103,15 @@ public class QueryBuilderTest {
                     " where \"bp_form\".\"ifa_tablets_issued\" = \"bp_form\".\"ifa_tablets_total\"" +
                     " group by \"report\".\"bp_form\".\"ifa_tablets_issued\" having " +
                     "count(\"report\".\"bp_form\".*) >= '1'";
+    private static final String EXPECTED_POSTGRESQL_MULTIPLE_JOINS_SQL_STRING =
+            "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join " +
+                    "(select * from \"report\".\"close_mother_form\") as \"facts\" on " +
+                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join " +
+                    "(select * from \"report\".\"child_case\" join (select * from \"report\".\"close_child_form\") " +
+                    "as \"facts\" on \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\") as " +
+                    "\"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\" " +
+                    "join (select * from \"report\".\"bp_form\") as \"bp_form\" on " +
+                    "\"bp_form\".\"case_id\" = \"report\".\"mother_case\".\"id\"";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -413,7 +424,7 @@ public class QueryBuilderTest {
                             .withTable(
                                     new SimpleDwQueryBuilder()
                                         .withSelectColumn(selectAll)
-                                        .withTableName(CLOSE_CHILD_FORM)
+                                        .withTableName(CLOSE_MOTHER_FORM)
                             )
                 )
                 .withKeys(ID, CASE_ID)
@@ -526,5 +537,68 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_FIELD_COMPARISON_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlMultipleJoins() {
+        SelectColumn selectAllMothers = new SelectColumnBuilder()
+                .withField(MOTHER_CASE, ID)
+                .build();
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withField(null, WILDCARD)
+                .build();
+
+        ComplexDwQuery childCaseQuery = new ComplexDwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withDimension(CHILD_CASE)
+                .withFact(
+                        new FactBuilder()
+                                .withTable(
+                                        new SimpleDwQueryBuilder()
+                                                .withSelectColumn(selectAll)
+                                                .withTableName(CLOSE_CHILD_FORM)
+                                )
+                )
+                .withKeys(ID, CASE_ID)
+                .build();
+
+        DwQueryCombination childCaseQueryCombination = new DwQueryCombinationBuilder()
+                .withDwQuery(childCaseQuery)
+                .withCombineType(CombineType.Join)
+                .withKeys(MOTHER_ID, ID)
+                .build();
+
+        SimpleDwQuery bpFormQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(BP_FORM)
+                .build();
+
+        DwQueryCombination bpFormQueryCombination = new DwQueryCombinationBuilder()
+                .withDwQuery(bpFormQuery)
+                .withCombineType(CombineType.Join)
+                .withKeys(CASE_ID, ID)
+                .build();
+
+        DwQuery dwQuery = new ComplexDwQueryBuilder()
+                .withSelectColumn(selectAllMothers)
+                .withDimension(MOTHER_CASE)
+                .withFact(
+                        new FactBuilder()
+                                .withTable(
+                                        new SimpleDwQueryBuilder()
+                                                .withSelectColumn(selectAll)
+                                                .withTableName(CLOSE_MOTHER_FORM)
+                                )
+                )
+                .withKeys(ID, CASE_ID)
+                .withCombination(childCaseQueryCombination)
+                .withCombination(bpFormQueryCombination)
+                .build();
+
+        String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlQuery);
+        assertEquals(EXPECTED_POSTGRESQL_MULTIPLE_JOINS_SQL_STRING, sqlQuery);
     }
 }

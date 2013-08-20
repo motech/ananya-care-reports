@@ -11,6 +11,8 @@ import org.dwQueryBuilder.builders.SelectColumnBuilder;
 import org.dwQueryBuilder.builders.SimpleDwQueryBuilder;
 import org.dwQueryBuilder.builders.WhereConditionBuilder;
 import org.dwQueryBuilder.builders.WhereConditionGroupBuilder;
+import org.dwQueryBuilder.data.DwQueryCombination;
+import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
@@ -38,6 +40,7 @@ import org.motechproject.carereporting.domain.WhereGroupEntity;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class DwQueryHelper {
@@ -46,7 +49,7 @@ public class DwQueryHelper {
 
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
-        addAreaWhereCondition(dwQuery, area);
+        addAreaJoinAndCondition(dwQuery, area);
         return dwQuery;
     }
 
@@ -236,15 +239,61 @@ public class DwQueryHelper {
                         "%(toDate)");
     }
 
-    @SuppressWarnings("PMD.UnusedFormalParameter")
-    private void addAreaWhereCondition(DwQuery dwQuery, AreaEntity area) {
-        //dwQuery.getWhereConditionGroup().addCondition(prepareAreaWhereCondition(area));
+    private void addAreaJoinAndCondition(DwQuery dwQuery, AreaEntity area) {
+        DwQueryCombination areaJoinCombination = prepareAreaJoin();
+
+        if (dwQuery instanceof ComplexDwQuery) {
+            ComplexDwQuery complexDwQuery = (ComplexDwQuery) dwQuery;
+
+            if (complexDwQuery.getFacts() != null) {
+                for (Fact fact : complexDwQuery.getFacts()) {
+                    addAreaJoinAndCondition(fact.getTable(), area);
+                }
+            }
+        }
+
+        if (dwQuery.getCombineWith() != null) {
+            for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
+                addAreaJoinAndCondition(dwQueryCombination.getDwQuery(), area);
+            }
+        } else {
+            dwQuery.setCombineWith(new LinkedHashSet<DwQueryCombination>());
+        }
+
+        dwQuery.getCombineWith().add(areaJoinCombination);
+        if (dwQuery.getWhereConditionGroup() == null) {
+            dwQuery.setWhereConditionGroup(
+                    new WhereConditionGroupBuilder()
+                            .withCondition(prepareAreaWhereCondition(area))
+                            .build()
+            );
+        } else {
+            if (dwQuery.getWhereConditionGroup().getConditions() == null) {
+                dwQuery.getWhereConditionGroup().setConditions(new LinkedHashSet<WhereCondition>());
+            }
+
+            dwQuery.getWhereConditionGroup().addCondition(prepareAreaWhereCondition(area));
+        }
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private DwQueryCombination prepareAreaJoin() {
+        return new DwQueryCombinationBuilder()
+                .withKeys("id", "user_id")
+                .withCombineType(CombineType.Join)
+                .withDwQuery(
+                        new SimpleDwQueryBuilder()
+                                .withSelectColumn(
+                                        new SelectColumnBuilder()
+                                                .withField(null, "*")
+                                )
+                                .withTableName("flw")
+                )
+                .build();
+    }
+
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
         return new WhereConditionBuilder()
-                .withValueComparison("flw", "state", OperatorType.Equal, area.getName())
+                .withValueComparison("flw", area.getLevel().getName(), OperatorType.Equal, area.getName())
                 .build();
     }
 }

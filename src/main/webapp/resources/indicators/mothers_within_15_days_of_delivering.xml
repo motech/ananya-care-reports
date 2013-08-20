@@ -1,5 +1,5 @@
 <indicator additive="false">
-    <name>% mothers receiving at least 2 visits in last trimester</name>
+    <name>Number of pregnant women nearing delivery in a period (15 day offset)</name>
     <categories>
         <category name="Birth preparedness plan"/>
     </categories>
@@ -11,15 +11,13 @@
     </owners>
     <trend>3</trend>
     <reports>
-        <report type="Pie Chart"/>
+        <report type="Bar Chart" />
+        <report type="Line Chart" label-x="Time" label-y="Value" />
     </reports>
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <indicator-name>Mothers receiving at least 2 visits in last trimester</indicator-name>
-    </numerator>
-    <denominator>
-        <dw-query>
+        <dw-query dimension-key="id" fact-key="case_id">
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
@@ -27,10 +25,10 @@
             <where-group>
                 <where-condition type="period">
                     <table-name>mother_case</table-name>
-                    <field>add</field>
-                    <offset>-90</offset>
+                    <field>edd</field>
+                    <offset>-15</offset>
                 </where-condition>
             </where-group>
         </dw-query>
-    </denominator>
+    </numerator>
 </indicator>

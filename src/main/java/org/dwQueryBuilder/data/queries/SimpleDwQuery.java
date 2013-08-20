@@ -28,7 +28,7 @@ public class SimpleDwQuery extends DwQuery {
     }
 
     public SimpleDwQuery(Set<SelectColumn> selectColumns, String tableName,
-                         GroupBy groupedBy, DwQueryCombination combineWith) {
+                         GroupBy groupedBy, Set<DwQueryCombination> combineWith) {
         super(selectColumns, groupedBy, combineWith);
 
         this.tableName = tableName;
@@ -43,7 +43,7 @@ public class SimpleDwQuery extends DwQuery {
 
     public SimpleDwQuery(Set<SelectColumn> selectColumns, String tableName,
                          GroupBy groupedBy, WhereConditionGroup whereConditionGroup,
-                         DwQueryCombination combineWith) {
+                         Set<DwQueryCombination> combineWith) {
         super(selectColumns, groupedBy, whereConditionGroup, combineWith);
 
         this.tableName = tableName;

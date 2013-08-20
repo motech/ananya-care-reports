@@ -14,7 +14,7 @@ public class ComplexDwQueryBuilder {
     private Set<SelectColumn> selectColumns;
     private GroupBy groupBy;
     private WhereConditionGroup whereConditionGroup;
-    private DwQueryCombination combineWith;
+    private Set<DwQueryCombination> combineWith;
     private String dimension;
     private Set<Fact> facts;
     private String dimensionKey;
@@ -59,12 +59,25 @@ public class ComplexDwQueryBuilder {
     }
 
     public ComplexDwQueryBuilder withCombination(DwQueryCombination combination) {
-        this.combineWith = combination;
+        if (this.combineWith == null) {
+            this.combineWith = new LinkedHashSet<>();
+        }
+
+        this.combineWith.add(combination);
         return this;
     }
 
     public ComplexDwQueryBuilder withCombination(DwQueryCombinationBuilder combinationBuilder) {
-        this.combineWith = combinationBuilder.build();
+        if (this.combineWith == null) {
+            this.combineWith = new LinkedHashSet<>();
+        }
+
+        this.combineWith.add(combinationBuilder.build());
+        return this;
+    }
+
+    public ComplexDwQueryBuilder withCombinations(Set<DwQueryCombination> combinations) {
+        this.combineWith = combinations;
         return this;
     }
 

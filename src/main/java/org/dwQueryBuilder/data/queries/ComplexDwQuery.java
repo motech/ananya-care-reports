@@ -40,7 +40,7 @@ public class ComplexDwQuery extends DwQuery {
 
     public ComplexDwQuery(Set<SelectColumn> selectColumns, String dimension,
                           Set<Fact> facts, String dimensionKey, String factKey, GroupBy groupBy,
-                          WhereConditionGroup whereConditionGroup, DwQueryCombination combineWith) {
+                          WhereConditionGroup whereConditionGroup, Set<DwQueryCombination> combineWith) {
         super(selectColumns, groupBy, whereConditionGroup, combineWith);
 
         this.dimension = dimension;

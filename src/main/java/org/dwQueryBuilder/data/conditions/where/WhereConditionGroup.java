@@ -11,10 +11,12 @@ public class WhereConditionGroup {
     private WhereConditionJoinType joinType;
 
     public WhereConditionGroup() {
+        this.conditionGroups = new LinkedHashSet<>();
         this.conditions = new LinkedHashSet<>();
     }
 
     public WhereConditionGroup(Set<WhereCondition> conditions) {
+        this.conditionGroups = new LinkedHashSet<>();
         this.conditions = conditions;
     }
 

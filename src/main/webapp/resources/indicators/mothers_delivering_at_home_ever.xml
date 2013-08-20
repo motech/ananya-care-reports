@@ -1,0 +1,57 @@
+<indicator additive="false">
+    <name>Number of women who have delivered at home, ever</name>
+    <categories>
+        <category name="Birth preparedness plan"/>
+    </categories>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <roles>
+            <role name="Manager"/>
+        </roles>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Bar Chart" />
+        <report type="Line Chart" label-x="Time" label-y="Value" />
+    </reports>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query dimension-key="id" fact-key="case_id">
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <facts>
+                <fact>
+                    <name>registration_mother_form</name>
+                    <select-columns>
+                        <select-column fieldName="case_id" />
+                    </select-columns>
+                    <where-group>
+                        <where-condition type="valueComparison">
+                            <table-name>registration_mother_form</table-name>
+                            <field>where_born</field>
+                            <operator>=</operator>
+                            <value>home</value>
+                        </where-condition>
+                    </where-group>
+                </fact>
+                <fact combine-type="Union">
+                    <name>delivery_mother_form</name>
+                    <select-columns>
+                        <select-column fieldName="case_id" />
+                    </select-columns>
+                    <where-group>
+                        <where-condition type="valueComparison">
+                            <table-name>delivery_mother_form</table-name>
+                            <field>where_born</field>
+                            <operator>=</operator>
+                            <value>home</value>
+                        </where-condition>
+                    </where-group>
+                </fact>
+            </facts>
+        </dw-query>
+    </numerator>
+</indicator>

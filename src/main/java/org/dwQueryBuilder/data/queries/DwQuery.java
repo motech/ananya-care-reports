@@ -10,7 +10,7 @@ import java.util.Set;
 public abstract class DwQuery {
     private Set<SelectColumn> selectColumns;
     private GroupBy groupBy;
-    private DwQueryCombination combineWith;
+    private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
 
     public DwQuery() {
@@ -26,7 +26,7 @@ public abstract class DwQuery {
         this.groupBy = groupBy;
     }
 
-    public DwQuery(Set<SelectColumn> selectColumns, DwQueryCombination combineWith) {
+    public DwQuery(Set<SelectColumn> selectColumns, Set<DwQueryCombination> combineWith) {
         this.selectColumns = selectColumns;
         this.combineWith = combineWith;
     }
@@ -37,14 +37,14 @@ public abstract class DwQuery {
         this.whereConditionGroup = whereConditionGroup;
     }
 
-    public DwQuery(Set<SelectColumn> selectColumns, GroupBy groupBy, DwQueryCombination combineWith) {
+    public DwQuery(Set<SelectColumn> selectColumns, GroupBy groupBy, Set<DwQueryCombination> combineWith) {
         this.selectColumns = selectColumns;
         this.groupBy = groupBy;
         this.combineWith = combineWith;
     }
 
     public DwQuery(Set<SelectColumn> selectColumns, GroupBy groupBy, WhereConditionGroup whereConditionGroup,
-                   DwQueryCombination combineWith) {
+                   Set<DwQueryCombination> combineWith) {
         this.selectColumns = selectColumns;
         this.groupBy = groupBy;
         this.whereConditionGroup = whereConditionGroup;
@@ -67,11 +67,11 @@ public abstract class DwQuery {
         this.groupBy = groupBy;
     }
 
-    public DwQueryCombination getCombineWith() {
+    public Set<DwQueryCombination> getCombineWith() {
         return combineWith;
     }
 
-    public void setCombineWith(DwQueryCombination combineWith) {
+    public void setCombineWith(Set<DwQueryCombination> combineWith) {
         this.combineWith = combineWith;
     }
 

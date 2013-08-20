@@ -13,7 +13,7 @@ public class SimpleDwQueryBuilder {
     private Set<SelectColumn> selectColumns;
     private GroupBy groupBy;
     private WhereConditionGroup whereConditionGroup;
-    private DwQueryCombination combineWith;
+    private Set<DwQueryCombination> combineWith;
     private String tableName;
 
     public SimpleDwQueryBuilder withSelectColumn(SelectColumn selectColumn) {
@@ -60,12 +60,25 @@ public class SimpleDwQueryBuilder {
     }
 
     public SimpleDwQueryBuilder withCombination(DwQueryCombination combination) {
-        this.combineWith = combination;
+        if (this.combineWith == null) {
+            this.combineWith = new LinkedHashSet<>();
+        }
+
+        this.combineWith.add(combination);
         return this;
     }
 
     public SimpleDwQueryBuilder withCombination(DwQueryCombinationBuilder combinationBuilder) {
-        this.combineWith = combinationBuilder.build();
+        if (this.combineWith == null) {
+            this.combineWith = new LinkedHashSet<>();
+        }
+
+        this.combineWith.add(combinationBuilder.build());
+        return this;
+    }
+
+    public SimpleDwQueryBuilder withCombinations(Set<DwQueryCombination> combinations) {
+        this.combineWith = combinations;
         return this;
     }
 

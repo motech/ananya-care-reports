@@ -81,6 +81,7 @@ public final class QueryBuilder {
         try {
             SelectSelectStep selectSelectStep = QueryBuilder.create.select();
             buildSelectColumns(selectSelectStep, dwQuery);
+            String tableName = null;
 
             SelectHavingConditionStep selectHavingConditionStep = null;
             if (dwQuery.getGroupBy() != null) {
@@ -93,29 +94,43 @@ public final class QueryBuilder {
                     : selectSelectStep;
             Select select = null;
             if (dwQuery instanceof SimpleDwQuery) {
+                tableName = ((SimpleDwQuery) dwQuery).getTableName();
                 selectConditionStep = buildFromSimpleDwQuery(selectSelectStep, (SimpleDwQuery) dwQuery);
             } else if (dwQuery instanceof ComplexDwQuery) {
+                tableName = ((ComplexDwQuery) dwQuery).getDimension();
                 select = buildFromComplexDwQuery(selectSelectStep, (ComplexDwQuery) dwQuery);
             }
 
-            if (select == null) {
-                if (selectConditionStep != null) {
-                    select = selectConditionStep;
-                } else if (selectHavingConditionStep != null) {
-                    select = selectHavingConditionStep;
-                } else {
-                    select = selectSelectStep;
-                }
-            }
+            select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
 
             if (dwQuery.getCombineWith() != null) {
-                select = buildCombineWith(select, dwQuery);
+                for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
+                    select = buildCombineWith(select, dwQueryCombination, tableName);
+                }
             }
 
             return select;
         } catch (Exception e) {
             throw new QueryBuilderException(e);
         }
+    }
+
+    private static Select chooseSelectStep(Select select, SelectConditionStep selectConditionStep,
+                                    SelectHavingConditionStep selectHavingConditionStep,
+                                    SelectSelectStep selectSelectStep) {
+        Select newSelect = select;
+
+        if (newSelect == null) {
+            if (selectConditionStep != null) {
+                newSelect = selectConditionStep;
+            } else if (selectHavingConditionStep != null) {
+                newSelect = selectHavingConditionStep;
+            } else {
+                newSelect = selectSelectStep;
+            }
+        }
+
+        return newSelect;
     }
 
     private static SelectConditionStep buildFromSimpleDwQuery(SelectSelectStep selectSelectStep,
@@ -185,7 +200,11 @@ public final class QueryBuilder {
             } else {
 
                 if (selectColumn.getFieldName().equals(WILDCARD)) {
-                    step = step.select(field(WILDCARD));
+                    if (selectColumn.getTableName() == null) {
+                        step = step.select(field(WILDCARD));
+                    } else {
+                        step = step.select(field("\"" + selectColumn.getTableName() + "\"." + WILDCARD));
+                    }
                 } else {
                     step = step.select(fieldByName(schemaName,
                             selectColumn.getTableName(), selectColumn.getFieldName()));
@@ -197,42 +216,35 @@ public final class QueryBuilder {
         return selectSelectStep;
     }
 
-    private static Select buildCombineWith(Select select, DwQuery dwQuery) {
+    private static Select buildCombineWith(Select select, DwQueryCombination dwQueryCombination,
+                                           String referencedTableName) {
         try {
             SelectJoinStep selectJoinStep = (SelectJoinStep) select;
-            DwQueryCombination combineWith = dwQuery.getCombineWith();
 
-            switch (combineWith.getCombineType()) {
+            switch (dwQueryCombination.getCombineType()) {
                 case Join:
-                    String referencedTableName = "";
-                    if (dwQuery instanceof ComplexDwQuery) {
-                        referencedTableName = ((ComplexDwQuery) dwQuery).getDimension();
-                    } else if (dwQuery instanceof SimpleDwQuery) {
-                        referencedTableName = ((SimpleDwQuery) dwQuery).getTableName();
-                    }
-
-                    String tableName = getTableNameForDwQuery(combineWith.getDwQuery());
-                    return selectJoinStep.join(buildFromDwQuery(combineWith.getDwQuery())
+                    String tableName = getTableNameForDwQuery(dwQueryCombination.getDwQuery());
+                    return selectJoinStep.join(buildFromDwQuery(dwQueryCombination.getDwQuery())
                             .asTable(tableName))
                             .on(
                                     buildCondition(
                                             fieldByName(
                                                     tableName,
-                                                    combineWith.getForeignKeyFieldName()
+                                                    dwQueryCombination.getForeignKeyFieldName()
                                             ),
                                             OperatorType.Equal,
                                             fieldByName(
                                                     schemaName,
                                                     referencedTableName,
-                                                    combineWith.getReferencedFieldName()
+                                                    dwQueryCombination.getReferencedFieldName()
                                             )
                             ));
                 case Union:
-                    return selectJoinStep.union(buildFromDwQuery(combineWith.getDwQuery()));
+                    return selectJoinStep.union(buildFromDwQuery(dwQueryCombination.getDwQuery()));
                 case UnionAll:
-                    return selectJoinStep.unionAll(buildFromDwQuery(combineWith.getDwQuery()));
+                    return selectJoinStep.unionAll(buildFromDwQuery(dwQueryCombination.getDwQuery()));
                 case Intersect:
-                    return selectJoinStep.intersect(buildFromDwQuery(combineWith.getDwQuery()));
+                    return selectJoinStep.intersect(buildFromDwQuery(dwQueryCombination.getDwQuery()));
                 default:
                     throw new NotImplementedException();
             }
