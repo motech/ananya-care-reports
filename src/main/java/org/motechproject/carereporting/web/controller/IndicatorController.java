@@ -206,7 +206,7 @@ public class IndicatorController extends BaseController {
         try {
             IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
             indicatorService.createNewIndicator(indicatorEntity);
-            return "redirect:/#";
+            return "redirect:/#/indicators";
         } catch (UnmarshalException e) {
             String message;
             if (e.getLinkedException() != null) {
