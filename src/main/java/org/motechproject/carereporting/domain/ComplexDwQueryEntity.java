@@ -5,6 +5,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,7 +22,7 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
     @Column(name = "dimension")
     private String dimension;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "fact_complex_dw_query", joinColumns = { @JoinColumn(name = "complex_dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "fact_id") })
     private Set<FactEntity> facts;

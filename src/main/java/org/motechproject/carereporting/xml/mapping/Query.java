@@ -4,15 +4,12 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class Query {
 
-    private Integer indicatorId;
-
     private DwQuery dwQuery;
 
     private String indicatorName;
 
-    @XmlElement(name = "indicator-id")
-    public Integer getIndicatorId() {
-        return indicatorId;
+    public void setIndicatorName(String indicatorName) {
+        this.indicatorName = indicatorName;
     }
 
     @XmlElement(name = "indicator-name")

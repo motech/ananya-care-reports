@@ -23,7 +23,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class DwQueryEntity extends AbstractEntity {
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
     private Set<SelectColumnEntity> selectColumns;
