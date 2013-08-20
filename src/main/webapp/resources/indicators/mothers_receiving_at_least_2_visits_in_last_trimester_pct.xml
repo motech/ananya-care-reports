@@ -28,7 +28,7 @@
                 <where-condition type="period">
                     <table-name>mother_case</table-name>
                     <field>add</field>
-                    <offset>90</offset>
+                    <offset>-90</offset>
                 </where-condition>
             </where-group>
         </dw-query>

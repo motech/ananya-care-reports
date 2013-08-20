@@ -502,24 +502,30 @@ public final class QueryBuilder {
 
     private static Condition buildDateValueCondition(DateValueComparison comparison) {
         try {
-            DayToSecond dayToSecond = new DayToSecond(comparison.getOffset());
+            DayToSecond dayToSecond = new DayToSecond(Math.abs(comparison.getOffset()));
 
             Field field = fieldByName(comparison.getTable1Name(), comparison.getField1Name());
             String value = comparison.getValue();
 
+            if (comparison.getOffset() >= 0) {
+                field = field.add(dayToSecond);
+            } else {
+                field = field.sub(dayToSecond);
+            }
+
             switch (comparison.getOperator()) {
                 case Less:
-                    return field.add(dayToSecond).lessThan(value);
+                    return field.lessThan(value);
                 case LessEqual:
-                    return field.add(dayToSecond).lessOrEqual(value);
+                    return field.lessOrEqual(value);
                 case Equal:
-                    return field.add(dayToSecond).equal(value);
+                    return field.equal(value);
                 case NotEqual:
-                    return field.add(dayToSecond).notEqual(value);
+                    return field.notEqual(value);
                 case Greater:
-                    return field.add(dayToSecond).greaterThan(value);
+                    return field.greaterThan(value);
                 case GreaterEqual:
-                    return field.add(dayToSecond).greaterOrEqual(value);
+                    return field.greaterOrEqual(value);
                 default:
                     return null;
             }

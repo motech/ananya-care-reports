@@ -214,7 +214,7 @@ public class DwQueryHelper {
                         condition.getColumnName(),
                         OperatorType.Less,
                         "%(fromDate)",
-                        -Math.abs(condition.getOffset()));
+                        condition.getOffset() < 0 ? condition.getOffset() : 0);
     }
 
     private WhereConditionBuilder preparePeriodCondition(PeriodConditionEntity condition) {
@@ -223,7 +223,8 @@ public class DwQueryHelper {
                         condition.getTableName(),
                         condition.getColumnName(),
                         OperatorType.GreaterEqual,
-                        "%(toDate)");
+                        "%(toDate)",
+                        condition.getOffset() > 0 ? condition.getOffset() : 0);
     }
 
     private WhereConditionBuilder prepareDateBetweenCondition(PeriodConditionEntity condition) {
