@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "fact_complex_dw_query", joinColumns = { @JoinColumn(name = "complex_dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "fact_id") })
+    @OrderBy("id")
     private Set<FactEntity> facts;
 
     @Column(name = "dimension_key")
