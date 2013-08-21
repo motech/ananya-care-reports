@@ -232,7 +232,8 @@ public class IndicatorController extends BaseController {
     public ResponseEntity<byte[]> exportCaseListReport(
             @PathVariable Integer indicatorId,
             @RequestParam(required = false) Date fromDate,
-            @RequestParam(required = false) Date toDate) {
+            @RequestParam(required = false) Date toDate,
+            @RequestParam Integer areaId) {
 
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
@@ -242,7 +243,7 @@ public class IndicatorController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", filename);
 
-        return new ResponseEntity<>(indicatorService.getCaseListReportAsCsv(indicatorEntity, fromDate, toDate),
+        return new ResponseEntity<>(indicatorService.getCaseListReportAsCsv(indicatorEntity, areaId, fromDate, toDate),
                 headers, HttpStatus.OK);
     }
 

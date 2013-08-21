@@ -383,7 +383,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             var indicatorId = report.indicatorId;
             var url = 'api/indicator/' + indicatorId + '/export/caselistreport'
                 + '?fromDate=' + moment(report.from).format("DD/MM/YYYY")
-                + '&toDate=' + moment(report.to).format("DD/MM/YYYY");
+                + '&toDate=' + moment(report.to).format("DD/MM/YYYY")
+                + '&areaId=' + report.areaId;
 
             window.open(url);
         }

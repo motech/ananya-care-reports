@@ -402,12 +402,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Date fromDate, Date toDate) {
+    public byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Integer areaId, Date fromDate, Date toDate) {
         DwQueryEntity numerator = indicatorEntity.getNumerator();
         DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
+        AreaEntity areaEntity = areaService.getAreaById(areaId);
+
         String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
-                schemaName, dwQueryHelper.buildDwQuery(numerator, null), false);
+                schemaName, dwQueryHelper.buildDwQuery(numerator, areaEntity), false);
         if (fromDate != null && toDate != null) {
             if (fromDate.compareTo(toDate) >= 0) {
                 throw new CareRuntimeException("Field 'fromDate' must be before 'toDate'.");
