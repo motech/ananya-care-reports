@@ -90,7 +90,7 @@ public class IndicatorEntity extends AbstractEntity {
     private BigDecimal trend;
 
     @Column(name = "is_computing", nullable = false)
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ BaseView.class, DashboardJsonView.class })
     private Boolean isComputing;
 
     @Column(name = "is_additive", nullable = false)

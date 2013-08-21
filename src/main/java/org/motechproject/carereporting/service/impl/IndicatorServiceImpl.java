@@ -354,21 +354,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId, Integer frequencyId) {
         Set<TrendIndicatorCategoryDto> categories = new LinkedHashSet<>();
         Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
-        AreaEntity area;
-        if (areaId != null) {
-            area = areaService.getAreaById(areaId);
-        } else {
-            area = user.getArea();
-        }
-        Set<AreaEntity> childAreas = getAllChildEntities(area);
+        AreaEntity area = areaService.getAreaById(areaId);
 
         for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
             TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
             categories.add(trendCategory);
             for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
-                if (!childAreas.contains(indicator.getArea())) {
-                    continue;
-                }
 
                 if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,

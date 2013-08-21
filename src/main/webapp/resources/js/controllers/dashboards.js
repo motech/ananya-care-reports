@@ -131,7 +131,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     var levelDiff = areas[index].levelHierarchyDepth - $scope.topAreaLevel;
                     var padding = '';
                     for (var i = 0; i < levelDiff; i++) {
-                        padding += '-- ';
+                        padding += '--- ';
                     }
 
                     areas[index].name = padding + areas[index].name;
@@ -222,6 +222,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get(url)
                 .success(function(indicatorCategories) {
             $scope.indicatorCategories = indicatorCategories;
+            $scope.trendPerCategory = {};
 
             for (var c = 0; c < $scope.indicatorCategories.length; c++) {
                 if (!$scope.indicatorCategories.hasOwnProperty(c)) {
