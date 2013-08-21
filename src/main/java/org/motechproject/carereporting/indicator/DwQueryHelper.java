@@ -217,23 +217,23 @@ public class DwQueryHelper {
                         SECONDS_PER_DAY * condition.getValue());
     }
 
-    private WhereConditionBuilder preparePeriodConditionFromDate(PeriodConditionEntity condition) {
-        return new WhereConditionBuilder()
-                .withDateValueComparison(
-                        condition.getTableName(),
-                        condition.getColumnName(),
-                        OperatorType.Less,
-                        "%(fromDate)",
-                        condition.getOffset() < 0 ? condition.getOffset() : 0);
-    }
-
     private WhereConditionBuilder preparePeriodConditionToDate(PeriodConditionEntity condition) {
         return new WhereConditionBuilder()
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.GreaterEqual,
+                        OperatorType.Less,
                         "%(toDate)",
+                        condition.getOffset() < 0 ? condition.getOffset() : 0);
+    }
+
+    private WhereConditionBuilder preparePeriodConditionFromDate(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        condition.getTableName(),
+                        condition.getColumnName(),
+                        OperatorType.GreaterEqual,
+                        "%(fromDate)",
                         condition.getOffset() > 0 ? condition.getOffset() : 0);
     }
 

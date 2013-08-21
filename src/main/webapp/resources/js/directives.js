@@ -162,16 +162,13 @@
                             var areaId = report.areaId;
                             var frequencyId = report.frequencyId;
 
-                            if(frequencyId != undefined) {
+                            if(frequencyId != undefined && areaId != undefined) {
                                 var url = 'api/chart?chartType=' + chartType
                                     + '&indicatorId=' + indicatorId
                                     + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
                                     + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
-                                    + "&frequencyId=" + frequencyId;
-
-                                if (areaId != undefined) {
-                                    url += "&areaId=" + areaId;
-                                }
+                                    + "&frequencyId=" + frequencyId
+                                    + "&areaId=" + areaId;
 
                                 $http.get(url).success(function(chart) {
                                     var graph, title, chart, wrapper, titleElement,

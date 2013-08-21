@@ -41,25 +41,23 @@ public class IndicatorCalculator {
     }
 
     public void calculateIndicatorValues(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {
-        IndicatorValueCalculator indicatorValueCalculator = null;
+        IndicatorValueCalculator indicatorValueCalculator;
         Date start = from;
 
-        if (DAILY.equals(frequency.getFrequencyName())) {
+        if (DAILY.equals(frequency.getFrequencyName()) || indicator.getNumerator().getHasPeriodCondition() || !indicator.getAdditive() == Boolean.TRUE) {
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(DailyValueCalculator.class);
 
-            if(!indicator.getNumerator().getHasPeriodCondition() && !indicator.getAdditive()) {
+            if (!indicator.getNumerator().getHasPeriodCondition() && !indicator.getAdditive()) {
                 try {
                     start = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
                 } catch (ParseException e) {
                     LOG.error("", e);
                 }
             }
-        } else if (indicator.getAdditive() == Boolean.TRUE){
+        } else {
             indicatorValueCalculator = ApplicationContextProvider.getApplicationContext().getBean(OtherPeriodValueCalculator.class);
         }
 
-        if(indicatorValueCalculator != null) {
-            indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, start, to);
-        }
+        indicatorValueCalculator.calculateAndPersistIndicatorValue(indicator, frequency, start, to);
     }
 }
