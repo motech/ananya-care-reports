@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.utils.configuration;
 
 import org.apache.commons.lang.SystemUtils;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +40,10 @@ public final class ConfigurationLocator {
         return properties;
     }
 
-    private static InputStream getCommCareConfigurationInputStream(ClassLoader loader) {
+    private static InputStream getCommCareConfigurationInputStream(ClassLoader loader) throws IOException {
         File customProperties = new File(getCommCareCustomPropertiesFilePath());
         if (customProperties.exists()) {
-            return loader.getResourceAsStream(getCommCareCustomPropertiesFilePath());
+            return new FileSystemResource(customProperties).getInputStream();
         } else {
             return loader.getResourceAsStream(getCommCareDefaultPropertiesFileName());
         }

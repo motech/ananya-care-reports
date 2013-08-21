@@ -51,16 +51,13 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     public Authentication authenticate(Authentication authentication) {
         Map<String, Object> result = null;
 
-        String login = ((String) authentication.getPrincipal()).split(";")[0];
+        String login = ((String) authentication.getPrincipal());
 
         try {
-            String domain = ((String) authentication.getPrincipal()).split(";")[1];
-
             RestTemplate restTemplate = new RestTemplate(createSecureTransport(login,
                     (String) authentication.getCredentials()));
 
             String commCareUrl = commCareConfiguration.getProperty("commcare.authentication.url");
-            commCareUrl = commCareUrl.replaceAll("\\{domain\\}", domain);
 
             String userJson = restTemplate.getForObject(commCareUrl, String.class);
 

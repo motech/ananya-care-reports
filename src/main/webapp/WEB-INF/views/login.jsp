@@ -16,13 +16,6 @@
     <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
 </head>
 <body>
-<script type="text/javascript">
-function addDomainInfo() {
-    loginVal = $("#login").val();
-    domainVal = $("#domain").val();
-    $("#loginWithDomain").val(loginVal + ";" + domainVal);
-}
-</script>
 <div class="hq-container-fluid hq-centered-content">
     <header>
         <div class="navbar">
@@ -53,14 +46,6 @@ function addDomainInfo() {
                     </c:if>
                     <fieldset>
                         <div class="control-group">
-                            <label class="control-label" for="domain"><spring:message code="login.commcare.domain" /></label>
-                            <div class="controls">
-                                <div class="input-append">
-                                    <input type="text" id="domain" name="domain" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="control-group">
                             <label class="control-label" for="login"><spring:message code="login.email" /></label>
                             <div class="controls">
                                 <div class="input-append">
@@ -81,11 +66,10 @@ function addDomainInfo() {
 
                         </div>
                     </fieldset>
-                    <div class="form-actions"><button tabindex="3" type="submit" class="btn btn-primary btn-large" onclick="addDomainInfo()">
+                    <div class="form-actions"><button tabindex="3" type="submit" class="btn btn-primary btn-large">
                     <spring:message code="login.submit" />
                         </button>
                     </div>
-                    <input type="hidden" id="loginWithDomain" name="loginWithDomain" />
                 </form>
             </div>
         </div>
