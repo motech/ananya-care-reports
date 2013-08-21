@@ -42,8 +42,9 @@ public class AreaServiceImpl implements AreaService {
     @Override
     @Transactional
     public Set<AreaEntity> getAllAreasByParentAreaId(Integer areaId) {
-        HashSet<AreaEntity> areaEntities = new LinkedHashSet<>(areaDao.getAllChildAreasByParentAreaId(areaId));
+        HashSet<AreaEntity> areaEntities = new LinkedHashSet<>();
         areaEntities.add(areaDao.getById(areaId));
+        areaEntities.addAll(areaDao.getAllChildAreasByParentAreaId(areaId));
         return areaEntities;
     }
 

@@ -121,12 +121,21 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/dashboards/user-areas/' + area.id)
             .success(function(areas) {
                areas.sort(function(a, b) {
-                   return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
+                    return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
                });
                var arr = Array();
 
+               $scope.topAreaLevel = areas[0].levelHierarchyDepth;
+
                for (var index=0; index<areas.length; index++) {
-                   arr.push(areas[index]);
+                    var levelDiff = areas[index].levelHierarchyDepth - $scope.topAreaLevel;
+                    var padding = '';
+                    for (var i = 0; i < levelDiff; i++) {
+                        padding += '-- ';
+                    }
+
+                    areas[index].name = padding + areas[index].name;
+                    arr.push(areas[index]);
                }
                $scope.areas = arr;
                $scope.areaId = areas[0].id;
@@ -149,7 +158,16 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                });
                var arr = Array();
 
-               for (var index=0; index<areas.length; index++) {
+               $scope.topAreaLevel = areas[0].levelHierarchyDepth;
+
+               for (var index = 0; index < areas.length; index++) {
+                   var levelDiff = areas[index].levelHierarchyDepth - $scope.topAreaLevel;
+                   var padding = '';
+                   for (var i = 0; i < levelDiff; i++) {
+                       padding += '-- ';
+                   }
+
+                   areas[index].name = padding + areas[index].name;
                    arr.push(areas[index]);
                }
 
