@@ -35,6 +35,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.utils.copier.AbstractEntityCopier;
 import org.motechproject.carereporting.xml.mapping.Category;
 import org.motechproject.carereporting.xml.mapping.CombineWith;
 import org.motechproject.carereporting.xml.mapping.Query;
@@ -269,7 +270,7 @@ public class XmlIndicatorParser {
 
     private DwQueryEntity prepareQuery(Query query) {
         if (query.getIndicatorName() != null) {
-            return indicatorDao.getIndicatorByName(query.getIndicatorName()).getNumerator();
+            return (DwQueryEntity) AbstractEntityCopier.deepCopy(indicatorDao.getIndicatorByName(query.getIndicatorName()).getNumerator());
         } else {
             return prepareDwQuery(query.getDwQuery());
         }
