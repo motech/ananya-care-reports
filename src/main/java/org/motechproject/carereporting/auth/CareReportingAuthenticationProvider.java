@@ -10,6 +10,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,17 @@ import java.util.Set;
 
 public class CareReportingAuthenticationProvider implements AuthenticationProvider {
 
+    private static final Integer SUPER_USER_AREA_ID = 1;
+    private static final String SUPER_USER_NAME = "Super user";
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private AreaService areaService;
+
+    @Autowired
+    private DashboardService dashboardService;
 
     private static Properties commCareConfiguration;
 
@@ -51,25 +58,23 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     public Authentication authenticate(Authentication authentication) {
         Map<String, Object> result = null;
 
-        String login = ((String) authentication.getPrincipal());
+        String login = (String) authentication.getPrincipal();
+        String password = (String) authentication.getCredentials();
+        String commCareUrl = getCommcareProperty("commcare.authentication.url");
+
+        if (isSuperUserEnabled() && isSuperUser(login, password)) {
+            return createSuperUserAuthentication();
+        }
 
         try {
-            RestTemplate restTemplate = new RestTemplate(createSecureTransport(login,
-                    (String) authentication.getCredentials()));
-
-            String commCareUrl = commCareConfiguration.getProperty("commcare.authentication.url");
-
+            RestTemplate restTemplate = new RestTemplate(createSecureTransport(login, password));
             String userJson = restTemplate.getForObject(commCareUrl, String.class);
-
             result = new ObjectMapper().readValue(userJson, Map.class);
-
-            UserEntity user = userService.login(login,
-                    (String) authentication.getCredentials());
+            UserEntity user = userService.login(login, (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         } catch (EntityException e) {
             Map<String, String> user = ((ArrayList<Map<String, String>>) result.get("objects")).get(0);
             String userName = user.get("email");
-            String password = (String) authentication.getCredentials();
             String firstName = user.get("first_name");
             String lastName = user.get("last_name");
             AreaEntity area = areaService.getAreaById(1);
@@ -86,14 +91,45 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         }
     }
 
+    private boolean isSuperUserEnabled() {
+        return Boolean.valueOf(getCommcareProperty("commcare.superuser.enabled"));
+    }
+
+    private boolean isSuperUser(String login, String password) {
+        String superUserLogin = getCommcareProperty("commcare.superuser.login");
+        String superUserPassword = getCommcareProperty("commcare.superuser.password");
+        return login.equals(superUserLogin) && password.equals(superUserPassword);
+    }
+
+    private Authentication createSuperUserAuthentication() {
+        UserEntity mockSuperUser = prepareMockSuperUser();
+        return new UsernamePasswordAuthenticationToken(mockSuperUser, null, mockSuperUser.getAuthorities());
+    }
+
+    private UserEntity prepareMockSuperUser() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(Integer.MAX_VALUE);
+        userEntity.setRoles(userService.getAllRoles());
+        userEntity.setDashboards(dashboardService.getAllDashboards());
+        userEntity.setArea(areaService.getAreaById(SUPER_USER_AREA_ID));
+        userEntity.setFirstName(SUPER_USER_NAME);
+        userEntity.setUsername(SUPER_USER_NAME);
+        userEntity.setLastName(SUPER_USER_NAME);
+        return userEntity;
+    }
+
     @SuppressWarnings("unchecked")
     protected ClientHttpRequestFactory createSecureTransport(String username, String password) {
         HttpClient client = new HttpClient();
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        String commCareHost = commCareConfiguration.getProperty("commcare.authentication.host");
-        String commCarePort = commCareConfiguration.getProperty("commcare.authentication.port");
+        String commCareHost = getCommcareProperty("commcare.authentication.host");
+        String commCarePort = getCommcareProperty("commcare.authentication.port");
         client.getState().setCredentials(new AuthScope(commCareHost, Integer.valueOf(commCarePort)), credentials);
         return new CommonsClientHttpRequestFactory(client);
+    }
+
+    private String getCommcareProperty(String propertyName) {
+        return commCareConfiguration.getProperty(propertyName);
     }
 
     @Override
