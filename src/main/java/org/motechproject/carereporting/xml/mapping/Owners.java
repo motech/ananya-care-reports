@@ -20,8 +20,8 @@ public class Owners {
         this.user = user;
     }
 
-    @XmlElementWrapper(name = "roles")
-    @XmlElement(name = "role")
+    @XmlElementWrapper(name = "reportviews")
+    @XmlElement(name = "reportview")
     public List<Role> getRoles() {
         return roles;
     }

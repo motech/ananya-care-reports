@@ -23,10 +23,10 @@
                                     <xs:attribute name="login" use="required" type="xs:string" />
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="roles" minOccurs="0">
+                            <xs:element name="reportviews" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="role" minOccurs="1" maxOccurs="unbounded">
+                                        <xs:element name="reportview" minOccurs="1" maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:attribute name="name" use="required" type="xs:string" />
                                             </xs:complexType>

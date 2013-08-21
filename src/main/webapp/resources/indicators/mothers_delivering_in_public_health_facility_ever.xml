@@ -5,9 +5,9 @@
     </categories>
     <owners>
         <user login="mrcaretest@gmail.com"/>
-        <roles>
-            <role name="Manager"/>
-        </roles>
+        <reportviews>
+            <reportview name="Manager"/>
+        </reportviews>
     </owners>
     <trend>3</trend>
     <reports>
