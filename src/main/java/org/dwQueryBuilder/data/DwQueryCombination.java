@@ -10,7 +10,6 @@ public class DwQueryCombination {
     private String referencedFieldName;
 
     public DwQueryCombination() {
-
     }
 
     public DwQueryCombination(CombineType combineType, DwQuery dwQuery,
