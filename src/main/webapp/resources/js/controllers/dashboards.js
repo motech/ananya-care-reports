@@ -43,7 +43,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.fetchFrequencies = function() {
-        $http.get('/api/indicator/calculator/frequencies').success(function(frequencies) {
+        $http.get('api/indicator/calculator/frequencies').success(function(frequencies) {
             $scope.frequencies = frequencies;
             $scope.frequencyId = frequencies[0].id;
         });
