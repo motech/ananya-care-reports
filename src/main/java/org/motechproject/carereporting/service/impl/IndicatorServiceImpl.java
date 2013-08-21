@@ -424,6 +424,19 @@ public class IndicatorServiceImpl implements IndicatorService {
         return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));
     }
 
+    @Override
+    public Date getDateDepth() {
+        String sqlString = "SELECT date_depth FROM dashboard_app.date_depth";
+        return (Date)sessionFactory.getCurrentSession().createSQLQuery(sqlString).uniqueResult();
+    }
+
+    @Override
+    @Transactional
+    public void updateDateDepth(Date newDateDepth) {
+        String sqlString = "UPDATE dashboard_app.date_depth set date_depth = :dateDepth";
+        sessionFactory.getCurrentSession().createSQLQuery(sqlString).setParameter("dateDepth", newDateDepth).executeUpdate();
+    }
+
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
 
         if (indicator.getTrend() == null) {

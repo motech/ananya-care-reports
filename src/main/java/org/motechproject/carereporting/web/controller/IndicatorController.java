@@ -247,4 +247,22 @@ public class IndicatorController extends BaseController {
                 headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/calculator/dateDepth", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getDateDepth(){
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        return sdf.format(indicatorService.getDateDepth());
+    }
+
+    @RequestMapping(value = "/calculator/dateDepth", method = RequestMethod.PUT,
+        consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    public void setDateDepth(@RequestBody @Valid Date newDateDepth,
+                               BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+        indicatorService.updateDateDepth(newDateDepth);
+    }
 }

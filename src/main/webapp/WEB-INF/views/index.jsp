@@ -76,6 +76,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
                                 <ul class="dropdown-menu">
                                     <li><a href="" ng-click="launchFrequencyDialog()"><i class="icon-time"></i> {{msg('menu.calculator.frequency')}}</a></li>
+                                    <li><a href="" ng-click="launchDateDepthDialog()"><i class="icon-calendar"></i> {{msg('menu.calculator.dateDepth')}}</a></li>
                                 </ul>
                         </li>
                         <li class="dropdown-submenu">

@@ -51,4 +51,13 @@ care.controller('navController', function($scope, $rootScope, $http, $simplified
                 backdrop: "static"
             });
     };
+
+    $scope.launchDateDepthDialog = function() {
+        var dialog = $modal({
+                template: "resources/partials/indicators/dateDepthDialog.html",
+                persist: true,
+                show: true,
+                backdrop: "static"
+            });
+        };
 });

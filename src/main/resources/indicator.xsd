@@ -77,7 +77,6 @@
 
     <xs:complexType name="query">
         <xs:choice>
-            <!--<xs:element name="indicator-id" type="xs:integer" />-->
             <xs:element name="indicator-name" type="xs:string" />
             <xs:element name="dw-query" type="dw_query" />
         </xs:choice>
@@ -94,7 +93,6 @@
             <xs:element name="combineWith" minOccurs="0">
                 <xs:complexType>
                     <xs:choice>
-                        <!--<xs:element name="indicator-id" type="xs:integer" />-->
                         <xs:element name="indicator-name" type="xs:string" />
                         <xs:element name="dw-query" type="dw_query" />
                     </xs:choice>

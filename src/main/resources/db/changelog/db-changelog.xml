@@ -767,4 +767,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="CARE #37" author="Krzysztof Kaczmarczyk">
+        <sql>
+            CREATE TABLE dashboard_app.date_depth (date_depth date);
+            INSERT INTO dashboard_app.date_depth (date_depth) values ('2013-01-01 23:59:59');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

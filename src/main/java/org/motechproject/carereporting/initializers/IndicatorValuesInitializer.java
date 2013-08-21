@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.initializers;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -11,7 +10,6 @@ import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.context.ApplicationContext;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Set;
 
@@ -40,12 +38,7 @@ public class IndicatorValuesInitializer implements Runnable {
     public void run() {
         LOG.info("Start calculation");
 
-        Date startDate = null;
-        try {
-            startDate = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
-        } catch (ParseException e) {
-            Logger.getLogger(IndicatorValuesInitializer.class).error(e);
-        }
+        Date startDate = indicatorService.getDateDepth();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
 
         for (FrequencyEntity frequencyEntity: frequencyEntities) {

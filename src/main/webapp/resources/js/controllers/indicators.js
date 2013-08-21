@@ -903,7 +903,7 @@ care.controller('calculatorController', function($scope, $http, $dialog, $locati
         }).success(function(data) {
              $scope.time = data;
         }).error(function() {
-            $errorService.genericError($scope, 'indicatorCalculator.error.cannotLoadTime');
+            $errorService.genericError($scope, 'indicatorCalculator.calculationTime.error.cannotLoadTime');
         });
     };
     $scope.fetchDailyTaskTime();
@@ -918,7 +918,38 @@ care.controller('calculatorController', function($scope, $http, $dialog, $locati
         }).success(function(data, status, headers, config) {
             config.dialog.dismiss();
         }).error(function(data, status, headers, config) {
-            $errorService.genericError($scope, 'indicatorCalculator.error.cannotSaveTime');
+            $errorService.genericError($scope, 'indicatorCalculator.calculationTime.error.cannotSaveTime');
+        });
+    };
+});
+
+care.controller('dateDepthController', function($scope, $http, $dialog, $location, $errorService) {
+    $scope.dateDepth = [];
+
+    $scope.fetchDateDepth = function() {
+        $http({
+            url: "api/indicator/calculator/dateDepth",
+            method: "GET",
+        }).success(function(dateDepth) {
+             $scope.dateDepth = moment.utc(dateDepth, "MM-DD-YYYY").toDate();
+        }).error(function() {
+            $errorService.genericError($scope, 'indicatorCalculator.dateDepth.error.cannotLoadTime');
+        });
+    };
+
+    $scope.fetchDateDepth();
+
+    $scope.saveDateDepth = function() {
+        $http({
+            url: "api/indicator/calculator/dateDepth",
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            data: $scope.dateDepth,
+            dialog: this
+        }).success(function(data, status, headers, config) {
+            config.dialog.dismiss();
+        }).error(function(data, status, headers, config) {
+            $errorService.genericError($scope, 'indicatorCalculator.dateDepth.error.cannotSaveTime');
         });
     };
 });

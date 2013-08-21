@@ -84,4 +84,8 @@ public interface IndicatorService {
 
     byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Integer areaId, Date fromDate, Date toDate);
 
+    Date getDateDepth();
+
+    void updateDateDepth(Date newDateDepth);
+
 }
