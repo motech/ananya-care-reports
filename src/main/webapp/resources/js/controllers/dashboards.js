@@ -96,8 +96,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.getPageCount = function() {
-        var pageCount = Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
-        return new Array(pageCount);
+        if($scope.dashboard.indicatorCategory != null) {
+            var pageCount = Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
+            $scope.pageCount = pageCount;
+            return new Array(pageCount);
+        }
     }
 
     $scope.reportFromDateChanged = function(report) {
@@ -124,13 +127,17 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.setPreviousPage = function() {
-        $scope.currentReportsPage--;
-        $scope.showReports();
+        if($scope.pageCount > 1) {
+            $scope.currentReportsPage = ($scope.currentReportsPage - 1) % $scope.pageCount;
+            $scope.showReports();
+        }
     };
 
     $scope.setNextPage = function() {
-        $scope.currentReportsPage++;
-        $scope.showReports();
+        if($scope.pageCount > 1) {
+            $scope.currentReportsPage = ($scope.currentReportsPage + 1) % $scope.pageCount;
+            $scope.showReports();
+        }
     };
 
     $scope.fetchTrendAreas = function(area) {
