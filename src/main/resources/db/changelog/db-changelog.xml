@@ -774,4 +774,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #66" author="Pawel Reise">
+        <sql>
+            begin;
+            set search_path = dashboard_app;
+            delete from indicator_role where role_id in (select role_id from role where name = 'Manager');
+            delete from care_user_role where role_id in (select role_id from role where name = 'Manager');
+            delete from role where name = 'Manager';
+            commit;
+        </sql>
+        <insert tableName="role" schemaName="dashboard_app">
+            <column name="name" value="Operational Manager" />
+        </insert>
+        <insert tableName="role" schemaName="dashboard_app">
+            <column name="name" value="Program Manager" />
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
