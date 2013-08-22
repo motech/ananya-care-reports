@@ -62,6 +62,12 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             return createSuperUserAuthentication();
         }
 
+        // TODO: Remove this testUser authentication when API from CommCare is provided by Dimagi
+        UserEntity testUser = getTestUser(login, password);
+        if (testUser != null) {
+            return new UsernamePasswordAuthenticationToken(testUser, null, testUser.getAuthorities());
+        }
+
         try {
             RestTemplate restTemplate = new RestTemplate(createSecureTransport(login, password));
             String userJson = restTemplate.getForObject(commCareUrl, String.class);
@@ -108,6 +114,16 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         userEntity.setArea(areaService.getAreaById(SUPER_USER_AREA_ID));
         userEntity.setUsername(SUPER_USER_NAME);
         return userEntity;
+    }
+
+    private UserEntity getTestUser(String login, String password) {
+        UserEntity user;
+        try {
+            user = userService.login(login, password);
+        } catch (EntityException e) {
+            user = null;
+        }
+        return user;
     }
 
     @SuppressWarnings("unchecked")

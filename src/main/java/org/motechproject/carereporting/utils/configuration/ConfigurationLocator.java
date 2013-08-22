@@ -33,19 +33,39 @@ public final class ConfigurationLocator {
     }
 
     public static Properties getCommCareConfiguration() throws IOException {
+        Properties customProperties = getCommCareCustomConfiguration();
+        Properties defaultProperties = getCommCareDefaultConfiguration();
+        if (customProperties.size() == 0) {
+            return getCommCareDefaultConfiguration();
+        } else {
+            completeCustomProperties(customProperties, defaultProperties);
+            return customProperties;
+        }
+    }
+
+    private static Properties getCommCareCustomConfiguration() throws IOException {
         Properties properties = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = getCommCareConfigurationInputStream(loader);
-        properties.load(stream);
+        File customPropertiesFile = new File(getCommCareCustomPropertiesFilePath());
+        if (customPropertiesFile.exists()) {
+            InputStream stream = new FileSystemResource(customPropertiesFile).getInputStream();
+            properties.load(stream);
+        }
         return properties;
     }
 
-    private static InputStream getCommCareConfigurationInputStream(ClassLoader loader) throws IOException {
-        File customProperties = new File(getCommCareCustomPropertiesFilePath());
-        if (customProperties.exists()) {
-            return new FileSystemResource(customProperties).getInputStream();
-        } else {
-            return loader.getResourceAsStream(getCommCareDefaultPropertiesFileName());
+    private static Properties getCommCareDefaultConfiguration() throws IOException {
+        Properties properties = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream defaultStream = loader.getResourceAsStream(getCommCareDefaultPropertiesFileName());
+        properties.load(defaultStream);
+        return properties;
+    }
+
+    private static void completeCustomProperties(Properties customProperties, Properties defaultProperties) {
+        for (Object propertyKey : defaultProperties.keySet()) {
+            if (!customProperties.containsKey(propertyKey)) {
+                customProperties.setProperty(propertyKey.toString(), defaultProperties.getProperty(propertyKey.toString()));
+            }
         }
     }
 
