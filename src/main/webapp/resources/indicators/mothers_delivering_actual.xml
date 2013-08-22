@@ -6,7 +6,7 @@
     <owners>
         <user login="mrcaretest@gmail.com"/>
         <reportviews>
-            <reportview name="Manager"/>
+            <reportview name="Program Manager"/>
         </reportviews>
     </owners>
     <trend>3</trend>
