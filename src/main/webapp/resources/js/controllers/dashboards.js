@@ -20,6 +20,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.currentReportsPage = 0;
     $scope.reportsPerPage = 3;
+    $scope.loading = true;
 
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
         return parseInt(dashboardA.tabPosition) - parseInt(dashboardB.tabPosition);
@@ -53,21 +54,21 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
     $scope.fetchFrequencies();
     $scope.reportRows = [];
+    $scope.allReportsRows = [];
+    $scope.reportValues = [];
 
-    $scope.prepareReportRows = function() {
-        $scope.reportRows = [];
+    $scope.prepareAllReportRows = function() {
+        $scope.allReportsRows = [];
         if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
             return;
         }
-        var startIndex = $scope.currentReportsPage * $scope.reportsPerPage;
-        for (var i = startIndex; i < $scope.dashboard.indicatorCategory.indicators.length && i < startIndex + $scope.reportsPerPage; i++) {
+        for (var i = 0; i < $scope.dashboard.indicatorCategory.indicators.length; i++) {
             var indicator = $scope.dashboard.indicatorCategory.indicators[i];
             if (indicator.reports == undefined) {
                 continue;
             }
             indicator.reports.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); });
             var reportRow = [];
-            var startIndex = $scope.currentReportsPage * $scope.reportsPerPage;
             for (var r = 0; r < indicator.reports.length; r+=1) {
                 if (!indicator.reports.hasOwnProperty(r)) {
                     continue;
@@ -91,16 +92,29 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     reportRow.push(report);
                 }
             }
-            $scope.reportRows.push(reportRow);
+            $scope.allReportsRows.push(reportRow);
         }
     };
 
-    $scope.getPageCount = function() {
-        if($scope.dashboard.indicatorCategory != null) {
-            var pageCount = Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
-            $scope.pageCount = pageCount;
-            return new Array(pageCount);
+    $scope.prepareCurrentPageReportsRows = function() {
+        var newReports = [];
+        $scope.reportRows = [];
+        var startIndex = $scope.currentReportsPage * $scope.reportsPerPage;
+        for (var i = startIndex; i < $scope.allReportsRows.length && i < startIndex + $scope.reportsPerPage; i++) {
+            newReports.push($scope.allReportsRows[i]);
         }
+        $scope.reportRows = newReports;
+    };
+
+    $scope.getPageCount = function() {
+        if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
+            return 0;
+        }
+        return Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
+    };
+
+    $scope.getPages = function() {
+        return new Array($scope.getPageCount());
     }
 
     $scope.reportFromDateChanged = function(report) {
@@ -127,17 +141,19 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.setPreviousPage = function() {
-        if($scope.pageCount > 1) {
-            $scope.currentReportsPage = ($scope.currentReportsPage - 1) % $scope.pageCount;
-            $scope.showReports();
+        $scope.currentReportsPage--;
+        if ($scope.currentReportsPage < 0) {
+            $scope.currentReportsPage = $scope.getPageCount()-1;
         }
+        $scope.showReports();
     };
 
     $scope.setNextPage = function() {
-        if($scope.pageCount > 1) {
-            $scope.currentReportsPage = ($scope.currentReportsPage + 1) % $scope.pageCount;
-            $scope.showReports();
+        $scope.currentReportsPage++;
+        if ($scope.currentReportsPage >= $scope.getPageCount()) {
+            $scope.currentReportsPage = 0;
         }
+        $scope.showReports();
     };
 
     $scope.fetchTrendAreas = function(area) {
@@ -204,10 +220,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.showReports = function() {
-        $scope.prepareReportRows();
-        for (var i = 0; i < $scope.reportRows.length; i++) {
-            $scope.fetchAreas($scope.reportRows[i]);
-        }
+        $scope.loading = true;
+        setTimeout(function() {
+            $scope.prepareCurrentPageReportsRows();
+            for (var i = 0; i < $scope.reportRows.length; i++) {
+                $scope.fetchAreas($scope.reportRows[i]);
+            }
+            $scope.loading = false;
+        }, 0);
     };
 
     $scope.tabChanged = function(dashboard) {
@@ -217,6 +237,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $("#mapReport2").html('');
         $scope.dashboard = dashboard;
         if (dashboard.name == "Performance summary") {
+            $scope.loading = true;
             $scope.fetchTrends();
         } else if (dashboard.name == "Map report") {
             for (var i in $scope.maps) {
@@ -226,9 +247,12 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
         } else {
             $scope.currentReportsPage = 0;
+            $scope.loading = true;
+            $scope.prepareAllReportRows();
             $scope.showReports();
         }
     };
+
     $scope.fetchDashboards();
 
     $scope.trendPerCategory = {};
@@ -288,6 +312,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     }
                 }
             }
+            $scope.loading = false;
         });
     };
 

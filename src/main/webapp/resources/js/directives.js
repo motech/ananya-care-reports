@@ -145,55 +145,35 @@
                 link: function (scope, element, attrs) {
                     attrs.$observe('value', function(report) {
                         var createChart = function() {
-                            var report = attrs.value;
-
-                            if (!report) {
+                            var report;
+                            $(element).html("<img src='/resources/images/loading.gif' />");
+                            if (!attrs.value || !element[0] || element[0].clientWidth <= 0
+                                    || element[0].clientHeight <= 0) {
                                 return;
                             }
-
-                            if (!element[0] || element[0].clientWidth <= 0 || element[0].clientHeight <= 0) {
-                                return;
-                            }
-
-                            report = JSON.parse(report);
-
-                            var chartType = report.reportType.name.toLowerCase();
-                            var indicatorId = report.indicatorId;
-                            var areaId = report.areaId;
-                            var frequencyId = report.frequencyId;
-
-                            if(frequencyId != undefined && areaId != undefined) {
-                                var url = 'api/chart?chartType=' + chartType
-                                    + '&indicatorId=' + indicatorId
+                            report = JSON.parse(attrs.value);
+                            if(report.frequencyId != undefined && report.areaId != undefined) {
+                                var url = 'api/chart?chartType=' + report.reportType.name.toLowerCase()
+                                    + '&indicatorId=' + report.indicatorId
                                     + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
                                     + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
-                                    + "&frequencyId=" + frequencyId
-                                    + "&areaId=" + areaId;
+                                    + "&frequencyId=" + report.frequencyId
+                                    + "&areaId=" + report.areaId;
 
                                 $http.get(url).success(function(chart) {
-                                    var graph, title, chart, wrapper, titleElement,
-                                        drawChart = function(opts) {
-                                            chart.settings.mouse.trackFormatter = trackFormatter;
-                                            var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
-                                            Flotr.draw(element[0], chart.data, o);
-                                        };
-
-                                    var trackFormatter = function(obj) {
-                                        var date = new Date(parseInt(obj.x));
-                                        return '('+moment(date).format("MM/DD/YYYY")+', '+obj.y+')';
-                                    }
-
+                                    element.html = '';
                                     if (chart.settings.title != undefined) {
-                                        title = chart.settings.title;
                                         delete chart.settings.title;
                                     }
-                                    drawChart();
+                                    chart.settings.mouse.trackFormatter = function(obj) {
+                                        return '('+moment(new Date(parseInt(obj.x))).format("MM/DD/YYYY")+', '+obj.y+')';
+                                    };
+                                    Flotr.draw(element[0], chart.data, chart.settings);
                                 }).error(function(data, status, headers, config) {
                                     $dialog.messageBox(scope.msg('common.error'), data, [{label: scope.msg('common.ok'), cssClass: 'btn'}]).open();
                                 });
                             }
                         };
-
                         $timeout(createChart, 0);
                     });
                 }

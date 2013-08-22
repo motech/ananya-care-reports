@@ -118,6 +118,8 @@ form#indicatorForm div#formButtons {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 .chart-title {
@@ -770,4 +772,39 @@ h5 {
 
 .pagination a {
     cursor: pointer;
+}
+
+.indicator-title {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 7px;
+    height: 40px;
+}
+
+.input-date input {
+    width: 100px;
+}
+
+.indicator-columns-wrapper {
+    width: 1053px;
+    margin: auto;
+    overflow: auto;
+}
+
+.indicator-column {
+    width: 350px;
+    float: left;
+    overflow: auto;
+}
+
+.indicator-cell-header {
+    margin: auto;
+    width: 300px;
+}
+
+.indicator-btn-group {
+    margin: auto;
+    width: 280px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
