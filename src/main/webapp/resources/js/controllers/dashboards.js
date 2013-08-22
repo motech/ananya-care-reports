@@ -18,6 +18,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.charts = {};
     $scope.frequencies = [];
 
+    $scope.currentReportsPage = 0;
+    $scope.reportsPerPage = 3;
+
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
         return parseInt(dashboardA.tabPosition) - parseInt(dashboardB.tabPosition);
     };
@@ -50,54 +53,52 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
     $scope.fetchFrequencies();
     $scope.reportRows = [];
-    $scope.fetchReportRows = function() {
+
+    $scope.prepareReportRows = function() {
         $scope.reportRows = [];
-        if ($scope.dashboard === undefined
-            || $scope.dashboard.indicatorCategory == undefined) {
+        if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
             return;
         }
-
-        for (var i in $scope.dashboard.indicatorCategory.indicators) {
+        var startIndex = $scope.currentReportsPage * $scope.reportsPerPage;
+        for (var i = startIndex; i < $scope.dashboard.indicatorCategory.indicators.length && i < startIndex + $scope.reportsPerPage; i++) {
             var indicator = $scope.dashboard.indicatorCategory.indicators[i];
-            if (indicator.reports === undefined) {
+            if (indicator.reports == undefined) {
                 continue;
             }
-
             indicator.reports.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); });
-
-            for (var r = 0; r < indicator.reports.length; r += 3) {
+            var reportRow = [];
+            var startIndex = $scope.currentReportsPage * $scope.reportsPerPage;
+            for (var r = 0; r < indicator.reports.length; r+=1) {
                 if (!indicator.reports.hasOwnProperty(r)) {
                     continue;
                 }
-
-                var reportRow = [];
-                for (var q = 0; q < 3; q++) {
-                    var report = (indicator.reports[r + q]) ? indicator.reports[r + q] : null;
-                    if (report != null) {
-                        if (report.reportType.name.toLowerCase().endsWith('chart')) {
-                            report.indicatorId = indicator.id;
-                            report.needsRefreshing = true;
-                            report.computing = indicator.isComputing;
-                            report.indicatorAreaId = indicator.area.id;
-                            report.indicatorName = indicator.name;
-                            report.frequencyId = indicator.defaultFrequency.id;
-                            report.additive = indicator.isAdditive;
-                            report.rowIndex = $scope.reportRows.length;
-                            report.index = reportRow.length;
-                            report.displayType = 'chart';
-                            report.from = moment().subtract('months', 1).format("L");
-                            report.to = moment().format("L");
-                            report.canExportCaseListReport = true;
-                        } else {
-                            report = null;
-                        }
-                    }
+                var indicatorReport = indicator.reports[r];
+                if (indicatorReport != null && indicatorReport.reportType.name.toLowerCase().endsWith('chart')) {
+                    var report = indicatorReport;
+                    report.indicatorId = indicator.id;
+                    report.needsRefreshing = true;
+                    report.computing = indicator.isComputing;
+                    report.indicatorAreaId = indicator.area.id;
+                    report.indicatorName = indicator.name;
+                    report.frequencyId = indicator.defaultFrequency.id;
+                    report.additive = indicator.isAdditive;
+                    report.rowIndex = $scope.reportRows.length;
+                    report.index = reportRow.length;
+                    report.displayType = 'chart';
+                    report.from = moment().subtract('months', 1).format("L");
+                    report.to = moment().format("L");
+                    report.canExportCaseListReport = true;
                     reportRow.push(report);
                 }
-                $scope.reportRows.push(reportRow);
             }
+            $scope.reportRows.push(reportRow);
         }
     };
+
+    $scope.getPageCount = function() {
+        var pageCount = Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
+        return new Array(pageCount);
+    }
 
     $scope.reportFromDateChanged = function(report) {
         report.from = moment(report.from);
@@ -115,6 +116,21 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if (moment(report.to).diff(report.from, 'days') < 0) {
             report.to = moment(report.from).format("L");
         }
+    };
+
+    $scope.setCurrentPage = function(page) {
+        $scope.currentReportsPage = page;
+        $scope.showReports();
+    };
+
+    $scope.setPreviousPage = function() {
+        $scope.currentReportsPage--;
+        $scope.showReports();
+    };
+
+    $scope.setNextPage = function() {
+        $scope.currentReportsPage++;
+        $scope.showReports();
     };
 
     $scope.fetchTrendAreas = function(area) {
@@ -180,6 +196,13 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
           });
     };
 
+    $scope.showReports = function() {
+        $scope.prepareReportRows();
+        for (var i = 0; i < $scope.reportRows.length; i++) {
+            $scope.fetchAreas($scope.reportRows[i]);
+        }
+    };
+
     $scope.tabChanged = function(dashboard) {
         $scope.reportRows = [];
         $scope.charts = [];
@@ -195,10 +218,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 }
             }
         } else {
-            $scope.fetchReportRows();
-            for (var i = 0; i < $scope.reportRows.length; i++) {
-                $scope.fetchAreas($scope.reportRows[i]);
-            }
+            $scope.currentReportsPage = 0;
+            $scope.showReports();
         }
     };
     $scope.fetchDashboards();

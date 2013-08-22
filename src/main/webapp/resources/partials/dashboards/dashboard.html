@@ -50,6 +50,13 @@
                     </table>
                 </div>
                 <div class="row" ng-show="reportRows.length > 0">
+                    <div class="pagination text-center">
+                        <ul>
+                            <li><a ng-click="setPreviousPage()">Prev</a></li>
+                            <li ng-repeat="i in getPageCount()" ng:class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
+                            <li><a ng-click="setNextPage()">Next</a></li>
+                        </ul>
+                    </div>
                     <div style="overflow: auto;">
                         <table class="span8">
                             <tbody>
@@ -111,6 +118,13 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="pagination text-center">
+                        <ul>
+                            <li><a ng-click="setPreviousPage()">Prev</a></li>
+                            <li ng-repeat="i in getPageCount()" ng:class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
+                            <li><a ng-click="setNextPage()">Next</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

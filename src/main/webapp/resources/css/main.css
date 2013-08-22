@@ -767,3 +767,7 @@ h5 {
 .navbar .btn-toolbar {
   margin: 0;
 }
+
+.pagination a {
+    cursor: pointer;
+}
