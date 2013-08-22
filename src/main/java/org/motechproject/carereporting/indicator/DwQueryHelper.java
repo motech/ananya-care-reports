@@ -15,7 +15,6 @@ import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
-import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
@@ -51,12 +50,6 @@ public class DwQueryHelper {
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
         addAreaJoinAndCondition(dwQuery, area);
-        if (!dwQueryEntity.getHasPeriodCondition()) {
-            String tableName = dwQuery instanceof ComplexDwQuery
-                    ? ((ComplexDwQueryEntity) dwQueryEntity).getDimension()
-                    : ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
-            addTimeCondition(dwQuery, tableName);
-        }        
         return dwQuery;
     }
 
@@ -301,23 +294,6 @@ public class DwQueryHelper {
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
         return new WhereConditionBuilder()
                 .withValueComparison("flw", area.getLevel().getName(), OperatorType.Equal, area.getName())
-                .build();
-    }
-
-    private void addTimeCondition(DwQuery dwQuery, String tableName) {
-        if (dwQuery.getWhereConditionGroup() == null) {
-            dwQuery.setWhereConditionGroup(new WhereConditionGroup());
-        }
-        dwQuery.getWhereConditionGroup().addCondition(prepareTimeCondition(tableName));
-    }
-
-    private WhereCondition prepareTimeCondition(String tableName) {
-        return new WhereConditionBuilder()
-                .withDateRangeComparison(
-                        tableName,
-                        "creation_time",
-                        "%(fromDate)",
-                        "%(toDate)")
                 .build();
     }
 }
