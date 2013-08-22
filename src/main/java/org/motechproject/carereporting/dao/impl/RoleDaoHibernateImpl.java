@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoleDaoHibernateImpl extends GenericDaoHibernateImpl<RoleEntity> implements RoleDao {
 
+    public RoleEntity getByName(String name) {
+        return getByField("name", name);
+    }
 }

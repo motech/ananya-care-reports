@@ -4,4 +4,6 @@ import org.motechproject.carereporting.domain.RoleEntity;
 
 public interface RoleDao extends GenericDao<RoleEntity> {
 
+    RoleEntity getByName(String name);
+
 }

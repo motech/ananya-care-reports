@@ -110,6 +110,8 @@ public class XmlIndicatorParser {
     @Autowired
     private FormDao formDao;
 
+    private static final String ALL_ROLES_STRING = "ALL";
+
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
@@ -172,6 +174,9 @@ public class XmlIndicatorParser {
     private Set<RoleEntity> prepareRoles(List<Role> roles) {
         Set<RoleEntity> roleEntities = new HashSet<>();
         for (Role role: roles) {
+            if (role.getName().equals(ALL_ROLES_STRING)) {
+                roleEntities.addAll(roleDao.getAll());
+            }
             roleEntities.add(roleDao.getByField("name", role.getName()));
         }
         return roleEntities;
