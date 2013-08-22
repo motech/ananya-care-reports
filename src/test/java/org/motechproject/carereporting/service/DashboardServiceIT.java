@@ -136,9 +136,6 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
         assertNotNull(userEntity);
         assertEquals(USER_ID, userEntity.getId());
 
-        Set<UserEntity> userEntities = new LinkedHashSet<>();
-        userEntities.add(userEntity);
-
         ReportEntity reportEntity = reportService.getReportById(REPORT_ID);
         Set<ReportEntity> reportEntities = new LinkedHashSet<>();
         reportEntities.add(reportEntity);
@@ -147,7 +144,7 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
         assertEquals(REPORT_ID, reportEntity.getId());
 
         DashboardEntity dashboardEntity = new DashboardEntity(
-                DASHBOARD_NAME, DASHBOARD_TAB_POSITION, userEntities);
+                DASHBOARD_NAME, DASHBOARD_TAB_POSITION);
         Set<DashboardEntity> dashboardEntities = new LinkedHashSet<>();
         dashboardEntities.add(dashboardEntity);
 

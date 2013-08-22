@@ -40,14 +40,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @NotNull
-    @Column(name = "first_name")
-    private String firstName;
-
-    @NotNull
-    @Column(name = "last_name")
-    private String lastName;
-
     @Email
     @Column(name = "email")
     private String email;
@@ -63,9 +55,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "default_language_id")
     private LanguageEntity defaultLanguage;
-
-    @ManyToMany(mappedBy = "owners")
-    private Set<DashboardEntity> dashboards;
 
     @OneToMany(mappedBy = "owner")
     private Set<IndicatorEntity> indicators;
@@ -99,22 +88,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public void setArea(AreaEntity area) {
         this.area = area;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -180,15 +153,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public void setDefaultLanguage(LanguageEntity defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
-    }
-
-    @JsonIgnore
-    public Set<DashboardEntity> getDashboards() {
-        return dashboards;
-    }
-
-    public void setDashboards(Set<DashboardEntity> dashboards) {
-        this.dashboards = dashboards;
     }
 
     @JsonIgnore

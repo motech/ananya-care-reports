@@ -250,7 +250,7 @@ public class IndicatorController extends BaseController {
     @RequestMapping(value = "/calculator/dateDepth", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getDateDepth(){
+    public String getDateDepth() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         return sdf.format(indicatorService.getDateDepth());
     }
@@ -259,7 +259,7 @@ public class IndicatorController extends BaseController {
         consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     public void setDateDepth(@RequestBody @Valid Date newDateDepth,
-                               BindingResult bindingResult){
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }

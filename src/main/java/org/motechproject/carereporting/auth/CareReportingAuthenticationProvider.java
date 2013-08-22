@@ -10,7 +10,6 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
-import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,6 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
 
     @Autowired
     private AreaService areaService;
-
-    @Autowired
-    private DashboardService dashboardService;
 
     private static Properties commCareConfiguration;
 
@@ -75,12 +71,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         } catch (EntityException e) {
             Map<String, String> user = ((ArrayList<Map<String, String>>) result.get("objects")).get(0);
             String userName = user.get("email");
-            String firstName = user.get("first_name");
-            String lastName = user.get("last_name");
             AreaEntity area = areaService.getAreaById(1);
             Set<RoleEntity> roles = userService.getAllRoles();
 
-            userService.register(userName, password, firstName, lastName, area, roles);
+            userService.register(userName, password, area, roles);
             UserEntity userDashboard = userService.login(login,
                     (String) authentication.getCredentials());
             return new UsernamePasswordAuthenticationToken(userDashboard, null, userDashboard.getAuthorities());
@@ -110,11 +104,9 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         UserEntity userEntity = new UserEntity();
         userEntity.setId(Integer.MAX_VALUE);
         userEntity.setRoles(userService.getAllRoles());
-        userEntity.setDashboards(dashboardService.getAllDashboards());
         userEntity.setArea(areaService.getAreaById(SUPER_USER_AREA_ID));
-        userEntity.setFirstName(SUPER_USER_NAME);
+        userEntity.setArea(areaService.getAreaById(SUPER_USER_AREA_ID));
         userEntity.setUsername(SUPER_USER_NAME);
-        userEntity.setLastName(SUPER_USER_NAME);
         return userEntity;
     }
 

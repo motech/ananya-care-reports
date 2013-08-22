@@ -23,7 +23,7 @@ public class DashboardDaoIT extends AbstractTransactionalJUnit4SpringContextTest
 
     @Test
     public void testGetTabPositionForNewDashboard() {
-        Assert.assertEquals(Short.valueOf((short) 5), dashboardDao.getTabPositionForNewDashboard());
+        Assert.assertEquals(Short.valueOf((short) 6), dashboardDao.getTabPositionForNewDashboard());
     }
 
     @Test

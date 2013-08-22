@@ -72,10 +72,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = false)
     @Override
-    public void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles) {
+    public void register(String username, String password, AreaEntity area, Set<RoleEntity> roles) {
         UserEntity user = new UserEntity(username, password, roles);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
         user.setArea(area);
 
         LanguageEntity languageEntity = new LanguageEntity();
@@ -114,8 +112,6 @@ public class UserServiceImpl implements UserService {
         try {
             UserEntity userToUpdate = getUserById(user.getId());
             userToUpdate.setUsername(user.getUsername());
-            userToUpdate.setFirstName(user.getFirstName());
-            userToUpdate.setLastName(user.getLastName());
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setRoles(user.getRoles());
             userToUpdate.setArea(user.getArea());

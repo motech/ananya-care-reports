@@ -7,16 +7,7 @@ INSERT INTO computed_field (computed_field_id, form_id, name, type) VALUES (471,
 INSERT INTO computed_field (computed_field_id, form_id, name, type) VALUES (847, 1, 'breastfed_hour', 'Boolean');
 
 INSERT INTO field_operation (field_1_id, computed_field_id) VALUES (1, 1);
-
-INSERT INTO condition (complex_condition_id, computed_field_id, comparison_symbol_id, comparison_value)
-    VALUES (1, 1, 1, 90);
-
-INSERT INTO trend (positive_diff, negative_diff) VALUES (1, -1);
-
-INSERT INTO indicator (type_id, area_id, computed_field_id, trend_id, complex_condition_id, frequency, name)
-    VALUES (1, 1, 1, 1, 1, 1, 'Test indicator');
-
-INSERT INTO report (indicator_id, report_type_id, label_x, label_y)
-    VALUES (1, 1, 'Label X', 'Label Y');
-INSERT INTO report (indicator_id, report_type_id, label_x, label_y)
-    VALUES (1, 2, 'Label X', 'Label Y');
+INSERT INTO care_user (username, password, email, area_id, salt, creation_date, modification_date)
+VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'test@test.test', 1, 'test', now(), now());
+INSERT INTO care_user (username, password, email, area_id, salt, creation_date, modification_date)
+VALUES ('soldeveloper', '51abb9636078defbf888d8457a7c76f85c8f114c', 'test@test.test', 1, 'test', now(), now());

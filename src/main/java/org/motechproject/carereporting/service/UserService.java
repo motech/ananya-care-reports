@@ -22,7 +22,7 @@ public interface UserService {
 
     UserEntity getCurrentlyLoggedUser();
 
-    void register(String username, String password, String firstName, String lastName, AreaEntity area, Set<RoleEntity> roles);
+    void register(String username, String password, AreaEntity area, Set<RoleEntity> roles);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(UserEntity userEntity);

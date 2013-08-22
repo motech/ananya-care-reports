@@ -1,104 +1,105 @@
 SET search_path = dashboard_app;
 
-INSERT INTO level (name, hierarchy_depth) values ('State', 0);
-INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('District', 1, 1);
-INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('Block', 2, 2);
-INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('HSC', 3, 3);
-INSERT INTO level (name, hierarchy_depth, parent_level_id) values ('AWC', 4, 4);
-INSERT INTO area (name, level_id) values ('State 1', 1), ('State 2', 1);
-INSERT INTO area (name, level_id, parent_area_id) values ('District 1', 2, 1), ('District 2', 2, 1),
-    ('District 3', 2, 2), ('District 4', 2, 2);
-INSERT INTO area (name, level_id, parent_area_id) values ('Block 1', 3, 3), ('Block 2', 3, 4),
-    ('Block 3', 3, 5), ('Block 4', 3, 6);
-INSERT INTO area (name, level_id, parent_area_id) values ('HSC 1', 4, 7), ('HSC 2', 4, 8),
-    ('HSC 3', 4, 9), ('HSC 4', 4, 10);
-INSERT INTO area (name, level_id, parent_area_id) values ('AWC 1', 5, 11), ('AWC 2', 5, 12),
-    ('AWC 3', 5, 13), ('AWC 4', 5, 14);
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('state', 0, null, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('district', 1, 1, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('block', 2, 2, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('hsc', 3, 3, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('awc', 4, 4, now(), now());
 
-INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
-          VALUES ('test', '51abb9636078defbf888d8457a7c76f85c8f114c', 'John', 'Doe', 'test@test.test', 1, 'test', now(), now());
-INSERT INTO care_user (username, password, first_name, last_name, email, area_id, salt, creation_date, modification_date)
-          VALUES ('soldeveloper', '51abb9636078defbf888d8457a7c76f85c8f114c', 'Charles', 'Pearson', 'test@test.test', 1, 'test', now(), now());
-INSERT INTO role (name) VALUES ('Admin'), ('Manager');
-INSERT INTO permission(name, display_name) VALUES
-    ('CAN_CREATE_INDICATORS', 'Can create indicators'),
-    ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users'),
-    ('CAN_MANAGE_REPORTS', 'Can manage reports'),
-    ('CAN_VIEW_PERFORMANCE_SUMMARY', 'Can view performance summary'),
-    ('CAN_VIEW_MAP_REPORT', 'Can view map report'),
-    ('CAN_CREATE_COMPLEX_CONDITIONS', 'Can create complex conditions'),
-    ('CAN_CREATE_COMPUTED_FIELDS', 'Can create computed fields'),
-    ('CAN_EDIT_INDICATORS', 'Can edit indicators'),
-    ('CAN_REMOVE_INDICATORS', 'Can remove indicators'),
-    ('CAN_CREATE_CATEGORIES', 'Can create categories'),
-    ('CAN_EDIT_CATEGORIES', 'Can edit categories'),
-    ('CAN_REMOVE_CATEGORIES', 'Can remove categories'),
-    ('CAN_CREATE_ROLE', 'Can create role'),
-    ('CAN_EDIT_ROLE', 'Can edit role'),
-    ('CAN_REMOVE_ROLE', 'Can remove role'),
-    ('CAN_EDIT_FORM_NAMES', 'Can edit form names'),
-    ('CAN_DELETE_FORMS', 'Can delete forms');
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Bihar', 1, null, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Begusarai', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Champaran East', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Patna', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Saharsa', 2, 1, now(), now());
 
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11),
- (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 17);
-INSERT INTO care_user_role (user_id, role_id) VALUES (1, 1), (1, 2);
+insert into role (name, creation_date, modification_date) values ('Admin', now(), now());
+insert into role (name, creation_date, modification_date) values ('Operational Manager', now(), now());
+insert into role (name, creation_date, modification_date) values ('Program Manager', now(), now());
 
-insert into indicator_type (name) values ('Average');
-insert into indicator_type (name) values ('Count');
-insert into indicator_type (name) values ('Percentage');
-insert into indicator_type (name) values ('Sum');
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_CREATE_INDICATORS', 'Can create indicators', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_MANAGE_SYSTEM_USERS', 'Can manage system users', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_MANAGE_REPORTS', 'Can manage reports', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_VIEW_PERFORMANCE_SUMMARY', 'Can view performance summary', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_VIEW_MAP_REPORT', 'Can view map report', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_CREATE_COMPLEX_CONDITIONS', 'Can create complex conditions', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_CREATE_COMPUTED_FIELDS', 'Can create computed fields', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_EDIT_INDICATORS', 'Can edit indicators', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_REMOVE_INDICATORS', 'Can remove indicators', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_CREATE_CATEGORIES', 'Can create categories', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_EDIT_CATEGORIES', 'Can edit categories', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_REMOVE_CATEGORIES', 'Can remove categories', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_CREATE_ROLE', 'Can create role', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_EDIT_ROLE', 'Can edit role', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_REMOVE_ROLE', 'Can remove role', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_EDIT_FORM_NAMES', 'Can edit form names', now(), now());
+insert into permission(name, display_name, creation_date, modification_date) values ('CAN_DELETE_FORMS', 'Can delete forms', now(), now());
 
-insert into dashboard (name, tab_position) values ('Performance summary', 0);
-insert into dashboard (name, tab_position) values ('Map report', 1);
-insert into dashboard (name, tab_position) values ('Birth preparedness plan', 2);
-insert into dashboard (name, tab_position) values ('IFA Tablets', 3);
+insert into role_permission (role_id, permission_id) values (1, 1);
+insert into role_permission (role_id, permission_id) values (1, 2);
+insert into role_permission (role_id, permission_id) values (1, 3);
+insert into role_permission (role_id, permission_id) values (1, 4);
+insert into role_permission (role_id, permission_id) values (1, 5);
+insert into role_permission (role_id, permission_id) values (1, 6);
+insert into role_permission (role_id, permission_id) values (1, 7);
+insert into role_permission (role_id, permission_id) values (1, 8);
+insert into role_permission (role_id, permission_id) values (1, 9);
+insert into role_permission (role_id, permission_id) values (1, 10);
+insert into role_permission (role_id, permission_id) values (1, 11);
+insert into role_permission (role_id, permission_id) values (1, 12);
+insert into role_permission (role_id, permission_id) values (1, 13);
+insert into role_permission (role_id, permission_id) values (1, 14);
+insert into role_permission (role_id, permission_id) values (1, 15);
+insert into role_permission (role_id, permission_id) values (1, 16);
+insert into role_permission (role_id, permission_id) values (1, 17);
 
-insert into indicator_category (name, short_code, dashboard_id) values ('Birth preparedness plan', 'BP', 3);
-insert into indicator_category (name, short_code, dashboard_id) values ('IFA Tablets', 'IFA', 4);
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('Performance summary', 0, now(), now());
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('Map report', 1, now(), now());
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('Birth preparedness plan', 2, now(), now());
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('IFA Tablets', 3, now(), now());
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('Mortality', 4, now(), now());
+insert into dashboard (name, tab_position, creation_date, modification_date) values ('Essential Newborn Care', 5, now(), now());
 
-update dashboard set indicator_category_id = 1 where dashboard_id = 3;
-update dashboard set indicator_category_id = 2 where dashboard_id = 4;
+insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Birth preparedness plan', 'BP', 3, now(), now());
+insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('IFA Tablets', 'IFA', 4, now(), now());
+insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Mortality', 'MRT', 5, now(), now());
+insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Essential Newborn Care', 'ENC', 6, now(), now());
 
-insert into dashboard_user (dashboard_id, user_id) values (1, 1);
-insert into dashboard_user (dashboard_id, user_id) values (2, 1);
-insert into dashboard_user (dashboard_id, user_id) values (3, 1);
-insert into dashboard_user (dashboard_id, user_id) values (4, 1);
+insert into comparison_symbol (name, creation_date, modification_date) values ('=', now(), now());
+insert into comparison_symbol (name, creation_date, modification_date) values ('>', now(), now());
+insert into comparison_symbol (name, creation_date, modification_date) values ('<', now(), now());
+insert into comparison_symbol (name, creation_date, modification_date) values ('>=', now(), now());
+insert into comparison_symbol (name, creation_date, modification_date) values ('<=', now(), now());
 
-insert into comparison_symbol (name) values ('=');
-insert into comparison_symbol (name) values ('>');
-insert into comparison_symbol (name) values ('<');
-insert into comparison_symbol (name) values ('>=');
-insert into comparison_symbol (name) values ('<=');
+insert into operator_type (name, creation_date, modification_date) values ('ADD', now(), now());
+insert into operator_type (name, creation_date, modification_date) values ('SUB', now(), now());
+insert into operator_type (name, creation_date, modification_date) values ('MUL', now(), now());
+insert into operator_type (name, creation_date, modification_date) values ('DIV', now(), now());
 
-insert into operator_type (name) values ('ADD');
-insert into operator_type (name) values ('SUB');
-insert into operator_type (name) values ('MUL');
-insert into operator_type (name) values ('DIV');
+insert into report_type (name, creation_date, modification_date) values ('Bar Chart', now(), now());
+insert into report_type (name, creation_date, modification_date) values ('Line Chart', now(), now());
+insert into report_type (name, creation_date, modification_date) values ('Pie Chart', now(), now());
 
-INSERT INTO report_type (name) VALUES ('Bar Chart'), ('Line Chart'), ('Pie Chart');
+insert into complex_condition(name, creation_date, modification_date) values ('ifa tablets >= 90', now(), now());
+insert into complex_condition(name, creation_date, modification_date) values ('delivery_child_form.breastfed_hour = Yes', now(), now());
 
-ALTER TABLE indicator DROP CONSTRAINT indicator_computed_field_id_fk;
-ALTER TABLE condition DROP CONSTRAINT condition_computed_field_id_fk;
+insert into condition(field_1_id, comparison_symbol_id, creation_date, modification_date) values (471, 4, now(), now());
+insert into condition(field_1_id, comparison_symbol_id, creation_date, modification_date) values (847, 1, now(), now());
 
-INSERT INTO trend (positive_diff, negative_diff, creation_date, modification_date)
-VALUES (5, -5, now(), now());
+insert into frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values ('yearly', null, now(), now());
+insert into frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values ('quarterly', 1, now(), now());
+insert into frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values ('monthly', 2, now(), now());
+insert into frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values ('weekly', 3, now(), now());
+insert into frequency(frequency_name, parent_frequency_id, creation_date, modification_date) values ('daily', 4, now(), now());
 
-INSERT INTO complex_condition(name, creation_date, modification_date)
-VALUES ('ifa tablets >= 90', now(), now());
+insert into cron_task(second, minute, hour, day, month, week_day, year, frequency_id, creation_date, modification_date) values ('0', '0', '0', '1', '1', '?', '', 1, now(), now());
+insert into cron_task(second, minute, hour, day, month, week_day, year, frequency_id, creation_date, modification_date) values ('0', '0', '0', '1', '1/3', '?', '', 2, now(), now());
+insert into cron_task(second, minute, hour, day, month, week_day, year, frequency_id, creation_date, modification_date) values ('0', '0', '0', '1', '*', '?', '', 3, now(), now());
+insert into cron_task(second, minute, hour, day, month, week_day, year, frequency_id, creation_date, modification_date) values ('0', '0', '0', '?', '*', 'MON', '', 4, now(), now());
+insert into cron_task(second, minute, hour, day, month, week_day, year, frequency_id, creation_date, modification_date) values ('0', '00', '00', '*', '*', '?', '', 5, now(), now());
 
-INSERT INTO condition(complex_condition_id, computed_field_id, comparison_symbol_id, comparison_value, creation_date, modification_date)
-VALUES (1, 471, 4, 90, now(), now());
+insert into date_depth(date_depth) values ('2012-01-01');
 
-INSERT INTO indicator (type_id, area_id, trend_id, complex_condition_id, computed_field_id, frequency, name, creation_date, modification_date)
-VALUES (3, 1, 1, 1, 471, 30, '% of mothers who received at least 90 IFA tablets', now(), now());
+insert into language(language_id, code, name, defined, creation_date, modification_date) values ('1', 'df', 'Default English', 'true', now(), now());
 
-INSERT INTO indicator_indicator_category(indicator_id, indicator_category_id) VALUES (1, 2);
-
-INSERT INTO report (indicator_id, report_type_id, creation_date, modification_date)
-VALUES (1, 3, now(), now());
-
-INSERT INTO indicator_report (indicator_id, report_id) VALUES (1, 1);
-
-INSERT INTO report_dashboard(report_id, dashboard_id) VALUES (1, 4);
-
-INSERT INTO indicator_user(indicator_id, user_id) values (1, 1);
+insert into value_comparison(condition_id, value, creation_date, modification_date) values (1, '90', now(), now());
+insert into value_comparison(condition_id, value, creation_date, modification_date) values (2, 'true', now(), now());

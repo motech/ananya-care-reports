@@ -55,8 +55,6 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setPassword(password);
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
 
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setId(1);
@@ -87,7 +85,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password2";
         AreaEntity area = new AreaEntity();
         area.setId(1);
-        userService.register(username, password, "firstName", "lastName", area, userService.getAllRoles());
+        userService.register(username, password, area, userService.getAllRoles());
         UserEntity user = userService.login(username, password);
         assertEquals(3, user.getRoles().size());
     }
@@ -105,7 +103,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password4";
         AreaEntity area = new AreaEntity();
         area.setId(1);
-        userService.register(username, password, "firstName", "lastName", area, new HashSet<RoleEntity>());
+        userService.register(username, password, area, new HashSet<RoleEntity>());
         UserEntity userEntity = userService.login(username, password);
 
         assertEquals(true, DateUtils.isSameDay(userEntity.getCreationDate(), new Date()));
@@ -117,8 +115,6 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         String password = "password";
         String newusername = "new user";
         UserEntity userEntity = new UserEntity(username, password);
-        userEntity.setFirstName("firstName");
-        userEntity.setLastName("lastName");
         AreaEntity area = new AreaEntity();
         area.setId(1);
         LanguageEntity languageEntity = new LanguageEntity();

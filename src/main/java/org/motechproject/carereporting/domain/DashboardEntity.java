@@ -1,6 +1,5 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
@@ -49,12 +48,6 @@ public class DashboardEntity extends AbstractEntity {
     @JsonView({ DashboardJsonView.class })
     private IndicatorCategoryEntity indicatorCategory;
 
-    @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "dashboard_user", joinColumns = { @JoinColumn(name = "dashboard_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") })
-    private Set<UserEntity> owners;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "report_dashboard", joinColumns = { @JoinColumn(name = "dashboard_id") },
             inverseJoinColumns = { @JoinColumn(name = "report_id") })
@@ -64,10 +57,9 @@ public class DashboardEntity extends AbstractEntity {
 
     }
 
-    public DashboardEntity(String name, Short tabPosition, Set<UserEntity> owners) {
+    public DashboardEntity(String name, Short tabPosition) {
         this.name = name;
         this.tabPosition = tabPosition;
-        this.owners = owners;
     }
 
     public Set<ReportEntity> getReports() {
@@ -100,14 +92,5 @@ public class DashboardEntity extends AbstractEntity {
 
     public void setIndicatorCategory(IndicatorCategoryEntity indicatorCategory) {
         this.indicatorCategory = indicatorCategory;
-    }
-
-    @JsonIgnore
-    public Set<UserEntity> getOwners() {
-        return owners;
-    }
-
-    public void setOwners(Set<UserEntity> owners) {
-        this.owners = owners;
     }
 }

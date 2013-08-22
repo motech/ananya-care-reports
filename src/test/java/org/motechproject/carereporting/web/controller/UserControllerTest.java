@@ -42,13 +42,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
-    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
-    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
-    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
-    private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"email\":\"this is not a valid email\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"email\":\"this is not a valid email\", \"area\":{\"id\":\"1\"}}";
     private static final String CREATE_ROLE_JSON = "{\"id\":\"1\", \"name\":\"name\"}";
     private static final String UPDATE_ROLE_JSON = "{\"name\":\"new name\"}";
-    private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"password\":\"password\", \"firstName\":\"Test\", \"lastName\":\"Test\", \"area\":{\"id\":\"1\"}}";
+    private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"password\":\"password\", \"area\":{\"id\":\"1\"}}";
 
     @Mock
 	private UserService userService;

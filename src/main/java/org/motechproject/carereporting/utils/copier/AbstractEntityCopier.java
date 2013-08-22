@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 
 public final class AbstractEntityCopier {
 
-    private final static Logger LOG = Logger.getLogger(AbstractEntity.class);
+    private static final Logger LOG = Logger.getLogger(AbstractEntity.class);
     private static final int SIZE = 8192;
 
     private AbstractEntityCopier() {
@@ -31,7 +31,7 @@ public final class AbstractEntityCopier {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
             abstractEntity = (AbstractEntity) in.readObject();
             abstractEntity.setId(null);
-        } catch(IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             LOG.error("", e);
         }
 

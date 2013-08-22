@@ -30,7 +30,6 @@ import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
-import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,9 +87,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private DashboardService dashboardService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ReportService reportService;
@@ -286,9 +282,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private DashboardEntity createDashboardForNewIndicatorCategory(String name) {
         Short newDashboardTabPosition = dashboardService.getTabPositionForNewDashboard();
-        Set<UserEntity> dashboardOwners = new HashSet<UserEntity>();
-        dashboardOwners.add(userService.getCurrentlyLoggedUser());
-        return new DashboardEntity(name, newDashboardTabPosition, dashboardOwners);
+        return new DashboardEntity(name, newDashboardTabPosition);
     }
 
     @Transactional(readOnly = false)
@@ -425,7 +419,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public Date getDateDepth() {
         String sqlString = "SELECT date_depth FROM dashboard_app.date_depth";
-        return (Date)sessionFactory.getCurrentSession().createSQLQuery(sqlString).uniqueResult();
+        return (Date) sessionFactory.getCurrentSession().createSQLQuery(sqlString).uniqueResult();
     }
 
     @Override

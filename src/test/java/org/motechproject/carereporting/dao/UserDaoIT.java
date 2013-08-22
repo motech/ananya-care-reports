@@ -54,8 +54,6 @@ public class UserDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
         String password = "pass";
         Integer id = 1;
         UserEntity userEntity = new UserEntity(username, password);
-        userEntity.setFirstName(username);
-        userEntity.setLastName(username);
 
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setId(1);
