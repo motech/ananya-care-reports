@@ -29,6 +29,10 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
 
     private final Class<T> type;
 
+    public Class<T> getType() {
+        return type;
+    }
+
     protected SessionFactory getSessionFactory() {
         return sessionFactory;
     }

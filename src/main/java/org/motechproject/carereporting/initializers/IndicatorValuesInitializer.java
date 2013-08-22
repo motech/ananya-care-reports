@@ -36,7 +36,7 @@ public class IndicatorValuesInitializer implements Runnable {
 
     @Override
     public void run() {
-        LOG.info("Start calculation");
+        LOG.info(indicatorEntity.getName() + ": start calculation");
 
         Date startDate = indicatorService.getDateDepth();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
@@ -51,7 +51,7 @@ public class IndicatorValuesInitializer implements Runnable {
                 date = dates[1];
             }
         }
-        indicatorService.setComputingForIndicator(indicatorEntity.getId());
-        LOG.info("Calculation finished");
+        indicatorService.setComputingForIndicator(indicatorEntity, true);
+        LOG.info(indicatorEntity.getName() + ": calculation finished");
     }
 }

@@ -22,8 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -288,6 +286,16 @@ public class IndicatorControllerTest {
                 .andExpect(status().isOk());
 
         verify(cronService).updateCronTask((CronTaskEntity) anyObject());
+    }
+
+    @Test
+    public void testRecalculateIndicators() throws Exception {
+        Mockito.doNothing().when(indicatorService).calculateAllIndicators();
+
+        mockMvc.perform(get("/api/indicator/calculator/recalculate"))
+                .andExpect(status().isOk());
+
+        verify(indicatorService).calculateAllIndicators();
     }
 
 }

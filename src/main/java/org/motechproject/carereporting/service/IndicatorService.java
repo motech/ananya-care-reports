@@ -41,7 +41,7 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicator(IndicatorEntity indicatorEntity);
 
-    void setComputingForIndicator(Integer id);
+    void setComputingForIndicator(IndicatorEntity indicatorEntity, Boolean value);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicatorFromDto(IndicatorDto indicatorDto);
@@ -88,4 +88,7 @@ public interface IndicatorService {
 
     void updateDateDepth(Date newDateDepth);
 
+    void calculateIndicator(IndicatorEntity indicatorEntity);
+
+    void calculateAllIndicators();
 }

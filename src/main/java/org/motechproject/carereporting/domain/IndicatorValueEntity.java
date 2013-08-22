@@ -34,12 +34,15 @@ public class IndicatorValueEntity extends AbstractEntity {
     @JoinColumn(name = "area_id")
     private AreaEntity area;
 
+    @NotNull
     @Column(name = "numerator")
     private BigDecimal numerator;
 
+    @NotNull
     @Column(name = "denominator")
     private BigDecimal denominator;
 
+    @NotNull
     @Column(name = "value")
     @JsonView({ DashboardJsonView.class })
     private BigDecimal value;

@@ -4,6 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
+import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,13 @@ public class IndicatorValueDaoHibernateImpl extends GenericDaoHibernateImpl<Indi
                 .add(Restrictions.lt(DATE, endDate))
                 .addOrder(Order.asc(DATE));
         return new ArrayList<>(new LinkedHashSet<IndicatorValueEntity>(criteria.list()));
+    }
+
+    @Override
+    public void removeByIndicator(IndicatorEntity indicatorEntity) {
+        getSessionFactory().getCurrentSession()
+                .createQuery("delete from " + getType().getName() + " where indicator_id = " + indicatorEntity.getId())
+                .executeUpdate();
     }
 
 }

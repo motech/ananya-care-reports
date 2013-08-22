@@ -1,13 +1,14 @@
 package org.motechproject.carereporting.service;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.dao.IndicatorDao;
+import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.service.impl.IndicatorServiceImpl;
 
@@ -16,6 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,31 +35,50 @@ public class IndicatorServiceTest {
     @Mock
     private IndicatorDao indicatorDao;
 
+    @Mock
+    private IndicatorValueDao indicatorValueDao;
+
     @InjectMocks
-    private IndicatorService indicatorService = new IndicatorServiceImpl();
+    private IndicatorService indicatorService = Mockito.spy(new IndicatorServiceImpl());
 
     private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
 
-    // TODO: Mock thread creation if you can, I can't :(
-    // Tip: use powermock
     @Test
-    @Ignore
     public void testCreateNewIndicator() throws Exception {
+        doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
+
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
 
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
+        verify(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 
         List<IndicatorEntity> indicatorEntities = indicatorEntityArgumentCaptor.getAllValues();
         assertEquals(1, indicatorEntities.size());
         assertEquals(indicatorEntity, indicatorEntities.get(0));
     }
 
-    // TODO: Mock thread creation if you can, I can't :(
-    // Tip: use powermock
     @Test
-    @Ignore
+    public void testCalculateAllIndicators() {
+        Set <IndicatorEntity> indicatorEntities = new HashSet<>();
+        indicatorEntities.add(new IndicatorEntity());
+        when(indicatorDao.getAll()).thenReturn(indicatorEntities);
+        doNothing().when(indicatorDao).update((IndicatorEntity) anyObject());
+        doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
+        doNothing().when(indicatorValueDao).removeByIndicator((IndicatorEntity) anyObject());
+
+        indicatorService.calculateAllIndicators();
+
+        verify(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
+        verify(indicatorDao).update((IndicatorEntity) anyObject());
+        verify(indicatorDao).getAll();
+        verify(indicatorValueDao).removeByIndicator((IndicatorEntity) anyObject());
+    }
+
+    @Test
     public void testUpdateIndicator() {
+        doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
+
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
 
@@ -95,11 +119,10 @@ public class IndicatorServiceTest {
         assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());
     }
 
-    // TODO: Mock thread creation if you can, I can't :(
-    // Tip: use powermock
     @Test
-    @Ignore
     public void testDeleteIndicator() {
+        doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
+
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorService.createNewIndicator(indicatorEntity);
         indicatorService.deleteIndicator(indicatorEntity);

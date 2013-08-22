@@ -5,14 +5,14 @@
     <div class="modal-body time-dialog">
         <div class="container-fluid">
             <div>
-                <div class="input-prepend date">
+                <div class="input-append date">
                     <label for="dateString">{{msg('indicatorCalculator.dateDepth.label.time')}}:</label><br>
                     <input id="dateString" class="span2" type="date" ng-model="dateDepth" bs-datepicker data-date-formt="mm/dd/yyyy">
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
             </div><br><br>
             <div>
-                <h4>{{msg('indicatorCalculator.dateDepth.info')}}</h4>
+                <span class="label label-important">{{msg('indicatorCalculator.dateDepth.info')}}</span>
             </div>
         </div>
     </div>

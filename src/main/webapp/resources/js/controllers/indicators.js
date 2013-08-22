@@ -78,6 +78,17 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             });
     };
 
+    $scope.recalculate = function() {
+        $http.get('api/indicator/calculator/recalculate')
+            .success(function() {
+                $location.path( "/" );
+            })
+            .error(function() {
+                 $dialog.messageBox("Error", $scope.msg('indicator.list.cannotRecalculate'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+
+    };
+
     $scope.$watch('selectedCategory', function() {
         if($scope.selectedCategory){
             $scope.fetchIndicatorsByCategoryId();

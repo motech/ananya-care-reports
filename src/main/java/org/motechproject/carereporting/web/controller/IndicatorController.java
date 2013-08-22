@@ -251,7 +251,7 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getDateDepth(){
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         return sdf.format(indicatorService.getDateDepth());
     }
 
@@ -264,5 +264,11 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
         indicatorService.updateDateDepth(newDateDepth);
+    }
+
+    @RequestMapping(value = "calculator/recalculate", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public void recalculateIndicators() {
+        indicatorService.calculateAllIndicators();
     }
 }

@@ -152,8 +152,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
         indicatorDao.save(indicatorEntity);
-        Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
-        thread.start();
+        calculateIndicator(indicatorEntity);
     }
 
     @Override
@@ -182,9 +181,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void setComputingForIndicator(Integer id) {
-        IndicatorEntity indicatorEntity = indicatorDao.getById(id);
-        indicatorEntity.setComputing(Boolean.TRUE);
+    public void setComputingForIndicator(IndicatorEntity indicatorEntity, Boolean value) {
+        indicatorEntity.setComputing(value);
         indicatorDao.update(indicatorEntity);
     }
 
@@ -435,6 +433,22 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void updateDateDepth(Date newDateDepth) {
         String sqlString = "UPDATE dashboard_app.date_depth set date_depth = :dateDepth";
         sessionFactory.getCurrentSession().createSQLQuery(sqlString).setParameter("dateDepth", newDateDepth).executeUpdate();
+    }
+
+    @Override
+    public void calculateIndicator(IndicatorEntity indicatorEntity) {
+        Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
+        thread.start();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void calculateAllIndicators() {
+        for (IndicatorEntity indicator : indicatorDao.getAll()) {
+            indicatorValueDao.removeByIndicator(indicator);
+            setComputingForIndicator(indicator, false);
+            calculateIndicator(indicator);
+        }
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
