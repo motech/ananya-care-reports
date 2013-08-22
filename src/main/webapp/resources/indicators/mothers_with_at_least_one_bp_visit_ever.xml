@@ -26,6 +26,12 @@
                         <select-column aggregation="Count" fieldName="case_id" />
                     </select-columns>
                     <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
+                    <where-group>
+                        <where-condition type="calculationEndDate">
+                            <table-name>bp_form</table-name>
+                            <field>time_end</field>
+                        </where-condition>
+                    </where-group>
                 </fact>
             </facts>
         </dw-query>

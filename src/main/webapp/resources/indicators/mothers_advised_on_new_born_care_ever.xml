@@ -25,6 +25,7 @@
                 <fact>
                     <name>bp_form</name>
                     <select-columns>
+                        <select-column tableName="bp_form" fieldName="time_end" />
                         <select-column tableName="bp_form" fieldName="case_id" />
                         <select-column tableName="bp_form" fieldName="cord_care" />
                         <select-column tableName="bp_form" fieldName="has_danger_signs" />
@@ -32,6 +33,10 @@
                         <select-column tableName="bp_form" fieldName="immediate_breastfeeding" />
                     </select-columns>
                     <where-group>
+                        <where-condition type="calculationEndDate">
+                            <table-name>bp_form</table-name>
+                            <field>time_end</field>
+                        </where-condition>
                         <where-group>
                             <where-condition type="valueComparison">
                                 <table-name>bp_form</table-name>

@@ -23,6 +23,7 @@ import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
@@ -186,6 +187,10 @@ public class DwQueryHelper {
                 builder.withCondition(prepareDateBetweenCondition(periodCondition));
             }
             return;
+        } else if (condition instanceof CalculationEndDateConditionEntity) {
+            CalculationEndDateConditionEntity conditionEntity = (CalculationEndDateConditionEntity) condition;
+            builder.withCondition(prepareCalculationEndDateCondition(conditionEntity));
+            return;
         }
         throw new IllegalArgumentException("Condition type not supported.");
     }
@@ -228,6 +233,16 @@ public class DwQueryHelper {
                         OperatorType.GreaterEqual,
                         "%(fromDate)",
                         condition.getOffset() > 0 ? condition.getOffset() : 0);
+    }
+
+    private WhereConditionBuilder prepareCalculationEndDateCondition(CalculationEndDateConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        condition.getTableName(),
+                        condition.getColumnName(),
+                        OperatorType.Less,
+                        "%(toDate)",
+                        (condition.getOffset() == null) ? 0 : condition.getOffset());
     }
 
     private WhereConditionBuilder prepareDateBetweenCondition(PeriodConditionEntity condition) {

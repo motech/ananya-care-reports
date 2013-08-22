@@ -34,6 +34,10 @@
                             <operator>=</operator>
                             <value>home</value>
                         </where-condition>
+                        <where-condition type="calculationEndDate">
+                            <table-name>registration_mother_form</table-name>
+                            <field>time_end</field>
+                        </where-condition>
                     </where-group>
                 </fact>
                 <fact combine-type="Union">
@@ -47,6 +51,10 @@
                             <field>where_born</field>
                             <operator>=</operator>
                             <value>home</value>
+                        </where-condition>
+                        <where-condition type="calculationEndDate">
+                            <table-name>delivery_mother_form</table-name>
+                            <field>time_end</field>
                         </where-condition>
                     </where-group>
                 </fact>

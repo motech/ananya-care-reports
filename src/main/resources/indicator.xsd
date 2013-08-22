@@ -185,6 +185,7 @@
                     <xs:enumeration value="dateRange" />
                     <xs:enumeration value="enumRange" />
                     <xs:enumeration value="period" />
+                    <xs:enumeration value="calculationEndDate" />
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

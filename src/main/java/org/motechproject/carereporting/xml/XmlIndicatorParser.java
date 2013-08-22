@@ -12,6 +12,7 @@ import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
@@ -227,6 +228,9 @@ public class XmlIndicatorParser {
             case PERIOD:
                 conditionEntity = createPeriodCondition(condition);
                 break;
+            case CALCULATE_VALUES_START_DATE:
+                conditionEntity = createCalculationEndDateCondition(condition);
+                break;
             case DATE_WITH_OFFSET_DIFF:
             case DATE_RANGE:
             case ENUM_RANGE:
@@ -266,6 +270,14 @@ public class XmlIndicatorParser {
         periodConditionEntity.setOffset(condition.getOffset());
         periodConditionEntity.setTableName(condition.getTableName());
         return periodConditionEntity;
+    }
+
+    private ConditionEntity createCalculationEndDateCondition(WhereCondition condition) {
+        CalculationEndDateConditionEntity conditionEntity = new CalculationEndDateConditionEntity();
+        conditionEntity.setTableName(condition.getTableName());
+        conditionEntity.setColumnName(condition.getField());
+        conditionEntity.setOffset(condition.getOffset());
+        return conditionEntity;
     }
 
     private DwQueryEntity prepareQuery(Query query) {

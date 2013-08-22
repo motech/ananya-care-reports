@@ -27,6 +27,10 @@
                         <select-column fieldName="case_id" />
                     </select-columns>
                     <where-group>
+                        <where-condition type="calculationEndDate">
+                            <table-name>registration_mother_form</table-name>
+                            <field>time_end</field>
+                        </where-condition>
                         <where-condition type="valueComparison">
                             <table-name>registration_mother_form</table-name>
                             <field>where_born</field>
@@ -57,6 +61,10 @@
                         <select-column fieldName="case_id" />
                     </select-columns>
                     <where-group>
+                        <where-condition type="calculationEndDate">
+                            <table-name>delivery_mother_form</table-name>
+                            <field>time_end</field>
+                        </where-condition>
                         <where-condition type="valueComparison">
                             <table-name>delivery_mother_form</table-name>
                             <field>where_born</field>
