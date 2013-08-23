@@ -144,14 +144,21 @@
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     attrs.$observe('value', function(report) {
+                        var report;
+                        if (!attrs.value || !element[0] || element[0].clientWidth <= 0
+                                || element[0].clientHeight <= 0) {
+                            return;
+                        }
+                        report = JSON.parse(attrs.value);
+                        if (report.displayType != "chart") {
+                            return;
+                        }
+                        if (report.computing === null) {
+                            $(element[0]).html("<p class='text-center' style='margin-top: 50px;'>" + scope.msg('dashboards.charts.computing') + "</p>");
+                            return;
+                        }
                         var createChart = function() {
-                            var report;
                             $(element).html("<img src='/resources/images/loading.gif' />");
-                            if (!attrs.value || !element[0] || element[0].clientWidth <= 0
-                                    || element[0].clientHeight <= 0) {
-                                return;
-                            }
-                            report = JSON.parse(attrs.value);
                             if(report.frequencyId != undefined && report.areaId != undefined) {
                                 var url = 'api/chart?chartType=' + report.reportType.name.toLowerCase()
                                     + '&indicatorId=' + report.indicatorId
