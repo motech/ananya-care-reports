@@ -191,7 +191,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     public void testSetComputingForIndicator() {
         indicatorService.setComputingForIndicator(indicatorService.getIndicatorById(INDICATOR_ID), false);
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(INDICATOR_ID);
-        assertEquals(Boolean.TRUE, indicatorEntity.getComputing());
+        assertEquals(Boolean.TRUE, indicatorEntity.getComputed());
     }
 
 }

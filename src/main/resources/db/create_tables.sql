@@ -466,7 +466,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator
   denominator_id integer,
   numerator_id integer NOT NULL,
   user_id integer,
-  is_computing boolean DEFAULT false,
+  is_computed boolean DEFAULT false,
   is_additive boolean DEFAULT false,
   CONSTRAINT indicator_pk PRIMARY KEY (indicator_id ),
   CONSTRAINT frequency_fk FOREIGN KEY (frequency_id)

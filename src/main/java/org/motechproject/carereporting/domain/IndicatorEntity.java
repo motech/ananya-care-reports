@@ -89,9 +89,9 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private BigDecimal trend;
 
-    @Column(name = "is_computing", nullable = false)
+    @Column(name = "is_computed", nullable = false)
     @JsonView({ BaseView.class, DashboardJsonView.class })
-    private Boolean isComputing;
+    private Boolean isComputed;
 
     @Column(name = "is_additive", nullable = false)
     @JsonView({ DashboardJsonView.class })
@@ -105,12 +105,12 @@ public class IndicatorEntity extends AbstractEntity {
         isAdditive = additive;
     }
 
-    public Boolean getComputing() {
-        return isComputing;
+    public Boolean getComputed() {
+        return isComputed;
     }
 
-    public void setComputing(Boolean computing) {
-        isComputing = computing;
+    public void setComputed(Boolean computed) {
+        isComputed = computed;
     }
 
     public DwQueryEntity getDenominator() {

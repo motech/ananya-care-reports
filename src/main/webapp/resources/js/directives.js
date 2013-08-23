@@ -113,7 +113,7 @@
                                         labelClass = "label-important";
                                         break;
                                     }
-                                    if(indicator.indicator.isComputing) {
+                                    if(indicator.indicator.isComputed) {
                                         calc = scope.msg('dashboards.trends.done');
                                     } else {
                                         calc = scope.msg('dashboards.trends.progress');

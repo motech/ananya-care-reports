@@ -178,7 +178,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void setComputingForIndicator(IndicatorEntity indicatorEntity, Boolean value) {
-        indicatorEntity.setComputing(value);
+        indicatorEntity.setComputed(value);
         indicatorDao.update(indicatorEntity);
     }
 

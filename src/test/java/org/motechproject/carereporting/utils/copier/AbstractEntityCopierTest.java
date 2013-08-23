@@ -32,7 +32,7 @@ public class AbstractEntityCopierTest {
     @Before
     public void setup() {
         indicatorEntity.setAdditive(ADDITIVE);
-        indicatorEntity.setComputing(COMPUTING);
+        indicatorEntity.setComputed(COMPUTING);
         indicatorEntity.setName(NAME);
         indicatorEntity.setId(ID);
         indicatorEntity.setArea(AREA_ENTITY);
@@ -55,11 +55,11 @@ public class AbstractEntityCopierTest {
         assertNotSame(copied.getArea(), indicatorEntity.getArea());
         assertNotSame(copied.getTrend(), indicatorEntity.getTrend());
         assertNotSame(copied.getName(), indicatorEntity.getName());
-        assertNotSame(copied.getComputing(), indicatorEntity.getComputing());
+        assertNotSame(copied.getComputed(), indicatorEntity.getComputed());
         assertNotSame(copied.getAdditive(), indicatorEntity.getAdditive());
         assertEquals(copied.getTrend(), indicatorEntity.getTrend());
         assertEquals(copied.getName(), indicatorEntity.getName());
-        assertEquals(copied.getComputing(), indicatorEntity.getComputing());
+        assertEquals(copied.getComputed(), indicatorEntity.getComputed());
         assertEquals(copied.getAdditive(), indicatorEntity.getAdditive());
         assertNull(copied.getId());
     }
