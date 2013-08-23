@@ -4,6 +4,6 @@ public enum CombineType {
     Union,
     UnionAll,
     Intersect,
-    Minus,
+    Except,
     Join
 }

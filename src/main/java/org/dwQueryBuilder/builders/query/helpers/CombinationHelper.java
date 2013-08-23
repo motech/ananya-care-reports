@@ -44,16 +44,16 @@ public final class CombinationHelper {
                                             )
                                     ));
                 case Union:
-                    return selectJoinStep.union(DwQueryHelper.buildFromDwQuery(
+                    return select.union(DwQueryHelper.buildFromDwQuery(
                             dslContext, schemaName, dwQueryCombination.getDwQuery()));
                 case UnionAll:
-                    return selectJoinStep.unionAll(DwQueryHelper.buildFromDwQuery(
+                    return select.unionAll(DwQueryHelper.buildFromDwQuery(
                             dslContext, schemaName, dwQueryCombination.getDwQuery()));
                 case Intersect:
-                    return selectJoinStep.intersect(DwQueryHelper.buildFromDwQuery(
+                    return select.intersect(DwQueryHelper.buildFromDwQuery(
                             dslContext, schemaName, dwQueryCombination.getDwQuery()));
-                case Minus:
-                    return selectJoinStep.except(DwQueryHelper.buildFromDwQuery(
+                case Except:
+                    return select.except(DwQueryHelper.buildFromDwQuery(
                             dslContext, schemaName, dwQueryCombination.getDwQuery()));
                 default:
                     throw new NotImplementedException();

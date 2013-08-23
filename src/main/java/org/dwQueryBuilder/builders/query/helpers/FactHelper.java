@@ -14,12 +14,17 @@ public final class FactHelper {
 
     public static Select buildFact(DSLContext dslContext, String schemaName, Select select, Fact fact) {
         try {
-            // TODO : Implement combination types
+            Select dwQuerySelect = DwQueryHelper.buildFromDwQuery(dslContext, schemaName, fact.getTable());
+
             switch (fact.getCombineType()) {
                 case Union:
-                    return select.union(DwQueryHelper.buildFromDwQuery(dslContext, schemaName, fact.getTable()));
+                    return select.union(dwQuerySelect);
                 case UnionAll:
-                    return select.unionAll(DwQueryHelper.buildFromDwQuery(dslContext, schemaName, fact.getTable()));
+                    return select.unionAll(dwQuerySelect);
+                case Intersect:
+                    return select.intersect(dwQuerySelect);
+                case Except:
+                    return select.except(dwQuerySelect);
                 default:
                     throw new NotImplementedException();
             }

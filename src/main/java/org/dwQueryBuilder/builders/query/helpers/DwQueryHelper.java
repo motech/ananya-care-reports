@@ -1,8 +1,8 @@
 package org.dwQueryBuilder.builders.query.helpers;
 
-import org.dwQueryBuilder.builders.QueryBuilder;
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.Fact;
+import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
@@ -21,8 +21,6 @@ import static org.jooq.impl.DSL.tableByName;
 public final class DwQueryHelper {
 
     private static final String FACT_ALIAS = "facts";
-
-    private DSLContext dslContext;
 
     private DwQueryHelper() {
 
@@ -54,18 +52,41 @@ public final class DwQueryHelper {
             }
 
             select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
-
-            if (dwQuery.getCombineWith() != null) {
-                for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
-                    select = CombinationHelper.buildCombineWith(
-                            dslContext, schemaName, select, dwQueryCombination, tableName);
-                }
-            }
+            select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, tableName);
 
             return select;
         } catch (Exception e) {
             throw new QueryBuilderRuntimeException(e);
         }
+    }
+
+    public static Select buildCombineWithStep(DSLContext dslContext,
+                                            String schemaName,
+                                            DwQuery dwQuery,
+                                            Select select,
+                                            String tableName) {
+        Select newSelect = select;
+
+        if (dwQuery.getCombineWith() != null) {
+            for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
+                if (!dwQueryCombination.getCombineType().equals(CombineType.Join)) {
+                    continue;
+                }
+
+                newSelect = CombinationHelper.buildCombineWith(
+                        dslContext, schemaName, newSelect, dwQueryCombination, tableName);
+            }
+            for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
+                if (dwQueryCombination.getCombineType().equals(CombineType.Join)) {
+                    continue;
+                }
+
+                newSelect = CombinationHelper.buildCombineWith(
+                        dslContext, schemaName, newSelect, dwQueryCombination, tableName);
+            }
+        }
+
+        return newSelect;
     }
 
     public static Select chooseSelectStep(Select select, SelectConditionStep selectConditionStep,
