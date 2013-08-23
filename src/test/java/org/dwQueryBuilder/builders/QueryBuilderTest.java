@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 public class QueryBuilderTest {
 
     private static final String WILDCARD = "*";
+    private static final String ZERO = "0";
     private static final String ONE = "1";
     private static final String TEST_SCHEMA_NAME = "report";
     private static final String BP_FORM = "bp_form";
@@ -122,6 +123,10 @@ public class QueryBuilderTest {
     private static final String EXPECTED_POSTGRESQL_ENUM_RANGE_COMPARISON =
             "select \"report\".\"mother_case\".\"age\" from \"report\".\"mother_case\" where " +
                     "\"mother_case\".\"age\" in ('26', '23', '19')";
+    private static final String EXPECTED_POSTGRESQL_NVL_WITHOUT_AGGREGATE_FUNCTION_SQL_STRING =
+            "select coalesce(\"report\".\"mother_case\".\"age\", '0') from \"report\".\"mother_case\"";
+    private static final String EXPECTED_POSTGRESQL_NVL_WITH_AGGREGATE_FUNCTION_SQL_STRING =
+            "select count(coalesce(\"report\".\"mother_case\".\"age\", '0')) from \"report\".\"mother_case\"";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -640,5 +645,43 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_ENUM_RANGE_COMPARISON, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlNvlWithoutAggregateFunction() {
+        SelectColumn selectColumn = new SelectColumnBuilder()
+                .withField(MOTHER_CASE, AGE)
+                .withNullValue(ZERO)
+                .build();
+
+        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectColumn)
+                .withTableName(MOTHER_CASE)
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_NVL_WITHOUT_AGGREGATE_FUNCTION_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlNvlWithAggregateFunction() {
+        SelectColumn selectColumn = new SelectColumnBuilder()
+                .withFieldAndFunction(MOTHER_CASE, AGE, SelectColumnFunctionType.Count)
+                .withNullValue(ZERO)
+                .build();
+
+        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectColumn)
+                .withTableName(MOTHER_CASE)
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_NVL_WITH_AGGREGATE_FUNCTION_SQL_STRING, sqlString);
     }
 }

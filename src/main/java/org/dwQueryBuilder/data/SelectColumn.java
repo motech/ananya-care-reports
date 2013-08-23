@@ -6,6 +6,7 @@ public class SelectColumn {
     private String tableName;
     private String fieldName;
     private SelectColumnFunctionType function;
+    private String nullValue;
 
     public SelectColumn() {
 
@@ -20,6 +21,14 @@ public class SelectColumn {
         this.tableName = tableName;
         this.fieldName = fieldName;
         this.function = function;
+    }
+
+    public SelectColumn(String tableName, String fieldName, SelectColumnFunctionType function,
+                        String nullValue) {
+        this.tableName = tableName;
+        this.fieldName = fieldName;
+        this.function = function;
+        this.nullValue = nullValue;
     }
 
     public void setFunction(SelectColumnFunctionType function) {
@@ -44,5 +53,17 @@ public class SelectColumn {
 
     public SelectColumnFunctionType getFunction() {
         return function;
+    }
+
+    public Boolean hasNvl() {
+        return (nullValue != null);
+    }
+
+    public String getNullValue() {
+        return nullValue;
+    }
+
+    public void setNullValue(String nullValue) {
+        this.nullValue = nullValue;
     }
 }
