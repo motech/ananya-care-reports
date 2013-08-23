@@ -16,6 +16,8 @@ public final class ConfigurationLocator {
 
     private static final String CARE_LANGUAGES_DIRECTORY_NAME = "messages";
 
+    private static final String CARE_XML_DIRECTORY_NAME = "xml";
+
     private static final String COMMCARE_DEFAULT_PROPERTIES_FILE_NAME = "commcare.default.properties";
 
     private static final String COMMCARE_CUSTOM_PROPERTIES_FILE_NAME = "commcare.custom.properties";
@@ -30,6 +32,10 @@ public final class ConfigurationLocator {
 
     public static String getCareLanguagesDirectory() {
         return getCareConfigurationDirectory() + File.separator + CARE_LANGUAGES_DIRECTORY_NAME;
+    }
+
+    public static String getCareXmlDirectory() {
+        return getCareConfigurationDirectory() + File.separator + CARE_XML_DIRECTORY_NAME;
     }
 
     public static Properties getCommCareConfiguration() throws IOException {

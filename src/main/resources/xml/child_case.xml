@@ -1,0 +1,8 @@
+<caseListReport>
+    <field db_name="id" display_name="Id" />
+    <field db_name="case_id" display_name="Case Id" />
+    <field db_name="case_name" display_name="Case Name" />
+    <field db_name="mother_id" display_name="Mother Id" />
+    <field db_name="user_id" display_name="User Id" />
+    <field db_name="dob" display_name="Date of Birth" />
+</caseListReport>

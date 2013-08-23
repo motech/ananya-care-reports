@@ -62,15 +62,16 @@ public class CsvExportServiceImpl implements ExportService {
     }
 
     @Override
-    public byte[] convertRowMapToBytes(List<Map<String, Object>> rowMap) {
+    public byte[] convertRowMapToBytes(List<String> headers, List<Map<String, Object>> rowMap) {
         try {
             List<String[]> csvLines = new ArrayList<>();
 
-            for (Map<String, Object> row: rowMap) {
-                if (csvLines.isEmpty()) {
-                    csvLines.add(constructCsvHeaders(row));
-                }
+            if (headers == null || rowMap == null) {
+                return null;
+            }
 
+            csvLines.add(headers.toArray(new String[] { }));
+            for (Map<String, Object> row : rowMap) {
                 csvLines.add(constructCsvRow(row));
             }
 
@@ -83,16 +84,6 @@ public class CsvExportServiceImpl implements ExportService {
         } catch (IOException e) {
             throw new CareRuntimeException(e);
         }
-    }
-
-    private String[] constructCsvHeaders(Map<String, Object> row) {
-        List<String> headers = new ArrayList<>();
-
-        for (Map.Entry<String, Object> entry : row.entrySet()) {
-            headers.add(entry.getKey());
-        }
-
-        return headers.toArray(new String[] {});
     }
 
     private String[] constructCsvRow(Map<String, Object> row) {

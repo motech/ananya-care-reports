@@ -236,7 +236,7 @@ public class IndicatorController extends BaseController {
             @RequestParam Integer areaId) {
 
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(indicatorId);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd.yyyy_HH.mm");
         String filename = indicatorEntity.getName() + "_" + simpleDateFormat.format(new Date()) + ".csv";
 
         HttpHeaders headers = new HttpHeaders();

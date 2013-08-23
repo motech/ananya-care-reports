@@ -11,6 +11,6 @@ public interface ExportService {
 
     byte[] convertIndicatorValuesToBytes(List<IndicatorValueEntity> indicatorValues) throws IOException, ParseException;
 
-    byte[] convertRowMapToBytes(List<Map<String, Object>> rowMap);
+    byte[] convertRowMapToBytes(List<String> headers, List<Map<String, Object>> rowMap);
 
 }

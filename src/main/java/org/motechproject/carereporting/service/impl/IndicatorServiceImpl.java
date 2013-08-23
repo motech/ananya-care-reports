@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -9,6 +10,7 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -17,6 +19,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
+import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
@@ -30,15 +33,23 @@ import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
+import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 import org.motechproject.carereporting.utils.date.DateResolver;
+import org.motechproject.carereporting.xml.XmlCaseListReportParser;
+import org.motechproject.carereporting.xml.mapping.reports.CaseListReport;
+import org.motechproject.carereporting.xml.mapping.reports.ReportField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,8 +69,10 @@ public class IndicatorServiceImpl implements IndicatorService {
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
     private static final SQLDialect SQL_DIALECT = SQLDialect.POSTGRES;
-    private static final String REPLACE_SELECT_WITH_SELECT_ALL =
-            "(\\s)?select(((?!from).)*)?from\\s+(\\\"\\w*?\\\"\\.\\\"\\w*?_case\\\")\\s?";
+    private static final String REPLACE_SELECT_WITH_SELECT_COLUMNS =
+            "select (.*?) from \\\"(.*?)\\\"\\.\\\"(\\w*?_case)\\\"(.*)?";
+    private static final String CASE_LIST_REPORT_XML_DIRECTORY = ConfigurationLocator.getCareXmlDirectory()
+            + File.separatorChar + "caseListReport";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -93,6 +106,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private ExportService csvExportService;
+
+    @Autowired
+    private XmlCaseListReportParser xmlCaseListReportParser;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -395,25 +411,69 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Integer areaId, Date fromDate, Date toDate) {
-        DwQueryEntity numerator = indicatorEntity.getNumerator();
-        DwQueryHelper dwQueryHelper = new DwQueryHelper();
+        try {
+            DwQueryEntity numerator = indicatorEntity.getNumerator();
+            DwQueryHelper dwQueryHelper = new DwQueryHelper();
+            String tableName = getDwQueryEntityTableName(numerator);
+            CaseListReport caseListReport = getCaseListReportFromXml(tableName);
+            AreaEntity areaEntity = areaService.getAreaById(areaId);
 
-        AreaEntity areaEntity = areaService.getAreaById(areaId);
+            String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
+                    schemaName, dwQueryHelper.buildDwQuery(numerator, areaEntity), false);
+            if (fromDate != null && toDate != null) {
+                if (fromDate.compareTo(toDate) > 0) {
+                    throw new CareRuntimeException("Value of field 'fromDate' must be less or equal to 'toDate'.");
+                }
 
-        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQL_DIALECT,
-                schemaName, dwQueryHelper.buildDwQuery(numerator, areaEntity), false);
-        if (fromDate != null && toDate != null) {
-            if (fromDate.compareTo(toDate) >= 0) {
-                throw new CareRuntimeException("Field 'fromDate' must be before 'toDate'.");
+                sqlString = dwQueryHelper.formatFromDateAndToDate(sqlString, fromDate, toDate);
             }
 
-            sqlString = dwQueryHelper.formatFromDateAndToDate(sqlString, fromDate, toDate);
+            List<String> fields = new ArrayList<>();
+            List<String> headers = new ArrayList<>();
+            if (caseListReport.getFields() == null) {
+                return null;
+            }
+
+            for (ReportField reportField : caseListReport.getFields()) {
+                fields.add(constructCaseListReportFieldName(tableName, reportField));
+                headers.add(reportField.getDisplayName());
+            }
+
+            sqlString = sqlString.replaceFirst(REPLACE_SELECT_WITH_SELECT_COLUMNS,
+                    String.format("select %s from ", StringUtils.join(fields, ", "))
+                            + "\"$2\".\"$3\"$4");
+
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
+            return csvExportService.convertRowMapToBytes(headers, jdbcTemplate.queryForList(sqlString));
+        } catch (Exception e) {
+            throw new CareRuntimeException(e);
+        }
+    }
+
+    private String constructCaseListReportFieldName(String tableName, ReportField reportField) {
+        return "\"" + tableName + "\".\"" + reportField.getDbName() + "\"";
+    }
+
+    private CaseListReport getCaseListReportFromXml(String tableName) throws JAXBException, IOException {
+        String xmlFilePath = CASE_LIST_REPORT_XML_DIRECTORY + File.separator + tableName + ".xml";
+        File caseListXmlFile = new File(xmlFilePath);
+
+        if (caseListXmlFile.exists()) {
+            return xmlCaseListReportParser.parse(caseListXmlFile);
+        } else {
+            ClassPathResource caseListReportXmlFile = new ClassPathResource("xml/" + tableName + ".xml");
+            return xmlCaseListReportParser.parse(caseListReportXmlFile.getFile());
+        }
+    }
+
+    private String getDwQueryEntityTableName(DwQueryEntity dwQueryEntity) {
+        if (dwQueryEntity instanceof SimpleDwQueryEntity) {
+            return ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
+        } else if (dwQueryEntity instanceof ComplexDwQueryEntity) {
+            return ((ComplexDwQueryEntity) dwQueryEntity).getDimension();
         }
 
-        sqlString = sqlString.replaceAll(REPLACE_SELECT_WITH_SELECT_ALL, "$1select * from $4");
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
-        return csvExportService.convertRowMapToBytes(jdbcTemplate.queryForList(sqlString));
+        throw new CareRuntimeException("Cannot recognize query type.");
     }
 
     @Override

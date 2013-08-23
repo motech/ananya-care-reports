@@ -1,10 +1,10 @@
-package org.motechproject.carereporting.xml.mapping;
+package org.motechproject.carereporting.xml.mapping.indicators;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "category")
-public class Category {
+@XmlRootElement(name = "role")
+public class Role {
 
     private String name;
 

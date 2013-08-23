@@ -1,10 +1,10 @@
-package org.motechproject.carereporting.xml.mapping;
+package org.motechproject.carereporting.xml.mapping.indicators;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "union-element")
-public class UnionElement {
+@XmlRootElement(name = "intersection-element")
+public class IntersectionElement {
 
     private Integer indicatorId;
 

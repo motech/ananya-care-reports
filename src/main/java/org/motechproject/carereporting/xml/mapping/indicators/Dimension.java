@@ -1,14 +1,14 @@
-package org.motechproject.carereporting.xml.mapping;
+package org.motechproject.carereporting.xml.mapping.indicators;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "role")
-public class Role {
+@XmlRootElement(name = "dimension")
+public class Dimension {
 
     private String name;
 
-    @XmlAttribute
+    @XmlAttribute(name = "tableName")
     public String getName() {
         return name;
     }
@@ -16,4 +16,5 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
 }

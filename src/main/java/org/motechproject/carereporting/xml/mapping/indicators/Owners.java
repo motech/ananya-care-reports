@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.xml.mapping;
+package org.motechproject.carereporting.xml.mapping.indicators;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
