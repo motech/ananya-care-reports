@@ -287,7 +287,12 @@ public class XmlIndicatorParser {
 
     private DwQueryEntity prepareQuery(Query query) {
         if (query.getIndicatorName() != null) {
-            return (DwQueryEntity) AbstractEntityCopier.deepCopy(indicatorDao.getIndicatorByName(query.getIndicatorName()).getNumerator());
+            IndicatorEntity indicator = indicatorDao.getIndicatorByName(query.getIndicatorName());
+            if (indicator == null) {
+                throw new CareRuntimeException("This indicator depends on indicator '" +
+                        query.getIndicatorName() + "' which has not been added yet. Please, add this indicator first.");
+            }
+            return (DwQueryEntity) AbstractEntityCopier.deepCopy(indicator.getNumerator());
         } else {
             return prepareDwQuery(query.getDwQuery());
         }
