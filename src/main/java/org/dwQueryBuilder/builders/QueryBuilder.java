@@ -9,6 +9,7 @@ import org.dwQueryBuilder.data.conditions.HavingCondition;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
+import org.dwQueryBuilder.data.conditions.where.EnumRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.FieldComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
@@ -18,7 +19,7 @@ import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
-import org.dwQueryBuilder.exceptions.QueryBuilderException;
+import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.AggregateFunction;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -38,6 +39,7 @@ import org.jooq.impl.DSL;
 import org.jooq.types.DayToSecond;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import static org.jooq.impl.DSL.avg;
 import static org.jooq.impl.DSL.count;
@@ -111,7 +113,7 @@ public final class QueryBuilder {
 
             return select;
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -245,11 +247,13 @@ public final class QueryBuilder {
                     return selectJoinStep.unionAll(buildFromDwQuery(dwQueryCombination.getDwQuery()));
                 case Intersect:
                     return selectJoinStep.intersect(buildFromDwQuery(dwQueryCombination.getDwQuery()));
+                case Minus:
+                    return selectJoinStep.except(buildFromDwQuery(dwQueryCombination.getDwQuery()));
                 default:
                     throw new NotImplementedException();
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -352,6 +356,10 @@ public final class QueryBuilder {
             Field field2 = fieldByName(fieldComparison.getTable2Name(), fieldComparison.getField2Name());
             condition = buildCondition(field1, fieldComparison.getOperator(), field2);
 
+        } else if (whereCondition instanceof EnumRangeComparison) {
+
+            EnumRangeComparison enumRangeComparison = (EnumRangeComparison) whereCondition;
+            condition = buildEnumRangeCondition(field1, enumRangeComparison.getValues());
         }
 
         return condition;
@@ -369,7 +377,7 @@ public final class QueryBuilder {
                     throw new NotImplementedException();
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -396,7 +404,7 @@ public final class QueryBuilder {
                     throw new NotImplementedException();
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -431,7 +439,7 @@ public final class QueryBuilder {
                     throw new NotImplementedException();
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -456,7 +464,7 @@ public final class QueryBuilder {
                     throw new NotImplementedException();
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -479,7 +487,39 @@ public final class QueryBuilder {
                     return null;
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
+        }
+    }
+
+    private static Condition buildCondition(SelectColumn selectColumn, OperatorType operatorType, String value) {
+        try {
+            Param param = val(value);
+
+            if (selectColumn.getFunction() != null) {
+                AggregateFunction aggregateFunction = buildSelectColumnFunction(selectColumn);
+
+                switch (operatorType) {
+                    case Less:
+                        return aggregateFunction.lessThan(param);
+                    case LessEqual:
+                        return aggregateFunction.lessOrEqual(param);
+                    case Equal:
+                        return aggregateFunction.equal(param);
+                    case NotEqual:
+                        return aggregateFunction.notEqual(param);
+                    case Greater:
+                        return aggregateFunction.greaterThan(param);
+                    case GreaterEqual:
+                        return aggregateFunction.greaterOrEqual(param);
+                    default:
+                        return trueCondition();
+                }
+            } else {
+                Field field = fieldByName(schemaName, selectColumn.getTableName(), selectColumn.getFieldName());
+                return buildCondition(field, operatorType, value);
+            }
+        } catch (Exception e) {
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -508,7 +548,7 @@ public final class QueryBuilder {
                     return null;
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -542,7 +582,7 @@ public final class QueryBuilder {
                     return null;
             }
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -557,39 +597,15 @@ public final class QueryBuilder {
             return field.add(dayToSecond).greaterOrEqual(date1).and(field.add(dayToSecond).lessThan(date2));
 
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
-    private static Condition buildCondition(SelectColumn selectColumn, OperatorType operatorType, String value) {
+    private static Condition buildEnumRangeCondition(Field field1, Set<String> values) {
         try {
-            Param param = val(value);
-
-            if (selectColumn.getFunction() != null) {
-                AggregateFunction aggregateFunction = buildSelectColumnFunction(selectColumn);
-
-                switch (operatorType) {
-                    case Less:
-                        return aggregateFunction.lessThan(param);
-                    case LessEqual:
-                        return aggregateFunction.lessOrEqual(param);
-                    case Equal:
-                        return aggregateFunction.equal(param);
-                    case NotEqual:
-                        return aggregateFunction.notEqual(param);
-                    case Greater:
-                        return aggregateFunction.greaterThan(param);
-                    case GreaterEqual:
-                        return aggregateFunction.greaterOrEqual(param);
-                    default:
-                        return trueCondition();
-                }
-            } else {
-                Field field = fieldByName(schemaName, selectColumn.getTableName(), selectColumn.getFieldName());
-                return buildCondition(field, operatorType, value);
-            }
+            return field1.in(values);
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 }

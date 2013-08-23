@@ -13,6 +13,9 @@ import org.dwQueryBuilder.data.queries.SimpleDwQuery;
 import org.jooq.SQLDialect;
 import org.junit.Test;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -29,6 +32,7 @@ public class QueryBuilderTest {
     private static final String CHILD_CASE = "child_case";
     private static final String MOTHER_ID = "mother_id";
     private static final String MOTHER_CASE = "mother_case";
+    private static final String AGE = "age";
     private static final String ADD = "add";
     private static final String EDD = "edd";
     private static final String USER_ID = "user_id";
@@ -46,6 +50,9 @@ public class QueryBuilderTest {
     private static final Integer DATE_OFFSET_2 = 360;
     private static final Integer DATE_OFFSET_TEN_DAYS = 10;
     private static final Integer DIFFERENCE = 500;
+    private static final String AGE_1 = "26";
+    private static final String AGE_2 = "23";
+    private static final String AGE_3 = "19";
 
     private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING =
             "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join" +
@@ -112,6 +119,9 @@ public class QueryBuilderTest {
                     "\"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\" " +
                     "join (select * from \"report\".\"bp_form\") as \"bp_form\" on " +
                     "\"bp_form\".\"case_id\" = \"report\".\"mother_case\".\"id\"";
+    private static final String EXPECTED_POSTGRESQL_ENUM_RANGE_COMPARISON =
+            "select \"report\".\"mother_case\".\"age\" from \"report\".\"mother_case\" where " +
+                    "\"mother_case\".\"age\" in ('26', '23', '19')";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -600,5 +610,35 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlQuery);
         assertEquals(EXPECTED_POSTGRESQL_MULTIPLE_JOINS_SQL_STRING, sqlQuery);
+    }
+
+    @Test
+    public void testPostgreSqlEnumRangeComparison() {
+        SelectColumn selectColumn = new SelectColumnBuilder()
+                .withField(MOTHER_CASE, AGE)
+                .build();
+
+        Set<String> values = new LinkedHashSet<>();
+        values.add(AGE_1);
+        values.add(AGE_2);
+        values.add(AGE_3);
+
+        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+                .withSelectColumn(selectColumn)
+                .withTableName(MOTHER_CASE)
+                .withWhereConditionGroup(
+                        new WhereConditionGroupBuilder()
+                            .withCondition(
+                                    new WhereConditionBuilder()
+                                        .withEnumRangeComparison(MOTHER_CASE, AGE, values)
+                            )
+                )
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_ENUM_RANGE_COMPARISON, sqlString);
     }
 }

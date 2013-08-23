@@ -4,11 +4,16 @@ import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.DateValueComparison;
+import org.dwQueryBuilder.data.conditions.where.EnumRangeComparison;
 import org.dwQueryBuilder.data.conditions.where.FieldComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.OperatorType;
-import org.dwQueryBuilder.exceptions.QueryBuilderException;
+import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class WhereConditionBuilder {
 
@@ -24,6 +29,7 @@ public class WhereConditionBuilder {
     private String date2;
     private String field1Offset;
     private String field2Offset;
+    private Set<String> values;
 
     public WhereConditionBuilder withValueComparison(String table1Name,
             String field1Name, OperatorType operator, String value) {
@@ -136,6 +142,17 @@ public class WhereConditionBuilder {
         return this;
     }
 
+    public WhereConditionBuilder withEnumRangeComparison(String table1Name,
+            String field1Name, Collection<String> values) {
+        this.reset();
+
+        this.table1Name = table1Name;
+        this.field1Name = field1Name;
+        this.values = new LinkedHashSet<>(values);
+
+        return this;
+    }
+
     private void reset() {
         this.table1Name = null;
         this.field1Name = null;
@@ -183,11 +200,16 @@ public class WhereConditionBuilder {
                 whereCondition = new FieldComparison(table1Name, field1Name,
                         operator, table2Name, field2Name);
 
+            } else if (isEnumRangeComparison()) {
+                // Enum Range Comparison
+
+                whereCondition = new EnumRangeComparison(table1Name, field1Name, values);
+
             }
 
             return whereCondition;
         } catch (Exception e) {
-            throw new QueryBuilderException(e);
+            throw new QueryBuilderRuntimeException(e);
         }
     }
 
@@ -235,5 +257,12 @@ public class WhereConditionBuilder {
         return (isField1NotBlank
                 && isField2NotBlank
                 && operator != null);
+    }
+
+    private Boolean isEnumRangeComparison() {
+        Boolean isField1NotBlank = StringUtils.isNotBlank(table1Name) && StringUtils.isNotBlank(field1Name);
+
+        return (isField1NotBlank
+                && values != null);
     }
 }
