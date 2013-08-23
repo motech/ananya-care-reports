@@ -173,9 +173,9 @@ public class ReportServiceImpl implements ReportService {
             case "pie chart":
                 return chartFactory.createPieChart(indicator, values);
             case "bar chart":
-                return chartFactory.createBarChart(indicator, values);
+                return chartFactory.createLineOrBarChart(indicator, values, ReportType.BarChart);
             case "line chart":
-                return chartFactory.createLineChart(indicator, values);
+                return chartFactory.createLineOrBarChart(indicator, values, ReportType.LineChart);
             default: throw new IllegalArgumentException("Chart type " + chartType +
                     " not supported");
         }

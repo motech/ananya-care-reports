@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.web.chart;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -27,63 +29,66 @@ public final class ChartFactory {
     @Autowired
     private ReportService reportService;
 
+    private static final int HOURS = 22;
     private static final int SCALE = 4;
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
-    private static final double BAR_WIDTH = .5;
     private static final int EXPLOSION_NUMBER = 6;
 
-    public Chart createLineChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-        if (values.size() == 0) {
-            throw new CareNoValuesException();
-        }
-        
-        return createTemplateChart(indicator.getName())
-                .xAxis(new AxisBuilder()
-                        .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
-                        .mode(AxisBuilder.Mode.TIME)
-                        .timeformat("%m/%d/%y"))
-                .grid(new GridBuilder()
-                        .minorVerticalLines(true))
-                .serie(createSerieForIndicatorValues(values))
-                .build();
-    }
-
-    private Serie createSerieForIndicatorValues(List<IndicatorValueEntity> values) {
+    private SerieBuilder createSerieForIndicatorValues(List<IndicatorValueEntity> values) {
         SerieBuilder serieBuilder = new SerieBuilder();
 
         for (IndicatorValueEntity value: values) {
-            serieBuilder.point(BigDecimal.valueOf(value.getDate().getTime()), value.getValue());
+            Date date = DateUtils.addHours(value.getDate(), -HOURS);
+            serieBuilder.point(BigDecimal.valueOf(date.getTime()), value.getValue());
         }
 
-        return serieBuilder.build();
+        return serieBuilder;
     }
 
-    public Chart createBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {
-            BigDecimal latestIndicatorValue = values.size() != 0
-                    ? values.get(values.size() - 1).getValue()
-                    : BigDecimal.ZERO;
+    public Chart createLineOrBarChart(IndicatorEntity indicator, List<IndicatorValueEntity> values, ReportType type) {
+        if (values.size() == 0) {
+            throw new CareNoValuesException();
+        }
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
-                ReportType.BarChart, indicator.getId());
+                type, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
         String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();
 
-        return createTemplateChart(indicator.getName())
-                .bars(new BarsBuilder()
-                        .show(true)
-                        .horizontal(true)
-                        .shadowSize(0)
-                        .barWidth(BAR_WIDTH))
+        double [] yMinAndMax = null;
+
+        if (ReportType.LineChart.equals(type)) {
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 3, true);
+        } else if (ReportType.BarChart.equals(type)) {
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 5, false);
+        }
+
+        double[] xMinAndMax = ChartHelper.getMinAndMaxMarginFromDate(values);
+
+        ChartBuilder chart = createTemplateChart(indicator.getName())
                 .xAxis(new AxisBuilder()
-                        .min(0)
-                        .autoScaleMargin(1))
-                .serie(new SerieBuilder()
-                        .label(labelX)
-                        .point(latestIndicatorValue, BigDecimal.ONE))
-                .serie(new SerieBuilder()
-                        .label(labelY)
-                        .point(BigDecimal.ONE.subtract(latestIndicatorValue), 1 + BAR_WIDTH))
-                .build();
+                        .title(labelX)
+                        .timeformat("%m/%d/%y")
+                        .mode(AxisBuilder.Mode.TIME)
+                        .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
+                        .min(xMinAndMax[0])
+                        .max(xMinAndMax[1]))
+                .yAxis(new AxisBuilder()
+                        .title(labelY)
+                        .min(yMinAndMax[0])
+                        .max(yMinAndMax[1]))
+                .grid(new GridBuilder()
+                        .minorVerticalLines(true))
+                .serie(createSerieForIndicatorValues(values));
+
+        if (ReportType.BarChart.equals(type)) {
+            chart.bars(new BarsBuilder()
+                    .show(true)
+                    .horizontal(false)
+                    .shadowSize(0));
+        }
+
+        return chart.build();
     }
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueEntity> values) {

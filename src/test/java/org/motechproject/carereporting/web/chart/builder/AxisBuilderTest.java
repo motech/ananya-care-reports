@@ -41,7 +41,7 @@ public class AxisBuilderTest {
 
     @Test
     public void testMin() {
-        int min = -3;
+        double min = -3;
 
         axisBuilder.min(min);
 
