@@ -71,24 +71,24 @@
                                     <div class="indicator-cell-header">
                                         <div>
                                             <span class="input-append input-date">
-                                                <input type="date" ng-model="report.from" bs-datepicker ng-change="reportFromDateChanged(report)" />
+                                                <input type="date" ng-disabled="!report.computing" ng-model="report.from" bs-datepicker ng-change="reportFromDateChanged(report)" />
                                                 <span class="add-on"><i class="icon-calendar"></i></span>
                                             </span>
                                             <span>-</span>
                                             <span class="input-append input-date">
-                                                <input type="date" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
+                                                <input type="date" ng-disabled="!report.computing" ng-model="report.to" bs-datepicker ng-change="reportToDateChanged(report)" />
                                                 <span class="add-on"><i class="icon-calendar"></i></span>
                                             </span>
                                         </div>
                                         <div>
                                             <div class="input-append">
-                                                <select ng-model="report.areaId" ng-options="item.id as item.name for item in report.areas"/>
+                                                <select ng-disabled="!report.computing" ng-model="report.areaId" ng-options="item.id as item.name for item in report.areas"/>
                                                 <span class="add-on"><i class="icon-globe"></i></span>
                                             </div>
                                         </div>
                                         <div>
                                             <div class="input-append">
-                                                <select ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
+                                                <select ng-disabled="!report.computing" ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
                                                 <span class="add-on"><i class="icon-time"></i></span>
                                             </div>
                                         </div>
@@ -115,9 +115,9 @@
 
                                     <div class="indicator-btn-group">
                                         <div class="btn-group">
-                                            <button type="button" ng-click="exportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</button>
-                                            <button type="button" ng-click="exportCaseListReportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined && report.canExportCaseListReport">{{msg('dashboards.charts.exportCaseListReport')}}</button>
-                                            <button type="button" ng-click="toggleChartDisplay(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</button>
+                                            <button type="button" ng-disabled="!report.computing" ng-click="exportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{msg('dashboards.charts.export')}}</button>
+                                            <button type="button" ng-disabled="!report.computing" ng-click="exportCaseListReportToCsv(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined && report.canExportCaseListReport">{{msg('dashboards.charts.exportCaseListReport')}}</button>
+                                            <button type="button" ng-disabled="!report.computing" ng-click="toggleChartDisplay(report)" class="btn btn-mini btn-primary chart-button" ng-show="report != undefined">{{report.displayType == 'chart' && msg('dashboards.charts.showData') || msg('dashboards.charts.showChart') }}</button>
                                         </div>
                                     </div>
                                 </div>
