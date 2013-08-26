@@ -113,7 +113,7 @@ public class XmlIndicatorParser {
     private static final String ALL_ROLES_STRING = "ALL";
 
     @Transactional
-    public IndicatorEntity parse(InputStream is) throws JAXBException {
+    public IndicatorEntity parse(InputStream is) throws JAXBException, IllegalAccessException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(getSchema());
@@ -132,7 +132,7 @@ public class XmlIndicatorParser {
         }
     }
 
-    private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
+    private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) throws IllegalAccessException {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(indicator.getName());
         if (indicator.getOwners().getUser() != null) {
@@ -176,8 +176,9 @@ public class XmlIndicatorParser {
         for (Role role: roles) {
             if (role.getName().equals(ALL_ROLES_STRING)) {
                 roleEntities.addAll(roleDao.getAll());
+            } else {
+                roleEntities.add(roleDao.getByField("name", role.getName()));
             }
-            roleEntities.add(roleDao.getByField("name", role.getName()));
         }
         return roleEntities;
     }
@@ -285,7 +286,7 @@ public class XmlIndicatorParser {
         return conditionEntity;
     }
 
-    private DwQueryEntity prepareQuery(Query query) {
+    private DwQueryEntity prepareQuery(Query query) throws IllegalAccessException {
         if (query.getIndicatorName() != null) {
             IndicatorEntity indicator = indicatorDao.getIndicatorByName(query.getIndicatorName());
             if (indicator == null) {
@@ -298,7 +299,7 @@ public class XmlIndicatorParser {
         }
     }
 
-    private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
+    private DwQueryEntity prepareDwQuery(DwQuery dwQuery) throws IllegalAccessException {
         DwQueryEntity dwQueryEntity;
         if (dwQuery.getFacts() != null && dwQuery.getFacts().size() > 0) {
             dwQueryEntity = prepareComplexDwQuery(dwQuery);
@@ -335,7 +336,7 @@ public class XmlIndicatorParser {
         return dwQueryEntity;
     }
 
-    private CombinationEntity prepareCombination(CombineWith combineWith) {
+    private CombinationEntity prepareCombination(CombineWith combineWith) throws IllegalAccessException {
         CombinationEntity combination = new CombinationEntity();
         combination.setDwQuery(prepareQuery(combineWith));
         combination.setForeignKey(combineWith.getForeignKey());
