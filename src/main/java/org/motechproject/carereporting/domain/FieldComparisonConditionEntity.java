@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
@@ -30,6 +30,11 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
 
     public FieldComparisonConditionEntity() {
         super();
+    }
+
+    public FieldComparisonConditionEntity(FieldComparisonConditionEntity conditionEntity) {
+        super(conditionEntity);
+        field2 = conditionEntity.getField2();
     }
 
     public ComputedFieldEntity getField2() {

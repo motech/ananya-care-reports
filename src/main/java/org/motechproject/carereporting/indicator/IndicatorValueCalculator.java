@@ -36,8 +36,17 @@ public abstract class IndicatorValueCalculator {
             value.setDate(DateUtils.addSeconds(to, -1));
             value.setFrequency(frequency);
             value.setIndicator(indicator);
+
+            if (isPercentageIndicator(indicator)) {
+                value.setValue(BigDecimal.valueOf(100).multiply(value.getValue()));
+            }
+
             persistIndicatorValue(value);
         }
+    }
+
+    private boolean isPercentageIndicator(IndicatorEntity indicator) {
+        return indicator.getName().startsWith("%");
     }
 
     private Set<AreaEntity> getIndicatorAreas(IndicatorEntity indicator) {

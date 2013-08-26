@@ -16,6 +16,14 @@ public class SimpleDwQueryEntity extends DwQueryEntity {
     @Column(name = "table_name")
     private String tableName;
 
+    public SimpleDwQueryEntity() {
+    }
+
+    public SimpleDwQueryEntity(SimpleDwQueryEntity dwQueryEntity) {
+        super(dwQueryEntity);
+        tableName = dwQueryEntity.getTableName();
+    }
+
     public String getTableName() {
         return tableName;
     }

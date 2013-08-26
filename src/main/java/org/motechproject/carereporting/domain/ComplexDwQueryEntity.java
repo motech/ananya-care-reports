@@ -11,6 +11,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -34,6 +35,20 @@ public class ComplexDwQueryEntity extends DwQueryEntity {
 
     @Column(name = "fact_key")
     private String factKey;
+
+    public ComplexDwQueryEntity() {
+    }
+
+    public ComplexDwQueryEntity(ComplexDwQueryEntity dwQueryEntity) {
+        super(dwQueryEntity);
+        dimension = dwQueryEntity.getDimension();
+        dimensionKey = dwQueryEntity.getDimensionKey();
+        factKey = dwQueryEntity.getFactKey();
+        facts = new LinkedHashSet<>();
+        for (FactEntity factEntity : dwQueryEntity.getFacts()) {
+            facts.add(new FactEntity(factEntity));
+        }
+    }
 
     public String getDimension() {
         return dimension;

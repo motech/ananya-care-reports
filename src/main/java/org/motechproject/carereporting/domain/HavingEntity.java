@@ -26,6 +26,15 @@ public class HavingEntity extends AbstractEntity {
     @Column(name = "value")
     private String value;
 
+    public HavingEntity() {
+    }
+
+    public HavingEntity(HavingEntity having) {
+        selectColumnEntity = new SelectColumnEntity(having.getSelectColumnEntity());
+        operator = having.getOperator();
+        value = having.getValue();
+    }
+
     public SelectColumnEntity getSelectColumnEntity() {
         return selectColumnEntity;
     }

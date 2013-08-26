@@ -23,6 +23,14 @@ public class FactEntity extends AbstractEntity {
     @Column(name = "combine_type")
     private String combineType;
 
+    public FactEntity() {
+    }
+
+    public FactEntity(FactEntity factEntity) {
+        combineType = factEntity.getCombineType();
+        table = factEntity.getTable() != null ? new SimpleDwQueryEntity(factEntity.getTable()) : null;
+    }
+
     public SimpleDwQueryEntity getTable() {
         return table;
     }

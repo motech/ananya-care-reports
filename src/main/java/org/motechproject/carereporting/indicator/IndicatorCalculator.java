@@ -26,18 +26,12 @@ public class IndicatorCalculator {
 
     @Transactional(readOnly = false)
     public void calculateIndicatorValues(FrequencyEntity frequency, Date date) {
-        LOG.info("Running indicator values calculation for " + frequency.getFrequencyName() + " frequency.");
-        int totalIndicatorValuesCalculated = 0;
         Date[] dates = DateResolver.resolveDates(frequency, date);
         Date from = dates[0];
         Date to = dates[1];
         for (IndicatorEntity indicator: indicatorService.getAllIndicators()) {
             calculateIndicatorValues(indicator, frequency, from, to);
-            ++totalIndicatorValuesCalculated;
-            LOG.info("Calculating values for indicator: " + indicator.getName() + " finished.");
         }
-        LOG.info("Indicator values calculation finished [total indicators values calculated = "
-                + totalIndicatorValuesCalculated + "].");
     }
 
     public void calculateIndicatorValues(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {

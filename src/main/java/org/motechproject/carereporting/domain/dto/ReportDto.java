@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.domain.dto;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

@@ -70,7 +70,7 @@ public class CsvExportServiceImpl implements ExportService {
                 return null;
             }
 
-            csvLines.add(headers.toArray(new String[] { }));
+            csvLines.add(headers.toArray(new String[] {}));
             for (Map<String, Object> row : rowMap) {
                 csvLines.add(constructCsvRow(row));
             }

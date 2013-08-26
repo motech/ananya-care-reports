@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.FetchProfile;
 import org.hibernate.validator.constraints.NotEmpty;

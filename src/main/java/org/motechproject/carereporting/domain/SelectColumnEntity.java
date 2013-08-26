@@ -22,6 +22,15 @@ public class SelectColumnEntity extends AbstractEntity {
     @Column(name = "table_name")
     private String tableName;
 
+    public SelectColumnEntity() {
+    }
+
+    public SelectColumnEntity(SelectColumnEntity selectColumnEntity) {
+        name = selectColumnEntity.getName();
+        functionName = selectColumnEntity.getFunctionName();
+        tableName = selectColumnEntity.getTableName();
+    }
+
     public String getName() {
         return name;
     }

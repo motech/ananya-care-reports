@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -24,7 +24,7 @@ public abstract class BaseController {
 
     @PostConstruct
     public void initialize() {
-        objectMapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
+        objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
     }
 
     public String writeAsString(Class<? extends BaseView> viewClass, Object value) {

@@ -12,6 +12,7 @@
     <reports>
         <report type="Pie Chart" />
         <report type="Line Chart" label-x="Time" label-y="% mothers" />
+        <report type="Bar Chart" label-x="Time" label-y="% mothers" />
     </reports>
     <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>

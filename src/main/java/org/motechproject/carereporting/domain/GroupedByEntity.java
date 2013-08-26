@@ -26,6 +26,15 @@ public class GroupedByEntity extends AbstractEntity {
     @JoinColumn(name = "having_id", referencedColumnName = "having_id")
     private HavingEntity having;
 
+    public GroupedByEntity() {
+    }
+
+    public GroupedByEntity(GroupedByEntity groupedBy) {
+        tableName = groupedBy.getTableName();
+        fieldName = groupedBy.getFieldName();
+        having = groupedBy.getHaving() != null ? new HavingEntity(groupedBy.getHaving()) : null;
+    }
+
     public String getTableName() {
         return tableName;
     }

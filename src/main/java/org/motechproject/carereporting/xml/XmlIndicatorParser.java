@@ -36,13 +36,12 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
-import org.motechproject.carereporting.utils.copier.AbstractEntityCopier;
 import org.motechproject.carereporting.xml.mapping.indicators.Category;
 import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
-import org.motechproject.carereporting.xml.mapping.indicators.Query;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
 import org.motechproject.carereporting.xml.mapping.indicators.Fact;
 import org.motechproject.carereporting.xml.mapping.indicators.Indicator;
+import org.motechproject.carereporting.xml.mapping.indicators.Query;
 import org.motechproject.carereporting.xml.mapping.indicators.Report;
 import org.motechproject.carereporting.xml.mapping.indicators.Role;
 import org.motechproject.carereporting.xml.mapping.indicators.SelectColumn;
@@ -65,11 +64,11 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -113,7 +112,7 @@ public class XmlIndicatorParser {
     private static final String ALL_ROLES_STRING = "ALL";
 
     @Transactional
-    public IndicatorEntity parse(InputStream is) throws JAXBException, IllegalAccessException {
+    public IndicatorEntity parse(InputStream is) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Indicator.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(getSchema());
@@ -132,7 +131,7 @@ public class XmlIndicatorParser {
         }
     }
 
-    private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) throws IllegalAccessException {
+    private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(indicator.getName());
         if (indicator.getOwners().getUser() != null) {
@@ -286,20 +285,26 @@ public class XmlIndicatorParser {
         return conditionEntity;
     }
 
-    private DwQueryEntity prepareQuery(Query query) throws IllegalAccessException {
+    private DwQueryEntity prepareQuery(Query query) {
         if (query.getIndicatorName() != null) {
             IndicatorEntity indicator = indicatorDao.getIndicatorByName(query.getIndicatorName());
             if (indicator == null) {
                 throw new CareRuntimeException("This indicator depends on indicator '" +
                         query.getIndicatorName() + "' which has not been added yet. Please, add this indicator first.");
             }
-            return (DwQueryEntity) AbstractEntityCopier.deepCopy(indicator.getNumerator());
+            if (indicator.getNumerator() instanceof SimpleDwQueryEntity) {
+                return new SimpleDwQueryEntity((SimpleDwQueryEntity) indicator.getNumerator());
+            } else if (indicator.getNumerator() instanceof ComplexDwQueryEntity) {
+                return new ComplexDwQueryEntity((ComplexDwQueryEntity) indicator.getNumerator());
+            } else {
+                return new DwQueryEntity(indicator.getNumerator());
+            }
         } else {
             return prepareDwQuery(query.getDwQuery());
         }
     }
 
-    private DwQueryEntity prepareDwQuery(DwQuery dwQuery) throws IllegalAccessException {
+    private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
         DwQueryEntity dwQueryEntity;
         if (dwQuery.getFacts() != null && dwQuery.getFacts().size() > 0) {
             dwQueryEntity = prepareComplexDwQuery(dwQuery);
@@ -336,7 +341,7 @@ public class XmlIndicatorParser {
         return dwQueryEntity;
     }
 
-    private CombinationEntity prepareCombination(CombineWith combineWith) throws IllegalAccessException {
+    private CombinationEntity prepareCombination(CombineWith combineWith) {
         CombinationEntity combination = new CombinationEntity();
         combination.setDwQuery(prepareQuery(combineWith));
         combination.setForeignKey(combineWith.getForeignKey());

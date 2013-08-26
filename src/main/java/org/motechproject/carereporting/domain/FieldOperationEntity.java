@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.ComputedFieldView;
 
 import javax.persistence.AttributeOverride;

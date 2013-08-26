@@ -1,9 +1,9 @@
 package org.motechproject.carereporting.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;

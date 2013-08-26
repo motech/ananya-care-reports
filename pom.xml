@@ -16,7 +16,7 @@
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <postgres-driver.version>9.1-901.jdbc4</postgres-driver.version>
-        <jackson.version>1.9.12</jackson.version>
+        <jackson.version>2.2.2</jackson.version>
         <javax-servlet.version>2.5</javax-servlet.version>
         <javax-servlet-jstl.version>1.2</javax-servlet-jstl.version>
         <hibernate.version>4.1.10.Final</hibernate.version>
@@ -142,13 +142,8 @@
             <version>${postgres-driver.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
         <dependency>

@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -42,6 +43,20 @@ public class DwQueryEntity extends AbstractEntity {
 
     @Column(name = "has_period_condition")
     private boolean hasPeriodCondition;
+
+    public DwQueryEntity() {
+    }
+
+    public DwQueryEntity(DwQueryEntity dwQueryEntity) {
+        hasPeriodCondition = dwQueryEntity.getHasPeriodCondition();
+        selectColumns = new LinkedHashSet<>();
+        for (SelectColumnEntity selectColumnEntity : dwQueryEntity.getSelectColumns()) {
+            selectColumns.add(new SelectColumnEntity(selectColumnEntity));
+        }
+        combination = dwQueryEntity.getCombination() != null ? new CombinationEntity(dwQueryEntity.getCombination()) : null;
+        groupedBy = dwQueryEntity.getGroupedBy() != null ? new GroupedByEntity(dwQueryEntity.getGroupedBy()) : null;
+        whereGroup = dwQueryEntity.getWhereGroup() != null ? new WhereGroupEntity(dwQueryEntity.getWhereGroup()) : null;
+    }
 
     public Set<SelectColumnEntity> getSelectColumns() {
         return selectColumns;

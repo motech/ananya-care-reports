@@ -482,11 +482,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
         $simplifiedHttpService.get($scope, url, 'dashboards.charts.error.cannotLoadChartDetails', function(chartData) {
             chartData.sort(sortByDateComparisonFunction);
-            if(report.reportType.name == 'Pie Chart') {
-                for(var i = 0; i < chartData.length; i++) {
-                    chartData[i].value *= 100;
-                }
-            }
             report.chart = chartData;
         });
     };

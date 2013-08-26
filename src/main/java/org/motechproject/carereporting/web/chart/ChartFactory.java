@@ -29,6 +29,7 @@ public final class ChartFactory {
     @Autowired
     private ReportService reportService;
 
+    private static final int PERCENT = 5;
     private static final int HOURS = 22;
     private static final int SCALE = 4;
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
@@ -60,7 +61,7 @@ public final class ChartFactory {
         if (ReportType.LineChart.equals(type)) {
             yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 3, true);
         } else if (ReportType.BarChart.equals(type)) {
-            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 5, false);
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, PERCENT, false);
         }
 
         double[] xMinAndMax = ChartHelper.getMinAndMaxMarginFromDate(values);

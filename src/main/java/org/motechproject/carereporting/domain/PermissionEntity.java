@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;

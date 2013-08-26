@@ -30,6 +30,15 @@ public class CombinationEntity extends AbstractEntity {
     @JoinColumn(name = "dw_query_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity dwQuery;
 
+    public CombinationEntity() {
+    }
+
+    public CombinationEntity(CombinationEntity combination) {
+        type = combination.getType();
+        foreignKey = combination.getForeignKey();
+        referencedKey = combination.getReferencedKey();
+    }
+
     public String getType() {
         return type;
     }

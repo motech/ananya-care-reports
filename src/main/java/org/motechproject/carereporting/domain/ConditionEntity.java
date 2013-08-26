@@ -1,8 +1,8 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
@@ -39,6 +39,15 @@ public abstract class ConditionEntity extends AbstractEntity {
     @JoinColumn(name = "field_1_id")
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private ComputedFieldEntity field1;
+
+    protected ConditionEntity() {
+    }
+
+    public ConditionEntity(ConditionEntity conditionEntity) {
+        comparisonSymbol = conditionEntity.getComparisonSymbol();
+        field1 = conditionEntity.getField1();
+    }
+
 
     public ComparisonSymbolEntity getComparisonSymbol() {
         return comparisonSymbol;

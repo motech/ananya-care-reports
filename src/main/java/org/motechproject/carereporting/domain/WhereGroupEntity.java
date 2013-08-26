@@ -33,9 +33,31 @@ public class WhereGroupEntity extends AbstractEntity {
             inverseJoinColumns = { @JoinColumn(name = "condition_id") })
     private Set<ConditionEntity> conditions;
 
+    // don't change
     public WhereGroupEntity() {
         whereGroups = new LinkedHashSet<>();
         conditions = new LinkedHashSet<>();
+    }
+
+    public WhereGroupEntity(WhereGroupEntity whereGroup) {
+        this();
+        operator = whereGroup.getOperator();
+        for (WhereGroupEntity whereGroupEntity : whereGroup.getWhereGroups()) {
+            whereGroups.add(new WhereGroupEntity(whereGroupEntity));
+        }
+        for (ConditionEntity conditionEntity : whereGroup.getConditions()) {
+            if (conditionEntity instanceof CalculationEndDateConditionEntity) {
+                conditions.add(new CalculationEndDateConditionEntity((CalculationEndDateConditionEntity) conditionEntity));
+            } else if (conditionEntity instanceof DateDiffComparisonConditionEntity) {
+                conditions.add(new DateDiffComparisonConditionEntity((DateDiffComparisonConditionEntity) conditionEntity));
+            } else if (conditionEntity instanceof FieldComparisonConditionEntity) {
+                conditions.add(new FieldComparisonConditionEntity((FieldComparisonConditionEntity) conditionEntity));
+            } else if (conditionEntity instanceof PeriodConditionEntity) {
+                conditions.add(new PeriodConditionEntity((PeriodConditionEntity) conditionEntity));
+            } else if (conditionEntity instanceof ValueComparisonConditionEntity) {
+                conditions.add(new ValueComparisonConditionEntity((ValueComparisonConditionEntity) conditionEntity));
+            }
+        }
     }
 
     public String getOperator() {

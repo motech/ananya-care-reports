@@ -1,6 +1,6 @@
 package org.motechproject.carereporting.domain;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,6 +24,16 @@ public class CalculationEndDateConditionEntity extends ConditionEntity {
 
     @Column(name = "table_name")
     private String tableName;
+
+    public CalculationEndDateConditionEntity() {
+    }
+
+    public CalculationEndDateConditionEntity(CalculationEndDateConditionEntity conditionEntity) {
+        super(conditionEntity);
+        columnName = conditionEntity.getColumnName();
+        offset = conditionEntity.getOffset();
+        tableName = conditionEntity.getTableName();
+    }
 
     public String getColumnName() {
         return columnName;

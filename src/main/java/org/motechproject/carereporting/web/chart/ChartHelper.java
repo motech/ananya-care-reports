@@ -28,7 +28,7 @@ public final class ChartHelper {
         double min = values.get(0).getValue().doubleValue();
         double max = values.get(0).getValue().doubleValue();
 
-        if(findMin) {
+        if (findMin) {
             for (IndicatorValueEntity valueEntity : values) {
                 if (min > valueEntity.getValue().doubleValue()) {
                     min = valueEntity.getValue().doubleValue();
