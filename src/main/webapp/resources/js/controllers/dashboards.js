@@ -233,13 +233,13 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.tabChanged = function(dashboard) {
         $scope.reportRows = [];
         $scope.charts = [];
-        $("#mapReport1").html('');
-        $("#mapReport2").html('');
         $scope.dashboard = dashboard;
         if (dashboard.name == "Performance summary") {
             $scope.loading = true;
             $scope.fetchTrends();
         } else if (dashboard.name == "Map report") {
+            $("#mapReport1").html('');
+            $("#mapReport2").html('');
             for (var i in $scope.maps) {
                 if ($scope.maps.hasOwnProperty(i)) {
                     $scope.fetchMapReport($scope.maps[i]);
@@ -323,12 +323,15 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             endDate: moment().format("L"),
             selectedIndicatorCategoryId: 1,
             selectedCategoryIndicators: [],
-            selectedIndicatorId: 1,
-            containerId: "mapReport" + i
+            selectedIndicatorId: 3,
+            containerId: "mapReport" + i,
+            frequencyId: 1,
+            level: "state"
         };
     }
 
     $scope.analyzeMap = function(map) {
+      map.level = "state";
       $scope.fetchMapReport(map);
     }
 
@@ -357,8 +360,12 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchCategories();
 
-    $scope.fetchMapReport = function(map) {
-        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate + '&endDate=' + map.endDate;
+    $scope.fetchMapReport = function(map, stateCode) {
+        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate + '&endDate=' + map.endDate +
+                   '&frequencyId=' + map.frequencyId + "&level=" + map.level;
+        if (stateCode != undefined) {
+            url += "&state=" + stateCode;
+        }
         $http.get(url).success(function(data) {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
@@ -366,11 +373,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 }
             }
             $('#' + map.containerId).html('').vectorMap({
-                map: 'bihar',
+                map: map.level == "block" ? 'bihar-block' : "bihar-state",
                 onRegionClick: function(event, code) {
-                    //change area i
+                    if (map.level == "block") {
+                        return;
+                    }
+                    map.level = "block";
                     $('.jvectormap-label').remove();
-                    $scope.fetchMapReport();
+                    $scope.fetchMapReport(map, code);
                 },
                 series: {
                     regions: [{

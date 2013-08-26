@@ -57,7 +57,8 @@
     <script src="resources/js/directives.js" type="text/javascript"></script>
     <script src="resources/lib/flotr2.min.js"></script>
     <script src="resources/lib/jVectorMap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="resources/lib/jVectorMap/maps/bihar.js"></script>
+    <script src="resources/lib/jVectorMap/maps/bihar-state.js"></script>
+    <script src="resources/lib/jVectorMap/maps/bihar-block.js"></script>
     <!--[if lt IE 9]>
         <script type="text/javascript" src="resources/lib/flashcanvas.js"></script>
     <![endif]-->
