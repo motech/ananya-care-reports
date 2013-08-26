@@ -169,7 +169,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
-
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));

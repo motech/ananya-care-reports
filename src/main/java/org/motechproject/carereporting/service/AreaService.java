@@ -23,6 +23,8 @@ public interface AreaService {
 
     LevelEntity getLevelById(Integer levelId);
 
+    AreaEntity getByName(String name);
+
     void createNewArea(AreaEntity areaEntity);
 
     void updateArea(AreaEntity areaEntity);

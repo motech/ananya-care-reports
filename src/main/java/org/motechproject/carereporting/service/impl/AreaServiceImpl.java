@@ -72,6 +72,12 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
+    @Transactional
+    public AreaEntity getByName(String name) {
+        return areaDao.getByField("name", name);
+    }
+
+    @Override
     @Transactional(readOnly = false)
 
     public void createNewArea(AreaEntity areaEntity) {

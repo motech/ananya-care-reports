@@ -319,8 +319,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.maps = [];
     for (i=0; i<2; i+=1) {
         $scope.maps[i] = {
-            startDate: moment().subtract('months', 1).format("L"),
-            endDate: moment().format("L"),
+            startDate: new Date(moment().subtract('months', 1).format("L")),
+            endDate: new Date(moment().format("L")),
             selectedIndicatorCategoryId: 1,
             selectedCategoryIndicators: [],
             selectedIndicatorId: 3,
@@ -361,7 +361,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchCategories();
 
     $scope.fetchMapReport = function(map, stateCode) {
-        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate + '&endDate=' + map.endDate +
+        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + moment(map.startDate).format('L') + '&endDate=' + moment(map.endDate).format('L') +
                    '&frequencyId=' + map.frequencyId + "&level=" + map.level;
         if (stateCode != undefined) {
             url += "&state=" + stateCode;

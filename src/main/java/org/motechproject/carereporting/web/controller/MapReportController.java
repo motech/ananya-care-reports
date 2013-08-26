@@ -2,6 +2,7 @@ package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class MapReportController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AreaService areaService;
+
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -35,6 +39,13 @@ public class MapReportController extends BaseController {
                                                  @RequestParam Date startDate, @RequestParam Date endDate, @RequestParam String level,
                                                  @RequestParam(required = false) String state) {
         UserEntity user = userService.getCurrentlyLoggedUser();
-        return indicatorService.getIndicatorTrendForChildAreas(indicatorId, user.getArea().getId(), frequencyId, startDate, endDate);
+        Integer areaId;
+        if (state != null) {
+            AreaEntity area = areaService.getByName(state);
+            areaId = area != null ? area.getId() : user.getArea().getId();
+        } else {
+            areaId = user.getArea().getId();
+        }
+        return indicatorService.getIndicatorTrendForChildAreas(indicatorId, areaId, frequencyId, startDate, endDate);
     }
 }
