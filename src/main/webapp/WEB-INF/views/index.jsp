@@ -92,6 +92,9 @@
                          <li class="divider"></li>
                          <li><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
                          <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
+                         <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
+                             <li><a href="#/indicators/new"><i class="icon-plus-sign"></i> {{msg('menu.indicators.define')}}</a></li>
+                        </sec:authorize>
                      </ul>
                  </li>
                 <li class="dropdown">
