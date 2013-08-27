@@ -321,9 +321,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $scope.maps[i] = {
             startDate: new Date(moment().subtract('months', 1).format("L")),
             endDate: new Date(moment().format("L")),
-            selectedIndicatorCategoryId: 1,
+            selectedIndicatorCategoryId: null,
             selectedCategoryIndicators: [],
-            selectedIndicatorId: 3,
+            selectedIndicatorId: null,
             containerId: "mapReport" + i,
             frequencyId: 1,
             level: "state"
@@ -331,8 +331,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.analyzeMap = function(map) {
-      map.level = "state";
-      $scope.fetchMapReport(map);
+        map.level = "state";
+        $scope.fetchMapReport(map);
     }
 
     $scope.analyze = function() {
@@ -340,9 +340,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.fetchCategoryIndicators = function(map) {
-        $http.get('api/indicator/filter/' + map.selectedIndicatorCategoryId).success(function(indicators) {
-            map.selectedCategoryIndicators = indicators;
-        });
+        if(map.selectedIndicatorCategoryId != null) {
+            $http.get('api/indicator/filter/' + map.selectedIndicatorCategoryId).success(function(indicators) {
+                map.selectedCategoryIndicators = indicators;
+            });
+        }
     };
 
     $scope.fetchCategories = function() {
@@ -361,69 +363,71 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchCategories();
 
     $scope.fetchMapReport = function(map, stateCode) {
-        var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + moment(map.startDate).format('L') + '&endDate=' + moment(map.endDate).format('L') +
-                   '&frequencyId=' + map.frequencyId + "&level=" + map.level;
-        if (stateCode != undefined) {
-            url += "&state=" + stateCode;
-        }
-        $http.get(url).success(function(data) {
-            for (var i in data) {
-                if (data.hasOwnProperty(i)) {
-                    data[i] = data[i].toString();
-                }
+        if(map.selectedIndicatorId != null) {
+            var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + moment(map.startDate).format('L') + '&endDate=' + moment(map.endDate).format('L') +
+                       '&frequencyId=' + map.frequencyId + "&level=" + map.level;
+            if (stateCode != undefined) {
+                url += "&state=" + stateCode;
             }
-            $('#' + map.containerId).html('').vectorMap({
-                map: map.level == "block" ? 'bihar-block' : "bihar-state",
-                onRegionClick: function(event, code) {
-                    if (map.level == "block") {
-                        return;
-                    }
-                    map.level = "block";
-                    $('.jvectormap-label').remove();
-                    $scope.fetchMapReport(map, code);
-                },
-                series: {
-                    regions: [{
-                        values: data,
-                        scale: {
-                            "1": '#A8F022',
-                            "-1": '#F1A219',
-                            "0": '#82AAFF'
-                        }
-                    }]
-                },
-                regionStyle: {
-                  initial: {
-                    fill: 'grey',
-                    "fill-opacity": 1,
-                    stroke: '#444444',
-                    "stroke-width": 0.5,
-                    "stroke-opacity": 1
-                  },
-                  hover: {
-                    "fill-opacity": 1,
-                    "stroke-width": 2,
-                    stroke: "#FFFFFF",
-                    "stroke-opacity": 1
-                  }
-                },
-                onRegionLabelShow: function(e, el, code) {
-                    if (data[code] == undefined) {
-                        $(el).html($scope.msg('dashboards.map.noData', code));
-                    }
-                    var ads = data[code];
-                    $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
-                    el.html('<span class="name">' + el.html() + '</span>');
-                    if (data[code] == 1) {
-                        el.html(el.html() + ' <img src="resources/images/trend_positive.png" />');
-                    } else if (data[code] == -1) {
-                        el.html(el.html() + ' <img src="resources/images/trend_negative.png" />');
-                    } else if (data[code] != undefined) {
-                        el.html(el.html() + ' <img src="resources/images/trend_neutral.png" />');
+            $http.get(url).success(function(data) {
+                for (var i in data) {
+                    if (data.hasOwnProperty(i)) {
+                        data[i] = data[i].toString();
                     }
                 }
+                $('#' + map.containerId).html('').vectorMap({
+                    map: map.level == "block" ? 'bihar-block' : "bihar-state",
+                    onRegionClick: function(event, code) {
+                        if (map.level == "block") {
+                            return;
+                        }
+                        map.level = "block";
+                        $('.jvectormap-label').remove();
+                        $scope.fetchMapReport(map, code);
+                    },
+                    series: {
+                        regions: [{
+                            values: data,
+                            scale: {
+                                "1": '#A8F022',
+                                "-1": '#F1A219',
+                                "0": '#82AAFF'
+                            }
+                        }]
+                    },
+                    regionStyle: {
+                      initial: {
+                        fill: 'grey',
+                        "fill-opacity": 1,
+                        stroke: '#444444',
+                        "stroke-width": 0.5,
+                        "stroke-opacity": 1
+                      },
+                      hover: {
+                        "fill-opacity": 1,
+                        "stroke-width": 2,
+                        stroke: "#FFFFFF",
+                        "stroke-opacity": 1
+                      }
+                    },
+                    onRegionLabelShow: function(e, el, code) {
+                        if (data[code] == undefined) {
+                            $(el).html($scope.msg('dashboards.map.noData', code));
+                        }
+                        var ads = data[code];
+                        $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
+                        el.html('<span class="name">' + el.html() + '</span>');
+                        if (data[code] == 1) {
+                            el.html(el.html() + ' <img src="resources/images/trend_positive.png" />');
+                        } else if (data[code] == -1) {
+                            el.html(el.html() + ' <img src="resources/images/trend_negative.png" />');
+                        } else if (data[code] != undefined) {
+                            el.html(el.html() + ' <img src="resources/images/trend_neutral.png" />');
+                        }
+                    }
+                });
             });
-        });
+        }
     };
 
     $scope.indicator = { name: null };
