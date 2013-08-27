@@ -249,7 +249,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.currentReportsPage = 0;
             $scope.loading = true;
             $scope.prepareAllReportRows();
-            $scope.showReports();
+            if ($scope.allReportsRows.length == 0) {
+                $scope.loading = false;
+            } else {
+                $scope.showReports();
+            }
         }
     };
 

@@ -123,6 +123,9 @@
                     <div style="margin: auto; width: 256px;" ng-show="loading == true">
                         <p class="text-center">{{msg('dashboards.charts.loading')}}</p>
                     </div>
+                    <div style="margin: auto; width: 256px;" ng-show="loading == false && allReportsRows.length == 0">
+                        <p class="text-center">{{msg('dashboards.charts.empty')}}</p>
+                    </div>
                     <div class="indicator-columns-wrapper" ng-show="loading == false">
                         <div class="indicator-column" ng-repeat="reportRow in reportRows">
                             <div>
