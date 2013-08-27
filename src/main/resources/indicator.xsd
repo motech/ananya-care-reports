@@ -197,6 +197,7 @@
                     <xs:attribute name="fieldName" use="required" type="xs:string" />
                     <xs:attribute name="tableName" use="optional" type="xs:string" />
                     <xs:attribute name="aggregation" use="optional" type="xs:string" />
+                    <xs:attribute name="nullValue" use="optional" type="xs:string" />
                 </xs:complexType>
             </xs:element>
         </xs:sequence>

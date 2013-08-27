@@ -22,6 +22,9 @@ public class SelectColumnEntity extends AbstractEntity {
     @Column(name = "table_name")
     private String tableName;
 
+    @Column(name = "null_value")
+    private String nullValue;
+
     public SelectColumnEntity() {
     }
 
@@ -53,5 +56,13 @@ public class SelectColumnEntity extends AbstractEntity {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getNullValue() {
+        return nullValue;
+    }
+
+    public void setNullValue(String nullValue) {
+        this.nullValue = nullValue;
     }
 }

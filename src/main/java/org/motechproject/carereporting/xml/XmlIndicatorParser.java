@@ -381,6 +381,7 @@ public class XmlIndicatorParser {
         selectColumnEntity.setFunctionName(selectColumn.getAggregation());
         selectColumnEntity.setTableName(selectColumn.getTableName());
         selectColumnEntity.setName(selectColumn.getFieldName());
+        selectColumnEntity.setNullValue(selectColumn.getNullValue());
         return selectColumnEntity;
     }
 

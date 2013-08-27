@@ -12,6 +12,8 @@ public class SelectColumn {
 
     private String fieldName;
 
+    private String nullValue;
+
     @XmlAttribute
     public String getAggregation() {
         return aggregation;
@@ -37,5 +39,13 @@ public class SelectColumn {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+    @XmlAttribute
+    public String getNullValue() {
+        return nullValue;
+    }
+
+    public void setNullValue(String nullValue) {
+        this.nullValue = nullValue;
     }
 }
