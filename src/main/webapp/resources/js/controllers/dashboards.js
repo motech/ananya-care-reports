@@ -385,6 +385,17 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         $('.jvectormap-label').remove();
                         $scope.fetchMapReport(map, code);
                     },
+                    onViewportChange: function(e, scale) {
+                        if (scale > 1 && scale < 2 && map.level == "block") {
+                            map.level = "state";
+                            $scope.analyzeMap(map);
+                        }
+                    },
+                    focusOn: {
+                      x: 0.5,
+                      y: 0.5,
+                      scale: map.level == "block" ? 3 : 1
+                    },
                     series: {
                         regions: [{
                             values: data,
