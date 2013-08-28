@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class IndicatorCategoryGetDataScenario extends AbstractScenario {
 
     {
-        addRequest(get("api/chart/data")
+        addRequest(get("/api/chart/data")
                 .param("indicatorId", "8")
                 .param("areaId", "2")
                 .param("frequencyId", "5")

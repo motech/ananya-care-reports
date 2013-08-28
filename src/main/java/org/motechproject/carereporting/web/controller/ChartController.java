@@ -8,7 +8,6 @@ import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
-import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.motechproject.carereporting.web.chart.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +40,6 @@ public class ChartController extends BaseController {
 
     @Autowired
     private CronService cronService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ExportService exportService;
@@ -100,11 +96,9 @@ public class ChartController extends BaseController {
     }
 
     private List<IndicatorValueEntity> getIndicatorValues(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate) {
-        Integer area = areaId != null ? areaId : userService.getCurrentlyLoggedUser().getArea().getId();
-
         FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);
         Date[] dates = DateResolver.resolveDates(frequencyEntity, startDate, endDate);
-        return indicatorService.getIndicatorValuesForArea(indicatorId, area, frequencyId, dates[0], dates[1]);
+        return indicatorService.getIndicatorValuesForArea(indicatorId, areaId, frequencyId, dates[0], dates[1]);
     }
 
 }

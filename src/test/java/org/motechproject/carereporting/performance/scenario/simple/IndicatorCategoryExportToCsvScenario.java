@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class IndicatorCategoryExportToCsvScenario extends AbstractScenario {
 
     {
-        addRequest(get("api/chart/data/export")
+        addRequest(get("/api/chart/data/export")
                 .param("indicatorId", "8")
                 .param("areaId", "2")
                 .param("frequencyId", "5")

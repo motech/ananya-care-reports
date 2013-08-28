@@ -8,7 +8,7 @@ public class IndicatorCategoryExportCaseListReportScenario extends AbstractScena
 
     {
         addRequest(
-                get("api/indicator/indicatorId/export/caselistreport")
+                get("/api/indicator/indicatorId/export/caselistreport")
                     .param("indicatorId", "8")
                     .param("fromDate", "01/06/2013")
                     .param("toDate", "01/08/2013")
