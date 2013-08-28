@@ -1,8 +1,8 @@
 package org.motechproject.carereporting.performance;
 
-public class PrePhasePT extends AbstractPT {
+public class PreIPhasePT extends PhasePT {
 
-    public PrePhasePT() {
+    public PreIPhasePT() {
         super(50, 0.08);
     }
 

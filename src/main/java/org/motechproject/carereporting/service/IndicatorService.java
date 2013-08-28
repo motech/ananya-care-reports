@@ -49,6 +49,9 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);
 
+    @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
+    void deleteAllIndicators();
+
     Set<IndicatorTypeEntity> getAllIndicatorTypes();
 
     IndicatorTypeEntity getIndicatorTypeById(Integer id);
@@ -91,4 +94,5 @@ public interface IndicatorService {
     void calculateIndicator(IndicatorEntity indicatorEntity);
 
     void calculateAllIndicators();
+
 }

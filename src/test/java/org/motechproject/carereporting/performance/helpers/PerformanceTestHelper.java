@@ -1,4 +1,4 @@
-package org.motechproject.carereporting.performance;
+package org.motechproject.carereporting.performance.helpers;
 
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -17,6 +17,8 @@ public class PerformanceTestHelper {
 
     private static final Logger LOG = Logger.getLogger("PerformanceTestHelper");
 
+    private static final String TEST_INDICATOR = "test-indicator-";
+
     private String INDICATORS_DIRECTORY = "indicators/";
 
     private ApplicationContext applicationContext;
@@ -32,11 +34,12 @@ public class PerformanceTestHelper {
     }
 
     public void populateDatabaseWithRandomIndicators(int indicatorsCount) {
+        indicatorService.deleteAllIndicators();
         File[] indicators = getAllIndicatorFiles();
         Random random = new Random();
         while (--indicatorsCount >= 0) {
             File indicator = indicators[random.nextInt(indicators.length)];
-            createIndicator(indicator, "test-indicator-" + indicatorsCount);
+            createIndicator(indicator, TEST_INDICATOR + indicatorsCount);
         }
     }
 

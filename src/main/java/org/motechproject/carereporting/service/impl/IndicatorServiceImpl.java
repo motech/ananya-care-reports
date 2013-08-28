@@ -259,6 +259,11 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorDao.remove(indicatorEntity);
     }
 
+    @Override
+    public void deleteAllIndicators() {
+        indicatorDao.removeAll();
+    }
+
     // IndicatorTypeEntity
 
     @Transactional
