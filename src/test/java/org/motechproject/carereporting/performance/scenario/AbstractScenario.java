@@ -2,12 +2,12 @@ package org.motechproject.carereporting.performance.scenario;
 
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public abstract class AbstractScenario {
 
-    private List<MockHttpServletRequestBuilder> requests = new ArrayList<>();
+    private List<MockHttpServletRequestBuilder> requests = new Vector<>();
 
     public List<MockHttpServletRequestBuilder> getRequests() {
         return requests;

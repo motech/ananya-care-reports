@@ -5,9 +5,11 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.carereporting.performance.helpers.StatisticsHelper;
+import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.PerformanceSummaryScenario;
+import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -50,21 +54,44 @@ public abstract class PhasePT {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AreaService areaService;
+
     protected PhasePT(int reportLookersCount, double avgReqPerSec) {
         this.reportLookersCount = reportLookersCount;
         this.avgReqPerSec = avgReqPerSec;
         avgWaitTime = MILLISECONDS_PER_SECOND / avgReqPerSec;
         peekWaitTime = avgWaitTime / PEEK_COEFFICIENT;
-        session = prepareMockHttpSession();
         printHeader();
     }
 
+    @Before
+    public void prepareMockSession() {
+        session = prepareMockHttpSession();
+    }
+
     private MockHttpSession prepareMockHttpSession() {
-        Authentication authentication = new UsernamePasswordAuthenticationToken("principal", "credentials", prepareAuthorities());
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                new MockSecurityContext(authentication));
+                new MockSecurityContext(prepareAuthentication()));
         return session;
+    }
+
+    private Authentication prepareAuthentication() {
+        return new UsernamePasswordAuthenticationToken(prepareUserEntity(), "credentials", prepareAuthorities());
+    }
+
+    private UserEntity prepareUserEntity() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(Integer.MAX_VALUE);
+        userEntity.setRoles(userService.getAllRoles());
+        userEntity.setArea(areaService.getAreaById(1));
+        userEntity.setArea(areaService.getAreaById(1));
+        userEntity.setUsername("test-user");
+        return userEntity;
     }
 
     private List<GrantedAuthority> prepareAuthorities() {
@@ -88,14 +115,13 @@ public abstract class PhasePT {
     }
 
     private void runTest(Class<? extends AbstractScenario> scenario) throws Exception {
+        LOGGER.info("Running scenario: " + scenario.getName());
         AbstractScenario scenarioInstance = scenario.newInstance();
-        StatisticsHelper.printStart(scenarioInstance);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
         Thread[] users = new Thread[reportLookersCount];
         for (int i = 0; i<reportLookersCount; i++) {
-            users[i] = new UserThread(scenarioInstance);
+            users[i] = new UserThread(scenarioInstance, "User-" + i);
             users[i].start();
             if (i > (PARTS / 2) * reportLookersCount / PARTS && i < (PARTS / 2 + 1) * reportLookersCount / PARTS) {
                 Thread.sleep((long) peekWaitTime);
@@ -107,11 +133,12 @@ public abstract class PhasePT {
             thread.join();
         }
         stopWatch.stop();
-        StatisticsHelper.printEnd(scenarioInstance);
-        StatisticsHelper.printTime(stopWatch.getTime());
+        LOGGER.info("Scenario: " + scenario.getName() + " finished. Total time: " +
+                stopWatch.getTime() + "ms");
     }
 
     private void performRequest(MockHttpServletRequestBuilder request) throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(prepareAuthentication());
         mockMvc.perform(request.session(session));
     }
 
@@ -124,19 +151,24 @@ public abstract class PhasePT {
 
         private AbstractScenario scenario;
 
-        public UserThread(AbstractScenario scenario) {
+        public UserThread(AbstractScenario scenario, String name) {
+            super(name);
             this.scenario = scenario;
         }
 
         @Override
         public void run() {
+            LOGGER.info("Running user thread: " + getName());
+            Date start = new Date();
             for (MockHttpServletRequestBuilder request: scenario.getRequests()) {
                 try {
                     performRequest(request);
                 } catch (Exception e) {
-                    LOGGER.warn("Cannot perform request: " + request.toString());
+                    LOGGER.warn("Cannot perform request", e);
                 }
             }
+            long timeSpent = new Date().getTime() - start.getTime();
+            LOGGER.info("User thread: " + getName() + " finished. Total time: " + timeSpent + "ms");
         }
     }
 
