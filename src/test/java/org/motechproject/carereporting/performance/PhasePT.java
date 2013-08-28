@@ -7,9 +7,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
-import org.motechproject.carereporting.performance.scenario.PerformanceSummaryScenario;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.UserService;
+import org.motechproject.carereporting.performance.scenario.complex.PerformanceSummaryScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryExportCaseListReportScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryExportToCsvScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetChartScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetDataScenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -123,10 +127,10 @@ public abstract class PhasePT {
         for (int i = 0; i<reportLookersCount; i++) {
             users[i] = new UserThread(scenarioInstance, "User-" + i);
             users[i].start();
-            if (i > (PARTS / 2) * reportLookersCount / PARTS && i < (PARTS / 2 + 1) * reportLookersCount / PARTS) {
-                Thread.sleep((long) peekWaitTime);
-            } else {
+            if (i < (PARTS - 1) * reportLookersCount / PARTS) {
                 Thread.sleep((long) avgWaitTime);
+            } else {
+                Thread.sleep((long) peekWaitTime);
             }
         }
         for (Thread thread: users) {
@@ -145,6 +149,26 @@ public abstract class PhasePT {
     @Test
     public void testPerformanceDashboard() throws Exception {
         runTest(PerformanceSummaryScenario.class);
+    }
+
+    @Test
+    public void testExportCaseListReport() throws Exception {
+        runTest(IndicatorCategoryExportCaseListReportScenario.class);
+    }
+
+    @Test
+    public void testExportToCsv() throws Exception {
+        runTest(IndicatorCategoryExportToCsvScenario.class);
+    }
+
+    @Test
+    public void testGetChart() throws Exception {
+        runTest(IndicatorCategoryGetChartScenario.class);
+    }
+
+    @Test
+    public void testGetData() throws Exception {
+        runTest(IndicatorCategoryGetDataScenario.class);
     }
 
     private class UserThread extends Thread {

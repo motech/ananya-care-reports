@@ -52,7 +52,7 @@ public class ChartController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Chart getChartData(@RequestParam Integer indicatorId,
-                              @RequestParam(required = false) Integer areaId,
+                              @RequestParam Integer areaId,
                               @RequestParam Integer frequencyId,
                               @RequestParam String chartType,
                               @RequestParam Date startDate,
@@ -69,7 +69,7 @@ public class ChartController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getChartValues(@RequestParam Integer indicatorId,
-                                 @RequestParam(required = false) Integer areaId,
+                                 @RequestParam Integer areaId,
                                  @RequestParam Integer frequencyId,
                                  @RequestParam Date startDate,
                                  @RequestParam Date endDate) {
@@ -81,7 +81,7 @@ public class ChartController extends BaseController {
     @RequestMapping(value = "/data/export", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<byte[]> exportValuesToCsv(@RequestParam Integer indicatorId,
-                                                    @RequestParam(required = false) Integer areaId,
+                                                    @RequestParam Integer areaId,
                                                     @RequestParam Integer frequencyId,
                                                     @RequestParam Date startDate,
                                                     @RequestParam Date endDate) throws IOException, ParseException {

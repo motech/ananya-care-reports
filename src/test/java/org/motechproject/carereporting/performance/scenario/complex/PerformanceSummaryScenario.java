@@ -1,9 +1,12 @@
-package org.motechproject.carereporting.performance.scenario;
+package org.motechproject.carereporting.performance.scenario.complex;
+
+import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 public class PerformanceSummaryScenario extends AbstractScenario {
-    {
+
+   {
         addRequests(
                 get("/api/languages/messages/plain/messages.properties"),
                 get("/api/languages"),
