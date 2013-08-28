@@ -1,0 +1,140 @@
+<indicator additive="true">
+    <name>Average number of IFA tablets</name>
+    <categories>
+        <category name="Birth preparedness plan"/>
+    </categories>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <reportviews>
+            <reportview name="Program Manager"/>
+        </reportviews>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Line Chart" label-x="Time" label-y="Value" />
+    </reports>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Sum" tableName="bp_form" fieldName="ifa_tablets" />
+            </select-columns>
+            <dimension tableName="bp_form" />
+            <combineWith type="Join" dimension-key="case_id" foreign-key="id">
+                <dw-query>
+                    <select-columns>
+                        <select-column tableName="mother_case" fieldName="*" />
+                    </select-columns>
+                    <dimension tableName="mother_case" />
+                    <combineWith type="Union" dimension-key="id" foreign-key="id">
+                        <dw-query>
+                            <select-columns>
+                                <select-column tableName="mother_case" fieldName="*" />
+                            </select-columns>
+                            <dimension tableName="mother_case" />
+                            <combineWith type="Intersect" dimension-key="id" foreign-key="id">
+                                <dw-query dimension-key="id" fact-key="case_id">
+                                    <select-columns>
+                                        <select-column tableName="mother_case" fieldName="*" />
+                                    </select-columns>
+                                    <dimension tableName="mother_case" />
+                                    <facts>
+                                        <fact>
+                                            <name>bp_form</name>
+                                            <select-columns>
+                                                <select-column fieldName="case_id" />
+                                                <select-column aggregation="Count" fieldName="case_id" />
+                                            </select-columns>
+                                            <where-group>
+                                                <where-condition type="calculationEndDate">
+                                                    <table-name>bp_form</table-name>
+                                                    <field>time_end</field>
+                                                </where-condition>
+                                            </where-group>
+                                            <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
+                                        </fact>
+                                    </facts>
+                                </dw-query>
+                            </combineWith>
+                            <where-group>
+                                <where-condition type="period">
+                                    <table-name>mother_case</table-name>
+                                    <field>add</field>
+                                </where-condition>
+                            </where-group>
+                        </dw-query>
+                    </combineWith>
+                    <where-group>
+                        <where-condition type="period">
+                            <table-name>mother_case</table-name>
+                            <field>edd</field>
+                            <offset>-30</offset>
+                        </where-condition>
+                    </where-group>
+                </dw-query>
+            </combineWith>
+        </dw-query>
+    </numerator>
+    <denominator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Count" tableName="bp_form" fieldName="*" />
+            </select-columns>
+            <dimension tableName="bp_form" />
+            <combineWith type="Join" dimension-key="case_id" foreign-key="id">
+                <dw-query>
+                    <select-columns>
+                        <select-column tableName="mother_case" fieldName="*" />
+                    </select-columns>
+                    <dimension tableName="mother_case" />
+                    <combineWith type="Union" dimension-key="id" foreign-key="id">
+                        <dw-query>
+                            <select-columns>
+                                <select-column tableName="mother_case" fieldName="*" />
+                            </select-columns>
+                            <dimension tableName="mother_case" />
+                            <combineWith type="Intersect" dimension-key="id" foreign-key="id">
+                                <dw-query dimension-key="id" fact-key="case_id">
+                                    <select-columns>
+                                        <select-column tableName="mother_case" fieldName="*" />
+                                    </select-columns>
+                                    <dimension tableName="mother_case" />
+                                    <facts>
+                                        <fact>
+                                            <name>bp_form</name>
+                                            <select-columns>
+                                                <select-column fieldName="case_id" />
+                                                <select-column aggregation="Count" fieldName="case_id" />
+                                            </select-columns>
+                                            <where-group>
+                                                <where-condition type="calculationEndDate">
+                                                    <table-name>bp_form</table-name>
+                                                    <field>time_end</field>
+                                                </where-condition>
+                                            </where-group>
+                                            <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
+                                        </fact>
+                                    </facts>
+                                </dw-query>
+                            </combineWith>
+                            <where-group>
+                                <where-condition type="period">
+                                    <table-name>mother_case</table-name>
+                                    <field>add</field>
+                                </where-condition>
+                            </where-group>
+                        </dw-query>
+                    </combineWith>
+                    <where-group>
+                        <where-condition type="period">
+                            <table-name>mother_case</table-name>
+                            <field>edd</field>
+                            <offset>-30</offset>
+                        </where-condition>
+                    </where-group>
+                </dw-query>
+            </combineWith>
+        </dw-query>
+    </denominator>
+</indicator>

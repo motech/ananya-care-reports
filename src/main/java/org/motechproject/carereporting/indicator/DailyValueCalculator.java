@@ -11,6 +11,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,11 +37,18 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
     @Override
     protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to) {
         BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
+        BigDecimal denominatorValue = BigDecimal.ZERO;
         BigDecimal result = BigDecimal.ZERO;
         if (indicator.getDenominator() != null) {
             result = calculateDwQueryValue(indicator.getDenominator(), area, from, to);
         }
-        BigDecimal denominatorValue = result != BigDecimal.ZERO ? result : BigDecimal.ONE;
+
+        if (result == null || result.equals(BigDecimal.ZERO)) {
+            numeratorValue = BigDecimal.ZERO;
+            denominatorValue = BigDecimal.ONE;
+        } else {
+            denominatorValue = result;
+        }
 
         return prepareIndicatorValueEntity(numeratorValue, denominatorValue);
     }
@@ -56,7 +64,16 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
     private BigDecimal executeQuery(String query) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
         LOG.debug("Executing reporting db query: " + query);
-        BigDecimal result = jdbcTemplate.queryForObject(query, BigDecimal.class);
+
+        BigDecimal result = BigDecimal.ZERO;
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(query);
+        if (sqlRowSet.next() && !sqlRowSet.wasNull()) {
+            BigDecimal tmpResult = sqlRowSet.getBigDecimal(1);
+            if (tmpResult != null) {
+                result = tmpResult;
+            }
+        }
+
         LOG.debug("Query executed, the result is: " + result.toString());
         return result;
     }
