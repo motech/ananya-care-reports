@@ -1,29 +1,18 @@
 package org.dwQueryBuilder.data.enums;
 
 public enum OperatorType {
-    Less,
-    LessEqual,
-    Equal,
-    NotEqual,
-    Greater,
-    GreaterEqual;
+    Add("+"),
+    Divide("/"),
+    Multiply("*"),
+    Subtract("-");
 
-    public static OperatorType fromSymbol(String symbol) {
-        switch (symbol) {
-            case "<":
-                return Less;
-            case "<=":
-                return LessEqual;
-            case "=":
-                return Equal;
-            case "!=":
-                return NotEqual;
-            case ">":
-                return Greater;
-            case ">=":
-                return GreaterEqual;
-            default:
-                throw new IllegalArgumentException("Comparison symbol: " + symbol + " not supported.");
-        }
+    private String value;
+
+    OperatorType(String value) {
+        this.value = value;
+    }
+
+    private String getValue() {
+        return value;
     }
 }

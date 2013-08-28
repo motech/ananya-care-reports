@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class WhereGroupEntity extends AbstractEntity {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "where_group_where_group", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "where_group2_id") })
+    @OrderBy
     private Set<WhereGroupEntity> whereGroups;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

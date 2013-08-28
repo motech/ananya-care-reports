@@ -10,7 +10,7 @@ import org.dwQueryBuilder.data.conditions.where.FieldComparison;
 import org.dwQueryBuilder.data.conditions.where.ValueComparison;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.AggregateFunction;
@@ -24,7 +24,6 @@ import java.util.Set;
 
 import static org.jooq.impl.DSL.dateDiff;
 import static org.jooq.impl.DSL.falseCondition;
-import static org.jooq.impl.DSL.fieldByName;
 import static org.jooq.impl.DSL.trueCondition;
 import static org.jooq.impl.DSL.val;
 
@@ -34,18 +33,24 @@ public final class ConditionHelper {
 
     }
 
-    public static SelectConditionStep buildWhereConditionGroup(SelectConditionStep selectConditionStep,
-                                                                WhereConditionGroup group) {
+    public static SelectConditionStep buildWhereConditionGroup(String schemaName,
+                                                               SelectConditionStep selectConditionStep,
+                                                               WhereConditionGroup group,
+                                                               Boolean useSchemaName,
+                                                               Boolean useAlias) {
         SelectConditionStep step = selectConditionStep;
 
         if (group != null) {
-            step = step.and(getConditionsRecursive(group));
+            step = step.and(getConditionsRecursive(schemaName, group, useSchemaName, useAlias));
         }
 
         return step;
     }
 
-    public static Condition getConditionsRecursive(WhereConditionGroup whereConditionGroup) {
+    public static Condition getConditionsRecursive(String schemaName,
+                                                   WhereConditionGroup whereConditionGroup,
+                                                   Boolean useSchemaName,
+                                                   Boolean useAlias) {
         Condition condition = null;
 
         if (whereConditionGroup == null) {
@@ -54,7 +59,7 @@ public final class ConditionHelper {
 
         if (whereConditionGroup.getConditionGroups() != null) {
             for (WhereConditionGroup group : whereConditionGroup.getConditionGroups()) {
-                Condition subCondition = getConditionsRecursive(group);
+                Condition subCondition = getConditionsRecursive(schemaName, group, useSchemaName, useAlias);
 
                 if (condition == null) {
                     condition = subCondition;
@@ -70,30 +75,36 @@ public final class ConditionHelper {
 
         if (whereConditionGroup.getConditions() != null) {
             for (WhereCondition whereCondition : whereConditionGroup.getConditions()) {
-                condition = buildWhereConditionAnd(whereCondition, condition);
+                condition = buildWhereConditionAnd(schemaName, whereCondition, condition, useSchemaName, useAlias);
             }
         }
 
         return condition;
     }
 
-    public static Condition buildWhereConditionAnd(WhereCondition whereCondition, Condition condition) {
+    public static Condition buildWhereConditionAnd(String schemaName,
+                                                   WhereCondition whereCondition,
+                                                   Condition condition,
+                                                   Boolean useSchemaName,
+                                                   Boolean useAlias) {
         Condition newCondition = condition;
 
         if (condition == null) {
-            newCondition = buildWhereCondition(whereCondition);
+            newCondition = buildWhereCondition(schemaName, whereCondition, useSchemaName, useAlias);
         } else {
-            newCondition = newCondition.and(buildWhereCondition(whereCondition));
+            newCondition = newCondition.and(buildWhereCondition(schemaName, whereCondition, useSchemaName, useAlias));
         }
 
         return newCondition;
     }
 
-    public static Condition buildWhereCondition(WhereCondition whereCondition) {
+    public static Condition buildWhereCondition(String schemaName,
+                                                WhereCondition whereCondition,
+                                                Boolean useSchemaName,
+                                                Boolean useAlias) {
         Condition condition = null;
-        Field field1 = fieldByName(
-                whereCondition.getTable1Name(),
-                whereCondition.getField1Name());
+        Field field1 = SelectColumnHelper.resolveSelectColumn(
+                schemaName, whereCondition.getSelectColumn1(), useSchemaName, useAlias);
 
         if (whereCondition instanceof ValueComparison) {
 
@@ -102,24 +113,26 @@ public final class ConditionHelper {
 
         } else if (whereCondition instanceof DateRangeComparison) {
 
-            condition = buildDateRangeCondition((DateRangeComparison) whereCondition);
+            condition = buildDateRangeCondition(field1, (DateRangeComparison) whereCondition);
 
         } else if (whereCondition instanceof DateValueComparison) {
 
-            condition = buildDateValueCondition((DateValueComparison) whereCondition);
+            condition = buildDateValueCondition(field1, (DateValueComparison) whereCondition);
 
         } else if (whereCondition instanceof DateDiffComparison) {
 
             DateDiffComparison dateDiffComparison = (DateDiffComparison) whereCondition;
-            Field field2 = fieldByName(dateDiffComparison.getTable2Name(), dateDiffComparison.getField2Name());
+            Field field2 = SelectColumnHelper.resolveSelectColumn(
+                    schemaName, dateDiffComparison.getSelectColumn2(), useSchemaName, useAlias);
             condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
-                    field2, dateDiffComparison.getValue(), dateDiffComparison.getField1Offset(),
-                    dateDiffComparison.getField2Offset());
+                    field2, dateDiffComparison.getValue(), dateDiffComparison.getColumn1Offset(),
+                    dateDiffComparison.getColumn2Offset());
 
         } else if (whereCondition instanceof FieldComparison) {
 
             FieldComparison fieldComparison = (FieldComparison) whereCondition;
-            Field field2 = fieldByName(fieldComparison.getTable2Name(), fieldComparison.getField2Name());
+            Field field2 = SelectColumnHelper.resolveSelectColumn(
+                    schemaName, fieldComparison.getSelectColumn2(), useSchemaName, useAlias);
             condition = buildCondition(field1, fieldComparison.getOperator(), field2);
 
         } else if (whereCondition instanceof EnumRangeComparison) {
@@ -131,11 +144,11 @@ public final class ConditionHelper {
         return condition;
     }
 
-    public static Condition buildCondition(Field field, OperatorType operatorType, String value) {
+    public static Condition buildCondition(Field field, ComparisonType comparisonType, String value) {
         try {
             Param param = val(value);
 
-            switch (operatorType) {
+            switch (comparisonType) {
                 case Less:
                     return field.lessThan(param);
                 case LessEqual:
@@ -156,9 +169,9 @@ public final class ConditionHelper {
         }
     }
 
-    public static Condition buildCondition(Field field, OperatorType operatorType, Field value) {
+    public static Condition buildCondition(Field field, ComparisonType comparisonType, Field value) {
         try {
-            switch (operatorType) {
+            switch (comparisonType) {
                 case Less:
                     return field.lessThan(value);
                 case LessEqual:
@@ -181,16 +194,17 @@ public final class ConditionHelper {
 
     public static Condition buildCondition(String schemaName,
                                            SelectColumn selectColumn,
-                                           OperatorType operatorType,
-                                           String value) {
+                                           ComparisonType comparisonType,
+                                           String value,
+                                           Boolean useSchemaName) {
         try {
             Param param = val(value);
 
             if (selectColumn.getFunction() != null) {
-                AggregateFunction aggregateFunction = SelectColumnHelper.buildSelectColumnFunction(
-                        schemaName, selectColumn);
+                AggregateFunction aggregateFunction = SelectColumnHelper.resolveAggregateFunction(
+                        schemaName, selectColumn, useSchemaName);
 
-                switch (operatorType) {
+                switch (comparisonType) {
                     case Less:
                         return aggregateFunction.lessThan(param);
                     case LessEqual:
@@ -207,15 +221,15 @@ public final class ConditionHelper {
                         return trueCondition();
                 }
             } else {
-                Field field = fieldByName(schemaName, selectColumn.getTableName(), selectColumn.getFieldName());
-                return buildCondition(field, operatorType, value);
+                Field field = SelectColumnHelper.resolveSelectColumn(schemaName, selectColumn, false, false);
+                return buildCondition(field, comparisonType, value);
             }
         } catch (Exception e) {
             throw new QueryBuilderRuntimeException(e);
         }
     }
 
-    public static Condition buildDateDiffCondition(Field date1, OperatorType operatorType,
+    public static Condition buildDateDiffCondition(Field date1, ComparisonType comparisonType,
                                                     Field date2, String value,
                                                     String date1Offset, String date2Offset) {
         try {
@@ -223,7 +237,7 @@ public final class ConditionHelper {
             Param offset1 = val(date1Offset);
             Param offset2 = val(date2Offset);
 
-            switch (operatorType) {
+            switch (comparisonType) {
                 case Less:
                     return dateDiff(date1.add(offset1), date2.add(offset2)).lessThan(param);
                 case LessEqual:
@@ -244,32 +258,31 @@ public final class ConditionHelper {
         }
     }
 
-    public static Condition buildDateValueCondition(DateValueComparison comparison) {
+    public static Condition buildDateValueCondition(Field field, DateValueComparison comparison) {
         try {
             DayToSecond dayToSecond = new DayToSecond(Math.abs(comparison.getOffset()));
-
-            Field field = fieldByName(comparison.getTable1Name(), comparison.getField1Name());
+            Field newField = field;
             String value = comparison.getValue();
 
             if (comparison.getOffset() >= 0) {
-                field = field.add(dayToSecond);
+                newField = field.add(dayToSecond);
             } else {
-                field = field.sub(dayToSecond);
+                newField = field.sub(dayToSecond);
             }
 
             switch (comparison.getOperator()) {
                 case Less:
-                    return field.lessThan(value);
+                    return newField.lessThan(value);
                 case LessEqual:
-                    return field.lessOrEqual(value);
+                    return newField.lessOrEqual(value);
                 case Equal:
-                    return field.equal(value);
+                    return newField.equal(value);
                 case NotEqual:
-                    return field.notEqual(value);
+                    return newField.notEqual(value);
                 case Greater:
-                    return field.greaterThan(value);
+                    return newField.greaterThan(value);
                 case GreaterEqual:
-                    return field.greaterOrEqual(value);
+                    return newField.greaterOrEqual(value);
                 default:
                     return null;
             }
@@ -278,11 +291,10 @@ public final class ConditionHelper {
         }
     }
 
-    public static Condition buildDateRangeCondition(DateRangeComparison whereCondition) {
+    public static Condition buildDateRangeCondition(Field field, DateRangeComparison whereCondition) {
         try {
-            DayToSecond dayToSecond = new DayToSecond(whereCondition.getField1Offset());
+            DayToSecond dayToSecond = new DayToSecond(whereCondition.getColumn1Offset());
 
-            Field field = fieldByName(whereCondition.getTable1Name(), whereCondition.getField1Name());
             Param date1 = val(whereCondition.getDate1());
             Param date2 = val(whereCondition.getDate2());
 

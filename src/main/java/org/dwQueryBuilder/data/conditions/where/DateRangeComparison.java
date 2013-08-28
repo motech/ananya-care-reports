@@ -1,10 +1,12 @@
 package org.dwQueryBuilder.data.conditions.where;
 
+import org.dwQueryBuilder.data.SelectColumn;
+
 public class DateRangeComparison extends WhereCondition {
 
     private String date1;
     private String date2;
-    private Integer field1Offset;
+    private Integer column1Offset;
 
     public DateRangeComparison() {
         super();
@@ -18,14 +20,32 @@ public class DateRangeComparison extends WhereCondition {
         this.date2 = date2;
     }
 
+    public DateRangeComparison(SelectColumn selectColumn1,
+                               String date1, String date2) {
+        super(selectColumn1);
+
+        this.date1 = date1;
+        this.date2 = date2;
+    }
+
     public DateRangeComparison(String table1Name, String field1Name,
                                String date1, String date2,
-                               Integer field1Offset) {
+                               Integer column1Offset) {
         super(table1Name, field1Name);
 
         this.date1 = date1;
         this.date2 = date2;
-        this.field1Offset = field1Offset;
+        this.column1Offset = column1Offset;
+    }
+
+    public DateRangeComparison(SelectColumn selectColumn1,
+                               String date1, String date2,
+                               Integer column1Offset) {
+        super(selectColumn1);
+
+        this.date1 = date1;
+        this.date2 = date2;
+        this.column1Offset = column1Offset;
     }
 
     public String getDate1() {
@@ -44,11 +64,11 @@ public class DateRangeComparison extends WhereCondition {
         this.date2 = date2;
     }
 
-    public Integer getField1Offset() {
-        return field1Offset;
+    public Integer getColumn1Offset() {
+        return column1Offset;
     }
 
-    public void setField1Offset(Integer field1Offset) {
-        this.field1Offset = field1Offset;
+    public void setColumn1Offset(Integer column1Offset) {
+        this.column1Offset = column1Offset;
     }
 }

@@ -1,9 +1,10 @@
 package org.dwQueryBuilder.data.conditions.where;
 
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.SelectColumn;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 
 public class ValueComparison extends WhereCondition {
-    private OperatorType operator;
+    private ComparisonType operator;
     private String value;
 
     public ValueComparison() {
@@ -11,18 +12,26 @@ public class ValueComparison extends WhereCondition {
     }
 
     public ValueComparison(String tableName, String fieldName,
-                           OperatorType operator, String value) {
+                           ComparisonType operator, String value) {
         super(tableName, fieldName);
 
         this.operator = operator;
         this.value = value;
     }
 
-    public OperatorType getOperator() {
+    public ValueComparison(SelectColumn selectColumn1,
+                           ComparisonType operator, String value) {
+        super(selectColumn1);
+
+        this.operator = operator;
+        this.value = value;
+    }
+
+    public ComparisonType getOperator() {
         return operator;
     }
 
-    public void setOperator(OperatorType operator) {
+    public void setOperator(ComparisonType operator) {
         this.operator = operator;
     }
 

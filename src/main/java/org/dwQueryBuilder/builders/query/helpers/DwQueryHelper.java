@@ -3,7 +3,7 @@ package org.dwQueryBuilder.builders.query.helpers;
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
 import org.dwQueryBuilder.data.queries.DwQuery;
 import org.dwQueryBuilder.data.queries.SimpleDwQuery;
@@ -115,8 +115,8 @@ public final class DwQueryHelper {
 
         SelectConditionStep selectConditionStep = selectJoinStep.where();
         if (simpleDwQuery.getWhereConditionGroup() != null) {
-            selectConditionStep = ConditionHelper.buildWhereConditionGroup(selectConditionStep,
-                    simpleDwQuery.getWhereConditionGroup());
+            selectConditionStep = ConditionHelper.buildWhereConditionGroup(schemaName, selectConditionStep,
+                    simpleDwQuery.getWhereConditionGroup(), false, false);
         }
 
         return selectConditionStep;
@@ -144,7 +144,7 @@ public final class DwQueryHelper {
                                 schemaName,
                                 complexDwQuery.getDimension(),
                                 complexDwQuery.getDimensionKey()),
-                        OperatorType.Equal,
+                        ComparisonType.Equal,
                         fieldByName(
                                 FACT_ALIAS,
                                 complexDwQuery.getFactKey())
@@ -153,8 +153,8 @@ public final class DwQueryHelper {
 
         SelectConditionStep selectConditionStep = selectJoinStep.where();
         if (complexDwQuery.getWhereConditionGroup() != null) {
-            selectConditionStep = ConditionHelper.buildWhereConditionGroup(selectConditionStep,
-                    complexDwQuery.getWhereConditionGroup());
+            selectConditionStep = ConditionHelper.buildWhereConditionGroup(schemaName, selectConditionStep,
+                    complexDwQuery.getWhereConditionGroup(), false, false);
         }
 
         return selectConditionStep;

@@ -5,6 +5,5 @@ public enum SelectColumnFunctionType {
     Sum,
     Average,
     Max,
-    Min,
-    Nvl
+    Min
 }

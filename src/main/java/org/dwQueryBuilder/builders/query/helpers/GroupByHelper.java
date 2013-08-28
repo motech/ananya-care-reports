@@ -31,7 +31,8 @@ public final class GroupByHelper {
                             schemaName,
                             havingCondition.getSelectColumn(),
                             havingCondition.getOperator(),
-                            havingCondition.getValue()));
+                            havingCondition.getValue(),
+                            false));
         }
 
         return selectHavingStep.having();

@@ -2,7 +2,7 @@ package org.dwQueryBuilder.builders.query.helpers;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.dwQueryBuilder.data.DwQueryCombination;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.DSLContext;
 import org.jooq.Select;
@@ -36,7 +36,7 @@ public final class CombinationHelper {
                                                     tableName,
                                                     dwQueryCombination.getForeignKeyFieldName()
                                             ),
-                                            OperatorType.Equal,
+                                            ComparisonType.Equal,
                                             fieldByName(
                                                     schemaName,
                                                     referencedTableName,

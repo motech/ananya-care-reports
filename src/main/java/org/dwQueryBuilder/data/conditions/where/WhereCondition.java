@@ -1,33 +1,28 @@
 package org.dwQueryBuilder.data.conditions.where;
 
+import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.BaseCondition;
 
 public abstract class WhereCondition extends BaseCondition {
-    private String table1Name;
-    private String field1Name;
+    private SelectColumn selectColumn1;
 
     protected WhereCondition() {
         super();
     }
 
     protected WhereCondition(String table1Name, String field1Name) {
-        this.table1Name = table1Name;
-        this.field1Name = field1Name;
+        this.selectColumn1 = new SelectColumn(table1Name, field1Name);
     }
 
-    public String getTable1Name() {
-        return table1Name;
+    protected WhereCondition(SelectColumn selectColumn1) {
+        this.selectColumn1 = selectColumn1;
     }
 
-    public void setTable1Name(String table1Name) {
-        this.table1Name = table1Name;
+    public SelectColumn getSelectColumn1() {
+        return selectColumn1;
     }
 
-    public String getField1Name() {
-        return field1Name;
-    }
-
-    public void setField1Name(String field1Name) {
-        this.field1Name = field1Name;
+    public void setSelectColumn1(SelectColumn selectColumn1) {
+        this.selectColumn1 = selectColumn1;
     }
 }

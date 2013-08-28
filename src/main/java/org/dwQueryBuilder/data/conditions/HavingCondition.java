@@ -1,18 +1,18 @@
 package org.dwQueryBuilder.data.conditions;
 
 import org.dwQueryBuilder.data.SelectColumn;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 
 public class HavingCondition extends BaseCondition {
     private SelectColumn selectColumn;
-    private OperatorType operator;
+    private ComparisonType operator;
     private String value;
 
     public HavingCondition() {
         super();
     }
 
-    public HavingCondition(SelectColumn selectColumn, OperatorType operator,
+    public HavingCondition(SelectColumn selectColumn, ComparisonType operator,
                            String value) {
         super();
 
@@ -29,11 +29,11 @@ public class HavingCondition extends BaseCondition {
         this.selectColumn = selectColumn;
     }
 
-    public OperatorType getOperator() {
+    public ComparisonType getOperator() {
         return operator;
     }
 
-    public void setOperator(OperatorType operator) {
+    public void setOperator(ComparisonType operator) {
         this.operator = operator;
     }
 

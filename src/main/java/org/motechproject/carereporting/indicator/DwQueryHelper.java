@@ -16,7 +16,7 @@ import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.data.queries.ComplexDwQuery;
@@ -134,13 +134,13 @@ public class DwQueryHelper {
 
     private HavingConditionBuilder prepareHaving(HavingEntity havingEntity) {
         return new HavingConditionBuilder()
-                .withComparison(OperatorType.fromSymbol(havingEntity.getOperator()), havingEntity.getValue())
+                .withComparison(ComparisonType.fromSymbol(havingEntity.getOperator()), havingEntity.getValue())
                 .withSelectColumn(prepareSelectColumn(havingEntity.getSelectColumnEntity()));
     }
 
     private SelectColumnBuilder prepareSelectColumn(SelectColumnEntity selectColumnEntity) {
         SelectColumnBuilder builder = new SelectColumnBuilder()
-                .withField(
+                .withColumn(
                         selectColumnEntity.getTableName(),
                         selectColumnEntity.getName());
         if (StringUtils.isNotEmpty(selectColumnEntity.getFunctionName())) {
@@ -200,7 +200,7 @@ public class DwQueryHelper {
                 .withValueComparison(
                         condition.getField1().getForm().getTableName(),
                         condition.getField1().getName(),
-                        OperatorType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        ComparisonType.fromSymbol(condition.getComparisonSymbol().getName()),
                         condition.getValue());
     }
 
@@ -209,7 +209,7 @@ public class DwQueryHelper {
                 .withDateDiffComparison(
                         condition.getField1().getForm().getTableName(),
                         condition.getField1().getName(),
-                        OperatorType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        ComparisonType.fromSymbol(condition.getComparisonSymbol().getName()),
                         condition.getField2().getForm().getTableName(),
                         condition.getField2().getName(),
                         SECONDS_PER_DAY * condition.getValue());
@@ -220,7 +220,7 @@ public class DwQueryHelper {
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.Less,
+                        ComparisonType.Less,
                         "%(toDate)",
                         condition.getOffset() < 0 ? condition.getOffset() : 0);
     }
@@ -230,7 +230,7 @@ public class DwQueryHelper {
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.GreaterEqual,
+                        ComparisonType.GreaterEqual,
                         "%(fromDate)",
                         condition.getOffset() > 0 ? condition.getOffset() : 0);
     }
@@ -240,7 +240,7 @@ public class DwQueryHelper {
                 .withDateValueComparison(
                         condition.getTableName(),
                         condition.getColumnName(),
-                        OperatorType.Less,
+                        ComparisonType.Less,
                         "%(toDate)",
                         (condition.getOffset() == null) ? 0 : condition.getOffset());
     }
@@ -299,7 +299,7 @@ public class DwQueryHelper {
                         new SimpleDwQueryBuilder()
                                 .withSelectColumn(
                                         new SelectColumnBuilder()
-                                                .withField(null, "*")
+                                                .withColumn("*")
                                 )
                                 .withTableName("flw")
                 )
@@ -308,7 +308,7 @@ public class DwQueryHelper {
 
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
         return new WhereConditionBuilder()
-                .withValueComparison("flw", area.getLevel().getName(), OperatorType.Equal, area.getName())
+                .withValueComparison("flw", area.getLevel().getName(), ComparisonType.Equal, area.getName())
                 .build();
     }
 }

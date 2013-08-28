@@ -1,9 +1,10 @@
 package org.dwQueryBuilder.data.conditions.where;
 
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.SelectColumn;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 
 public class DateValueComparison extends WhereCondition {
-    private OperatorType operator;
+    private ComparisonType operator;
     private String value;
     private Integer offset;
 
@@ -12,8 +13,17 @@ public class DateValueComparison extends WhereCondition {
     }
 
     public DateValueComparison(String tableName, String fieldName,
-                               OperatorType operator, String value) {
+                               ComparisonType operator, String value) {
         super(tableName, fieldName);
+
+        this.operator = operator;
+        this.value = value;
+        this.offset = 0;
+    }
+
+    public DateValueComparison(SelectColumn selectColumn1,
+                               ComparisonType operator, String value) {
+        super(selectColumn1);
 
         this.operator = operator;
         this.value = value;
@@ -24,7 +34,7 @@ public class DateValueComparison extends WhereCondition {
      * @param offset Field offset (in days).
      */
     public DateValueComparison(String tableName, String fieldName,
-                               OperatorType operator, String value,
+                               ComparisonType operator, String value,
                                Integer offset) {
         super(tableName, fieldName);
 
@@ -33,11 +43,24 @@ public class DateValueComparison extends WhereCondition {
         this.offset = offset;
     }
 
-    public OperatorType getOperator() {
+    /**
+     * @param offset Field offset (in days).
+     */
+    public DateValueComparison(SelectColumn selectColumn1,
+                               ComparisonType operator, String value,
+                               Integer offset) {
+        super(selectColumn1);
+
+        this.operator = operator;
+        this.value = value;
+        this.offset = offset;
+    }
+
+    public ComparisonType getOperator() {
         return operator;
     }
 
-    public void setOperator(OperatorType operator) {
+    public void setOperator(ComparisonType operator) {
         this.operator = operator;
     }
 

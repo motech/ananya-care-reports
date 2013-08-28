@@ -2,11 +2,11 @@ package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.HavingCondition;
-import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.ComparisonType;
 
 public class HavingConditionBuilder {
     private SelectColumn selectColumn;
-    private OperatorType operator;
+    private ComparisonType operator;
     private String value;
 
     public HavingConditionBuilder withSelectColumn(SelectColumn selectColumn) {
@@ -19,13 +19,13 @@ public class HavingConditionBuilder {
         return this;
     }
 
-    public HavingConditionBuilder withComparison(OperatorType operator, String value) {
+    public HavingConditionBuilder withComparison(ComparisonType operator, String value) {
         this.operator = operator;
         this.value = value;
         return this;
     }
 
-    public HavingConditionBuilder withOperator(OperatorType operator) {
+    public HavingConditionBuilder withOperator(ComparisonType operator) {
         this.operator = operator;
         return this;
     }
