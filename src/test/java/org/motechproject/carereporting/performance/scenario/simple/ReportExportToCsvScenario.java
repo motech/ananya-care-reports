@@ -4,15 +4,16 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class IndicatorCategoryExportCaseListReportScenario extends AbstractScenario {
+public class ReportExportToCsvScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/indicator/indicatorId/export/caselistreport")
+                get("/api/chart/data/export")
                     .param("indicatorId", "8")
-                    .param("fromDate", "01/06/2013")
-                    .param("toDate", "01/08/2013")
-                    .param("areaId", "1")
+                    .param("areaId", "2")
+                    .param("frequencyId", "5")
+                    .param("startDate", "01/06/2013")
+                    .param("endDate", "01/08/2013")
         );
     }
 }

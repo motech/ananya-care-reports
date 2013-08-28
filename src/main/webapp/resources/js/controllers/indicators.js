@@ -36,7 +36,6 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                 $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
             });
     };
-    $scope.fetchIndicators();
 
     $scope.deleteIndicator = function(indicator) {
         var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
