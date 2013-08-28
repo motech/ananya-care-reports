@@ -35,6 +35,7 @@
         <jaxen.version>1.1.4</jaxen.version>
         <opencsv.version>2.0</opencsv.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
+        <joda-time.version>2.3</joda-time.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
 
@@ -247,6 +248,11 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>${commons-httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
         </dependency>
     </dependencies>
     <build>

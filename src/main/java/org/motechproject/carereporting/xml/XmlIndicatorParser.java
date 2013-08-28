@@ -137,7 +137,9 @@ public class XmlIndicatorParser {
         if (indicator.getOwners().getUser() != null) {
             indicatorEntity.setOwner(prepareOwner(indicator.getOwners().getUser()));
         }
-        indicatorEntity.setRoles(prepareRoles(indicator.getOwners().getRoles()));
+        if (indicator.getOwners().getRoles() != null) {
+            indicatorEntity.setRoles(prepareRoles(indicator.getOwners().getRoles()));
+        }
         indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
