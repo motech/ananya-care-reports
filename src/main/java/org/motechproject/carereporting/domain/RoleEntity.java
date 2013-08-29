@@ -2,7 +2,9 @@ package org.motechproject.carereporting.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.motechproject.carereporting.domain.views.BaseView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -23,6 +25,7 @@ import java.util.Set;
 public class RoleEntity extends AbstractEntity {
 
     @NotEmpty
+    @JsonView({ BaseView.class })
     @Column(name = "name", unique = true)
     private String name;
 

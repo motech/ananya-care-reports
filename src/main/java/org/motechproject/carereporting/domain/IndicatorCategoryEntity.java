@@ -2,8 +2,8 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.TrendJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -28,11 +28,11 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class, TrendJsonView.class, IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ BaseView.class })
     private String name;
 
     @Column (name = "short_code", unique = true)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, DashboardJsonView.class })
+    @JsonView({ BaseView.class })
     private String shortCode;
 
     @OneToOne(cascade = CascadeType.ALL)

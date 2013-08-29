@@ -59,6 +59,16 @@ public class IndicatorController extends BaseController {
                 indicatorService.getAllIndicators());
     }
 
+    @RequestMapping(value = "/creationform", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @Transactional
+    public String getIndicatorCreationFormDto() {
+        return this.writeAsString(IndicatorJsonView.CreationForm.class,
+                indicatorService.getIndicatorCreationFormDto());
+    }
+
+
     @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

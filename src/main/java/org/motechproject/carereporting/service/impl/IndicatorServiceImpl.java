@@ -10,17 +10,21 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
+import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
@@ -28,11 +32,14 @@ import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.ExportService;
+import org.motechproject.carereporting.service.FormsService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.ReportService;
+import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.motechproject.carereporting.xml.XmlCaseListReportParser;
@@ -109,6 +116,15 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private XmlCaseListReportParser xmlCaseListReportParser;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private FormsService formsService;
+
+    @Autowired
+    private ComplexConditionService complexConditionService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -507,6 +523,22 @@ public class IndicatorServiceImpl implements IndicatorService {
             setComputingForIndicator(indicator, false);
             calculateIndicator(indicator);
         }
+    }
+
+    @Override
+    public IndicatorCreationFormDto getIndicatorCreationFormDto() {
+        Set<IndicatorCategoryEntity> categoryEntities = this.getAllIndicatorCategories();
+        Set<RoleEntity> roleEntities = userService.getAllRoles();
+        Set<AreaEntity> areaEntities = areaService.getAllStateAreas();
+        Set<FormEntity> formEntities = formsService.getAllForms();
+        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.getAllComplexConditions();
+
+        return new IndicatorCreationFormDto(
+                categoryEntities,
+                roleEntities,
+                areaEntities,
+                formEntities,
+                complexConditionEntities);
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {

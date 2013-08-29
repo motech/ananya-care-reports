@@ -22,12 +22,14 @@ public class FormEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "table_name")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class,
+            IndicatorJsonView.CreationForm.class })
     private String tableName;
 
     @NotNull
     @Column (name = "display_name")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.ListFormNames.class,
+            IndicatorJsonView.CreationForm.class })
     private String displayName;
 
     @OneToMany(mappedBy = "form")

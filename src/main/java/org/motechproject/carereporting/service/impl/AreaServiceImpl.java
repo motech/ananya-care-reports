@@ -49,6 +49,11 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
+    public Set<AreaEntity> getAllStateAreas() {
+        return getAreasByLevelId(1);
+    }
+
+    @Override
     public Set<AreaEntity> getAllTopLevelAreas() {
         return getAreasByLevelId(2);
     }
