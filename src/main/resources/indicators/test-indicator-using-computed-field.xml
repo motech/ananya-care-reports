@@ -1,0 +1,47 @@
+<indicator additive="true">
+    <name>test-indicator-using-computed-field</name>
+    <categories>
+        <category name="IFA Tablets" />
+    </categories>
+    <owners>
+        <reportviews>
+            <reportview name="Program Manager"/>
+        </reportviews>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Line Chart" label-x="Time" label-y="Mothers count" />
+    </reports>
+    <area name="Bihar" level="State"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query dimension-key="id" fact-key="case_id">
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <facts>
+                <fact>
+                    <name>bp_form</name>
+                    <select-columns>
+                        <select-column fieldName="case_id" />
+                        <select-column fieldName="test-computed-field" />
+                    </select-columns>
+                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="0" groupBy="case_id" />
+                </fact>
+            </facts>
+            <where-group>
+                <where-condition type="valueComparison">
+                    <table-name>bp_form</table-name>
+                    <field>test-computed-field</field>
+                    <operator>&gt;=</operator>
+                    <value>90</value>
+                </where-condition>
+                <where-condition type="period">
+                    <table-name>mother_case</table-name>
+                    <field>add</field>
+                </where-condition>
+            </where-group>
+        </dw-query>
+    </numerator>
+</indicator>
