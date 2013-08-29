@@ -117,6 +117,34 @@ public class WhereConditionBuilder {
         return this;
     }
 
+    public WhereConditionBuilder withDateValueComparison(SelectColumn selectColumn1,
+                                                         ComparisonType operator,
+                                                         String value,
+                                                         Integer offset) {
+        this.reset();
+
+        this.selectColumn1 = selectColumn1;
+        this.operator = operator;
+        this.value = value;
+        this.column1Offset = offset.toString();
+
+        return this;
+    }
+
+    public WhereConditionBuilder withDateValueComparison(SelectColumnBuilder selectColumn1Builder,
+                                                         ComparisonType operator,
+                                                         String value,
+                                                         Integer offset) {
+        this.reset();
+
+        this.selectColumn1 = selectColumn1Builder.build();
+        this.operator = operator;
+        this.value = value;
+        this.column1Offset = offset.toString();
+
+        return this;
+    }
+
     public WhereConditionBuilder withDateDiffComparison(String table1Name, String field1Name,
                                                         ComparisonType operator,
                                                         String table2Name, String field2Name,

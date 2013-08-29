@@ -50,7 +50,7 @@ public final class SelectColumnHelper {
             field = resolveAggregateFunction(schemaName, selectColumn, useSchemaName);
         } else {
 
-            if (selectColumn.getComputedColumn().getFieldName().equals(WILDCARD)) {
+            if (WILDCARD.equals(selectColumn.getComputedColumn().getFieldName())) {
                 field = resolveWildcard(schemaName, selectColumn.getComputedColumn(), useSchemaName);
             } else {
                 field = resolveComputedColumn(schemaName, selectColumn.getComputedColumn(), useSchemaName);

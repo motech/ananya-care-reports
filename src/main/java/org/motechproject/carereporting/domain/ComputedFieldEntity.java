@@ -101,13 +101,8 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     @JsonIgnore
     public boolean isRegularField() {
-        return  fieldOperations.size() == 1 &&
-                fieldOperations.iterator().next().getField2() == null;
-    }
-
-    @JsonIgnore
-    public String getFieldSql() {
-        //assuming that it's a regular field.
-        return getName();
+        return  fieldOperations.size() == 0 ||
+                    (fieldOperations.size() == 1 &&
+                    fieldOperations.iterator().next().getField2() == null);
     }
 }

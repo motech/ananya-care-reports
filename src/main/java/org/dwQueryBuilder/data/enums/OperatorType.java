@@ -15,4 +15,19 @@ public enum OperatorType {
     private String getValue() {
         return value;
     }
+
+    public static OperatorType fromName(String name) {
+        switch (name) {
+            case "ADD":
+                return Add;
+            case "DIV":
+                return Divide;
+            case "MUL":
+                return Multiply;
+            case "SUB":
+                return Subtract;
+            default:
+                throw new IllegalArgumentException("Operator name: " + name  + " not supported.");
+        }
+    }
 }

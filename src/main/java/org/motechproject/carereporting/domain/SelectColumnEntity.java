@@ -4,6 +4,8 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,14 +15,12 @@ import javax.persistence.Table;
 })
 public class SelectColumnEntity extends AbstractEntity {
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "function")
     private String functionName;
 
-    @Column(name = "table_name")
-    private String tableName;
+    @ManyToOne
+    @JoinColumn(name = "computed_field_id")
+    private ComputedFieldEntity computedField;
 
     @Column(name = "null_value")
     private String nullValue;
@@ -29,17 +29,8 @@ public class SelectColumnEntity extends AbstractEntity {
     }
 
     public SelectColumnEntity(SelectColumnEntity selectColumnEntity) {
-        name = selectColumnEntity.getName();
         functionName = selectColumnEntity.getFunctionName();
-        tableName = selectColumnEntity.getTableName();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        computedField = selectColumnEntity.getComputedField();
     }
 
     public String getFunctionName() {
@@ -50,12 +41,12 @@ public class SelectColumnEntity extends AbstractEntity {
         this.functionName = functionName;
     }
 
-    public String getTableName() {
-        return tableName;
+    public ComputedFieldEntity getComputedField() {
+        return computedField;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setComputedField(ComputedFieldEntity computedField) {
+        this.computedField = computedField;
     }
 
     public String getNullValue() {

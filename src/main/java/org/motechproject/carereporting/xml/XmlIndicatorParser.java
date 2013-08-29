@@ -15,6 +15,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
@@ -248,7 +249,12 @@ public class XmlIndicatorParser {
         findBy.put("name", condition.getField());
         FormEntity form = formDao.getByField("tableName", condition.getTableName());
         findBy.put("form", form);
-        conditionEntity.setField1(computedFieldDao.getByFields(findBy));
+        ComputedFieldEntity field = computedFieldDao.getByFields(findBy);
+        if (field == null) {
+            throw new CareRuntimeException("This indicators depends on computed field: " +
+                condition.getTableName() + "." + condition.getField() + ". Please, define this computed field first.");
+        }
+        conditionEntity.setField1(field);
         return conditionEntity;
     }
 
@@ -320,7 +326,7 @@ public class XmlIndicatorParser {
         }
         dwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
-            dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn));
+            dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn, null));
         }
         if (dwQuery.getCombineWith() != null) {
             dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
@@ -376,12 +382,18 @@ public class XmlIndicatorParser {
         return factEntities;
     }
 
-    private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn) {
+    private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn, String defaultTableName) {
+        if (StringUtils.isEmpty(selectColumn.getTableName())) {
+            selectColumn.setTableName(defaultTableName);
+        }
         SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
         selectColumnEntity.setFunctionName(selectColumn.getAggregation());
-        selectColumnEntity.setTableName(selectColumn.getTableName());
-        selectColumnEntity.setName(selectColumn.getFieldName());
-        selectColumnEntity.setNullValue(selectColumn.getNullValue());
+        Map<String, Object> findBy = new HashMap<>();
+        findBy.put("name", selectColumn.getFieldName());
+        FormEntity form = formDao.getByField("tableName", selectColumn.getTableName());
+        findBy.put("form", form);
+        ComputedFieldEntity field = computedFieldDao.getByFields(findBy);
+        selectColumnEntity.setComputedField(field);
         return selectColumnEntity;
     }
 
@@ -404,10 +416,7 @@ public class XmlIndicatorParser {
         }
         simpleDwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: fact.getSelectColumns()) {
-            SelectColumnEntity col = prepareSelectColumn(selectColumn);
-            if (StringUtils.isEmpty(col.getTableName())) {
-                col.setTableName(fact.getName());
-            }
+            SelectColumnEntity col = prepareSelectColumn(selectColumn, fact.getName());
             simpleDwQueryEntity.getSelectColumns().add(col);
         }
         if (fact.getGroupedBy() != null) {
@@ -450,8 +459,6 @@ public class XmlIndicatorParser {
         having.setValue(fact.getGroupedBy().getValue());
         SelectColumnEntity selectCol = new SelectColumnEntity();
         selectCol.setFunctionName("Count");
-        selectCol.setName("*");
-        selectCol.setTableName(fact.getName());
         having.setSelectColumnEntity(selectCol);
         return having;
     }

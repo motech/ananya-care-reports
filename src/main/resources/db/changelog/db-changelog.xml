@@ -5,4 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
+    <changeSet id="CARE #44" author="Łukasz Gąsior">
+        <sql>
+            ALTER TABLE dashboard_app.select_column DROP COLUMN name;
+            ALTER TABLE dashboard_app.select_column ADD COLUMN computed_field_id int
+                        REFERENCES dashboard_app.computed_field(computed_field_id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
