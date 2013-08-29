@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.performance.helpers;
 
 import org.joda.time.DateTime;
+import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.dao.IndicatorDao;
+import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
@@ -26,17 +28,19 @@ public class PerformanceTestHelper {
     private static final Logger LOG = Logger.getLogger("PerformanceTestHelper");
 
     private static final String INDICATORS_DIRECTORY = "indicators/";
-    private static final int CALCULATE_VALUES_FOR_PERIOD_DAYS = 500;
+    private static final int CALCULATE_VALUES_FOR_PERIOD_DAYS = 300;
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
     private IndicatorDao indicatorDao;
+    private IndicatorValueDao indicatorValueDao;
     private XmlIndicatorParser xmlIndicatorParser;
     private AreaService areaService;
     private Random random = new Random();
 
-    public PerformanceTestHelper(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public PerformanceTestHelper() {
+        this.applicationContext = ApplicationContextProvider.getApplicationContext();
         this.indicatorDao = applicationContext.getBean(IndicatorDao.class);
+        this.indicatorValueDao = applicationContext.getBean(IndicatorValueDao.class);
         this.xmlIndicatorParser = applicationContext.getBean(XmlIndicatorParser.class);
         this.areaService = applicationContext.getBean(AreaService.class);
     }
@@ -51,6 +55,7 @@ public class PerformanceTestHelper {
                 createIndicator(indicator, "test-indicator-" + indicatorsCount);
             } catch (Exception e) {
                 LOG.warning("Cannot parse indicator: " + indicator.getPath());
+                LOG.info("Remained: " + indicatorsCount + " indicators");
                 indicatorsCount++;
             }
         }
@@ -83,6 +88,8 @@ public class PerformanceTestHelper {
                 BigDecimal.valueOf(random.nextDouble() * 100),
                 BigDecimal.valueOf(random.nextDouble() * 100),
                 indicator.getDefaultFrequency(), date);
+
+        indicatorValueDao.save(value);
     }
 
 }

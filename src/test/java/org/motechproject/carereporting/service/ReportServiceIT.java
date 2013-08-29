@@ -3,7 +3,6 @@ package org.motechproject.carereporting.service;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -23,7 +22,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore("Indicator structure has changed - these tests are outdated")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -31,8 +29,8 @@ public class ReportServiceIT extends AbstractTransactionalJUnit4SpringContextTes
 
     private static final Integer INDICATOR_ID = 1;
     private static final Integer REPORT_TYPE_ID = 1;
-    private static final int EXPECTED_REPORTS_DELETE = 4;
-    private static final int EXPECTED_REPORTS_DEFINE = 5;
+    private static final int EXPECTED_REPORTS_DELETE = 1;
+    private static final int EXPECTED_REPORTS_DEFINE = 2;
 
     @Autowired
     private SessionFactory sessionFactory;

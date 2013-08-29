@@ -42,7 +42,7 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicator(IndicatorEntity indicatorEntity);
 
-    void setComputingForIndicator(IndicatorEntity indicatorEntity, Boolean value);
+    void setComputedForIndicator(IndicatorEntity indicatorEntity, Boolean value);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicatorFromDto(IndicatorDto indicatorDto);

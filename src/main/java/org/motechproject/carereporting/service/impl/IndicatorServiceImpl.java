@@ -208,7 +208,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void setComputingForIndicator(IndicatorEntity indicatorEntity, Boolean value) {
+    public void setComputedForIndicator(IndicatorEntity indicatorEntity, Boolean value) {
         indicatorEntity.setComputed(value);
         indicatorDao.update(indicatorEntity);
     }
@@ -520,7 +520,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void calculateAllIndicators() {
         for (IndicatorEntity indicator : indicatorDao.getAll()) {
             indicatorValueDao.removeByIndicator(indicator);
-            setComputingForIndicator(indicator, false);
+            setComputedForIndicator(indicator, false);
             calculateIndicator(indicator);
         }
     }

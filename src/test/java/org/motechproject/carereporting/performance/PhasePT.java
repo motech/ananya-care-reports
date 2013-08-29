@@ -2,10 +2,14 @@ package org.motechproject.carereporting.performance;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.performance.helpers.PerformanceTestHelper;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ManageFormsScenario;
@@ -52,8 +56,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,13 +75,17 @@ public abstract class PhasePT {
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final String[] MOCK_AUTHORITIES = {"CAN_CREATE_COMPUTED_FIELDS"};
 
-    private static long elapsedTime;
+    private long elapsedTime;
     private int reportLookersCount;
     private double avgReqPerSec;
     private double avgWaitTime;
     private double peekWaitTime;
     private MockMvc mockMvc;
     private MockHttpSession session;
+    private static TreeMap<Long, String> times;
+
+    @Autowired
+    private PerformanceTestHelper performanceTestHelper;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -90,7 +101,13 @@ public abstract class PhasePT {
         this.avgReqPerSec = avgReqPerSec;
         avgWaitTime = MILLISECONDS_PER_SECOND / avgReqPerSec;
         peekWaitTime = avgWaitTime / PEEK_COEFFICIENT;
+        times = new TreeMap<>();
         printHeader();
+    }
+
+    @PostConstruct
+    public void populateDatabase() {
+        performanceTestHelper.populateDatabaseWithRandomIndicators(10);
     }
 
     @Before
@@ -98,6 +115,14 @@ public abstract class PhasePT {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         session = prepareMockHttpSession();
         elapsedTime = 0;
+    }
+
+    @AfterClass
+    public static void printStatistics() {
+        LOGGER.info("Average scenario times: ");
+        for (Map.Entry<Long, String> entry : times.entrySet()) {
+            LOGGER.info(entry.getValue() + ": " + entry.getKey() + "ms");
+        }
     }
 
     private MockHttpSession prepareMockHttpSession() {
@@ -160,12 +185,13 @@ public abstract class PhasePT {
             thread.join();
         }
         stopWatch.stop();
+        times.put(elapsedTime / reportLookersCount, scenario.getSimpleName());
         LOGGER.info("Scenario: " + scenario.getSimpleName() + " finished.\n" +
                 "Total time: " + stopWatch.getTime() + "ms\n" +
                 "Average time: " + elapsedTime / reportLookersCount + "ms");
     }
 
-    private synchronized static void addElapsedTime(long time) {
+    private synchronized void addElapsedTime(long time) {
         elapsedTime += time;
     }
 

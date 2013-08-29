@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.select_column
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   table_name character varying,
+  null_value character varying,
   CONSTRAINT select_column_pk PRIMARY KEY (select_column_id )
 );
 

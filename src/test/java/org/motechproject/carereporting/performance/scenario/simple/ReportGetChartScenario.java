@@ -9,7 +9,7 @@ public class ReportGetChartScenario extends AbstractScenario {
     {
         addRequest(
                 get("/api/chart")
-                    .param("indicatorId", "8")
+                    .param("indicatorId", "1")
                     .param("areaId", "2")
                     .param("frequencyId", "5")
                     .param("chartType", "line chart")

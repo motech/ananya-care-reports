@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.dao;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -27,9 +26,8 @@ public class IndicatorValueDaoIT extends AbstractTransactionalJUnit4SpringContex
     private IndicatorValueDao indicatorValueDao;
 
     @Test
-    @Ignore
     public void testRemoveByIndicator() {
-        Integer id = 3;
+        Integer id = 1;
         FrequencyEntity frequency = new FrequencyEntity();
         frequency.setId(id);
         AreaEntity area = new AreaEntity();

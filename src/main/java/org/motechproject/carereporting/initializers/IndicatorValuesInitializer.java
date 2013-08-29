@@ -51,7 +51,7 @@ public class IndicatorValuesInitializer implements Runnable {
                 date = dates[1];
             }
         }
-        indicatorService.setComputingForIndicator(indicatorEntity, true);
+        indicatorService.setComputedForIndicator(indicatorEntity, true);
         LOG.info(indicatorEntity.getName() + ": calculation finished");
     }
 }

@@ -89,11 +89,10 @@ public class UserControllerTest {
         Set<IndicatorEntity> indicatorEntities = new LinkedHashSet<>();
         indicatorEntities.add(indicatorEntity);
 
-        when(authenticationToken.getPrincipal()).thenReturn(userEntity);
         when(indicatorService.getAllIndicatorsUnderUserArea(id)).thenReturn(indicatorEntities);
+        when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
 
-        mockMvc.perform(get("/api/users/indicators")
-                .principal(authenticationToken))
+        mockMvc.perform(get("/api/users/indicators"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(indicatorName));

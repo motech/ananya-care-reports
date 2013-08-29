@@ -9,7 +9,7 @@ public class MapReportGetMapScenario extends AbstractScenario {
     {
         addRequest(
                 get("/api/map-report")
-                    .param("indicatorId", "8")
+                    .param("indicatorId", "1")
                     .param("frequencyId", "5")
                     .param("startDate", "01/06/2013")
                     .param("endDate", "01/08/2013")

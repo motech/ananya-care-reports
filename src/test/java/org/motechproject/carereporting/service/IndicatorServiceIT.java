@@ -28,13 +28,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore("Indicator structure has changed - these tests are outdated")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
-    private static final int EXPECTED_INDICATORS_COUNT = 3;
-    private static final int CATEGORY_ID = 2;
+    private static final int EXPECTED_INDICATORS_COUNT = 1;
+    private static final int CATEGORY_ID = 1;
     private static final int EXPECTED_CATEGORY_INDICATORS_COUNT = 1;
     private static final int USER_ID = 1;
     private static final int INDICATOR_ID = 1;
@@ -83,6 +82,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     @Test
+    @Ignore
     public void testCreateNewIndicator() {
         int indicatorsCount = indicatorService.getAllIndicators().size();
         createIndicator();
@@ -90,7 +90,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     private void createIndicator() {
-        IndicatorDto indicatorDto = new IndicatorDto(1, new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, 1, new HashSet<Integer>(), new HashSet<ReportEntity>(), 30, "name", new BigDecimal(30));
+        IndicatorDto indicatorDto = new IndicatorDto(1, new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, 1, new HashSet<Integer>(), new HashSet<ReportEntity>(), 5, "name", new BigDecimal(30));
         indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 
@@ -106,11 +106,6 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         indicatorService.updateIndicator(indicator);
         indicator = indicatorService.getIndicatorById(INDICATOR_ID);
         assertEquals(NEW_INDICATOR_NAME, indicator.getName());
-    }
-
-    @Test
-    public void testGetAllIndicatorTypes() {
-        assertNotNull(indicatorService.getAllIndicatorTypes());
     }
 
     @Test
@@ -144,10 +139,8 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Test
     public void testDeleteIndicatorCategory() {
         int indicatorCategoriesCount = indicatorService.getAllIndicatorCategories().size();
-        createIndicatorCategory();
-        assertEquals(indicatorCategoriesCount + 1, indicatorService.getAllIndicatorCategories().size());
-        indicatorService.deleteIndicatorCategory(indicatorService.getAllIndicatorCategories().iterator().next());
-        assertEquals(indicatorCategoriesCount, indicatorService.getAllIndicatorCategories().size());
+        indicatorService.deleteIndicatorCategory(indicatorService.getIndicatorCategoryById(CATEGORY_ID));
+        assertEquals(indicatorCategoriesCount - 1, indicatorService.getAllIndicatorCategories().size());
     }
 
     @Test
@@ -184,12 +177,12 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
 
     @Test
     public void testGetIndicatorsWithTrendsUnderUser() {
-        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), null, null));
+        assertNotNull(indicatorService.getIndicatorsWithTrendsUnderUser(userService.getCurrentlyLoggedUser(), new Date(), new Date(), 1, 5));
     }
 
     @Test
     public void testSetComputingForIndicator() {
-        indicatorService.setComputingForIndicator(indicatorService.getIndicatorById(INDICATOR_ID), false);
+        indicatorService.setComputedForIndicator(indicatorService.getIndicatorById(INDICATOR_ID), true);
         IndicatorEntity indicatorEntity = indicatorService.getIndicatorById(INDICATOR_ID);
         assertEquals(Boolean.TRUE, indicatorEntity.getComputed());
     }

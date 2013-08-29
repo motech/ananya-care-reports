@@ -4,7 +4,6 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.DashboardEntity;
@@ -28,7 +27,6 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Ignore("Indicator structure has changed - these tests are outdated")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
@@ -45,13 +43,13 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Autowired
     private SessionFactory sessionFactory;
 
-    private final static int EXPECTED_DASHBOARDS_ALL = 5;
+    private final static int EXPECTED_DASHBOARDS_ALL = 6;
     private final static String DASHBOARD_NAME = "DASHBOARD_TEST_1";
     private final static Short DASHBOARD_TAB_POSITION = 99;
     private final static Short DASHBOARD_NEW_TAB_POSITION = 98;
     private final static Integer REPORT_ID = 1;
     private final static Integer USER_ID = 1;
-    private final static Short EXPECTED_TAB_POSITION = 5;
+    private final static Short EXPECTED_TAB_POSITION = 6;
 
     private static Integer newDashboardId;
 

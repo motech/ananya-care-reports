@@ -14,7 +14,6 @@ import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Set;
 
 @RequestMapping(value = "/api/users")
@@ -47,10 +45,8 @@ public class UserController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getIndicatorsInUserArea(Principal principal) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                (UsernamePasswordAuthenticationToken) principal;
-        UserEntity userEntity = (UserEntity) usernamePasswordAuthenticationToken.getPrincipal();
+    public String getIndicatorsInUserArea() {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
 
         return this.writeAsString(BaseView.class,
                 indicatorService.getAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
