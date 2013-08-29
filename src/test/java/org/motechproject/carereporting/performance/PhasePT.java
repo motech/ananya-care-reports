@@ -4,12 +4,9 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.performance.helpers.PerformanceTestHelper;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ManageFormsScenario;
@@ -56,7 +53,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,10 +78,7 @@ public abstract class PhasePT {
     private double peekWaitTime;
     private MockMvc mockMvc;
     private MockHttpSession session;
-    private static TreeMap<Long, String> times;
-
-    @Autowired
-    private PerformanceTestHelper performanceTestHelper;
+    private static TreeMap<Long, String> times = new TreeMap<>();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -101,13 +94,7 @@ public abstract class PhasePT {
         this.avgReqPerSec = avgReqPerSec;
         avgWaitTime = MILLISECONDS_PER_SECOND / avgReqPerSec;
         peekWaitTime = avgWaitTime / PEEK_COEFFICIENT;
-        times = new TreeMap<>();
         printHeader();
-    }
-
-    @PostConstruct
-    public void populateDatabase() {
-        performanceTestHelper.populateDatabaseWithRandomIndicators(10);
     }
 
     @Before
@@ -119,7 +106,7 @@ public abstract class PhasePT {
 
     @AfterClass
     public static void printStatistics() {
-        LOGGER.info("Average scenario times: ");
+        LOGGER.info("Average scenario time: ");
         for (Map.Entry<Long, String> entry : times.entrySet()) {
             LOGGER.info(entry.getValue() + ": " + entry.getKey() + "ms");
         }

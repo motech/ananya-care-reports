@@ -44,7 +44,6 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     private static final int EXPECTED_COMPUTED_FIELDS_ALL = 986;
     private static final Integer FORM_ID = 1;
     private static final int EXPECTED_COMPUTED_FIELDS_BY_FORM_ID = 87;
-    private static final Integer FIELD_ID = 1;
     private static final Integer COMPUTED_FIELD_ID = 1;
     private static final String COMPUTED_FIELD_NAME = "COMPUTED_FIELD_TEST_1";
     private static final FieldType COMPUTED_FIELD_TYPE = FieldType.Number;
