@@ -51,12 +51,6 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="area">
-                    <xs:complexType>
-                        <xs:attribute name="name" use="required" type="xs:string" />
-                        <xs:attribute name="level" use="required" type="xs:string" />
-                    </xs:complexType>
-                </xs:element>
                 <xs:element name="default-frequency">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">

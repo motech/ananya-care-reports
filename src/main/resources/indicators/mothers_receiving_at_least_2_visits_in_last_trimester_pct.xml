@@ -12,7 +12,6 @@
     <reports>
         <report type="Pie Chart"/>
     </reports>
-    <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
         <indicator-name>Mothers receiving at least 2 visits in last trimester</indicator-name>

@@ -29,8 +29,6 @@ public interface IndicatorService {
 
     Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId);
 
-    Set<IndicatorEntity> getAllIndicatorsUnderUserArea(Integer userId);
-
     IndicatorEntity getIndicatorById(Integer id);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)

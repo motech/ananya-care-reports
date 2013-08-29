@@ -13,7 +13,6 @@
         <report type="Line Chart" label-x="Time" label-y="Mothers count" />
         <report type="Bar Chart" label-x="Time" label-y="Mothers count" />
     </reports>
-    <area name="Bihar" level="State"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
         <dw-query dimension-key="id" fact-key="case_id">

@@ -1,17 +1,14 @@
 package org.motechproject.carereporting.xml;
 
-import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
-import org.motechproject.carereporting.dao.LevelDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
-import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
@@ -27,7 +24,6 @@ import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -78,13 +74,7 @@ import java.util.Set;
 public class XmlIndicatorParser {
 
     @Autowired
-    private AreaDao areaDao;
-
-    @Autowired
     private IndicatorDao indicatorDao;
-
-    @Autowired
-    private LevelDao levelDao;
 
     @Autowired
     private IndicatorCategoryDao indicatorCategoryDao;
@@ -141,7 +131,6 @@ public class XmlIndicatorParser {
         if (indicator.getOwners().getRoles() != null) {
             indicatorEntity.setRoles(prepareRoles(indicator.getOwners().getRoles()));
         }
-        indicatorEntity.setArea(findAreaByNameAndLevelName(indicator.getArea().getName(), indicator.getArea().getLevel().toString()));
         indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
         indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
@@ -159,14 +148,6 @@ public class XmlIndicatorParser {
 
     private FrequencyEntity findFrequencyById(int id) {
         return frequencyDao.getById(id);
-    }
-
-    private AreaEntity findAreaByNameAndLevelName(String name, String levelName) {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("name", name);
-        LevelEntity level = levelDao.getByField("name", levelName.toLowerCase());
-        fields.put("level", level);
-        return areaDao.getByFields(fields);
     }
 
     private UserEntity prepareOwner(User user) {

@@ -2,7 +2,6 @@ package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
@@ -140,7 +139,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
         return indicatorDao.getIndicatorsByCategoryId(categoryId);
     }
-
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Set<AreaEntity> getAllChildEntities(AreaEntity areaEntity) {
         Set<AreaEntity> areas = new LinkedHashSet<>();
 
@@ -150,25 +149,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
 
         return areas;
-    }
-
-    @Transactional
-    @Override
-    @SuppressWarnings("unchecked")
-    public Set<IndicatorEntity> getAllIndicatorsUnderUserArea(Integer areaId) {
-        AreaEntity areaEntity = areaService.getAreaById(areaId);
-        Set<AreaEntity> areaEntities = getAllChildEntities(areaEntity);
-
-        List<Integer> areaIds = new ArrayList<>();
-        for (AreaEntity area : areaEntities) {
-            areaIds.add(area.getId());
-        }
-
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from IndicatorEntity where area.id in (:areaEntities)");
-        query.setParameterList("areaEntities", areaIds);
-
-        return new LinkedHashSet<IndicatorEntity>(query.list());
     }
 
     @Transactional
@@ -188,7 +168,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
-        indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
         //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setReports(indicatorDto.getReports());
         indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
@@ -220,7 +199,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorDto.getId());
 
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
-        indicatorEntity.setArea(findAreaEntityFromDto(indicatorDto));
         //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
@@ -264,10 +242,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
 
         return indicatorCategoryEntities;
-    }
-
-    private AreaEntity findAreaEntityFromDto(IndicatorDto indicatorDto) {
-        return areaService.getAreaById(indicatorDto.getArea());
     }
 
     @Transactional(readOnly = false)
