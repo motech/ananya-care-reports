@@ -574,11 +574,14 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
     };
     $scope.listComparisonSymbols = [];
     $scope.listConditionTypes = [
-        { type: 'date', code: 'complexCondition.conditionType.date' },
+        { type: 'dateDiff', code: 'complexCondition.conditionType.dateDiff' },
+        { type: 'dateValue', code: 'complexCondition.conditionType.dateValue' },
+        { type: 'dateRange', code: 'complexCondition.conditionType.dateRange' },
         { type: 'field', code: 'complexCondition.conditionType.field' },
-        { type: 'value', code: 'complexCondition.conditionType.value' }
+        { type: 'value', code: 'complexCondition.conditionType.value' },
+        { type: 'enumRange', code: 'complexCondition.conditionType.enumRange' }
     ];
-    $scope.newCondition.type = 'date';
+    $scope.newCondition.type = 'dateDiff';
 
     $scope.listDateDiffTypes = [
         { code: 'complexCondition.minutes' },
@@ -708,7 +711,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                 computedFields.sortByField('name');
 
                 if (formName == 'form1') {
-                    if ($scope.newCondition.type == 'date') {
+                    if ($scope.newCondition.type == 'dateDiff') {
                         $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Date' ]);
                     } else if ($scope.newCondition.type == 'field') {
                         $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Number', 'Date' ]);
@@ -716,7 +719,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
                         $scope.listComputedFields1 = $scope.filterComputedFieldsByTypes(computedFields, [ ]);
                     }
                 } else if (formName == 'form2') {
-                    if ($scope.newCondition.type == 'date') {
+                    if ($scope.newCondition.type == 'dateDiff') {
                         $scope.listComputedFields2 = $scope.filterComputedFieldsByTypes(computedFields, [ 'Date' ]);
                     } else if ($scope.newCondition.type == 'field') {
                         $scope.listComputedFields2 = $scope.filterComputedFieldsByTypes(computedFields,
@@ -736,7 +739,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
     $scope.addCondition = function() {
         var condition = $scope.newCondition;
-        if (condition.type == 'date') {
+        if (condition.type == 'dateDiff') {
             condition.name = condition.form1.displayName + '.' + condition.field1.name
                 + ' ' + condition.comparisonSymbol.name + ' ' + condition.value + ' ' + $scope.msg(condition.dateDiffType)
                 + ' ' + $scope.msg('complexCondition.since')
@@ -753,7 +756,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
         $scope.newConditions.push(condition);
         $scope.newCondition = {
-            type: 'date',
+            type: 'dateDiff',
             form1: $scope.listForms[0],
             form2: $scope.listForms[0],
             field1: $scope.listComputedFields1[0],
@@ -768,7 +771,7 @@ care.controller('createComplexConditionController', function($rootScope, $scope,
 
     $scope.getNewConditions = function() {
         for (var i = 0; i < $scope.newConditions.length; i++) {
-            if ($scope.newConditions[i].type == 'date') {
+            if ($scope.newConditions[i].type == 'dateDiff') {
                 $scope.newConditions[i].value = moment.duration(
                     $scope.newConditions[i].value, $scope.newConditions[i].dateDiffType).asSeconds();
             } else if ($scope.newConditions[i].type == 'field') {

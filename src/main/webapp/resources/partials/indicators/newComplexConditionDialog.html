@@ -29,11 +29,14 @@
                     <select id="conditionType" class="input-block-level" ng-model="newCondition.type" ng-options="item.type as msg(item.code) for item in listConditionTypes" required></select>
                 </div>
                 <div class="row-fluid" ng-switch="newCondition.type">
-                    <div class="row-fluid" ng-switch-when="date">
+                    <div class="row-fluid" ng-switch-when="dateDiff">
                         <div class="nested-well span6">
                             <label for="dateComparisonField1">{{msg('complexCondition.comparison.label.field1')}}:</label>
                             <select id="dateComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="dateComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
+                            <label for="dateComparisonOffset1">{{msg('complexCondition.comparison.label.offset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="dateComparisonOffset1" class="span6" ng-model="newCondition.offset1" />
+                            <select class="span6" ng-model="newCondition.offset1Type" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
                             <label for="dateComparisonOperator">{{msg('complexCondition.comparison.label.operator')}}:</label>
                             <select id="dateComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
                         </div>
@@ -41,9 +44,78 @@
                             <label for="dateComparisonField2">{{msg('complexCondition.comparison.label.field2')}}:</label>
                             <select id="dateComparisonForm2" class="input-block-level" ng-model="newCondition.form2" ng-options="item as item.displayName for item in listForms"></select>
                             <select id="dateComparisonField2" class="input-block-level" ng-model="newCondition.field2" ng-options="item as item.name for item in listComputedFields2"></select>
+                            <label for="dateComparisonOffset2">{{msg('complexCondition.comparison.label.offset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="dateComparisonOffset2" class="span6" ng-model="newCondition.offset2" />
+                            <select class="span6" ng-model="newCondition.offset2Type" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
                             <label for="dateComparisonDifference">{{msg('complexCondition.comparison.label.difference')}}:</label>
                             <input type="number" pattern="[1-9][0-9]*" id="dateComparisonDifference" class="span6" ng-model="newCondition.value" />
                             <select class="span6" ng-model="newCondition.dateDiffType" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
+                        </div>
+                    </div>
+                    <div class="row-fluid" ng-switch-when="dateValue">
+                        <div class="nested-well span6">
+                            <label for="dateValueComparisonField1">{{msg('complexCondition.comparison.label.field1')}}:</label>
+                            <select id="dateValueComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
+                            <select id="dateValueComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
+                            <label for="dateValueComparisonOffset1">{{msg('complexCondition.comparison.label.offset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="dateValueComparisonOffset1" class="span6" ng-model="newCondition.offset1" />
+                            <select class="span6" ng-model="newCondition.offset1Type" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
+                            <label for="dateValueComparisonOperator">{{msg('complexCondition.comparison.label.operator')}}:</label>
+                            <select id="dateValueComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
+                        </div>
+                        <div class="nested-well span6">
+                            <label for="dateValueComparisonValue">{{msg('complexCondition.comparison.label.value')}}:</label>
+                            <div class="input-append">
+                                <input type="date" id="dateValueComparisonValue" class="input-block-level" ng-model="newCondition.value" bs-datepicker />
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid" ng-switch-when="dateRange">
+                        <div class="nested-well span6">
+                            <label for="dateRangeComparisonField1">{{msg('complexCondition.comparison.label.field1')}}:</label>
+                            <select id="dateRangeComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
+                            <select id="dateRangeComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
+                            <label for="dateRangeComparisonOffset1">{{msg('complexCondition.comparison.label.offset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="dateRangeComparisonOffset1" class="span6" ng-model="newCondition.offset1" />
+                            <select class="span6" ng-model="newCondition.offset1Type" ng-options="item.code as msg(item.code) for item in listDateDiffTypes"></select>
+                            <label for="dateRangeComparisonOperator">{{msg('complexCondition.comparison.label.operator')}}:</label>
+                            <select id="dateRangeComparisonOperator" class="input-block-level" ng-model="newCondition.comparisonSymbol" ng-options="item as item.name for item in listComparisonSymbols"></select>
+                        </div>
+                        <div class="nested-well span6">
+                            <label for="dateRangeComparisonDate1">{{msg('complexCondition.comparison.label.between')}}:</label>
+                            <div class="input-append">
+                                <input type="date" id="dateRangeComparisonDate1" class="input-block-level" ng-model="newCondition.date1" bs-datepicker />
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <label for="dateRangeComparisonDate2">{{msg('complexCondition.comparison.label.and')}}:</label>
+                            <div class="input-append">
+                                <input type="date" id="dateRangeComparisonDate2" class="input-block-level" ng-model="newCondition.date2" bs-datepicker />
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid" ng-switch-when="enumRange">
+                        <div class="nested-well span6">
+                            <label for="enumRangeComparisonForm1">{{msg('complexCondition.comparison.label.field1')}}:</label>
+                            <select id="enumRangeComparisonForm1" class="input-block-level" ng-model="newCondition.form1" ng-options="item as item.displayName for item in listForms"></select>
+                            <select id="enumRangeComparisonField1" class="input-block-level" ng-model="newCondition.field1" ng-options="item as item.name for item in listComputedFields1"></select>
+                        </div>
+                        <div class="nested-well span6">
+                            <div ng-switch="newCondition.field1.type">
+                                <div ng-switch-when="Date">
+                                    <label for="enumRangeComparisonAddValueDate">{{msg('complexCondition.comparison.label.addValue')}}:</label>
+                                    <input id="enumRangeComparisonAddValueDate" class="input-block-level" ng-model="newEnumRangeValue" type="date" ng-switch-when="Date" />
+                                </div>
+                                <div ng-switch-when="Number">
+                                    <label for="enumRangeComparisonAddValueNumber">{{msg('complexCondition.comparison.label.addValue')}}:</label>
+                                    <input id="enumRangeComparisonAddValueNumber" class="input-block-level" ng-model="newEnumRangeValue" type="number" ng-switch-when="Number" />
+                                </div>
+                                <div ng-switch-when="String">
+                                    <label for="enumRangeComparisonAddValueString">{{msg('complexCondition.comparison.label.addValue')}}:</label>
+                                    <input id="enumRangeComparisonAddValueString" class="input-block-level" ng-model="newEnumRangeValue" type="text" ng-switch-when="String" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row-fluid" ng-switch-when="field">
@@ -105,7 +177,7 @@
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <button class="btn pull-left form-button-add" ng-click="swapFields()" ng-hide="newCondition.type == 'value'" ng-disabled="newCondition.form1 == null || newCondition.form2 == null || newCondition.field1 == null || newCondition.field2 == null">{{msg('complexCondition.button.swapFields')}}</button>
+                    <button class="btn pull-left form-button-add" ng-click="swapFields()" ng-hide="newCondition.type == 'value' || newCondition.type =='dateValue' || newCondition.type == 'dateRange' || newCondition.type == 'enumRange'" ng-disabled="newCondition.form1 == null || newCondition.form2 == null || newCondition.field1 == null || newCondition.field2 == null">{{msg('complexCondition.button.swapFields')}}</button>
                     <button class="btn btn-primary pull-right form-button-add" ng-click="addCondition()" ng-disabled="newCondition.field1 == null || (newCondition.type != 'value' && (newCondition.field1.id == newCondition.field2.id || newCondition.field2 == null)) || (newCondition.type != 'field' && newCondition.value == null) || (newCondition.type != 'date' && newCondition.comparisonSymbol == null) || (newCondition.type == 'date' && newCondition.value <= '0')">{{msg('complexCondition.button.add')}}</button>
                 </div>
             </div>
