@@ -51,6 +51,10 @@ public class PerformanceTestHelper {
 
     private Random random = new Random();
 
+    public PerformanceTestHelper() {
+
+    }
+
     public PerformanceTestHelper(int indicatorsCount) {
         this.indicatorsCount = indicatorsCount;
     }

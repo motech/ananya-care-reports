@@ -124,11 +124,7 @@ public class FormsServiceImpl implements FormsService {
         while (columns.next()) {
             String columnName = columns.getString("column_name");
             FieldType columnType = FieldType.getValueOf(columns.getString("data_type"));
-
-            boolean isIdField = "id".equals(columnName) || columnName.endsWith("_id");
-            if (!isIdField) {
-                fields.add(new FieldDto(columnName, columnType));
-            }
+            fields.add(new FieldDto(columnName, columnType));
         }
 
         return fields;

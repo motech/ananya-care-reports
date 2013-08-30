@@ -49,8 +49,8 @@ public class ComputedFieldEntity extends AbstractEntity {
     @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonView(ComputedFieldView.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonView({ ComputedFieldView.class })
     @JoinColumn(name = "computed_field_id", nullable = false)
     @OrderBy("field_operation_id")
     private Set<FieldOperationEntity> fieldOperations;

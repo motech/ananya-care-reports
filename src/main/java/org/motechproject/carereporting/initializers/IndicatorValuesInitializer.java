@@ -9,6 +9,7 @@ import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class IndicatorValuesInitializer implements Runnable {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void run() {
         LOG.info(indicatorEntity.getName() + ": start calculation");
 
