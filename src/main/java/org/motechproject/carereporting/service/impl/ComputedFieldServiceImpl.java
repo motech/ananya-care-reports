@@ -1,18 +1,21 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
+import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -31,24 +34,40 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     @Transactional
     @Override
     public Set<ComputedFieldEntity> getAllComputedFields() {
-        return computedFieldDao.getAll();
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAll();
+
+        Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getOrigin()) {
+                iterator.remove();
+            }
+        }
+
+        return computedFieldEntities;
     }
 
     @Transactional
     @Override
-    @SuppressWarnings("unchecked")
     public Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from ComputedFieldEntity where form.id = :formId");
-        query.setParameter("formId", formId);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("form.id", formId);
+        fields.put("type", FieldType.Number);
 
-        return new LinkedHashSet<ComputedFieldEntity>(query.list());
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAllByFields(fields);
+
+        Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getName().indexOf("id") != -1) {
+                iterator.remove();
+            }
+        }
+        return computedFieldEntities;
     }
 
     @Transactional
     @Override
     public ComputedFieldEntity getComputedFieldById(Integer computedFieldId) {
-        return computedFieldDao.getById(computedFieldId);
+        return computedFieldDao.getByIdWithFields(computedFieldId, "fieldOperations");
     }
 
     @Transactional(readOnly = false)

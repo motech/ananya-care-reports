@@ -8,13 +8,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
+import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ManageIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
 import org.motechproject.carereporting.performance.scenario.complex.PerformanceSummaryScenario;
+import org.motechproject.carereporting.performance.scenario.simple.ComplexConditionGetOperatorTypeScenario;
+import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.DashboardGetDashboardsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.DashboardGetUserAreasScenario;
+import org.motechproject.carereporting.performance.scenario.simple.FormGetComputedFieldScenario;
 import org.motechproject.carereporting.performance.scenario.simple.FormGetFormScenario;
+import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsFromDtoScenario;
 import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDailyFrequencyScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDepthDateScenario;
@@ -231,6 +236,22 @@ public abstract class PhasePT {
     public void testGetDashboards() throws Exception {
         runTest(DashboardGetDashboardsScenario.class);
     }
+    @Test
+    public void testGetFormComputedFields() throws Exception {
+        runTest(FormGetComputedFieldScenario.class);
+    }
+    @Test
+    public void testGetFormsFromDto() throws Exception {
+        runTest(FormGetFormsFromDtoScenario.class);
+    }
+    @Test
+    public void testGetComputedFields() throws Exception {
+        runTest(ComputedFieldGetComputedFieldsScenario.class);
+    }
+    @Test
+    public void testGetOperatorTypes() throws Exception {
+        runTest(ComplexConditionGetOperatorTypeScenario.class);
+    }
 
     @Test
     public void testGetUserAreas() throws Exception {
@@ -335,6 +356,11 @@ public abstract class PhasePT {
     @Test
     public void testManageIndicators() throws Exception {
         runTest(ManageIndicatorsScenario.class);
+    }
+
+    @Test
+    public void testComputedFields() throws Exception {
+        runTest(ComputedFieldsScenario.class);
     }
 
     @Test

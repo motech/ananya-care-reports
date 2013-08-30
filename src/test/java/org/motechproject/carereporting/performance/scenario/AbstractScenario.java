@@ -23,9 +23,11 @@ public abstract class AbstractScenario {
         }
     }
 
-    protected void addRequests(AbstractScenario scenario) {
-        for (MockHttpServletRequestBuilder request: scenario.getRequests()) {
-            addRequest(request);
+    protected void addRequests(AbstractScenario... scenarios) {
+        for (AbstractScenario scenario : scenarios) {
+            for (MockHttpServletRequestBuilder request : scenario.getRequests()) {
+                addRequest(request);
+            }
         }
     }
 }

@@ -72,6 +72,23 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
     }
 
     @Override
+    public Set<T> getAllByField(String fieldName, Object value) {
+        return new LinkedHashSet<T>(getCurrentSession()
+                .createCriteria(type)
+                .add(Restrictions.eq(fieldName, value))
+                .list());
+    }
+
+    @Override
+    public Set<T> getAllByFields(Map<String, Object> fields) {
+        Criteria crit = getCurrentSession().createCriteria(type);
+        for (Map.Entry<String, Object> entry: fields.entrySet()) {
+            crit.add(Restrictions.eq(entry.getKey(), entry.getValue()));
+        }
+        return new LinkedHashSet<T>(crit.list());
+    }
+
+    @Override
     public T getById(Integer id) {
         if (id == null) {
             throw new CareNullArgumentRuntimeException();

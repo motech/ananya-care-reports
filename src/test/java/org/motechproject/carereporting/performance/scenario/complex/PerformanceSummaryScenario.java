@@ -11,11 +11,13 @@ import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalc
 public class PerformanceSummaryScenario extends AbstractScenario {
 
    {
-       addRequests(new IndicatorCalculatorGetFrequenciesScenario());
-       addRequests(new UserGetLoggedUserAreaScenario());
-       addRequests(new DashboardGetDashboardsScenario());
-       addRequests(new IndicatorCategoryGetCategoriesScenario());
-       addRequests(new DashboardGetUserAreasScenario());
-       addRequests(new ReportGetTrendScenario());
+       addRequests(
+               new IndicatorCalculatorGetFrequenciesScenario(),
+               new UserGetLoggedUserAreaScenario(),
+               new DashboardGetDashboardsScenario(),
+               new IndicatorCategoryGetCategoriesScenario(),
+               new DashboardGetUserAreasScenario(),
+               new ReportGetTrendScenario()
+       );
    }
 }

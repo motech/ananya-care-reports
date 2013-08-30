@@ -11,9 +11,11 @@ public class LoadPageScenario extends AbstractScenario {
         for (int i = 0; i < 3; i++) {
             addRequests(new LanguageGetPlainMessagesScenario());
         }
-        addRequests(new LanguageGetLanguagesScenario());
-        addRequests(new UserGetLoggedUserLanguageScenario());
-        addRequests(new PerformanceSummaryScenario());
+        addRequests(
+                new LanguageGetLanguagesScenario(),
+                new UserGetLoggedUserLanguageScenario(),
+                new PerformanceSummaryScenario()
+        );
     }
 
 }

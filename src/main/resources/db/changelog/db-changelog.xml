@@ -20,4 +20,10 @@
                 />
     </changeSet>
 
+    <changeSet id="CARE #86" author="Adrian Boguszewski">
+        <addColumn tableName="computed_field" schemaName="dashboard_app">
+            <column name="origin" type="boolean" defaultValue="t"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

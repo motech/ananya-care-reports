@@ -8,9 +8,11 @@ import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetI
 public class ManageIndicatorsScenario extends AbstractScenario {
 
     {
-        addRequests(new IndicatorCategoryGetCategoriesScenario());
-        addRequests(new IndicatorGetIndicatorsScenario());
-        addRequests(new IndicatorFilterIndicatorsScenario());
+        addRequests(
+                new IndicatorCategoryGetCategoriesScenario(),
+                new IndicatorGetIndicatorsScenario(),
+                new IndicatorFilterIndicatorsScenario()
+        );
     }
 
 }

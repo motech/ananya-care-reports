@@ -49,7 +49,11 @@ public class ComputedFieldEntity extends AbstractEntity {
     @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @NotNull
+    @Column(name = "origin")
+    private Boolean origin;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonView({ ComputedFieldView.class })
     @JoinColumn(name = "computed_field_id", nullable = false)
     @OrderBy("field_operation_id")
@@ -65,6 +69,15 @@ public class ComputedFieldEntity extends AbstractEntity {
         this.type = type;
         this.form = form;
         this.fieldOperations = fieldOperations;
+        this.origin = false;
+    }
+
+    public Boolean getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Boolean origin) {
+        this.origin = origin;
     }
 
     public String getName() {

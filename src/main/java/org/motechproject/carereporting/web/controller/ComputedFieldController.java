@@ -55,7 +55,7 @@ public class ComputedFieldController extends BaseController {
         computedFieldService.createNewComputedFieldFromDto(computedFieldDto);
     }
 
-    @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.POST,
+    @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     public void updateComputedField(@RequestBody @Valid ComputedFieldDto computedFieldDto,

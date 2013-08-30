@@ -13,6 +13,10 @@ public interface GenericDao<T extends AbstractEntity> {
 
     Set<T> getAllWithFields(String... fieldNames);
 
+    Set<T> getAllByField(String fieldName, Object value);
+
+    Set<T> getAllByFields(Map<String, Object> fields);
+
     T getById(Integer id);
 
     T getByIdWithFields(Integer id, String... fieldNames);
@@ -32,4 +36,5 @@ public interface GenericDao<T extends AbstractEntity> {
     Object executeNamedQuery(final String queryName, final Map<String, ?> queryParams);
 
     Object executeNamedQueryWithUniqueResult(final String queryName, final Map<String, ?> queryParams);
+
 }

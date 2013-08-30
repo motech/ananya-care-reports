@@ -11,34 +11,16 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
         $http.get('api/computedfields')
         .success(function(computedFields) {
             $scope.computedFields = computedFields;
-            var i = $scope.computedFields.length;
-            while (i--) {
-                if ($scope.computedFields[i].fieldOperations == undefined ||
-                    $scope.computedFields[i].fieldOperations.length == 0) {
-                    $scope.computedFields.splice(i, 1);
-                }
-            }
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadComputedFields');
         });
     };
-
     $scope.fetchComputedFields();
 
     $scope.fetchFormFields = function() {
         $http.get('api/forms/' + $scope.computedField.form + "/computedfields")
         .success(function(fields) {
-            var filterByNumericType = function(fields) {
-                var filteredFields = [];
-                for (var i = 0; i < fields.length; i++) {
-                    if (fields[i].type == "Number") {
-                        filteredFields.push(fields[i]);
-                    }
-                }
-                return filteredFields;
-            };
-
-            $scope.fields = filterByNumericType(fields);
+            $scope.fields = fields;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadFields');
         });
@@ -48,20 +30,20 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
         $http.get('api/forms')
         .success(function(forms) {
             $scope.forms = forms;
-            $scope.$watch('computedField.form', function(newVal, oldVal) {
-                if ($scope.computedField.form != undefined) {
-                    if ($scope.selectedFields.length > 0) {
-                        $scope.selectedFields = [];
-                    }
-                    $scope.fetchFormFields();
-                }
-            });
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadForms');
         });
     };
-
     $scope.fetchForms();
+
+    $scope.$watch('computedField.form', function(newVal, oldVal) {
+         if ($scope.computedField.form != undefined) {
+              if ($scope.selectedFields.length > 0) {
+                   $scope.selectedFields = [];
+              }
+              $scope.fetchFormFields();
+         }
+    });
 
     $scope.fetchOperators = function() {
         $http.get('api/complexcondition/operatortype')

@@ -43,7 +43,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
 
     private static final int EXPECTED_COMPUTED_FIELDS_ALL = 1087;
     private static final Integer FORM_ID = 1;
-    private static final int EXPECTED_COMPUTED_FIELDS_BY_FORM_ID = 91;
+    private static final int EXPECTED_COMPUTED_FIELDS_BY_FORM_ID = 2;
     private static final Integer COMPUTED_FIELD_ID = 1;
     private static final String COMPUTED_FIELD_NAME = "COMPUTED_FIELD_TEST_1";
     private static final FieldType COMPUTED_FIELD_TYPE = FieldType.Number;
@@ -123,15 +123,17 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     private ComputedFieldEntity createComputedField() {
-        Set<FieldOperationEntity> fieldOperationEntities = new LinkedHashSet<>(
-                createFieldOperationEntities());
+
         FormEntity formEntity = formsService.getFormById(FORM_ID);
 
         assertNotNull(formEntity);
         assertEquals(FORM_ID, formEntity.getId());
 
-        ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity(
-                COMPUTED_FIELD_NAME, COMPUTED_FIELD_TYPE, formEntity, fieldOperationEntities);
+        ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity();
+        computedFieldEntity.setName(COMPUTED_FIELD_NAME);
+        computedFieldEntity.setType(COMPUTED_FIELD_TYPE);
+        computedFieldEntity.setForm(formEntity);
+        computedFieldEntity.setOrigin(true);
 
         computedFieldService.createNewComputedField(computedFieldEntity);
         newComputedFieldId = computedFieldEntity.getId();
@@ -153,11 +155,4 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
         return computedFieldDto;
     }
 
-    private List<FieldOperationEntity> createFieldOperationEntities() {
-        FieldOperationEntity fieldOperationEntity = new FieldOperationEntity();
-        List<FieldOperationEntity> fieldOperationEntities = new ArrayList<>();
-        fieldOperationEntities.add(fieldOperationEntity);
-
-        return fieldOperationEntities;
-    }
 }
