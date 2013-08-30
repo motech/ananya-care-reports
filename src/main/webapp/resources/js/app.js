@@ -22,7 +22,7 @@
             .when('/categories/:categoryId', { templateUrl: 'resources/partials/indicators/addCategory.html', controller: 'categoriesController'})
             .when('/reports/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
             .when('/reports', {templateUrl: 'resources/partials/reports/reportList.html', controller: 'reportListController'})
-            .when('/admin/computed-fields', { templateUrl: 'resources/partials/computed-fields/manage.html', controller: 'computedFieldsController' })
+            .when('/admin/computed-fields', { templateUrl: 'resources/partials/computed-fields/computedField.html', controller: 'computedFieldsController' })
             .when('/messages', {templateUrl: 'resources/partials/messages/listLanguages.html', controller: 'languageListController'})
             .when('/messages/:languageCode', {templateUrl: 'resources/partials/messages/editMessages.html', controller: 'messageController'})
             .otherwise({ redirectTo: '/' });

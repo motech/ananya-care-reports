@@ -4,11 +4,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class FormGetForeignKeyForTableScenario extends AbstractScenario {
+public class FormGetFormScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/forms/table/foreignKey/bp_form")
+                get("/api/forms/1")
         );
     }
 

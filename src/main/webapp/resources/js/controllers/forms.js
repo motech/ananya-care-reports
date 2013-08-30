@@ -15,19 +15,10 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             });
     };
 
-    $scope.fetchTables = function() {
-        $http.get('api/forms/tables')
-            .success(function(tables) {
-                $scope.tables = tables;
-            })
-            .error(function() {
-                $errorService.genericError($scope, 'forms.form.error.cannotLoadTables');
-            });
-    };
-
     $scope.submitForm = function(form) {
-
-        $http({method: 'PUT', url: 'api/forms' + (form.id !== undefined ? ('/' + form.id) : ''), data: form})
+        $http({method: 'PUT',
+                url: 'api/forms/' + form.id,
+                data: form})
             .success(function(response) {
                 $location.path( "/forms" );
             }).error(function(data, status, headers, config) {
@@ -35,11 +26,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
             });
     };
 
-    $scope.fetchTables();
-
-    if ($scope.formId !== undefined) {
-        $scope.fetchForm();
-    };
+    $scope.fetchForm();
 });
 
 care.controller('formListController', function($scope, $http, $dialog, $errorService, $simplifiedHttpService) {
@@ -52,37 +39,14 @@ care.controller('formListController', function($scope, $http, $dialog, $errorSer
     $scope.reloadButtonMessage = reloadMsg;
 
     $scope.fetchForms = function() {
-        $http.get('api/forms').success(function(forms) {
-            var mother_forms = new Array();
-            var child_forms = new Array();
-            var other_forms = new Array();
-            for(var i = 0; i < forms.length; i++) {
-                if(forms[i].tableName.indexOf("mother") !== -1) {
-                    mother_forms.push(forms[i]);
-                } else if (forms[i].tableName.indexOf("child") !== -1) {
-                    child_forms.push(forms[i]);
-                } else {
-                    $http.get('api/forms/table/foreignKey/' + forms[i].tableName, {index:i})
-                        .success(function(foreignKey, status, header, config) {
-                            if(foreignKey.indexOf("mother") !== -1) {
-                                mother_forms.push(forms[config.index]);
-                            } else if(foreignKey.indexOf("child") !== -1) {
-                                child_forms.push(forms[config.index]);
-                            } else {
-                                other_forms.push(forms[config.index]);
-                            }
-                        })
-                        .error(function(data, status, header, config) {
-                            $errorService.genericError($scope, 'forms.form.error.cannotReceiveForeignKey');
-                        })
-                }
-            }
-
-            $scope.mother_forms = mother_forms;
-            $scope.child_forms = child_forms;
-            $scope.other_forms = other_forms;
+        $http.get('api/forms/list').success(function(forms) {
+            $scope.mother_forms = forms.motherForms;
+            $scope.child_forms = forms.childForms;
+            $scope.other_forms = forms.otherForms;
             $scope.isListReloaded = true;
             $scope.reloadButtonMessage = reloadMsg;
+        }).error(function(data, status, header, config) {
+            $errorService.genericError($scope, 'forms.form.error.cannotReceiveForeignKey');
         });
     };
 

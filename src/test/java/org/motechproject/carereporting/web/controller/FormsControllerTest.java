@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.dto.FormListDto;
 import org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
@@ -16,7 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Matchers.anyInt;
@@ -24,11 +27,9 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,47 +116,15 @@ public class FormsControllerTest {
     }
 
     @Test
-    public void testDeleteForm() throws Exception {
-        mockMvc.perform(delete("/api/forms/" + ONE))
+    public void testGetAllFormsWithDto() throws Exception {
+        List<FormEntity> formEntities = new ArrayList<>();
+        FormListDto formListDto = new FormListDto(formEntities, formEntities, formEntities);
+        when(formsService.getAllFormsFromDto()).thenReturn(formListDto);
+
+        mockMvc.perform(get("/api/forms/list"))
                 .andExpect(status().isOk());
 
-        verify(formsService, times(1)).deleteFormById(ONE);
-    }
-
-    @Test
-    public void testGetForeignKeyForTableName() throws Exception {
-        Mockito.when(formsService.getForeignKeyForTable(TABLE_NAME)).thenReturn(FOREIGN_KEY_NAME);
-
-        mockMvc.perform(get("/api/forms/table/foreignKey/" + TABLE_NAME))
-                .andExpect(status().isOk())
-                .andExpect(content().string(FOREIGN_KEY_NAME));
-
-        verify(formsService, times(1)).getForeignKeyForTable(TABLE_NAME);
-    }
-
-    @Test
-    public void testGetTables() throws Exception {
-        Set<String> tables = new LinkedHashSet<>();
-        tables.add(TABLE_NAME_1);
-        tables.add(TABLE_NAME_2);
-        Mockito.when(formsService.getTables()).thenReturn(tables);
-
-        mockMvc.perform(get("/api/forms/tables"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").value(TABLE_NAME_1))
-                .andExpect(jsonPath("$[1]").value(TABLE_NAME_2));
-
-        verify(formsService, times(1)).getTables();
-    }
-
-    @Test
-    public void testAddForm() throws Exception {
-        mockMvc.perform(post("/api/forms")
-                    .content(ADD_FORM_JSON_STRING)
-                    .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(formsService, times(1)).addForm((FormEntity)anyObject());
+        verify(formsService, times(1)).getAllFormsFromDto();
     }
 
     @Test

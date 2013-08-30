@@ -3,6 +3,7 @@ package org.motechproject.carereporting.service;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.FieldDto;
+import org.motechproject.carereporting.domain.dto.FormListDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -38,5 +39,6 @@ public interface FormsService {
 
     Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId);
 
+    FormListDto getAllFormsFromDto();
 }
 

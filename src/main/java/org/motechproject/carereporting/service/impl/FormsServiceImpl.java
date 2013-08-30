@@ -4,6 +4,7 @@ import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.FieldDto;
+import org.motechproject.carereporting.domain.dto.FormListDto;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -139,6 +142,34 @@ public class FormsServiceImpl implements FormsService {
     @Override
     public Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId) {
         return formDao.getByIdWithFields(formId, "computedFields").getComputedFields();
+    }
+
+    @Override
+    public FormListDto getAllFormsFromDto() {
+        Set<FormEntity> formEntities = formDao.getAll();
+
+        List<FormEntity> motherForms = new LinkedList<>();
+        List<FormEntity> childForms = new LinkedList<>();
+        List<FormEntity> otherForms = new LinkedList<>();
+
+        for (FormEntity formEntity : formEntities) {
+            if (formEntity.getTableName().indexOf("mother") != -1) {
+                motherForms.add(formEntity);
+            } else if (formEntity.getTableName().indexOf("child") != -1) {
+                childForms.add(formEntity);
+            } else {
+                String foreignKey = getForeignKeyForTable(formEntity.getTableName());
+                if (foreignKey.contains("mother")) {
+                    motherForms.add(formEntity);
+                } else if (foreignKey.contains("child")) {
+                    childForms.add(formEntity);
+                } else {
+                    otherForms.add(formEntity);
+                }
+            }
+        }
+
+        return new FormListDto(motherForms, childForms, otherForms);
     }
 
 }
