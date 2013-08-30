@@ -1,10 +1,10 @@
 package org.motechproject.carereporting.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
@@ -19,13 +19,13 @@ public class IndicatorCreationFormDto {
     private Set<RoleEntity> roles;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
-    private Set<AreaEntity> areas;
-
-    @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<FormEntity> forms;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<ComplexConditionEntity> complexConditions;
+
+    @JsonView({ IndicatorJsonView.CreationForm.class })
+    private Set<ReportTypeEntity> reportTypes;
 
     public IndicatorCreationFormDto() {
 
@@ -33,14 +33,14 @@ public class IndicatorCreationFormDto {
 
     public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories,
                                     Set<RoleEntity> roles,
-                                    Set<AreaEntity> areas,
                                     Set<FormEntity> forms,
-                                    Set<ComplexConditionEntity> complexConditions) {
+                                    Set<ComplexConditionEntity> complexConditions,
+                                    Set<ReportTypeEntity> reportTypes) {
         this.categories = categories;
         this.roles = roles;
-        this.areas = areas;
         this.forms = forms;
         this.complexConditions = complexConditions;
+        this.reportTypes = reportTypes;
     }
 
     public Set<IndicatorCategoryEntity> getCategories() {
@@ -59,14 +59,6 @@ public class IndicatorCreationFormDto {
         this.roles = roles;
     }
 
-    public Set<AreaEntity> getAreas() {
-        return areas;
-    }
-
-    public void setAreas(Set<AreaEntity> areas) {
-        this.areas = areas;
-    }
-
     public Set<FormEntity> getForms() {
         return forms;
     }
@@ -81,5 +73,13 @@ public class IndicatorCreationFormDto {
 
     public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
         this.complexConditions = complexConditions;
+    }
+
+    public Set<ReportTypeEntity> getReportTypes() {
+        return reportTypes;
+    }
+
+    public void setReportTypes(Set<ReportTypeEntity> reportTypes) {
+        this.reportTypes = reportTypes;
     }
 }

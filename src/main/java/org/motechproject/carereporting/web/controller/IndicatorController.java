@@ -137,6 +137,7 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @Transactional
     public String getIndicatorCategoryList() {
 
         return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
@@ -166,6 +167,7 @@ public class IndicatorController extends BaseController {
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = false)
     public void updateIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult, @PathVariable Integer indicatorCategoryId) {
         if (bindingResult.hasErrors()) {
@@ -181,6 +183,7 @@ public class IndicatorController extends BaseController {
 
     @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = false)
     public void deleteIndicatorCategory(@PathVariable Integer indicatorCategoryId) {
         IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
 

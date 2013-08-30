@@ -34,7 +34,7 @@ public class AreaEntity extends AbstractEntity {
     @NotNull
     @ManyToOne(targetEntity = LevelEntity.class)
     @JoinColumn(name = "level_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, IndicatorJsonView.CreationForm.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private LevelEntity level;
 
     @ManyToOne
@@ -43,7 +43,6 @@ public class AreaEntity extends AbstractEntity {
     private AreaEntity parentArea;
 
     @OneToMany(mappedBy = "parentArea")
-    @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<AreaEntity> childAreas;
 
     @OneToMany(mappedBy = "area", cascade = CascadeType.ALL)

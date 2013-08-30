@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ public class ComputedFieldController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @Transactional
     public String getAllComputedFields() {
         return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields());
     }
@@ -36,6 +38,7 @@ public class ComputedFieldController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @Transactional
     public String getComputedField(@PathVariable Integer computedFieldId) {
         return writeAsString(ComputedFieldView.class, computedFieldService.getComputedFieldById(computedFieldId));
     }

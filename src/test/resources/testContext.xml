@@ -78,8 +78,8 @@
 
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
-    <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabaseWithRandomIndicators" depends-on="formEntityInitializer">
+    <!--<bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabaseWithRandomIndicators" depends-on="formEntityInitializer">
         <constructor-arg type="int" value="30"/>
-    </bean>
+    </bean>-->
 
 </beans>

@@ -35,11 +35,11 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private String shortCode;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "dashboard_id")
     private DashboardEntity dashboard;
 
-    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     @JsonView({ DashboardJsonView.class, TrendJsonView.class })
     private Set<IndicatorEntity> indicators;
 

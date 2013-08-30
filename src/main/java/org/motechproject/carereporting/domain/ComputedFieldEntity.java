@@ -44,12 +44,12 @@ public class ComputedFieldEntity extends AbstractEntity {
     private FieldType type;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id")
     @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonView(ComputedFieldView.class)
     @JoinColumn(name = "computed_field_id", nullable = false)
     @OrderBy("field_operation_id")
@@ -104,5 +104,11 @@ public class ComputedFieldEntity extends AbstractEntity {
         return  fieldOperations.size() == 0 ||
                     (fieldOperations.size() == 1 &&
                     fieldOperations.iterator().next().getField2() == null);
+    }
+
+    @JsonIgnore
+    public String getFieldSql() {
+        //assuming that it's a regular field.
+        return getName();
     }
 }

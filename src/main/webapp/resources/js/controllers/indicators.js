@@ -97,460 +97,77 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     });
 });
 
-care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal, $dialog, $filter, $location, $routeParams, $errorService) {
+care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
+                                                      $dialog, $location, $errorService, $route) {
     $scope.title = $scope.msg('indicators.title');
-
-    $scope.reportIds = [];
-    $scope.indicator = {};
-    $scope.indicator.values = [];
-    $scope.categories = [];
-    $scope.selectedOwners = {};
-    $scope.condition = {};
-    $scope.ownersValid = false;
-    $scope.typeValid = false;
-    $scope.categoriesValid = false;
-    $scope.newCondition = {};
-    $scope.listFields = [];
-    $scope.listForms = [];
-    $scope.listReportTypes = [];
-    $scope.reportTypes = [];
-    $scope.listCategories = [];
-    $scope.listCondition = [];
-    $scope.indicator.area={};
-    $scope.selectedState = null;
-    $scope.listState = [];
-    $scope.selectedDistrict = null;
-    $scope.listDistrict = [];
-    $scope.showDistrict = false;
-    $scope.selectedBlock = null;
-    $scope.listBlock = [];
-    $scope.showBlock = false;
-    $scope.area = {};
-
-
-    $scope.fetchRoles = function() {
-        $http.get('api/users/roles')
-            .success(function(roles) {
-                $scope.roles = roles;
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadUserList');
-            });
-    };
-    $scope.fetchRoles();
-
-    /*$scope.fetchIndicatorAndFillDetails = function() {
-        $http.get('api/indicator/' + $routeParams.indicatorId)
-            .success(function(indicator) {
-                $scope.indicator.id = indicator.id;
-                $scope.indicator.name = indicator.name;
-                $scope.indicator.area = indicator.area;
-                $scope.indicator.frequency = indicator.defaultFrequency;
-                $scope.indicator.computedField=indicator.computedField.id;
-                $scope.indicator.reports=indicator.reports;
-                $scope.indicator.complexCondition = indicator.complexCondition.id;
-                $scope.categories = indicator.categories;
-                $scope.indicator.indicatorType = indicator.indicatorType.id;
-                for(var i = 0 ; i< indicator.owners.length ; i++){
-                    $scope.selectedOwners[indicator.owners[i].id]=true;
-                }
-                $scope.setAreas();
-                $scope.indicator.trend = indicator.trend;
-                $scope.setReportTypes(indicator);
-                $scope.removeUsedCategories();
-                $scope.selectedForm=indicator.computedField.form.id;
-                $scope.ownersValid = true;
-                $scope.categoriesValid=true;
-                $scope.typeValid = true;
-            }).error(function() {
-                $dialog.messageBox("Error", $scope.msg('indicators.form.error.cannotLoadIndicatorDetails'), [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
-            });
-    };*/
-
-    $scope.setReportTypes = function(indicator) {
-        for(var i = 0 ; i< indicator.reports.length ; i++){
-            $scope.reportIds.push(indicator.reports[i].id);
-            $scope.reportTypes.push(indicator.reports[i].reportType);
-            for (var j = 0 ; j < $scope.listReportTypes.length; j++) {
-                var reportType = $scope.listReportTypes[j];
-                if(indicator.reports[i].reportType.id == reportType.id)
-                    $scope.listReportTypes.splice($scope.listReportTypes.indexOf(reportType),1);
-            }
-        }
-    }
-
-    $scope.setAreas = function() {
-        switch ($scope.indicator.area.level.id){
-            case 3: $scope.area["selectedState"] = $scope.indicator.area.parentArea.parentArea.id;
-                    $scope.area["selectedDistrict"] = $scope.indicator.area.parentArea.id;
-                    $scope.area["selectedBlock"] = $scope.indicator.area.id;
-                    break;
-            case 2: $scope.area["selectedState"] = $scope.indicator.area.parentArea.id;
-                    $scope.area["selectedDistrict"] = $scope.indicator.area.id;
-                    break;
-            case 1: $scope.area["selectedState"] = $scope.indicator.area.id;
-                    break;
-        }
-        $scope.selectedState = $scope.area["selectedState"];
-    }
-
-    $scope.fetchStates = function() {
-        $http.get('api/users/areas/level/1')
-            .success(function(states) {
-                states.sortByField('name');
-                $scope.listState = states;
-
-                if ($scope.listState.notEmpty() && !$routeParams.indicatorId) {
-                    $scope.selectedState = $scope.listState[0].id;
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadStateList');
-            });
+    $scope.indicator = {
+        categories: []
     };
 
-    $scope.fetchAreasByParentAreaId = function(parentAreaId, name) {
-        var listName = 'list' + name;
-        var selectedItemName = 'selected' + name;
-        var msgAffix = 'cannotLoad' + name + 'List';
+    $scope.initializeInputFields = function() {
+        $scope.listCategories = $scope.formData.categories;
 
-        $http.get('api/users/areas/' + parentAreaId + '/list')
-            .success(function(items) {
-                items.sortByField('name');
-                $scope[listName] = items;
-                $scope[listName].unshift({ id: '-1', name: 'ALL' });
-                if($scope.area.hasOwnProperty(selectedItemName)) {
-                    $scope[selectedItemName] = $scope.area[selectedItemName];
-                    delete $scope.area[selectedItemName];
-                } else {
-                    $scope[selectedItemName] = '-1';
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.' + msgAffix);
-            });
+        $scope.selectedCategory = $scope.listCategories[0];
+        $scope.selectedChartType = $scope.formData.reportTypes[0].id;
+        $scope.selectedForm = $scope.formData.forms[0].id;
+        $scope.formData.complexConditions.unshift({ id: -1, name: '---' });
+        $scope.indicator.complexCondition = $scope.formData.complexConditions[0].id;
     };
 
-    $scope.resetDropdownDisplay = function(topAreaName) {
-        var areaNames = [ 'State', 'District', 'Block', 'HSC', 'AWC' ];
-        var found = false;
-
-        for (var i = 0; i < areaNames.length; i++) {
-            if (topAreaName == areaNames[i]) {
-                found = true;
-            }
-
-            $scope['show' + areaNames[i]] = !found;
-        }
-
-        $scope['show' + topAreaName] = true;
+    $scope.sortFormDataArrays = function() {
+        $scope.formData.categories.sortByField('name');
+        $scope.formData.roles.sortByField('name');
+        $scope.formData.forms.sortByField('displayName');
+        $scope.formData.complexConditions.sortByField('name');
+        $scope.formData.reportTypes.sortByField('name');
     };
 
-    $scope.$watch('selectedState', function() {
-        if ($scope.selectedState > 0) {
-            $scope.fetchAreasByParentAreaId($scope.selectedState, 'District');
-        }
-
-        $scope.resetDropdownDisplay(($scope.selectedState > 0) ? 'District' : 'State');
+    $http.get("api/indicator/creationform").success(function(indicatorCreationFormDto) {
+        $scope.formData = indicatorCreationFormDto;
+        $scope.sortFormDataArrays();
+        $scope.initializeInputFields();
+    }).error(function() {
+        $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
 
-    $scope.$watch('selectedDistrict', function() {
-        if ($scope.selectedDistrict > 0) {
-            $scope.fetchAreasByParentAreaId($scope.selectedDistrict, 'Block');
-        }
-
-        $scope.resetDropdownDisplay(($scope.selectedDistrict > 0) ? 'Block' : 'District');
-    });
-
-    $scope.$watch('selectedBlock', function() {
-        if ($scope.selectedBlock > 0) {
-            $scope.fetchAreasByParentAreaId($scope.selectedBlock, 'HSC');
-        }
-
-        $scope.resetDropdownDisplay(($scope.selectedBlock > 0) ? 'HSC' : 'Block');
-    });
-
-    $scope.fetchStates();
-
-    $scope.fetchChartTypes = function() {
-        $http.get('api/report/type')
-            .success(function(chartTypes) {
-                chartTypes.sortByField('name');
-                $scope.listChartTypes = chartTypes;
-
-                if ($scope.listChartTypes.notEmpty()) {
-                    $scope.selectedChartType = "0";
-                    $scope.addReportTypeDisabled = false;
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadReportTypeList');
-            });
+    $scope.fetchComputedFieldsForForm = function(formId) {
+        $http.get('api/forms/' + formId + '/computedfields').success(function(computedFields) {
+            computedFields.sortByField('name');
+            $scope.formData.computedFields = computedFields;
+            $scope.indicator.computedField = computedFields[0].id;
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
+        });
     };
-    $scope.fetchChartTypes();
 
-    $scope.fetchCategories = function() {
-        $http.get('api/indicator/category')
-            .success(function(categories) {
-                categories.sortByField('name');
-                $scope.listCategories = categories;
-
-                if ($scope.listCategories.notEmpty()) {
-                    $scope.selectedCategory = "0";
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadCategoryList');
-            });
-    };
-    $scope.fetchCategories();
-
-    $scope.removeUsedCategories = function() {
-            for (var i = 0 ; i < $scope.categories.length; i++) {
-                for (var j = 0 ; j < $scope.listCategories.length; j++) {
-                    var used_category_value = $scope.listCategories[j];
-                    if(used_category_value.id == $scope.categories[i].id){
-                        $scope.listCategories.splice($scope.listCategories.indexOf(used_category_value),1);
-                    }
-                }
-            }
-        };
-
-    $scope.fetchConditions = function() {
-        $http.get('api/complexcondition')
-            .success(function(conditions) {
-                conditions.sortByField('id');
-                $scope.listConditions = conditions;
-                $scope.listConditions.unshift({ id: '-1', name: '---' });
-
-                if ($scope.listConditions.notEmpty()) {
-                    $scope.indicator.Condition = $scope.listConditions[0].id;
-                } else {
-                    $scope.indicator.Condition = '-1';
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComplexConditionList');
-            });
-    }
-    $scope.fetchConditions();
-
-    $scope.validateOwners = function() {
-        $scope.ownersValid = false;
-
-        for (var key in $scope.selectedOwners) {
-            if ($scope.selectedOwners[key] === true) {
-                $scope.ownersValid = true;
-                return;
-            }
+    $scope.$watch('selectedForm', function(newValue, oldValue) {
+        if (newValue != null) {
+            $scope.fetchComputedFieldsForForm($scope.selectedForm);
         }
-    }
+    });
 
     $scope.addCategory = function() {
-        if ($scope.selectedCategory != null) {
-            var category = $scope.listCategories[$scope.selectedCategory];
+        $scope.indicator.categories.push($scope.selectedCategory);
+        $scope.indicator.categories.sortByField('name');
 
-            if (category != null) {
-                $scope.categories.push(category);
-                $scope.categoriesValid = true;
-
-                var index = $scope.listCategories.indexOf(category);
-                if (index != -1) {
-                    $scope.listCategories.splice(index, 1);
-
-                    if (Object.keys($scope.listCategories).length <= 0) {
-                        $scope.addCategoryDisabled = true;
-                    } else {
-                        $scope.selectedCategory = "0";
-                    }
-                }
+        for (var i = $scope.listCategories.length - 1; i >= 0; i--) {
+            if ($scope.listCategories[i].id === $scope.selectedCategory.id) {
+                $scope.listCategories.splice(i, 1);
+                $scope.selectedCategory = $scope.listCategories[0];
+                break;
             }
         }
     };
 
     $scope.removeCategory = function(index) {
-        $scope.listCategories.push($scope.categories[index]);
+        $scope.listCategories.push($scope.indicator.categories[index]);
         $scope.listCategories.sortByField('name');
-        $scope.selectedCategory = "0";
-        $scope.categories.splice(index, 1);
-        $scope.addCategoryDisabled = false;
-
-        if (Object.keys($scope.categories).length <= 0) {
-            $scope.categoriesValid = false;
-        }
-    }
-
-    $scope.getSelectedRoles = function() {
-        var selectedRoles = [];
-
-        for (var key in $scope.selectedRoles) {
-            if ($scope.selectedRoles[key] === true) {
-                selectedRoles.push(parseInt(key));
-            }
-        }
-
-        return selectedRoles;
+        $scope.indicator.categories.splice(index, 1);
+        $scope.selectedCategory = $scope.listCategories[0];
     };
 
-    $scope.getSelectedCategories = function() {
-        var selectedCategories = [];
-
-        for (var key in $scope.categories) {
-            if (!$scope.categories.hasOwnProperty(key)) {
-                continue;
-            }
-            selectedCategories.push($scope.categories[key].id);
-        }
-
-        return selectedCategories;
-    };
-
-    $scope.getSelectedArea = function() {
-        if ($scope.selectedBlock > 0 && $scope.showBlock) {
-            return $scope.selectedBlock;
-        } else if ($scope.selectedDistrict > 0 && $scope.showDistrict) {
-            return $scope.selectedDistrict;
-        } else if ($scope.selectedState > 0) {
-            return $scope.selectedState;
-        }
-    };
-
-    $scope.filterComputedFieldsByNumberType = function(computedFieldList) {
-            var filteredFields = [];
-
-            for (var i = 0; i < computedFieldList.length; i++) {
-                if (computedFieldList[i].type === "Number") {
-                    filteredFields.push(computedFieldList[i]);
-                }
-            }
-
-            return filteredFields;
-        };
-
-    $scope.fetchComputedFields = function () {
-        $http.get('api/forms/' + $scope.selectedForm + '/computedfields')
-            .success(function(computedFields) {
-                $scope.allComputedFields = computedFields;
-                $scope.filteredComputedFields = [];
-                for(var i = 0; i < computedFields.length; i++) {
-                    if(computedFields[i].type == "Number") {
-                        $scope.filteredComputedFields.push(computedFields[i]);
-                    }
-                }
-                $scope.filteredComputedFields.sortByField('name');
-                $scope.allComputedFields.sortByField('name');
-                //$scope.updateComputedFields();
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
-            });
-    };
-
-    /*$scope.updateComputedFields = function() {
-        if($scope.listIndicatorTypes.notEmpty()) {
-            var type = $scope.listIndicatorTypes[$scope.indicator.indicatorType - 1];
-            if(type.name == "Average" || type.name == "Sum") {
-                $scope.listComputedFields = $scope.filteredComputedFields;
-            } else {
-                $scope.listComputedFields = $scope.allComputedFields;
-            }
-
-            if ($scope.listComputedFields.notEmpty()) {
-                $scope.indicator.computedField = $scope.listComputedFields[0].id;
-            }
-        }
-    };
-
-    $scope.$watch('indicator.indicatorType', $scope.updateComputedFields);*/
-
-    $scope.$watch('selectedForm', function() {
-        if ($scope.selectedForm > 0) {
-            $scope.fetchComputedFields();
-        }
-    });
-
-    $scope.createReports = function() {
-        var reports = [];
-
-        for (var i = 0; i < $scope.reportTypes.length; i++) {
-            var report = {
-                reportType: $scope.reportTypes[i]
-            };
-            if($scope.reportIds){
-                report.id=$scope.reportIds[i];
-                $scope.reportIds.splice[i,1];
-            }
-
-            reports.push(report);
-        }
-
-        return reports;
-    };
-
-    $scope.submit = function() {
-        $scope.indicator.owners = $scope.getSelectedRoles();
-        $scope.indicator.categories = $scope.getSelectedCategories();
-        $scope.indicator.area = $scope.getSelectedArea();
-        $scope.indicator.reports = $scope.createReports();
-
-        if ($scope.indicator.condition == "-1") {
-            delete $scope.indicator.condition;
-        }
-
-        $http({
-            url: "api/indicator" + ($scope.indicator.id ? ('/' + $scope.indicator.id) : ''),
-            method: $scope.indicator.id ? "PUT" : "POST",
-            data: $scope.indicator,
-            headers: { 'Content-Type': 'application/json' }
-        }).success(function() {
-                $location.path( "/indicators" );
-        }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
-        });
-    };
-
-    $scope.addNew = function() {
-        $location.path( "/indicators/new" );
-    };
-
-    $scope.fetchForms = function() {
-        $http.get('api/forms')
-            .success(function(forms) {
-                forms.sortByField('displayName');
-                $scope.listForms = forms;
-
-                if ($scope.listForms.notEmpty() && !$routeParams.indicatorId) {
-                    $scope.selectedForm = $scope.listForms[0].id;
-                    $scope.newCondition.form = $scope.listForms[0].id;
-                }
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormList');
-            });
-    };
-    $scope.fetchForms();
-
-    $scope.launchDialog = function() {
-        $rootScope.indicatorScope = $scope;
-
-        var opts = {
-            backdrop: true,
-            keyboard: true,
-            backdropClick: false,
-            templateUrl: 'resources/partials/indicators/newComplexConditionDialog.html',
-            controller: 'createComplexConditionController',
-            dialogClass: 'modal condition-dialog'
-        };
-
-        var dialog = $dialog.dialog(opts);
-        dialog.open();
-    };
-
-    $scope.launchComputedFieldDialog = function() {
-        $rootScope.indicatorScope = $scope;
-
-        var dialog = $modal({
-            template: "resources/partials/indicators/newComputedFieldDialog.html",
-            persist: true,
-            show: true,
-            backdrop: "static"
-        });
-    };
-
-    if ($routeParams.indicatorId) {
-        $scope.fetchIndicatorAndFillDetails();
+    $scope.addNewIndicator = function() {
+        $route.reload();
     };
 });
 

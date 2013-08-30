@@ -16,18 +16,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="(key, item) in categories">
+                        <tr ng-repeat="item in indicator.categories">
                             <td class="span9">
                                 <span>{{item.name}}</span>
                             </td>
                             <td class="span3">
-                                <button class="span12 btn" ng-click="removeCategory(key)">{{msg('common.remove')}}</button>
+                                <button class="span12 btn" ng-click="removeCategory($index)">{{msg('common.remove')}}</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <label for="category">{{msg('indicators.form.classifiedAs')}}: </label>
-                    <select id="category" ng-model="selectedCategory" ng-options="key as item.name for (key, item) in listCategories" class="input-block-level"></select>
+                    <select id="category" ng-model="selectedCategory" ng-options="item as item.name for item in listCategories" class="input-block-level"></select>
                     <div class="text-right">
                         <button class="btn" ng-click="addCategory()" ng-disabled="listCategories.length <= 0">{{msg('indicators.form.addCategory')}}</button>
                     </div>
@@ -37,7 +37,7 @@
                         <legend>{{msg('indicators.form.defineReportView')}}:</legend>
                         <div class="scroll">
                             <ul class="unstyled">
-                                <li ng-repeat="item in roles">
+                                <li ng-repeat="item in formData.roles">
                                     <input id="indicatorOwner_{{item.id}}" type="checkbox" ng-model="selectedOwners[item.id]" value="{{item.id}}" ng-click="validateOwners()" />
                                     <label class="inline" for="indicatorOwner_{{item.id}}">{{item.name}}</label>
                                 </li>
@@ -47,76 +47,22 @@
                 </div>
                 <div class="nested-well">
                     <fieldset>
-                        <legend>{{msg('indicators.form.defineAreaAccess')}}:</legend>
-                        <div id="defineArea">
-                            <ul class="unstyled">
-                                <li>
-                                    <label class="span3 text-right" for="area_state">{{msg('indicators.form.selectState')}}:&nbsp;</label>
-                                    <select class="span9" id="area_state" ng-model="selectedState" ng-options="item.id as item.name for item in listState" class="input-block-level" required></select>
-                                </li>
-                                <li ng-show="showDistrict">
-                                    <label class="span3 text-right" for="area_district">{{msg('indicators.form.selectDistrict')}}:&nbsp;</label>
-                                    <select class="span9" id="area_district" ng-model="selectedDistrict" ng-options="item.id as item.name for item in listDistrict" class="input-block-level"></select>
-                                </li>
-                                <li ng-show="showBlock">
-                                    <label class="span3 text-right" for="area_block">{{msg('indicators.form.selectBlock')}}:&nbsp;</label>
-                                    <select class="span9" id="area_block" ng-model="selectedBlock" ng-options="item.id as item.name for item in listBlock" class="input-block-level"></select>
-                                </li>
-                                <!--<li ng-show="showHSC">
-                                    <label class="span3 text-right" for="area_HSC">{{msg('indicators.form.selectHSC')}}:&nbsp;</label>
-                                    <select class="span9" id="area_HSC" ng-model="selectedHSC" ng-options="item.id as item.name for item in listHSC" class="input-block-level"></select>
-                                </li>
-                                <li ng-show="showAWC">
-                                    <label class="span3 text-right" for="area_AWC">{{msg('indicators.form.selectAWC')}}:&nbsp;</label>
-                                    <select class="span9" id="area_AWC" ng-model="selectedAWC" ng-options="item.id as item.name for item in listAWC" class="input-block-level"></select>
-                                </li>-->
-                            </ul>
-                        </div>
-                    </fieldset>
-                </div>
-                <div class="nested-well">
-                    <fieldset>
                         <legend>{{msg('indicators.form.chooseChartType')}}:</legend>
                         <div id="chooseChartType">
-                            <!--<table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th colspan="2">{{msg('indicators.form.label.selectedReportTypes')}}:</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="(key, item) in reportTypes">
-                                    <td class="span9">
-                                        <span>{{item.name}}</span>
-                                    </td>
-                                    <td class="span3">
-                                        <button class="span12 btn" ng-click="removeReportType(key)">{{msg('common.remove')}}</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <label for="reportType">{{msg('indicators.form.label.reportType')}}: </label>
-                            <select id="chartType" ng-model="selectedChartType" ng-options="key as item.name for (key, item) in listChartTypes" class="input-block-level"></select>
-                            <div class="text-right">
-                                <button class="btn" ng-click="addReportType()" ng-disabled="listChartTypes.length <= 0">{{msg('indicators.form.addReportType')}}</button>
-                            </div>-->
-                            <select ng-model="selectedChartType" ng-options="key as item.name for (key, item) in listChartTypes" class="input-block-level" required></select>
+                            <select ng-model="selectedChartType" ng-options="item.id as item.name for item in formData.reportTypes" class="input-block-level" required></select>
                         </div>
                     </fieldset>
                 </div>
             </div>
             <div class="span4 well">
-
                 <div class="nested-well">
                     <legend>{{msg('indicators.form.defineDataForIndicator')}}:</legend>
-                    <!--<label for="indicatorType">{{msg('indicators.form.aggregationType')}}: </label>
-                    <select id="indicatorType" ng-model="indicator.indicatorType" ng-options="item.id as item.name for item in listIndicatorTypes" class="input-block-level"></select>-->
                     <label for="form">{{msg('indicators.form.selectForm')}}: </label>
-                    <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for item in listForms" class="input-block-level" required></select>
+                    <select id="form" ng-model="selectedForm" ng-options="item.id as item.displayName for item in formData.forms" class="input-block-level" required></select>
                     <label for="computedField">{{msg('indicators.form.label.aggregatedField')}}:</label>
-                    <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for item in listComputedFields" class="input-block-level" required></select>
-                    <label for="condition">{{msg('indicators.form.label.complexCondition')}}:</label>
-                    <select id="condition" ng-model="indicator.condition" ng-options="item.id as item.name for item in listConditions" class="input-block-level" required></select>
+                    <select id="computedField" ng-model="indicator.computedField" ng-options="item.id as item.name for item in formData.computedFields" class="input-block-level" required></select>
+                    <label for="complexCondition">{{msg('indicators.form.label.complexCondition')}}:</label>
+                    <select id="complexCondition" ng-model="indicator.complexCondition" ng-options="item.id as item.name for item in formData.complexConditions" class="input-block-level" required></select>
                 </div>
                 <div class="nested-well">
                     <fieldset>
@@ -136,7 +82,7 @@
                     <div class="nested-well">
                         <legend>{{msg('indicators.form.createNewFeature')}}:</legend>
                         <div class="row-fluid" id="formButtonsNew">
-                            <button class="btn btn-block" ng-click="addNew()">{{msg('indicators.list.addNew')}}</button>
+                            <button class="btn btn-block" ng-click="addNewIndicator()">{{msg('indicators.list.addNew')}}</button>
                             <button class="btn btn-block" ng-click="launchDialog()" ng-disabled="listForms.length <= 0">{{msg('indicators.form.createNewComplexCondition')}}</button>
                         </div>
                     </div>
