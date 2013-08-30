@@ -38,12 +38,14 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
     protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to) {
         BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
         BigDecimal denominatorValue = BigDecimal.ZERO;
-        BigDecimal result = BigDecimal.ZERO;
+        BigDecimal result = null;
         if (indicator.getDenominator() != null) {
             result = calculateDwQueryValue(indicator.getDenominator(), area, from, to);
         }
 
-        if (result == null || result.equals(BigDecimal.ZERO)) {
+        if (result == null) {
+            denominatorValue = BigDecimal.ONE;
+        } else if (result.equals(BigDecimal.ZERO)) {
             numeratorValue = BigDecimal.ZERO;
             denominatorValue = BigDecimal.ONE;
         } else {
