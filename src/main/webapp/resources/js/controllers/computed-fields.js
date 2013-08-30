@@ -143,29 +143,31 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     };
 
     $scope.loadComputedField = function(computedField) {
-        $http({
-            url: "api/computedfields/" + computedField.id,
-            method: "GET",
-        }).success(function(data, status, headers, config) {
-            $scope.selectedFields = [];
-            $scope.computedField = data;
-            $scope.computedField.form = $scope.computedField.form.id;
-            for (var i=0; i<data.fieldOperations.length; i+=1) {
-                var operation = $scope.computedField.fieldOperations[i];
-                if (i==0) {
+        if(computedField.id != $scope.computedField.id) {
+            $http({
+                url: "api/computedfields/" + computedField.id,
+                method: "GET",
+            }).success(function(data, status, headers, config) {
+                $scope.selectedFields = [];
+                $scope.computedField = data;
+                $scope.computedField.form = $scope.computedField.form.id;
+                for (var i=0; i<data.fieldOperations.length; i+=1) {
+                    var operation = $scope.computedField.fieldOperations[i];
+                    if (i==0) {
+                        $scope.selectedFields.push({
+                            operator: null,
+                            field: operation.field1
+                        });
+                    }
                     $scope.selectedFields.push({
-                        operator: null,
-                        field: operation.field1
+                        operator: operation.operatorType,
+                        field: operation.field2
                     });
                 }
-                $scope.selectedFields.push({
-                    operator: operation.operatorType,
-                    field: operation.field2
-                });
-            }
-        }).error(function(data, status, headers, config) {
-            $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
-        });
+            }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
+        }
     };
 
 });

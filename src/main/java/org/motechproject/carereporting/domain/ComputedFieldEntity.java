@@ -53,7 +53,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     @Column(name = "origin")
     private Boolean origin;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonView({ ComputedFieldView.class })
     @JoinColumn(name = "computed_field_id", nullable = false)
     @OrderBy("field_operation_id")
