@@ -53,14 +53,14 @@ public class ComputedFieldControllerTest {
         Set<ComputedFieldEntity> computedFieldEntitySet = new LinkedHashSet<>();
         computedFieldEntitySet.add(computedFieldEntity);
 
-        when(computedFieldService.getAllComputedFields()).thenReturn(computedFieldEntitySet);
+        when(computedFieldService.getAllComputedFields(false)).thenReturn(computedFieldEntitySet);
 
         mockMvc.perform(get("/api/computedfields"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(name));
 
-        verify(computedFieldService).getAllComputedFields();
+        verify(computedFieldService).getAllComputedFields(false);
     }
 
     @Test

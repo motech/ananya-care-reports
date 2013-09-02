@@ -31,7 +31,7 @@ public class ComputedFieldController extends BaseController {
     @ResponseBody
     @Transactional
     public String getAllComputedFields() {
-        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields());
+        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields(false));
     }
 
     @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.GET,

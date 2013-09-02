@@ -10,7 +10,7 @@ public interface ComputedFieldService {
 
     String HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS = "hasRole('CAN_CREATE_COMPUTED_FIELDS')";
 
-    Set<ComputedFieldEntity> getAllComputedFields();
+    Set<ComputedFieldEntity> getAllComputedFields(boolean withOrigin);
 
     Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId);
 

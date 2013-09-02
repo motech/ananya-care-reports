@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -78,7 +77,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
 
     @Test
     public void testGetAllComputedFields() {
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields(true);
 
         assertNotNull(computedFieldEntities);
         assertEquals(EXPECTED_COMPUTED_FIELDS_ALL, computedFieldEntities.size());
@@ -106,22 +105,12 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void testDeleteComputedField() {
-        createComputedField();
-
-        computedFieldService.deleteComputedField(newComputedFieldId);
-
-        ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldById(newComputedFieldId);
-        assertNull(computedFieldEntity);
-    }
-
-    @Test
     public void testCreateNewComputedFieldFromDto() {
         ComputedFieldDto computedFieldDto = createComputedFieldDto();
         computedFieldService.createNewComputedFieldFromDto(computedFieldDto);
 
         ComputedFieldEntity computedFieldEntity = null;
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields(true);
         for (ComputedFieldEntity computedField : computedFieldEntities) {
             if (COMPUTED_FIELD_NAME == computedField.getName()) {
                 computedFieldEntity = computedField;
