@@ -31,7 +31,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             dashboards.sort($scope.compareDashboardPositions);
             $scope.dashboards = dashboards;
             if (Object.keys($scope.dashboards).length > 0) {
-                $scope.tabChanged($scope.dashboards[0]);
+                 $scope.fetchTrends();
+                 $scope.getDefaultDashboard();
             }
         });
     };
@@ -345,6 +346,30 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $scope.fetchTrends();
     }
 
+    $scope.getDefaultDashboard = function() {
+        $http.get("api/users/logged_in/dashboard")
+            .success(function(data) {
+                for(var i = 0; i < $scope.dashboards.length; i++) {
+                    if($scope.dashboards[i].id == data.id) {
+                        $scope.tabChanged($scope.dashboards[i]);
+                        break;
+                    }
+                }
+             $('a[href="#tab_' + data.id + '"]').click();
+            }).error(function() {
+                $errorService.genericError($scope, 'dashboard.error.cannotGetDefaultDashboard');
+            })
+    }
+
+    $scope.setDefaultDashboard = function() {
+        $http({
+            method: 'PUT',
+            url: 'api/users/logged_in/dashboard/' + $scope.dashboard.id
+        }).error(function() {
+            $errorService.genericError($scope, 'dashboard.error.cannotUpdateDefaultDashboard');
+        });
+    }
+
     $scope.fetchCategoryIndicators = function(map) {
         if(map.selectedIndicatorCategoryId != null) {
             $http.get('api/indicator/filter/' + map.selectedIndicatorCategoryId).success(function(indicators) {
@@ -379,7 +404,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 for (var i in data) {
                     if (data.hasOwnProperty(i)) {
                         data[i] = data[i].toString();
-                    }
+                    }Ndas
                 }
                 $('#' + map.containerId).html('').vectorMap({
                     map: map.level == "block" ? 'bihar-block' : "bihar-state",

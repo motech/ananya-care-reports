@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -9,6 +10,7 @@ import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +43,14 @@ public class UserController extends BaseController {
     @Autowired
     private IndicatorService indicatorService;
 
+    @Autowired
+    private DashboardService dashboardService;
+
     @RequestMapping(value = "/indicators", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getIndicatorsInUserArea() {
-        //UserEntity userEntity = userService.getCurrentlyLoggedUser();
-
         return this.writeAsString(BaseView.class,
                 indicatorService.getAllIndicators());
     }
@@ -60,6 +63,23 @@ public class UserController extends BaseController {
         AreaEntity areaEntity = userService.getCurrentlyLoggedUser().getArea();
 
         return this.writeAsString(BaseView.class, areaEntity);
+    }
+
+    @RequestMapping(value = "/logged_in/dashboard", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getDefaultUserDashboard() {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+        return writeAsString(BaseView.class, userEntity.getDefaultDashboard());
+    }
+
+    @RequestMapping(value = "/logged_in/dashboard/{dashboardId}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateDefaultUserDashboard(@PathVariable Integer dashboardId) {
+        DashboardEntity dashboardEntity = dashboardService.getDashboardById(dashboardId);
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+        userEntity.setDefaultDashboard(dashboardEntity);
+        userService.updateUser(userEntity);
     }
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

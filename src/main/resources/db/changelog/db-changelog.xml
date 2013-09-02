@@ -25,5 +25,15 @@
             <column name="origin" type="boolean" defaultValue="t"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="CARE #74" author="Adrian Boguszewski">
+        <addColumn tableName="care_user" schemaName="dashboard_app">
+            <column name="default_dashboard_id" type="integer" defaultValue="1"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="care_user" baseColumnNames="default_dashboard_id"
+                                 constraintName="default_dashboard_id_fk"
+                                 referencedTableName="dashboard"
+                                 referencedColumnNames="dashboard_id"/>
+    </changeSet>
 
 </databaseChangeLog>

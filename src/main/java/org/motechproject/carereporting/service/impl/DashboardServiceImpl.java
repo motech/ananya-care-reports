@@ -45,6 +45,11 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public DashboardEntity getDashboardById(Integer id) {
+        return dashboardDao.getById(id);
+    }
+
+    @Override
     public DashboardEntity getDashboardByName(String dashboardName) {
         return dashboardDao.getDashboardByName(dashboardName);
     }

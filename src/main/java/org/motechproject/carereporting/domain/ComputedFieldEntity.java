@@ -64,12 +64,12 @@ public class ComputedFieldEntity extends AbstractEntity {
     }
 
     public ComputedFieldEntity(final String name, final FieldType type, final FormEntity form,
-            final Set<FieldOperationEntity> fieldOperations) {
+            final Set<FieldOperationEntity> fieldOperations, final boolean origin) {
         this.name = name;
         this.type = type;
         this.form = form;
         this.fieldOperations = fieldOperations;
-        this.origin = false;
+        this.origin = origin;
     }
 
     public Boolean getOrigin() {

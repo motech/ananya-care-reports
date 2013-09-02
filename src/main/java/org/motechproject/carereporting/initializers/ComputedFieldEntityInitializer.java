@@ -59,10 +59,11 @@ public class ComputedFieldEntityInitializer {
         Set<FieldDto> fields = formsService.getFieldsByFormEntity(formEntity);
         for (FieldDto field : fields) {
             computedFieldService.createNewComputedField(new ComputedFieldEntity(
-                field.getName(),
-                field.getType(),
-                formEntity,
-                new LinkedHashSet<FieldOperationEntity>()));
+                    field.getName(),
+                    field.getType(),
+                    formEntity,
+                    new LinkedHashSet<FieldOperationEntity>(),
+                    true));
         }
         SecurityContextHolder.clearContext();
     }

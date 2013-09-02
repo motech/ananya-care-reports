@@ -27,6 +27,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContext.xml")
@@ -102,6 +103,16 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
     @Test
     public void testCreateNewComputedField() {
         createComputedField();
+    }
+
+    @Test
+    public void testDeleteComputedField() {
+        createComputedField();
+
+        computedFieldService.deleteComputedField(newComputedFieldId);
+
+        ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldById(newComputedFieldId);
+        assertNull(computedFieldEntity);
     }
 
     @Test

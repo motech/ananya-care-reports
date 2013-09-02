@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -59,6 +60,10 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private Set<IndicatorEntity> indicators;
 
+    @ManyToOne
+    @JoinColumn(name = "default_dashboard_id")
+    private DashboardEntity defaultDashboard;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "care_user_role", joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
@@ -80,6 +85,14 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.password = password;
         this.roles = roles;
         this.salt = UUID.randomUUID().toString();
+    }
+
+    public DashboardEntity getDefaultDashboard() {
+        return defaultDashboard;
+    }
+
+    public void setDefaultDashboard(DashboardEntity defaultDashboard) {
+        this.defaultDashboard = defaultDashboard;
     }
 
     public AreaEntity getArea() {

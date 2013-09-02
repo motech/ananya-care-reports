@@ -7,12 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.http.MediaType;
@@ -54,6 +56,9 @@ public class UserControllerTest {
 
     @Mock
     private IndicatorService indicatorService;
+
+    @Mock
+    private DashboardService dashboardService;
 	
 	@InjectMocks
 	private UserController userController = new UserController();
@@ -399,6 +404,41 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         verify(userService, times(0)).register((UserEntity) anyObject());
+    }
+
+    @Test
+    public void testGetDefaultUserDashboard() throws Exception {
+        Integer id = 2;
+        UserEntity userEntity = new UserEntity();
+        DashboardEntity dashboardEntity = new DashboardEntity();
+        dashboardEntity.setId(id);
+        userEntity.setDefaultDashboard(dashboardEntity);
+
+        when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
+
+        mockMvc.perform(get("/api/users/logged_in/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id));
+
+        verify(userService).getCurrentlyLoggedUser();
+    }
+
+    @Test
+    public void testUpdateDefaultUserDashboard() throws Exception {
+        Integer id = 2;
+        UserEntity userEntity = new UserEntity();
+        DashboardEntity dashboardEntity = new DashboardEntity();
+        dashboardEntity.setId(id);
+
+        when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
+        when(dashboardService.getDashboardById(id)).thenReturn(dashboardEntity);
+
+        when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
+        mockMvc.perform(put("/api/users/logged_in/dashboard/" + id))
+                .andExpect(status().isOk());
+
+        verify(userService).getCurrentlyLoggedUser();
+        verify(dashboardService).getDashboardById(id);
     }
 
 }

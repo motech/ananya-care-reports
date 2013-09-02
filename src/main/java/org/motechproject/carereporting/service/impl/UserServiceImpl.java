@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
             UserEntity userToUpdate = getUserById(user.getId());
             userToUpdate.setUsername(user.getUsername());
             userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setDefaultDashboard(user.getDefaultDashboard());
             userToUpdate.setRoles(user.getRoles());
             userToUpdate.setArea(user.getArea());
             userToUpdate.setDefaultLanguage(user.getDefaultLanguage());

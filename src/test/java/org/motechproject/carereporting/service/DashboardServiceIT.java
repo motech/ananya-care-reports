@@ -80,6 +80,17 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     @Test
+    public void testGetDasboardById() {
+        createDashboard();
+
+        DashboardEntity dashboardEntity = dashboardService.getDashboardById(newDashboardId);
+
+        assertNotNull(dashboardEntity);
+        assertEquals(newDashboardId, dashboardEntity.getId());
+        assertEquals(DASHBOARD_NAME, dashboardEntity.getName());
+    }
+
+    @Test
     public void testGetAllDashboards() {
         Set<DashboardEntity> dashboardEntities = dashboardService.getAllDashboards();
 

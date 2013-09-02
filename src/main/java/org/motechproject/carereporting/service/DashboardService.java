@@ -17,4 +17,7 @@ public interface DashboardService {
     Short getTabPositionForNewDashboard();
 
     void saveDashboardsPositions(List<DashboardPositionDto> dashboardsPositions);
+
+    DashboardEntity getDashboardById(Integer id);
+
 }

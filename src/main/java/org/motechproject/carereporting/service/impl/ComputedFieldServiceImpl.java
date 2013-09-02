@@ -83,7 +83,8 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
                 computedFieldDto.getName(),
                 computedFieldDto.getType(),
                 findFormEntityFromDto(computedFieldDto),
-                new LinkedHashSet<>(computedFieldDto.getFieldOperations()));
+                new LinkedHashSet<>(computedFieldDto.getFieldOperations()),
+                false);
         computedFieldDao.save(computedField);
     }
 
