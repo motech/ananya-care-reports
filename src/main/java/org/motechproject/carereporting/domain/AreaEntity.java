@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -34,7 +35,7 @@ public class AreaEntity extends AbstractEntity {
     @NotNull
     @ManyToOne(targetEntity = LevelEntity.class)
     @JoinColumn(name = "level_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private LevelEntity level;
 
     @ManyToOne

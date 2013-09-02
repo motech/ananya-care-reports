@@ -2,7 +2,6 @@ package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
-import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
@@ -68,7 +67,7 @@ public class DashboardController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getCurrentUserAvailableAreas(@PathVariable Integer areaId) {
-        return writeAsString(BaseView.class, areaService.getAllAreasByParentAreaId(areaId));
+        return writeAsString(DashboardJsonView.class, areaService.getAllAreasByParentAreaId(areaId));
     }
 
     @RequestMapping(value = "/save-positions", method = RequestMethod.POST)

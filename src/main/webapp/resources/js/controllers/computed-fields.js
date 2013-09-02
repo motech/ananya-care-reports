@@ -20,6 +20,12 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     $scope.fetchFormFields = function() {
         $http.get('api/forms/' + $scope.computedField.form + "/computedfields")
         .success(function(fields) {
+            for(var i = 0; i < fields.length; i++) {
+                if(fields[i].name == $scope.computedField.name) {
+                    fields.splice(i, 1);
+                    break;
+                }
+            }
             $scope.fields = fields;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadFields');
@@ -80,10 +86,6 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
             };
 
             $scope.selectedFields.push(field);
-            $scope.fields.splice(index, 1);
-            if ($scope.fields.notEmpty()) {
-                $scope.selectedField = $scope.fields[0].id;
-            }
         }
     };
 
@@ -107,7 +109,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
 
         $http({
             url: "api/computedfields" + (computedFieldId != undefined ? ("/" + computedFieldId) : ""),
-            method: "POST",
+            method: computedFieldId == undefined ? "POST" : "PUT",
             data: $scope.computedField,
             headers: { 'Content-Type': 'application/json' }
         }).success(function(data, status, headers, config) {
@@ -143,7 +145,8 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     };
 
     $scope.loadComputedField = function(computedField) {
-        if(computedField.id != $scope.computedField.id) {
+    // TODO: selected fields doesn't appear when computed field is clicked once
+       // if(computedField.id != $scope.computedField.id) {
             $http({
                 url: "api/computedfields/" + computedField.id,
                 method: "GET",
@@ -167,7 +170,28 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
             }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
-        }
+       // }
     };
+
+    $scope.deleteComputedField = function(computedField) {
+            var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
+            $dialog.messageBox($scope.msg('computedField.confirmDelete.header'), $scope.msg('computedField.confirmDelete.message', computedField.name), btns)
+                .open()
+                .then(function(result) {
+                    if (result === 'yes') {
+                        $http({
+                            method: 'DELETE',
+                            url: 'api/computedfields/' + computedField.id
+                        })
+                        .success(function(data, status, headers, config) {
+                            $scope.computedField = {};
+                            $scope.selectedFields = [];
+                            $scope.fetchComputedFields();
+                        }).error(function(response) {
+                            $errorService.genericError($scope, 'computedField.error.delete');
+                        });
+                    }
+                });
+        };
 
 });

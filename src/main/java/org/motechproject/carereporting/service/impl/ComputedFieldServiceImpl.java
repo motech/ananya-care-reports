@@ -105,4 +105,11 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
         computedFieldDao.update(computedFieldEntity);
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteComputedField(Integer id) {
+        ComputedFieldEntity computedFieldEntity = computedFieldDao.getById(id);
+        computedFieldDao.remove(computedFieldEntity);
+    }
+
 }

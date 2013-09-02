@@ -161,14 +161,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/dashboards/user-areas/' + area.id)
             .success(function(areas) {
                areas.sort(function(a, b) {
-                    return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
+                    return a.level.hierarchyDepth - b.level.hierarchyDepth || a.name.localeCompare(b.name);
                });
                var arr = Array();
 
-               $scope.topAreaLevel = areas[0].levelHierarchyDepth;
+               $scope.topAreaLevel = areas[0].level.hierarchyDepth;
 
                for (var index=0; index<areas.length; index++) {
-                    var levelDiff = areas[index].levelHierarchyDepth - $scope.topAreaLevel;
+                    var levelDiff = areas[index].level.hierarchyDepth - $scope.topAreaLevel;
                     var padding = '';
                     for (var i = 0; i < levelDiff; i++) {
                         padding += '--- ';
@@ -195,14 +195,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/dashboards/user-areas/' + reportRow[0].indicatorAreaId)
             .success(function(areas) {
                areas.sort(function(a, b) {
-                   return a.levelHierarchyDepth - b.levelHierarchyDepth || a.name.localeCompare(b.name);
+                   return a.level.hierarchyDepth - b.level.hierarchyDepth || a.name.localeCompare(b.name);
                });
                var arr = Array();
 
-               $scope.topAreaLevel = areas[0].levelHierarchyDepth;
+               $scope.topAreaLevel = areas[0].level.hierarchyDepth;
 
                for (var index = 0; index < areas.length; index++) {
-                   var levelDiff = areas[index].levelHierarchyDepth - $scope.topAreaLevel;
+                   var levelDiff = areas[index].level.hierarchyDepth - $scope.topAreaLevel;
                    var padding = '';
                    for (var i = 0; i < levelDiff; i++) {
                        padding += '-- ';

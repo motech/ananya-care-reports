@@ -66,4 +66,10 @@ public class ComputedFieldController extends BaseController {
         }
         computedFieldService.updateComputedFieldFromDto(computedFieldId, computedFieldDto);
     }
+
+    @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComputedField(@PathVariable Integer computedFieldId) {
+        computedFieldService.deleteComputedField(computedFieldId);
+    }
 }
