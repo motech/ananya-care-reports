@@ -134,7 +134,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $http.get('api/forms/' + formId + '/computedfields').success(function(computedFields) {
             computedFields.sortByField('name');
             $scope.formData.computedFields = computedFields;
-            $scope.indicator.computedField = computedFields[0].id;
+            if(computedFields.length > 0) {
+                $scope.indicator.computedField = computedFields[0].id;
+            }
         }).error(function() {
             $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
         });

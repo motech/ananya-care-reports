@@ -31,7 +31,15 @@ public class ComputedFieldController extends BaseController {
     @ResponseBody
     @Transactional
     public String getAllComputedFields() {
-        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields(false));
+        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFields());
+    }
+
+    @RequestMapping(value = "/withoutOrigin", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @Transactional
+    public String getAllComputedFieldsWithoutOrigin() {
+        return writeAsString(ComputedFieldView.class, computedFieldService.getAllComputedFieldsWithoutOrigin());
     }
 
     @RequestMapping(value = "/{computedFieldId}", method = RequestMethod.GET,

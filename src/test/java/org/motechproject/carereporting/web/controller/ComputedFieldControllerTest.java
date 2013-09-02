@@ -53,14 +53,35 @@ public class ComputedFieldControllerTest {
         Set<ComputedFieldEntity> computedFieldEntitySet = new LinkedHashSet<>();
         computedFieldEntitySet.add(computedFieldEntity);
 
-        when(computedFieldService.getAllComputedFields(false)).thenReturn(computedFieldEntitySet);
+        when(computedFieldService.getAllComputedFields()).thenReturn(computedFieldEntitySet);
 
         mockMvc.perform(get("/api/computedfields"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(name));
 
-        verify(computedFieldService).getAllComputedFields(false);
+        verify(computedFieldService).getAllComputedFields();
+    }
+
+    @Test
+    public void testGetAllComputedFieldsWithoutOrigin() throws Exception {
+        Integer id = 1;
+        String name = "fieldName";
+        ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity();
+        computedFieldEntity.setId(id);
+        computedFieldEntity.setName(name);
+
+        Set<ComputedFieldEntity> computedFieldEntitySet = new LinkedHashSet<>();
+        computedFieldEntitySet.add(computedFieldEntity);
+
+        when(computedFieldService.getAllComputedFieldsWithoutOrigin()).thenReturn(computedFieldEntitySet);
+
+        mockMvc.perform(get("/api/computedfields/withoutOrigin"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(id))
+                .andExpect(jsonPath("$[0].name").value(name));
+
+        verify(computedFieldService).getAllComputedFieldsWithoutOrigin();
     }
 
     @Test

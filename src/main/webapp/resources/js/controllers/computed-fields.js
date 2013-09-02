@@ -8,7 +8,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     $scope.selectedFields = [];
 
     $scope.fetchComputedFields = function() {
-        $http.get('api/computedfields')
+        $http.get('api/computedfields/withoutOrigin')
         .success(function(computedFields) {
             $scope.computedFields = computedFields;
         }).error(function() {

@@ -77,10 +77,18 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
 
     @Test
     public void testGetAllComputedFields() {
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields(true);
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
 
         assertNotNull(computedFieldEntities);
         assertEquals(EXPECTED_COMPUTED_FIELDS_ALL, computedFieldEntities.size());
+    }
+
+    @Test
+    public void testGetAllComputedFieldsWithoutOrigin() {
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFieldsWithoutOrigin();
+
+        assertNotNull(computedFieldEntities);
+        assertEquals(0, computedFieldEntities.size());
     }
 
     @Test
@@ -110,7 +118,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
         computedFieldService.createNewComputedFieldFromDto(computedFieldDto);
 
         ComputedFieldEntity computedFieldEntity = null;
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields(true);
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
         for (ComputedFieldEntity computedField : computedFieldEntities) {
             if (COMPUTED_FIELD_NAME == computedField.getName()) {
                 computedFieldEntity = computedField;

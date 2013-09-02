@@ -33,19 +33,8 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional
     @Override
-    public Set<ComputedFieldEntity> getAllComputedFields(boolean withOrigin) {
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAll();
-
-        if (!withOrigin) {
-            Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().getOrigin()) {
-                    iterator.remove();
-                }
-            }
-        }
-
-        return computedFieldEntities;
+    public Set<ComputedFieldEntity> getAllComputedFields() {
+        return computedFieldDao.getAll();
     }
 
     @Transactional
@@ -70,6 +59,20 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     @Override
     public ComputedFieldEntity getComputedFieldById(Integer computedFieldId) {
         return computedFieldDao.getByIdWithFields(computedFieldId, "fieldOperations");
+    }
+
+    @Override
+    public Set<ComputedFieldEntity> getAllComputedFieldsWithoutOrigin() {
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAll();
+
+        Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getOrigin()) {
+                iterator.remove();
+            }
+        }
+
+        return computedFieldEntities;
     }
 
     @Transactional(readOnly = false)

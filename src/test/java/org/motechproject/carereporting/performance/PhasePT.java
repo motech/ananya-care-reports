@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
+import org.motechproject.carereporting.performance.scenario.complex.DefineIndicatorScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ManageIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
@@ -26,6 +27,7 @@ import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalc
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoriesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoryScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorFilterIndicatorsScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetCreationFormScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetLanguagesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetMessagesScenario;
@@ -351,6 +353,16 @@ public abstract class PhasePT {
     @Test
     public void testGetLoggedUserLanguage() throws Exception {
         runTest(UserGetLoggedUserLanguageScenario.class);
+    }
+
+    @Test
+    public void testGetCreationForm() throws Exception {
+        runTest(IndicatorGetCreationFormScenario.class);
+    }
+
+    @Test
+    public void testDefineIndicator() throws Exception {
+        runTest(DefineIndicatorScenario.class);
     }
 
     @Test
