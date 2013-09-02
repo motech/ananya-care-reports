@@ -44,7 +44,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     private FieldType type;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "form_id")
     @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
     private FormEntity form;
