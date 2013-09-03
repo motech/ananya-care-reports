@@ -83,7 +83,7 @@
                                 }
                                 indicatorCategory = scope.indicatorCategories[c];
                                 tr = angular.element("<tr/>").addClass("performance-summary-category").append(
-                                    angular.element("<td/>").attr("colspan", "3").html(indicatorCategory.name));
+                                    angular.element("<td/>").attr("colspan", "2").html(indicatorCategory.name));
                                 element.append(tr);
                                 indicatorCategory.indicators.sort(function(a, b) {
                                     if (a.indicator.name > b.indicator.name) {
@@ -113,15 +113,12 @@
                                         labelClass = "label-important";
                                         break;
                                     }
-                                    if(indicator.indicator.isComputed) {
-                                        calc = scope.msg('dashboards.trends.done');
-                                    } else {
-                                        calc = scope.msg('dashboards.trends.progress');
+                                    if(!indicator.indicator.isComputed) {
+                                        trend = scope.msg('dashboards.trends.progress');
+                                        labelClass = "";
                                     }
                                     tr = angular.element("<tr/>").append(
                                         angular.element("<td/>").html(indicator.indicator.name)
-                                    ).append(
-                                        angular.element("<td/>").html(calc)
                                     ).append(
                                         angular.element("<td/>").append(
                                             angular.element("<span/>").html(trend).addClass("label").addClass(labelClass)

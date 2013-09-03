@@ -404,7 +404,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 for (var i in data) {
                     if (data.hasOwnProperty(i)) {
                         data[i] = data[i].toString();
-                    }Ndas
+                    }
                 }
                 $('#' + map.containerId).html('').vectorMap({
                     map: map.level == "block" ? 'bihar-block' : "bihar-state",
