@@ -17,12 +17,15 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
+    private static final Integer EXPETED_NUMBER_OF_TABLES = 27;
+    private static final Integer EXPECTED_NUMBER_OF_COLUMNS = 11;
+
     @Autowired
     private FormsService formsService;
 
     @Test
     public void testGetTables() {
-        int tablesNumber = 25;
+        int tablesNumber = EXPETED_NUMBER_OF_TABLES;
         String[] tab = new String[]{
                 "cf_child_form",
                 "bp_form",
@@ -59,7 +62,7 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testGetTableColumns() {
         String tableName = "abort_form";
-        int columnsNumber = 9;
+        int columnsNumber = EXPECTED_NUMBER_OF_COLUMNS;
         String[] tab = new String[] {
                 "date_aborted",
                 "birth_status",
