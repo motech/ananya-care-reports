@@ -95,53 +95,47 @@
                     <xs:attribute name="foreign-key" use="required" type="xs:string" />
                 </xs:complexType>
             </xs:element>
-            <xs:element name="facts" minOccurs="0">
+            <xs:element name="group-by" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="fact" minOccurs="1" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="name" type="xs:string" />
-                                    <xs:element name="select-columns" type="select_columns" />
-                                    <xs:element name="where-group" type="where_group" minOccurs="0" />
-                                    <xs:element name="groupedByDimensionFactRowsNumber" minOccurs="0" maxOccurs="1">
-                                        <xs:complexType>
-                                            <xs:attribute name="compSymbol" use="optional">
-                                                <xs:simpleType>
-                                                    <xs:restriction base="xs:string">
-                                                        <xs:enumeration value="&gt;=" />
-                                                        <xs:enumeration value="&gt;" />
-                                                        <xs:enumeration value="=" />
-                                                        <xs:enumeration value="&lt;" />
-                                                        <xs:enumeration value="&lt;=" />
-                                                    </xs:restriction>
-                                                </xs:simpleType>
-                                            </xs:attribute>
-                                            <xs:attribute name="value" use="optional" type="xs:integer" />
-                                            <xs:attribute name="groupBy" use="required" type="xs:string" />
-                                        </xs:complexType>
-                                    </xs:element>
-                                </xs:sequence>
-                                <xs:attribute name="combine-type" use="optional">
-                                    <xs:simpleType>
-                                        <xs:restriction base="xs:string">
-                                            <xs:enumeration value="Union" />
-                                            <xs:enumeration value="UnionAll" />
-                                            <xs:enumeration value="Intersect" />
-                                            <xs:enumeration value="Join" />
-                                        </xs:restriction>
-                                    </xs:simpleType>
-                                </xs:attribute>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="having" minOccurs="0" maxOccurs="1" type="having" />
                     </xs:sequence>
+                    <xs:attribute name="tableName" use="required" type="xs:string" />
+                    <xs:attribute name="fieldName" use="required" type="xs:string" />
                 </xs:complexType>
             </xs:element>
             <xs:element name="where-group" minOccurs="0" type="where_group" />
         </xs:sequence>
-        <xs:attribute name="dimension-key" use="optional" type="xs:string" />
-        <xs:attribute name="fact-key" use="optional" type="xs:string" />
     </xs:complexType>
+
+    <xs:complexType name="having">
+        <xs:attribute name="function" use="optional" type="aggregation_function" />
+        <xs:attribute name="tableName" use="optional" type="xs:string" />
+        <xs:attribute name="fieldName" use="required" type="xs:string" />
+        <xs:attribute name="operator" use="required" type="comparison_operator" />
+        <xs:attribute name="value" use="required" type="xs:string" />
+    </xs:complexType>
+
+    <xs:simpleType name="comparison_operator">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="&lt;" />
+            <xs:enumeration value="&lt;=" />
+            <xs:enumeration value="=" />
+            <xs:enumeration value="&lt;&gt;" />
+            <xs:enumeration value="&gt;" />
+            <xs:enumeration value="&gt;=" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="aggregation_function">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Average" />
+            <xs:enumeration value="Count" />
+            <xs:enumeration value="Max" />
+            <xs:enumeration value="Min" />
+            <xs:enumeration value="Sum" />
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="where_group">
         <xs:sequence>

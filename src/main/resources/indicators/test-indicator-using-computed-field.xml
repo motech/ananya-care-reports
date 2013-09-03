@@ -14,21 +14,23 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="id" fact-key="case_id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
             <dimension tableName="mother_case" />
-            <facts>
-                <fact>
-                    <name>bp_form</name>
+            <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                <dw-query>
                     <select-columns>
                         <select-column fieldName="case_id" />
                         <select-column fieldName="test-computed-field" />
                     </select-columns>
-                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="0" groupBy="case_id" />
-                </fact>
-            </facts>
+                    <dimension tableName="bp_form" />
+                    <group-by tableName="bp_form" fieldName="case_id">
+                        <having function="Count" tableName="bp_form" fieldName="case_id" operator=">=" value="0" />
+                    </group-by>
+                </dw-query>
+            </combineWith>
             <where-group>
                 <where-condition type="valueComparison">
                     <table-name>bp_form</table-name>

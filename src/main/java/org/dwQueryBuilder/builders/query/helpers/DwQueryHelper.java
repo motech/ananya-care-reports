@@ -1,12 +1,8 @@
 package org.dwQueryBuilder.builders.query.helpers;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
-import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.enums.ComparisonType;
-import org.dwQueryBuilder.data.queries.ComplexDwQuery;
-import org.dwQueryBuilder.data.queries.DwQuery;
-import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.DSLContext;
 import org.jooq.Select;
@@ -15,12 +11,9 @@ import org.jooq.SelectHavingConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectSelectStep;
 
-import static org.jooq.impl.DSL.fieldByName;
 import static org.jooq.impl.DSL.tableByName;
 
 public final class DwQueryHelper {
-
-    private static final String FACT_ALIAS = "facts";
 
     private DwQueryHelper() {
 
@@ -30,7 +23,6 @@ public final class DwQueryHelper {
         try {
             SelectSelectStep selectSelectStep = dslContext.select();
             SelectColumnHelper.buildSelectColumns(schemaName, selectSelectStep, dwQuery);
-            String tableName = null;
 
             SelectHavingConditionStep selectHavingConditionStep = null;
             if (dwQuery.getGroupBy() != null) {
@@ -38,21 +30,14 @@ public final class DwQueryHelper {
                         .buildGroupBy(schemaName, selectSelectStep, dwQuery.getGroupBy());
             }
 
-            SelectConditionStep selectConditionStep = null;
             selectSelectStep = (selectHavingConditionStep != null)
                     ? (SelectSelectStep) selectHavingConditionStep
                     : selectSelectStep;
             Select select = null;
-            if (dwQuery instanceof SimpleDwQuery) {
-                tableName = ((SimpleDwQuery) dwQuery).getTableName();
-                selectConditionStep = buildFromSimpleDwQuery(schemaName, selectSelectStep, (SimpleDwQuery) dwQuery);
-            } else if (dwQuery instanceof ComplexDwQuery) {
-                tableName = ((ComplexDwQuery) dwQuery).getDimension();
-                select = buildFromComplexDwQuery(dslContext, schemaName, selectSelectStep, (ComplexDwQuery) dwQuery);
-            }
 
+            SelectConditionStep selectConditionStep = buildFromQuery(schemaName, selectSelectStep, dwQuery);
             select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
-            select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, tableName);
+            select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, dwQuery.getTableName());
 
             return select;
         } catch (Exception e) {
@@ -107,9 +92,9 @@ public final class DwQueryHelper {
         return newSelect;
     }
 
-    public static SelectConditionStep buildFromSimpleDwQuery(String schemaName,
-                                                              SelectSelectStep selectSelectStep,
-                                                              SimpleDwQuery simpleDwQuery) {
+    public static SelectConditionStep buildFromQuery(String schemaName,
+                                                     SelectSelectStep selectSelectStep,
+                                                     DwQuery simpleDwQuery) {
         SelectJoinStep selectJoinStep = selectSelectStep.from(tableByName(
                 schemaName, simpleDwQuery.getTableName()));
 
@@ -120,55 +105,6 @@ public final class DwQueryHelper {
         }
 
         return selectConditionStep;
-    }
-
-    public static Select buildFromComplexDwQuery(DSLContext dslContext,
-                                                 String schemaName,
-                                                 SelectSelectStep selectSelectStep,
-                                                 ComplexDwQuery complexDwQuery) {
-        SelectJoinStep selectJoinStep = selectSelectStep.from(tableByName(
-                schemaName, complexDwQuery.getDimension()));
-
-        Select factSelect = null;
-        for (Fact fact : complexDwQuery.getFacts()) {
-            if (fact.getCombineType() == null) {
-                factSelect = buildFromDwQuery(dslContext, schemaName, fact.getTable());
-                continue;
-            }
-
-            factSelect = FactHelper.buildFact(dslContext, schemaName, factSelect, fact);
-        }
-        selectJoinStep = selectJoinStep.join(factSelect.asTable(FACT_ALIAS)).on(
-                ConditionHelper.buildCondition(
-                        fieldByName(
-                                schemaName,
-                                complexDwQuery.getDimension(),
-                                complexDwQuery.getDimensionKey()),
-                        ComparisonType.Equal,
-                        fieldByName(
-                                FACT_ALIAS,
-                                complexDwQuery.getFactKey())
-                )
-        );
-
-        SelectConditionStep selectConditionStep = selectJoinStep.where();
-        if (complexDwQuery.getWhereConditionGroup() != null) {
-            selectConditionStep = ConditionHelper.buildWhereConditionGroup(schemaName, selectConditionStep,
-                    complexDwQuery.getWhereConditionGroup(), false, false);
-        }
-
-        return selectConditionStep;
-    }
-
-    public static String getTableNameForDwQuery(DwQuery dwQuery) {
-
-        if (dwQuery instanceof SimpleDwQuery) {
-            return ((SimpleDwQuery) dwQuery).getTableName();
-        } else if (dwQuery instanceof ComplexDwQuery) {
-            return ((ComplexDwQuery) dwQuery).getDimension();
-        }
-
-        return null;
     }
 
 }

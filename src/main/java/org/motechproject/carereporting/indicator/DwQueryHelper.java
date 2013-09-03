@@ -2,20 +2,17 @@ package org.motechproject.carereporting.indicator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.dwQueryBuilder.builders.ComplexDwQueryBuilder;
 import org.dwQueryBuilder.builders.ComputedColumnBuilder;
+import org.dwQueryBuilder.builders.DwQueryBuilder;
 import org.dwQueryBuilder.builders.DwQueryCombinationBuilder;
-import org.dwQueryBuilder.builders.FactBuilder;
 import org.dwQueryBuilder.builders.GroupByConditionBuilder;
 import org.dwQueryBuilder.builders.HavingConditionBuilder;
 import org.dwQueryBuilder.builders.SelectColumnBuilder;
-import org.dwQueryBuilder.builders.SimpleDwQueryBuilder;
 import org.dwQueryBuilder.builders.WhereConditionBuilder;
 import org.dwQueryBuilder.builders.WhereConditionGroupBuilder;
 import org.dwQueryBuilder.builders.steps.ComputedColumnBuilderOperationStep;
 import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.DwQueryCombination;
-import org.dwQueryBuilder.data.Fact;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
@@ -23,24 +20,19 @@ import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
-import org.dwQueryBuilder.data.queries.ComplexDwQuery;
-import org.dwQueryBuilder.data.queries.DwQuery;
-import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
-import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
-import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
-import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 
@@ -75,61 +67,21 @@ public class DwQueryHelper {
     }
 
     private DwQuery buildDwQuery(DwQueryEntity dwQueryEntity) {
-        if (dwQueryEntity instanceof ComplexDwQueryEntity) {
-            return buildComplexDwQuery((ComplexDwQueryEntity) dwQueryEntity);
-        } else {
-            return buildSimpleDwQuery((SimpleDwQueryEntity) dwQueryEntity);
+        DwQueryBuilder dwQueryBuilder = new DwQueryBuilder();
+        if (dwQueryEntity.getCombination() != null) {
+            dwQueryBuilder.withCombination(prepareCombination(dwQueryEntity.getCombination()));
         }
-    }
-
-    private SimpleDwQuery buildSimpleDwQuery(SimpleDwQueryEntity simpleDwQueryEntity) {
-        SimpleDwQueryBuilder dwQueryBuilder = new SimpleDwQueryBuilder();
-        if (simpleDwQueryEntity.getCombination() != null) {
-            dwQueryBuilder.withCombination(prepareCombination(simpleDwQueryEntity.getCombination()));
+        if (dwQueryEntity.getGroupedBy() != null) {
+            dwQueryBuilder.withGroupBy(prepareGroupBy(dwQueryEntity.getGroupedBy()));
         }
-        if (simpleDwQueryEntity.getGroupedBy() != null) {
-            dwQueryBuilder.withGroupBy(prepareGroupBy(simpleDwQueryEntity.getGroupedBy()));
+        for (SelectColumnEntity selectColumn: dwQueryEntity.getSelectColumns()) {
+            dwQueryBuilder.withSelectColumn(prepareSelectColumn(selectColumn, dwQueryEntity.getTableName(), null));
         }
-        for (SelectColumnEntity selectColumn: simpleDwQueryEntity.getSelectColumns()) {
-            dwQueryBuilder.withSelectColumn(prepareSelectColumn(selectColumn, simpleDwQueryEntity.getTableName(), null));
-        }
-        dwQueryBuilder.withTableName(simpleDwQueryEntity.getTableName());
-        if (simpleDwQueryEntity.getWhereGroup() != null) {
-            dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(simpleDwQueryEntity.getWhereGroup()));
+        dwQueryBuilder.withTableName(dwQueryEntity.getTableName());
+        if (dwQueryEntity.getWhereGroup() != null) {
+            dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(dwQueryEntity.getWhereGroup()));
         }
         return dwQueryBuilder.build();
-    }
-
-    private ComplexDwQuery buildComplexDwQuery(ComplexDwQueryEntity complexDwQueryEntity) {
-        ComplexDwQueryBuilder dwQueryBuilder = new ComplexDwQueryBuilder();
-
-        for (FactEntity fact: complexDwQueryEntity.getFacts()) {
-            dwQueryBuilder.withFact(buildFact(fact));
-        }
-        dwQueryBuilder.withDimension(complexDwQueryEntity.getDimension());
-        if (complexDwQueryEntity.getGroupedBy() != null) {
-            dwQueryBuilder.withGroupBy(prepareGroupBy(complexDwQueryEntity.getGroupedBy()));
-        }
-        if (complexDwQueryEntity.getCombination() != null) {
-            dwQueryBuilder.withCombination(prepareCombination(complexDwQueryEntity.getCombination()));
-        }
-        for (SelectColumnEntity selectColumn: complexDwQueryEntity.getSelectColumns()) {
-            dwQueryBuilder.withSelectColumn(prepareSelectColumn(selectColumn, null, null));
-        }
-        if (complexDwQueryEntity.getWhereGroup() != null) {
-            dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(complexDwQueryEntity.getWhereGroup()));
-        }
-        dwQueryBuilder.withKeys(complexDwQueryEntity.getDimensionKey(), complexDwQueryEntity.getFactKey());
-        return dwQueryBuilder.build();
-    }
-
-    private FactBuilder buildFact(FactEntity fact) {
-        FactBuilder builder = new FactBuilder()
-                .withTable(buildSimpleDwQuery(fact.getTable()));
-        if (fact.getCombineType() != null) {
-            builder.withCombineType(CombineType.valueOf(fact.getCombineType()));
-        }
-        return builder;
     }
 
     private GroupBy prepareGroupBy(GroupedByEntity groupByEntity) {
@@ -284,16 +236,6 @@ public class DwQueryHelper {
     private void addAreaJoinAndCondition(DwQuery dwQuery, AreaEntity area) {
         DwQueryCombination areaJoinCombination = prepareAreaJoin();
 
-        if (dwQuery instanceof ComplexDwQuery) {
-            ComplexDwQuery complexDwQuery = (ComplexDwQuery) dwQuery;
-
-            if (complexDwQuery.getFacts() != null) {
-                for (Fact fact : complexDwQuery.getFacts()) {
-                    addAreaJoinAndCondition(fact.getTable(), area);
-                }
-            }
-        }
-
         if (dwQuery.getCombineWith() != null) {
             for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
                 addAreaJoinAndCondition(dwQueryCombination.getDwQuery(), area);
@@ -323,7 +265,7 @@ public class DwQueryHelper {
                 .withKeys("id", "user_id")
                 .withCombineType(CombineType.Join)
                 .withDwQuery(
-                        new SimpleDwQueryBuilder()
+                        new DwQueryBuilder()
                                 .withSelectColumn(
                                         new SelectColumnBuilder()
                                                 .withColumn("*")

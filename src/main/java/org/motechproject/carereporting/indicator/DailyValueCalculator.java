@@ -2,7 +2,7 @@ package org.motechproject.carereporting.indicator;
 
 import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
-import org.dwQueryBuilder.data.queries.DwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;

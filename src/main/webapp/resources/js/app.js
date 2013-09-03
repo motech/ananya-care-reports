@@ -9,6 +9,7 @@
             .when('/indicators/recalculate', { templateUrl: 'resources/partials/dashboards/dashboard.html', controller: 'recalculateIndicatorsController' })
             .when('/indicator/upload-xml', { templateUrl: 'resources/partials/indicators/uploadXml.html', controller: 'uploadIndicatorController'})
             .when('/indicators/:indicatorId', { templateUrl: 'resources/partials/indicators/indicatorForm.html', controller: 'createIndicatorController' })
+            .when('/indicators/queries/new', { templateUrl: 'resources/partials/indicators/createDwQuery.html', controller: 'createDwQueryController' })
             .when('/forms', { templateUrl: 'resources/partials/forms/list.html', controller: 'formListController' })
             .when('/forms/:formId', { templateUrl: 'resources/partials/forms/form.html', controller: 'formController' })
             .when('/users', {templateUrl: 'resources/partials/users/listUsers.html', controller: 'userListController'})

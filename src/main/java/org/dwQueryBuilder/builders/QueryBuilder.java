@@ -1,7 +1,7 @@
 package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.builders.query.helpers.DwQueryHelper;
-import org.dwQueryBuilder.data.queries.DwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.Select;

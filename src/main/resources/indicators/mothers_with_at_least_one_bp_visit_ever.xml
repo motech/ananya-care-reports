@@ -1,5 +1,5 @@
 <indicator additive="false">
-    <name>Mothers with at least one bp visit</name>
+    <name>Mothers with at least one bp visit, ever</name>
     <categories>
         <category name="Birth preparedness plan"/>
     </categories>
@@ -12,27 +12,29 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="id" fact-key="case_id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
             <dimension tableName="mother_case" />
-            <facts>
-                <fact>
-                    <name>bp_form</name>
+            <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                <dw-query>
                     <select-columns>
-                        <select-column fieldName="case_id" />
+                        <select-column tableName="bp_form" fieldName="case_id" />
                         <select-column aggregation="Count" fieldName="case_id" />
                     </select-columns>
-                    <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
+                    <dimension tableName="bp_form" />
+                    <group-by tableName="bp_form" fieldName="case_id">
+                        <having function="Count" tableName="bp_form" fieldName="case_id" operator=">=" value="1" />
+                    </group-by>
                     <where-group>
                         <where-condition type="calculationEndDate">
                             <table-name>bp_form</table-name>
                             <field>time_end</field>
                         </where-condition>
                     </where-group>
-                </fact>
-            </facts>
+                </dw-query>
+            </combineWith>
         </dw-query>
     </numerator>
 </indicator>

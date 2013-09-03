@@ -15,7 +15,7 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="id" fact-key="case_id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>

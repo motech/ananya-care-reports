@@ -2,7 +2,7 @@ package org.dwQueryBuilder.builders;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.queries.DwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 
 public class DwQueryCombinationBuilder {
     private CombineType combineType;
@@ -20,12 +20,7 @@ public class DwQueryCombinationBuilder {
         return this;
     }
 
-    public DwQueryCombinationBuilder withDwQuery(SimpleDwQueryBuilder dwQueryBuilder) {
-        this.dwQuery = dwQueryBuilder.build();
-        return this;
-    }
-
-    public DwQueryCombinationBuilder withDwQuery(ComplexDwQueryBuilder dwQueryBuilder) {
+    public DwQueryCombinationBuilder withDwQuery(DwQueryBuilder dwQueryBuilder) {
         this.dwQuery = dwQueryBuilder.build();
         return this;
     }

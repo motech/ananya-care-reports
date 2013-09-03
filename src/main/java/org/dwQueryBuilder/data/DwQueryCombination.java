@@ -1,7 +1,6 @@
 package org.dwQueryBuilder.data;
 
 import org.dwQueryBuilder.data.enums.CombineType;
-import org.dwQueryBuilder.data.queries.DwQuery;
 
 public class DwQueryCombination {
     private CombineType combineType;

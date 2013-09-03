@@ -4,7 +4,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.ComputedColumnOperation;
 import org.dwQueryBuilder.data.SelectColumn;
-import org.dwQueryBuilder.data.queries.DwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.AggregateFunction;
 import org.jooq.Field;

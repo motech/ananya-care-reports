@@ -12,17 +12,37 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="id" fact-key="case_id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
             <dimension tableName="mother_case" />
-            <facts>
-                <fact>
-                    <name>registration_mother_form</name>
+            <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                <dw-query>
                     <select-columns>
                         <select-column fieldName="case_id" />
                     </select-columns>
+                    <dimension tableName="registration_mother_form" />
+                    <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                        <dw-query>
+                            <select-columns>
+                                <select-column fieldName="case_id" />
+                            </select-columns>
+                            <dimension tableName="delivery_mother_form" />
+                            <where-group>
+                                <where-condition type="calculationEndDate">
+                                    <table-name>delivery_mother_form</table-name>
+                                    <field>time_end</field>
+                                </where-condition>
+                                <where-condition type="valueComparison">
+                                    <table-name>delivery_mother_form</table-name>
+                                    <field>where_born</field>
+                                    <operator>=</operator>
+                                    <value>hospital</value>
+                                </where-condition>
+                            </where-group>
+                        </dw-query>
+                    </combineWith>
                     <where-group>
                         <where-condition type="calculationEndDate">
                             <table-name>registration_mother_form</table-name>
@@ -35,26 +55,8 @@
                             <value>hospital</value>
                         </where-condition>
                     </where-group>
-                </fact>
-                <fact combine-type="Union">
-                    <name>delivery_mother_form</name>
-                    <select-columns>
-                        <select-column fieldName="case_id" />
-                    </select-columns>
-                    <where-group>
-                        <where-condition type="calculationEndDate">
-                            <table-name>delivery_mother_form</table-name>
-                            <field>time_end</field>
-                        </where-condition>
-                        <where-condition type="valueComparison">
-                            <table-name>delivery_mother_form</table-name>
-                            <field>where_born</field>
-                            <operator>=</operator>
-                            <value>hospital</value>
-                        </where-condition>
-                    </where-group>
-                </fact>
-            </facts>
+                </dw-query>
+            </combineWith>
         </dw-query>
     </numerator>
 </indicator>

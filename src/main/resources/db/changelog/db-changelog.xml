@@ -36,4 +36,18 @@
                                  referencedColumnNames="dashboard_id"/>
     </changeSet>
 
+    <changeSet id="CARE #37 (1)" author="Lech Różański">
+        <sql>
+            alter table dashboard_app.dw_query
+                add column table_name character varying(100);
+
+            update dashboard_app.dw_query set table_name = 'mother_case' where dw_query_id = '1';
+            update dashboard_app.dw_query set table_name = 'delivery_mother_form' where dw_query_id = '2';
+
+            drop table dashboard_app.fact cascade;
+            drop table dashboard_app.complex_dw_query;
+            drop table dashboard_app.simple_dw_query;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

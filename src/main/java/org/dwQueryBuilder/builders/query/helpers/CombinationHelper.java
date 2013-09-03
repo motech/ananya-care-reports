@@ -26,7 +26,7 @@ public final class CombinationHelper {
 
             switch (dwQueryCombination.getCombineType()) {
                 case Join:
-                    String tableName = DwQueryHelper.getTableNameForDwQuery(dwQueryCombination.getDwQuery());
+                    String tableName = dwQueryCombination.getDwQuery().getTableName();
                     return selectJoinStep.join(DwQueryHelper.buildFromDwQuery(
                             dslContext, schemaName, dwQueryCombination.getDwQuery())
                             .asTable(tableName))

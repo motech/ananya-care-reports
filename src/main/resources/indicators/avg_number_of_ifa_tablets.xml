@@ -33,27 +33,29 @@
                             </select-columns>
                             <dimension tableName="mother_case" />
                             <combineWith type="Intersect" dimension-key="id" foreign-key="id">
-                                <dw-query dimension-key="id" fact-key="case_id">
+                                <dw-query>
                                     <select-columns>
                                         <select-column tableName="mother_case" fieldName="*" />
                                     </select-columns>
                                     <dimension tableName="mother_case" />
-                                    <facts>
-                                        <fact>
-                                            <name>bp_form</name>
+                                    <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                                        <dw-query>
                                             <select-columns>
-                                                <select-column fieldName="case_id" />
+                                                <select-column tableName="bp_form" fieldName="case_id" />
                                                 <select-column aggregation="Count" fieldName="case_id" />
                                             </select-columns>
+                                            <dimension tableName="bp_form" />
+                                            <group-by tableName="bp_form" fieldName="case_id">
+                                                <having function="Count" fieldName="*" operator=">=" value="1" />
+                                            </group-by>
                                             <where-group>
                                                 <where-condition type="calculationEndDate">
                                                     <table-name>bp_form</table-name>
                                                     <field>time_end</field>
                                                 </where-condition>
                                             </where-group>
-                                            <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
-                                        </fact>
-                                    </facts>
+                                        </dw-query>
+                                    </combineWith>
                                 </dw-query>
                             </combineWith>
                             <where-group>
@@ -94,27 +96,29 @@
                             </select-columns>
                             <dimension tableName="mother_case" />
                             <combineWith type="Intersect" dimension-key="id" foreign-key="id">
-                                <dw-query dimension-key="id" fact-key="case_id">
+                                <dw-query>
                                     <select-columns>
                                         <select-column tableName="mother_case" fieldName="*" />
                                     </select-columns>
                                     <dimension tableName="mother_case" />
-                                    <facts>
-                                        <fact>
-                                            <name>bp_form</name>
+                                    <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                                        <dw-query>
                                             <select-columns>
-                                                <select-column fieldName="case_id" />
+                                                <select-column tableName="bp_form" fieldName="case_id" />
                                                 <select-column aggregation="Count" fieldName="case_id" />
                                             </select-columns>
+                                            <dimension tableName="bp_form" />
+                                            <group-by tableName="bp_form" fieldName="case_id">
+                                                <having function="Count" fieldName="*" operator=">=" value="1" />
+                                            </group-by>
                                             <where-group>
                                                 <where-condition type="calculationEndDate">
                                                     <table-name>bp_form</table-name>
                                                     <field>time_end</field>
                                                 </where-condition>
                                             </where-group>
-                                            <groupedByDimensionFactRowsNumber compSymbol=">=" value="1" groupBy="case_id" />
-                                        </fact>
-                                    </facts>
+                                        </dw-query>
+                                    </combineWith>
                                 </dw-query>
                             </combineWith>
                             <where-group>

@@ -10,7 +10,6 @@ import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComplexConditionEntity;
-import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FormEntity;
@@ -22,7 +21,6 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
-import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
@@ -409,7 +407,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         try {
             DwQueryEntity numerator = indicatorEntity.getNumerator();
             DwQueryHelper dwQueryHelper = new DwQueryHelper();
-            String tableName = getDwQueryEntityTableName(numerator);
+            String tableName = numerator.getTableName();
             CaseListReport caseListReport = getCaseListReportFromXml(tableName);
             AreaEntity areaEntity = areaService.getAreaById(areaId);
 
@@ -459,16 +457,6 @@ public class IndicatorServiceImpl implements IndicatorService {
             ClassPathResource caseListReportXmlFile = new ClassPathResource("xml/" + tableName + ".xml");
             return xmlCaseListReportParser.parse(caseListReportXmlFile.getFile());
         }
-    }
-
-    private String getDwQueryEntityTableName(DwQueryEntity dwQueryEntity) {
-        if (dwQueryEntity instanceof SimpleDwQueryEntity) {
-            return ((SimpleDwQueryEntity) dwQueryEntity).getTableName();
-        } else if (dwQueryEntity instanceof ComplexDwQueryEntity) {
-            return ((ComplexDwQueryEntity) dwQueryEntity).getDimension();
-        }
-
-        throw new CareRuntimeException("Cannot recognize query type.");
     }
 
     @Override

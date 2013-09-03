@@ -1,0 +1,97 @@
+<div ng:init="$root.pageTitle = title"></div>
+
+<h1 class="text-center">{{msg('queries.new.header')}}</h1>
+<div class="container">
+    <div class="row" ng-repeat="form in queryForms">
+        <div class="alert alert-info" ng-show="form.joinType != null">{{msg('queries.new.joinType.' + form.joinType)}}</div>
+        <div class="well">
+            <div class="nested-well">
+                <div class="form-horizontal">
+                    <label for="selectedTable" class="control-label">{{msg('queries.new.label.selectedDimension')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedTable"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="nested-well">
+                <table class="table table-hover table-condensed">
+                    <thead>
+                    <th class="span10">{{msg('queries.new.selectColumnsHeader')}}:</th>
+                    <th>{{msg('common.actions')}}:</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="fact in form.facts">
+                        <td>{{fact.function}} {{fact.form.name}}.{{fact.field.name}}</td>
+                        <td>
+                            <button class="btn btn-error">{{msg('common.remove')}}</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr />
+                <div class="form-horizontal">
+                    <label for="selectedForm_{{$index}}" class="control-label">{{msg('queries.new.label.selectedForm')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedForm_{{$index}}"></select>
+                    </div>
+                    <label for="selectedField_{{$index}}" class="control-label">{{msg('queries.new.label.selectedField')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedField_{{$index}}"></select>
+                    </div>
+                    <label for="selectedFunction_{{$index}}" class="control-label">{{msg('queries.new.label.selectedFunction')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedFunction_{{$index}}"></select>
+                    </div>
+                    <label for="selectedNvl_{{$index}}" class="control-label">{{msg('queries.new.label.selectedNvl')}}:</label>
+                    <div class="control-group">
+                        <input id="selectedNvl_{{$index}}" type="text" placeholder="{{msg('queries.new.selectedNvlPlaceholder')}}" />
+                        <button class="btn btn-primary">{{msg('common.add')}}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="nested-well">
+                <table class="table table-hover table-condensed">
+                    <thead>
+                    <th class="span10">{{msg('queries.new.selectColumnsHeader')}}:</th>
+                    <th>{{msg('common.actions')}}:</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="selectColumn in form.selectColumns">
+                        <td>{{selectColumn.function}} {{selectColumn.form.name}}.{{selectColumn.field.name}}</td>
+                        <td>
+                            <button class="btn btn-error">{{msg('common.remove')}}</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr />
+                <div class="form-horizontal">
+                    <label for="selectedForm_{{$index}}" class="control-label">{{msg('queries.new.label.selectedForm')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedForm_{{$index}}"></select>
+                    </div>
+                    <label for="selectedField_{{$index}}" class="control-label">{{msg('queries.new.label.selectedField')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedField_{{$index}}"></select>
+                    </div>
+                    <label for="selectedFunction_{{$index}}" class="control-label">{{msg('queries.new.label.selectedFunction')}}:</label>
+                    <div class="control-group">
+                        <select id="selectedFunction_{{$index}}"></select>
+                    </div>
+                    <label for="selectedNvl_{{$index}}" class="control-label">{{msg('queries.new.label.selectedNvl')}}:</label>
+                    <div class="control-group">
+                        <input id="selectedNvl_{{$index}}" type="text" placeholder="{{msg('queries.new.selectedNvlPlaceholder')}}" />
+                        <button class="btn btn-primary">{{msg('common.add')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">
+            <label for="selectJoinType">{{msg('queries.new.selectJoinType')}}:</label>
+            <select id="selectJoinType" class="input-block-level" ng-model="selectedJoinType" ng-options="item as msg('queries.new.joinType.' + item) for item in listQueryJoinTypes"></select>
+            <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
+        </div>
+    </div>
+</div>

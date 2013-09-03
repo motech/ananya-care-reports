@@ -15,25 +15,25 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="mother_id" fact-key="id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
             <dimension tableName="child_case" />
-            <facts>
-                <fact>
-                    <name>mother_case</name>
+            <combineWith type="Join" dimension-key="mother_id" foreign-key="id">
+                <dw-query>
                     <select-columns>
                         <select-column tableName="mother_case" fieldName="*" />
                     </select-columns>
-                </fact>
-            </facts>
-            <where-group>
-                <where-condition type="period">
-                    <table-name>facts</table-name>
-                    <field>add</field>
-                </where-condition>
-            </where-group>
+                    <dimension tableName="mother_case" />
+                    <where-group>
+                        <where-condition type="period">
+                            <table-name>mother_case</table-name>
+                            <field>add</field>
+                        </where-condition>
+                    </where-group>
+                </dw-query>
+            </combineWith>
         </dw-query>
     </numerator>
 </indicator>

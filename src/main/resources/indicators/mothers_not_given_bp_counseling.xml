@@ -15,7 +15,7 @@
     </reports>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <dw-query dimension-key="id" fact-key="case_id">
+        <dw-query>
             <select-columns>
                 <select-column aggregation="Count" fieldName="*" />
             </select-columns>
@@ -26,6 +26,25 @@
                         <select-column tableName="registration_mother_form" fieldName="case_id" />
                     </select-columns>
                     <dimension tableName="registration_mother_form" />
+                    <combineWith type="Join" dimension-key="case_id" foreign-key="case_id">
+                        <dw-query>
+                            <select-columns>
+                                <select-column tableName="bp_form" fieldName="case_id" />
+                            </select-columns>
+                            <dimension tableName="bp_form" />
+                            <group-by tableName="bp_form" fieldName="case_id">
+                                <having function="Count" tableName="bp_form" fieldName="case_id" operator=">=" value="1" />
+                            </group-by>
+                            <where-group>
+                                <where-condition type="valueComparison">
+                                    <table-name>bp_form</table-name>
+                                    <field>counsel_preparation</field>
+                                    <operator>=</operator>
+                                    <value>false</value>
+                                </where-condition>
+                            </where-group>
+                        </dw-query>
+                    </combineWith>
                     <where-group>
                         <where-condition type="period">
                             <table-name>registration_mother_form</table-name>
@@ -34,23 +53,6 @@
                     </where-group>
                 </dw-query>
             </combineWith>
-            <facts>
-                <fact>
-                    <name>bp_form</name>
-                    <select-columns>
-                        <select-column tableName="bp_form" fieldName="case_id" />
-                    </select-columns>
-                    <where-group>
-                        <where-condition type="valueComparison">
-                            <table-name>bp_form</table-name>
-                            <field>counsel_preparation</field>
-                            <operator>=</operator>
-                            <value>false</value>
-                        </where-condition>
-                    </where-group>
-                    <groupedByDimensionFactRowsNumber groupBy="case_id" compSymbol=">" value="1" />
-                </fact>
-            </facts>
         </dw-query>
     </numerator>
 </indicator>

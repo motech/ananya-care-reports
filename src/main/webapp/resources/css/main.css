@@ -807,3 +807,8 @@ h5 {
     margin-bottom: 40px;
     margin-top: 20px;
 }
+
+hr {
+    border: none;
+    border-top: 1px solid rgb(220, 220, 220);
+}

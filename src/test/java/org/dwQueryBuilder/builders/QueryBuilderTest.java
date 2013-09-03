@@ -8,9 +8,7 @@ import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
-import org.dwQueryBuilder.data.queries.ComplexDwQuery;
-import org.dwQueryBuilder.data.queries.DwQuery;
-import org.dwQueryBuilder.data.queries.SimpleDwQuery;
+import org.dwQueryBuilder.data.DwQuery;
 import org.jooq.SQLDialect;
 import org.junit.Test;
 
@@ -41,10 +39,9 @@ public class QueryBuilderTest {
     private static final String USER_ID = "user_id";
     private static final String ID = "id";
     private static final String CASE_ID = "case_id";
-    private static final String CF_MOTHER_FORM = "cf_mother_form";
     private static final String FLW = "flw";
-    private static final String FLW_DISTRICT = "district";
-    private static final String FLW_DISTRICT_NAME = "Bihar";
+    private static final String FLW_STATE = "state";
+    private static final String FLW_STATE_NAME = "Bihar";
     private static final String TIME_START = "time_start";
     private static final String TIME_END = "time_end";
     private static final String FIRST_DATE = "02-02-2013";
@@ -57,35 +54,18 @@ public class QueryBuilderTest {
     private static final String AGE_2 = "23";
     private static final String AGE_3 = "19";
 
-    private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING =
-            "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join" +
-                    " (select * from \"report\".\"close_mother_form\") as \"facts\" on" +
-                    " \"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join" +
-                    " (select * from \"report\".\"child_case\" join" +
-                    " (select * from \"report\".\"close_child_form\") as \"facts\" on" +
-                    " \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\")" +
-                    " as \"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\"";
-    private static final String EXPECTED_POSTGRESQL_COMPLEX_CONDITION_SQL_STRING =
-            "select * from \"report\".\"mother_case\" join ((select \"report\".\"bp_form\".\"case_id\" from " +
-                    "\"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" having " +
-                    "count(\"bp_form\".\"case_id\") >= '2') union (select \"report\".\"cf_mother_form\".\"case_id\" " +
-                    "from \"report\".\"cf_mother_form\" group by \"report\".\"cf_mother_form\".\"case_id\" " +
-                    "having count(\"cf_mother_form\".\"case_id\") >= '3')) as \"facts\" on " +
-                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join " +
-                    "(select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
-                    "\"report\".\"mother_case\".\"user_id\" where \"flw\".\"district\" = 'Bihar'";
     private static final String EXPECTED_POSTGRESQL_SIMPLE_CONDITION_WITH_DATE_DIFF_SQL_STRING =
             "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\" " +
                     "join (select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
                     "\"report\".\"bp_form\".\"user_id\" where (\"bp_form\".\"ifa_tablets_issued\" <= '120'" +
                     " or (\"bp_form\".\"time_end\" + '-120') - (\"bp_form\".\"time_start\" + '360') >= '500')";
     private static final String EXPECTED_POSTGRESQL_INDICATOR_NON_PERIOD_SPECIFIC_COUNT_OF_CASES_SQL_STRING =
-            "select count(*) from \"report\".\"mother_case\" join (select \"report\".\"bp_form\".\"case_id\" from " +
-                    "\"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" having " +
-                    "count(\"bp_form\".\"case_id\") >= '1') as \"facts\" on " +
-                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join " +
-                    "(select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
-                    "\"report\".\"mother_case\".\"user_id\" where \"flw\".\"district\" = 'Bihar'";
+            "select count(*) from \"report\".\"mother_case\" join (select \"report\".\"bp_form\".\"case_id\" " +
+                    "from \"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" having " +
+                    "count(\"bp_form\".\"case_id\") >= '1') as \"bp_form\" on \"bp_form\".\"case_id\" = " +
+                    "\"report\".\"mother_case\".\"id\" join (select * from \"report\".\"flw\") as " +
+                    "\"flw\" on \"flw\".\"id\" = \"report\".\"mother_case\".\"user_id\" where " +
+                    "\"flw\".\"state\" = 'Bihar'";
     private static final String EXPECTED_POSTGRESQL_INDICATOR_COUNT_OF_CASES_IN_A_PERIOD_DD_OFFSET_BASED =
             "select count(*) from \"report\".\"mother_case\" join (select * from \"report\".\"flw\") as \"flw\" on " +
                     "\"flw\".\"id\" = \"report\".\"mother_case\".\"user_id\" where ((((\"mother_case\".\"add\"" +
@@ -94,7 +74,7 @@ public class QueryBuilderTest {
                     " <= '04-02-2013') or ((\"mother_case\".\"edd\" + cast('+10 00:00:00.000000000' " +
                     "as interval day to second)) >= '02-02-2013' and (\"mother_case\".\"edd\"" +
                     " + cast('+10 00:00:00.000000000' as interval day to second)) <= '04-02-2013'))" +
-                    " and \"flw\".\"district\" = 'Bihar')";
+                    " and \"flw\".\"state\" = 'Bihar')";
     private static final String EXPECTED_POSTGRESQL_DATE_RANGE_COMPARISON_SQL_STRING =
             "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\"" +
                     " where ((\"bp_form\".\"time_start\" + cast('+10 00:00:00.000000000' as interval" +
@@ -112,10 +92,11 @@ public class QueryBuilderTest {
                     "\"report\".\"bp_form\".\"ifa_tablets_issued\" having count(\"bp_form\".*) >= '1'";
     private static final String EXPECTED_POSTGRESQL_MULTIPLE_JOINS_SQL_STRING =
             "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join " +
-                    "(select * from \"report\".\"close_mother_form\") as \"facts\" on " +
-                    "\"report\".\"mother_case\".\"id\" = \"facts\".\"case_id\" join " +
-                    "(select * from \"report\".\"child_case\" join (select * from \"report\".\"close_child_form\") " +
-                    "as \"facts\" on \"report\".\"child_case\".\"id\" = \"facts\".\"case_id\") as " +
+                    "(select * from \"report\".\"close_mother_form\") as \"close_mother_form\" on " +
+                    "\"close_mother_form\".\"case_id\" = \"report\".\"mother_case\".\"id\" join " +
+                    "(select * from \"report\".\"child_case\" join " +
+                    "(select * from \"report\".\"close_child_form\") as \"close_child_form\" on " +
+                    "\"close_child_form\".\"case_id\" = \"report\".\"child_case\".\"id\") as " +
                     "\"child_case\" on \"child_case\".\"mother_id\" = \"report\".\"mother_case\".\"id\" " +
                     "join (select * from \"report\".\"bp_form\") as \"bp_form\" on " +
                     "\"bp_form\".\"case_id\" = \"report\".\"mother_case\".\"id\"";
@@ -139,7 +120,7 @@ public class QueryBuilderTest {
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
-        SimpleDwQuery flwQuery = new SimpleDwQueryBuilder()
+        DwQuery flwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder()
                                 .withColumn(WILDCARD)
@@ -147,7 +128,7 @@ public class QueryBuilderTest {
                 .withTableName(FLW)
                 .build();
 
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder().withColumn(BP_FORM, IFA_TABLETS_ISSUED)
                                 .withFunction(SelectColumnFunctionType.Count))
@@ -190,94 +171,6 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testPostgreSqlQueryBuilderComplexCondition() {
-        SelectColumn bpCaseId = new SelectColumnBuilder()
-                .withColumn(BP_FORM, CASE_ID).build();
-        SelectColumn bpCaseIdCount = new SelectColumnBuilder()
-                .withColumnAndFunction(BP_FORM, CASE_ID, SelectColumnFunctionType.Count).build();
-        SelectColumn cfCaseId = new SelectColumnBuilder()
-                .withColumn(CF_MOTHER_FORM, CASE_ID).build();
-        SelectColumn cfCaseIdCount = new SelectColumnBuilder()
-                .withColumnAndFunction(CF_MOTHER_FORM, CASE_ID, SelectColumnFunctionType.Count).build();
-
-        SimpleDwQuery bpFormQuery = new SimpleDwQueryBuilder()
-                .withSelectColumn(bpCaseId)
-                .withTableName(BP_FORM)
-                .withGroupBy(
-                        new GroupByConditionBuilder()
-                                .withField(BP_FORM, CASE_ID)
-                                .withHaving(
-                                        new HavingConditionBuilder()
-                                                .withSelectColumn(bpCaseIdCount)
-                                                .withComparison(ComparisonType.GreaterEqual, "2")
-                                )
-                )
-                .build();
-
-        SimpleDwQuery cfMotherFormQuery = new SimpleDwQueryBuilder()
-                .withSelectColumn(cfCaseId)
-                .withTableName(CF_MOTHER_FORM)
-                .withGroupBy(
-                        new GroupByConditionBuilder()
-                                .withField(CF_MOTHER_FORM, CASE_ID)
-                                .withHaving(
-                                        new HavingConditionBuilder()
-                                                .withSelectColumn(cfCaseIdCount)
-                                                .withComparison(ComparisonType.GreaterEqual, "3")
-                                )
-                )
-                .build();
-
-        SimpleDwQuery flwQuery = new SimpleDwQueryBuilder()
-                .withSelectColumn(
-                        new SelectColumnBuilder()
-                                .withColumn(WILDCARD)
-                )
-                .withTableName(FLW)
-                .build();
-
-        DwQuery dwQuery = new ComplexDwQueryBuilder()
-                .withSelectColumn(
-                        new SelectColumnBuilder()
-                            .withColumn(WILDCARD)
-                )
-                .withDimension(MOTHER_CASE)
-                .withFact(
-                        new FactBuilder().withTable(bpFormQuery)
-                )
-                .withFact(
-                        new FactBuilder().withTable(cfMotherFormQuery)
-                                .withCombineType(CombineType.Union)
-                )
-                .withKeys(ID, CASE_ID)
-                .withCombination(
-                        new DwQueryCombinationBuilder()
-                            .withDwQuery(flwQuery)
-                            .withCombineType(CombineType.Join)
-                            .withKeys(ID, USER_ID)
-                )
-                .withWhereConditionGroup(
-                        new WhereConditionGroupBuilder()
-                                .withCondition(
-                                        new WhereConditionBuilder()
-                                                .withValueComparison(
-                                                        FLW,
-                                                        FLW_DISTRICT,
-                                                        ComparisonType.Equal,
-                                                        FLW_DISTRICT_NAME
-                                                )
-                                )
-                )
-                .build();
-
-        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
-                TEST_SCHEMA_NAME, dwQuery, false);
-
-        assertNotNull(sqlString);
-        assertEquals(EXPECTED_POSTGRESQL_COMPLEX_CONDITION_SQL_STRING, sqlString);
-    }
-
-    @Test
     public void testPostgreSqlCareIndicatorNonPeriodSpecificCountOfCases() {
         SelectColumn selectBpFormCaseId = new SelectColumnBuilder()
                 .withColumn(BP_FORM, CASE_ID)
@@ -286,21 +179,7 @@ public class QueryBuilderTest {
                 .withColumnAndFunction(BP_FORM, CASE_ID, SelectColumnFunctionType.Count)
                 .build();
 
-        SimpleDwQuery flwQuery = new SimpleDwQueryBuilder()
-                .withSelectColumn(
-                        new SelectColumnBuilder()
-                            .withColumn(WILDCARD)
-                )
-                .withTableName(FLW)
-                .build();
-
-        DwQueryCombination flwJoin = new DwQueryCombinationBuilder()
-                .withCombineType(CombineType.Join)
-                .withDwQuery(flwQuery)
-                .withKeys(ID, USER_ID)
-                .build();
-
-        SimpleDwQuery bpFormQuery = new SimpleDwQueryBuilder()
+        DwQuery bpFormQuery = new DwQueryBuilder()
                 .withSelectColumn(selectBpFormCaseId)
                 .withTableName(BP_FORM)
                 .withGroupBy(
@@ -314,24 +193,41 @@ public class QueryBuilderTest {
                 )
                 .build();
 
-        DwQuery dwQuery = new ComplexDwQueryBuilder()
+        DwQueryCombination bpFormJoin = new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.Join)
+                .withDwQuery(bpFormQuery)
+                .withKeys(CASE_ID, ID)
+                .build();
+
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withColumn(WILDCARD)
+                .build();
+
+        DwQuery flwQuery = new DwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(FLW)
+                .build();
+
+        DwQueryCombination flwJoin = new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.Join)
+                .withDwQuery(flwQuery)
+                .withKeys(ID, USER_ID)
+                .build();
+
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder()
                                 .withColumnAndFunction(WILDCARD, SelectColumnFunctionType.Count)
                 )
-                .withDimension(MOTHER_CASE)
-                .withFact(
-                        new FactBuilder()
-                                .withTable(bpFormQuery)
-                )
+                .withTableName(MOTHER_CASE)
+                .withCombination(bpFormJoin)
                 .withCombination(flwJoin)
-                .withKeys(ID, CASE_ID)
                 .withWhereConditionGroup(
                         new WhereConditionGroupBuilder()
                                 .withCondition(
                                         new WhereConditionBuilder()
-                                                .withValueComparison(FLW, FLW_DISTRICT,
-                                                        ComparisonType.Equal, FLW_DISTRICT_NAME)
+                                                .withValueComparison(FLW, FLW_STATE,
+                                                        ComparisonType.Equal, FLW_STATE_NAME)
                                 )
                 )
                 .build();
@@ -352,7 +248,7 @@ public class QueryBuilderTest {
                 .withColumnAndFunction(WILDCARD, SelectColumnFunctionType.Count)
                 .build();
 
-        SimpleDwQuery flwQuery = new SimpleDwQueryBuilder()
+        DwQuery flwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectAll)
                 .withTableName(FLW)
                 .build();
@@ -366,16 +262,16 @@ public class QueryBuilderTest {
         WhereConditionGroup whereConditionGroup = new WhereConditionGroupBuilder()
                 .withGroup(
                         new WhereConditionGroupBuilder()
-                            .withCondition(
-                                    new WhereConditionBuilder()
-                                            .withDateValueComparison(MOTHER_CASE, ADD, ComparisonType.GreaterEqual,
-                                                    FIRST_DATE, DATE_OFFSET_TEN_DAYS)
-                            )
-                            .withCondition(
-                                    new WhereConditionBuilder()
-                                            .withDateValueComparison(MOTHER_CASE, ADD, ComparisonType.LessEqual,
-                                                    SECOND_DATE, DATE_OFFSET_TEN_DAYS)
-                            )
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateValueComparison(MOTHER_CASE, ADD, ComparisonType.GreaterEqual,
+                                                        FIRST_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateValueComparison(MOTHER_CASE, ADD, ComparisonType.LessEqual,
+                                                        SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
                 )
                 .withGroup(
                         new WhereConditionGroupBuilder()
@@ -393,11 +289,11 @@ public class QueryBuilderTest {
                 )
                 .withCondition(
                         new WhereConditionBuilder()
-                                .withValueComparison(FLW, FLW_DISTRICT, ComparisonType.Equal, FLW_DISTRICT_NAME)
+                                .withValueComparison(FLW, FLW_STATE, ComparisonType.Equal, FLW_STATE_NAME)
                 )
                 .build();
 
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectCountAll)
                 .withTableName(MOTHER_CASE)
                 .withCombination(flwJoin)
@@ -412,71 +308,20 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testPostgreSqlComplexDwQueryCombination() {
-        SelectColumn selectAllMothers = new SelectColumnBuilder()
-                .withColumn(MOTHER_CASE, ID)
-                .build();
-        SelectColumn selectAll = new SelectColumnBuilder()
-                .withColumn(WILDCARD)
-                .build();
-
-        ComplexDwQuery childCaseQuery = new ComplexDwQueryBuilder()
-                .withSelectColumn(selectAll)
-                .withDimension(CHILD_CASE)
-                .withFact(
-                        new FactBuilder()
-                            .withTable(
-                                    new SimpleDwQueryBuilder()
-                                            .withSelectColumn(selectAll)
-                                            .withTableName(CLOSE_CHILD_FORM)
-                            )
-                )
-                .withKeys(ID, CASE_ID)
-                .build();
-
-        DwQueryCombination childCaseQueryCombination = new DwQueryCombinationBuilder()
-                .withDwQuery(childCaseQuery)
-                .withCombineType(CombineType.Join)
-                .withKeys(MOTHER_ID, ID)
-                .build();
-
-        DwQuery dwQuery = new ComplexDwQueryBuilder()
-                .withSelectColumn(selectAllMothers)
-                .withDimension(MOTHER_CASE)
-                .withFact(
-                        new FactBuilder()
-                            .withTable(
-                                    new SimpleDwQueryBuilder()
-                                        .withSelectColumn(selectAll)
-                                        .withTableName(CLOSE_MOTHER_FORM)
-                            )
-                )
-                .withKeys(ID, CASE_ID)
-                .withCombination(childCaseQueryCombination)
-                .build();
-
-        String sqlQuery = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
-                TEST_SCHEMA_NAME, dwQuery, false);
-
-        assertNotNull(sqlQuery);
-        assertEquals(EXPECTED_POSTGRESQL_COMPLEX_CONDITION_COMBINATION_SQL_STRING, sqlQuery);
-    }
-
-    @Test
     public void testPostgreSqlDateRangeComparison() {
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder()
-                            .withColumnAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
+                                .withColumnAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
                 )
                 .withTableName(BP_FORM)
                 .withWhereConditionGroup(
                         new WhereConditionGroupBuilder()
-                            .withCondition(
-                                    new WhereConditionBuilder()
-                                        .withDateRangeComparison(BP_FORM, TIME_START, FIRST_DATE,
-                                                SECOND_DATE, DATE_OFFSET_TEN_DAYS)
-                            )
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withDateRangeComparison(BP_FORM, TIME_START, FIRST_DATE,
+                                                        SECOND_DATE, DATE_OFFSET_TEN_DAYS)
+                                )
                 )
                 .build();
 
@@ -489,7 +334,7 @@ public class QueryBuilderTest {
 
     @Test
     public void testPostgreSqlHavingCountWildcard() {
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder()
                                 .withColumnAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
@@ -505,16 +350,16 @@ public class QueryBuilderTest {
                 )
                 .withGroupBy(
                         new GroupByConditionBuilder()
-                            .withField(BP_FORM, IFA_TABLETS_ISSUED)
-                            .withHaving(
-                                    new HavingConditionBuilder()
-                                        .withSelectColumn(
-                                                new SelectColumnBuilder()
-                                                    .withColumnAndFunction(BP_FORM, WILDCARD,
-                                                            SelectColumnFunctionType.Count)
-                                        )
-                                        .withComparison(ComparisonType.GreaterEqual, ONE)
-                            )
+                                .withField(BP_FORM, IFA_TABLETS_ISSUED)
+                                .withHaving(
+                                        new HavingConditionBuilder()
+                                                .withSelectColumn(
+                                                        new SelectColumnBuilder()
+                                                                .withColumnAndFunction(BP_FORM, WILDCARD,
+                                                                        SelectColumnFunctionType.Count)
+                                                )
+                                                .withComparison(ComparisonType.GreaterEqual, ONE)
+                                )
                 )
                 .build();
 
@@ -527,7 +372,7 @@ public class QueryBuilderTest {
 
     @Test
     public void testPostgreSqlFieldComparison() {
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(
                         new SelectColumnBuilder()
                                 .withColumnAndFunction(BP_FORM, IFA_TABLETS_ISSUED, SelectColumnFunctionType.Count)
@@ -572,18 +417,30 @@ public class QueryBuilderTest {
                 .withColumn(WILDCARD)
                 .build();
 
-        ComplexDwQuery childCaseQuery = new ComplexDwQueryBuilder()
-                .withSelectColumn(selectAll)
-                .withDimension(CHILD_CASE)
-                .withFact(
-                        new FactBuilder()
-                                .withTable(
-                                        new SimpleDwQueryBuilder()
-                                                .withSelectColumn(selectAll)
-                                                .withTableName(CLOSE_CHILD_FORM)
-                                )
+        DwQueryCombination closeChildFormJoin = new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.Join)
+                .withDwQuery(
+                        new DwQueryBuilder()
+                                .withSelectColumn(selectAll)
+                                .withTableName(CLOSE_CHILD_FORM)
                 )
-                .withKeys(ID, CASE_ID)
+                .withKeys(CASE_ID, ID)
+                .build();
+
+        DwQueryCombination closeMotherFormJoin = new DwQueryCombinationBuilder()
+                .withCombineType(CombineType.Join)
+                .withDwQuery(
+                        new DwQueryBuilder()
+                                .withSelectColumn(selectAll)
+                                .withTableName(CLOSE_MOTHER_FORM)
+                )
+                .withKeys(CASE_ID, ID)
+                .build();
+
+        DwQuery childCaseQuery = new DwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(CHILD_CASE)
+                .withCombination(closeChildFormJoin)
                 .build();
 
         DwQueryCombination childCaseQueryCombination = new DwQueryCombinationBuilder()
@@ -592,7 +449,7 @@ public class QueryBuilderTest {
                 .withKeys(MOTHER_ID, ID)
                 .build();
 
-        SimpleDwQuery bpFormQuery = new SimpleDwQueryBuilder()
+        DwQuery bpFormQuery = new DwQueryBuilder()
                 .withSelectColumn(selectAll)
                 .withTableName(BP_FORM)
                 .build();
@@ -603,18 +460,10 @@ public class QueryBuilderTest {
                 .withKeys(CASE_ID, ID)
                 .build();
 
-        DwQuery dwQuery = new ComplexDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectAllMothers)
-                .withDimension(MOTHER_CASE)
-                .withFact(
-                        new FactBuilder()
-                                .withTable(
-                                        new SimpleDwQueryBuilder()
-                                                .withSelectColumn(selectAll)
-                                                .withTableName(CLOSE_MOTHER_FORM)
-                                )
-                )
-                .withKeys(ID, CASE_ID)
+                .withTableName(MOTHER_CASE)
+                .withCombination(closeMotherFormJoin)
                 .withCombination(childCaseQueryCombination)
                 .withCombination(bpFormQueryCombination)
                 .build();
@@ -637,15 +486,15 @@ public class QueryBuilderTest {
         values.add(AGE_2);
         values.add(AGE_3);
 
-        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectColumn)
                 .withTableName(MOTHER_CASE)
                 .withWhereConditionGroup(
                         new WhereConditionGroupBuilder()
-                            .withCondition(
-                                    new WhereConditionBuilder()
-                                        .withEnumRangeComparison(MOTHER_CASE, AGE, values)
-                            )
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withEnumRangeComparison(MOTHER_CASE, AGE, values)
+                                )
                 )
                 .build();
 
@@ -663,7 +512,7 @@ public class QueryBuilderTest {
                 .withNullValue(ZERO)
                 .build();
 
-        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectColumn)
                 .withTableName(MOTHER_CASE)
                 .build();
@@ -682,7 +531,7 @@ public class QueryBuilderTest {
                 .withNullValue(ZERO)
                 .build();
 
-        SimpleDwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectColumn)
                 .withTableName(MOTHER_CASE)
                 .build();
@@ -714,7 +563,7 @@ public class QueryBuilderTest {
                 .withAlias(AGE_COMPUTED_COLUMN_ALIAS)
                 .build();
 
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectAge)
                 .withTableName(MOTHER_CASE)
                 .withWhereConditionGroup(
@@ -752,10 +601,10 @@ public class QueryBuilderTest {
                 )
                 .withFunction(SelectColumnFunctionType.Max)
                 .withAlias(AGE_COMPUTED_COLUMN_ALIAS)
-                .withNullValue("0")
+                .withNullValue(ZERO)
                 .build();
 
-        DwQuery dwQuery = new SimpleDwQueryBuilder()
+        DwQuery dwQuery = new DwQueryBuilder()
                 .withSelectColumn(selectAge)
                 .withTableName(MOTHER_CASE)
                 .build();

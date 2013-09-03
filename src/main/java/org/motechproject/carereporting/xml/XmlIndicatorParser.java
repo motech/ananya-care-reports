@@ -11,12 +11,10 @@ import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
-import org.motechproject.carereporting.domain.ComplexDwQueryEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
-import org.motechproject.carereporting.domain.FactEntity;
 import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -28,7 +26,6 @@ import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
-import org.motechproject.carereporting.domain.SimpleDwQueryEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
@@ -36,7 +33,7 @@ import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.xml.mapping.indicators.Category;
 import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
-import org.motechproject.carereporting.xml.mapping.indicators.Fact;
+import org.motechproject.carereporting.xml.mapping.indicators.GroupBy;
 import org.motechproject.carereporting.xml.mapping.indicators.Indicator;
 import org.motechproject.carereporting.xml.mapping.indicators.Query;
 import org.motechproject.carereporting.xml.mapping.indicators.Report;
@@ -281,24 +278,20 @@ public class XmlIndicatorParser {
                 throw new CareRuntimeException("This indicator depends on indicator '" +
                         query.getIndicatorName() + "' which has not been added yet. Please, add this indicator first.");
             }
-            if (indicator.getNumerator() instanceof SimpleDwQueryEntity) {
-                return new SimpleDwQueryEntity((SimpleDwQueryEntity) indicator.getNumerator());
-            } else if (indicator.getNumerator() instanceof ComplexDwQueryEntity) {
-                return new ComplexDwQueryEntity((ComplexDwQueryEntity) indicator.getNumerator());
-            } else {
-                return new DwQueryEntity(indicator.getNumerator());
-            }
+
+            return indicator.getNumerator();
         } else {
             return prepareDwQuery(query.getDwQuery());
         }
     }
 
     private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
-        DwQueryEntity dwQueryEntity;
-        if (dwQuery.getFacts() != null && dwQuery.getFacts().size() > 0) {
-            dwQueryEntity = prepareComplexDwQuery(dwQuery);
-        } else {
-            dwQueryEntity = prepareSimpleDwQuery(dwQuery);
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
+        dwQueryEntity.setTableName(dwQuery.getDimension().getName());
+
+        if (dwQuery.getGroupBy() != null) {
+            GroupedByEntity groupedByEntity = prepareGroupBy(dwQuery);
+            dwQueryEntity.setGroupedBy(groupedByEntity);
         }
         if (dwQuery.getWhereGroup() != null) {
             WhereGroupEntity whereGroup = prepareWhereGroup(dwQuery.getWhereGroup());
@@ -312,21 +305,6 @@ public class XmlIndicatorParser {
         if (dwQuery.getCombineWith() != null) {
             dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
         }
-        return dwQueryEntity;
-    }
-
-    private ComplexDwQueryEntity prepareComplexDwQuery(DwQuery dwQuery) {
-        ComplexDwQueryEntity dwQueryEntity = new ComplexDwQueryEntity();
-        dwQueryEntity.setDimension(dwQuery.getDimension().getName());
-        dwQueryEntity.setFacts(prepareFacts(dwQuery.getFacts()));
-        dwQueryEntity.setDimensionKey(dwQuery.getDimensionKey());
-        dwQueryEntity.setFactKey(dwQuery.getFactKey());
-        return dwQueryEntity;
-    }
-
-    private SimpleDwQueryEntity prepareSimpleDwQuery(DwQuery dwQuery) {
-        SimpleDwQueryEntity dwQueryEntity = new SimpleDwQueryEntity();
-        dwQueryEntity.setTableName(dwQuery.getDimension().getName());
         return dwQueryEntity;
     }
 
@@ -353,16 +331,6 @@ public class XmlIndicatorParser {
         return false;
     }
 
-    private Set<FactEntity> prepareFacts(List<Fact> facts) {
-        Set<FactEntity> factEntities = new LinkedHashSet<>();
-        if (facts != null) {
-            for (Fact fact: facts) {
-                factEntities.add(prepareFact(fact));
-            }
-        }
-        return factEntities;
-    }
-
     private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn, String defaultTableName) {
         if (StringUtils.isEmpty(selectColumn.getTableName())) {
             selectColumn.setTableName(defaultTableName);
@@ -376,34 +344,6 @@ public class XmlIndicatorParser {
         ComputedFieldEntity field = computedFieldDao.getByFields(findBy);
         selectColumnEntity.setComputedField(field);
         return selectColumnEntity;
-    }
-
-    private FactEntity prepareFact(Fact fact) {
-        FactEntity factEntity = new FactEntity();
-        if (fact.getCombineType() != null) {
-            factEntity.setCombineType(fact.getCombineType().toString());
-        }
-        factEntity.setTable(prepareFactDwQuery(fact));
-        return factEntity;
-    }
-
-    private SimpleDwQueryEntity prepareFactDwQuery(Fact fact) {
-        SimpleDwQueryEntity simpleDwQueryEntity = new SimpleDwQueryEntity();
-        simpleDwQueryEntity.setTableName(fact.getName());
-        if (fact.getWhereGroup() != null) {
-            WhereGroupEntity whereGroup = prepareWhereGroup(fact.getWhereGroup());
-            simpleDwQueryEntity.setWhereGroup(whereGroup);
-            simpleDwQueryEntity.setHasPeriodCondition(hasPeriodCondition(whereGroup));
-        }
-        simpleDwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
-        for (SelectColumn selectColumn: fact.getSelectColumns()) {
-            SelectColumnEntity col = prepareSelectColumn(selectColumn, fact.getName());
-            simpleDwQueryEntity.getSelectColumns().add(col);
-        }
-        if (fact.getGroupedBy() != null) {
-            simpleDwQueryEntity.setGroupedBy(prepareGroupedBy(fact));
-        }
-        return simpleDwQueryEntity;
     }
 
     private WhereGroupEntity prepareWhereGroup(WhereGroup whereGroup) {
@@ -426,20 +366,20 @@ public class XmlIndicatorParser {
         return whereGroupEntities;
     }
 
-    private GroupedByEntity prepareGroupedBy(Fact fact) {
+    private GroupedByEntity prepareGroupBy(DwQuery dwQuery) {
         GroupedByEntity groupedByEntity = new GroupedByEntity();
-        groupedByEntity.setFieldName(fact.getGroupedBy().getGroupBy());
-        groupedByEntity.setHaving(prepareHaving(fact));
-        groupedByEntity.setTableName(fact.getName());
+        groupedByEntity.setTableName(dwQuery.getGroupBy().getTableName());
+        groupedByEntity.setFieldName(dwQuery.getGroupBy().getFieldName());
+        groupedByEntity.setHaving(prepareHaving(dwQuery.getGroupBy()));
         return groupedByEntity;
     }
 
-    private HavingEntity prepareHaving(Fact fact) {
+    private HavingEntity prepareHaving(GroupBy groupBy) {
         HavingEntity having = new HavingEntity();
-        having.setOperator(fact.getGroupedBy().getComparisonSymbol());
-        having.setValue(fact.getGroupedBy().getValue());
+        having.setOperator(groupBy.getHaving().getOperator().getValue());
+        having.setValue(groupBy.getHaving().getValue());
         SelectColumnEntity selectCol = new SelectColumnEntity();
-        selectCol.setFunctionName("Count");
+        selectCol.setFunctionName(groupBy.getHaving().getFunction().toString());
         having.setSelectColumnEntity(selectCol);
         return having;
     }

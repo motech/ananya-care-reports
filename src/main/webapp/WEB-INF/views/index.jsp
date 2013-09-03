@@ -49,6 +49,7 @@
     <script src="resources/js/controllers/categories.js" type="text/javascript"></script>
     <script src="resources/js/controllers/dashboards.js" type="text/javascript"></script>
     <script src="resources/js/controllers/forms.js" type="text/javascript"></script>
+    <script src="resources/js/controllers/queries.js" type="text/javascript"></script>
     <script src="resources/js/controllers/indicators.js" type="text/javascript"></script>
     <script src="resources/js/controllers/roles.js" type="text/javascript"></script>
     <script src="resources/js/controllers/users.js" type="text/javascript"></script>

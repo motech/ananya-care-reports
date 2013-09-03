@@ -6,8 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,8 +19,10 @@ import java.util.Set;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "dw_query_id"))
 })
-@Inheritance(strategy = InheritanceType.JOINED)
 public class DwQueryEntity extends AbstractEntity {
+
+    @Column(name = "table_name", length = 100)
+    private String tableName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
@@ -48,6 +48,7 @@ public class DwQueryEntity extends AbstractEntity {
     }
 
     public DwQueryEntity(DwQueryEntity dwQueryEntity) {
+        tableName = dwQueryEntity.getTableName();
         hasPeriodCondition = dwQueryEntity.getHasPeriodCondition();
         selectColumns = new LinkedHashSet<>();
         for (SelectColumnEntity selectColumnEntity : dwQueryEntity.getSelectColumns()) {
@@ -56,6 +57,14 @@ public class DwQueryEntity extends AbstractEntity {
         combination = dwQueryEntity.getCombination() != null ? new CombinationEntity(dwQueryEntity.getCombination()) : null;
         groupedBy = dwQueryEntity.getGroupedBy() != null ? new GroupedByEntity(dwQueryEntity.getGroupedBy()) : null;
         whereGroup = dwQueryEntity.getWhereGroup() != null ? new WhereGroupEntity(dwQueryEntity.getWhereGroup()) : null;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public Set<SelectColumnEntity> getSelectColumns() {

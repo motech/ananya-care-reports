@@ -21,17 +21,53 @@
             </select-columns>
             <dimension tableName="child_case" />
             <combineWith type="Join" dimension-key="mother_id" foreign-key="id">
-                <dw-query dimension-key="id" fact-key="case_id">
+                <dw-query>
                     <select-columns>
                         <select-column tableName="mother_case" fieldName="id" />
                     </select-columns>
                     <dimension tableName="mother_case" />
-                    <facts>
-                        <fact>
-                            <name>registration_mother_form</name>
+                    <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                        <dw-query>
                             <select-columns>
-                                <select-column fieldName="case_id" />
+                                <select-column tableName="registration_mother_form" fieldName="case_id" />
                             </select-columns>
+                            <dimension tableName="registration_mother_form" />
+                            <combineWith type="Union" dimension-key="id" foreign-key="case_id">
+                                <dw-query>
+                                    <select-columns>
+                                        <select-column tableName="delivery_mother_form" fieldName="case_id" />
+                                    </select-columns>
+                                    <dimension tableName="delivery_mother_form" />
+                                    <where-group>
+                                        <where-condition type="valueComparison">
+                                            <table-name>delivery_mother_form</table-name>
+                                            <field>where_born</field>
+                                            <operator>=</operator>
+                                            <value>hospital</value>
+                                        </where-condition>
+                                        <where-condition type="calculationEndDate">
+                                            <table-name>delivery_mother_form</table-name>
+                                            <field>time_end</field>
+                                        </where-condition>
+                                        <where-group>
+                                            <where-condition type="valueComparison">
+                                                <table-name>delivery_mother_form</table-name>
+                                                <field>which_hospital</field>
+                                                <operator>=</operator>
+                                                <value>block_phc</value>
+                                            </where-condition>
+                                        </where-group>
+                                        <where-group join="OR">
+                                            <where-condition type="valueComparison">
+                                                <table-name>delivery_mother_form</table-name>
+                                                <field>which_hospital</field>
+                                                <operator>=</operator>
+                                                <value>district_hospital</value>
+                                            </where-condition>
+                                        </where-group>
+                                    </where-group>
+                                </dw-query>
+                            </combineWith>
                             <where-group>
                                 <where-condition type="valueComparison">
                                     <table-name>registration_mother_form</table-name>
@@ -60,42 +96,8 @@
                                     </where-condition>
                                 </where-group>
                             </where-group>
-                        </fact>
-                        <fact combine-type="Union">
-                            <name>delivery_mother_form</name>
-                            <select-columns>
-                                <select-column fieldName="case_id" />
-                            </select-columns>
-                            <where-group>
-                                <where-condition type="valueComparison">
-                                    <table-name>delivery_mother_form</table-name>
-                                    <field>where_born</field>
-                                    <operator>=</operator>
-                                    <value>hospital</value>
-                                </where-condition>
-                                <where-condition type="calculationEndDate">
-                                    <table-name>delivery_mother_form</table-name>
-                                    <field>time_end</field>
-                                </where-condition>
-                                <where-group>
-                                    <where-condition type="valueComparison">
-                                        <table-name>delivery_mother_form</table-name>
-                                        <field>which_hospital</field>
-                                        <operator>=</operator>
-                                        <value>block_phc</value>
-                                    </where-condition>
-                                </where-group>
-                                <where-group join="OR">
-                                    <where-condition type="valueComparison">
-                                        <table-name>delivery_mother_form</table-name>
-                                        <field>which_hospital</field>
-                                        <operator>=</operator>
-                                        <value>district_hospital</value>
-                                    </where-condition>
-                                </where-group>
-                            </where-group>
-                        </fact>
-                    </facts>
+                        </dw-query>
+                    </combineWith>
                 </dw-query>
             </combineWith>
         </dw-query>
