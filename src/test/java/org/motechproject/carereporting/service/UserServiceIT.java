@@ -62,7 +62,6 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         AreaEntity area = new AreaEntity();
         area.setId(1);
         user.setArea(area);
-        user.setRoles(new HashSet<RoleEntity>());
         userService.register(user);
         assertNotNull(userService.login(username, password));
     }
@@ -122,7 +121,6 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         userEntity.setArea(area);
         userService.register(userEntity);
         userEntity.setUsername(newusername);
-        userEntity.setPassword(password);
         userService.updateUser(userEntity);
         userEntity = userService.login(newusername, password);
 

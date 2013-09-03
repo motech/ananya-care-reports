@@ -5,25 +5,24 @@ import org.motechproject.carereporting.dao.PermissionDao;
 import org.motechproject.carereporting.dao.RoleDao;
 import org.motechproject.carereporting.dao.UserDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.exception.EntityException;
+import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PermissionDao permissionDao;
+
+    @Autowired
+    private DashboardService dashboardService;
 
     @Override
     @Transactional
@@ -79,6 +81,8 @@ public class UserServiceImpl implements UserService {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setId(1);
         user.setDefaultLanguage(languageEntity);
+        DashboardEntity dashboardEntity = dashboardService.getDashboardById(1);
+        user.setDefaultDashboard(dashboardEntity);
         String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
         user.setPassword(encodedPassword);
         try {
@@ -94,9 +98,9 @@ public class UserServiceImpl implements UserService {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setId(1);
         userEntity.setDefaultLanguage(languageEntity);
-        if (userEntity.getSalt() == null) {
-            userEntity.setSalt(UUID.randomUUID().toString());
-        }
+        DashboardEntity dashboardEntity = dashboardService.getDashboardById(1);
+        userEntity.setDefaultDashboard(dashboardEntity);
+
         String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
         userEntity.setPassword(encodedPassword);
         try {
@@ -109,23 +113,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     @Override
     public void updateUser(UserEntity user) {
-        try {
-            UserEntity userToUpdate = getUserById(user.getId());
-            userToUpdate.setUsername(user.getUsername());
-            userToUpdate.setEmail(user.getEmail());
-            userToUpdate.setDefaultDashboard(user.getDefaultDashboard());
-            userToUpdate.setRoles(user.getRoles());
-            userToUpdate.setArea(user.getArea());
-            userToUpdate.setDefaultLanguage(user.getDefaultLanguage());
-            if (!StringUtils.isEmpty(user.getPassword())) {
-                String encodedPassword = encodePasswordWithSalt(user.getPassword(), userToUpdate.getSalt());
-                userToUpdate.setPassword(encodedPassword);
-            }
-
-            userDao.update(userToUpdate);
-        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
-            throw new EntityException("Username already exists", e);
-        }
+        userDao.update(user);
     }
 
     private String encodePasswordWithSalt(String password, String salt) {
