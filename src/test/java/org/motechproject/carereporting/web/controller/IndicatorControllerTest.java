@@ -46,16 +46,16 @@ public class IndicatorControllerTest {
 
     @Mock
     private CronService cronService;
-	
-	@InjectMocks
-	private IndicatorController indicatorController = new IndicatorController();
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() throws Exception {
-		mockMvc = MockMvcBuilders.standaloneSetup(indicatorController).build();
-	}
+
+    @InjectMocks
+    private IndicatorController indicatorController = new IndicatorController();
+    
+    private MockMvc mockMvc;
+    
+    @Before
+    public void setup() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(indicatorController).build();
+    }
 
     @Test
     public void testGetIndicators() throws Exception {

@@ -49,7 +49,7 @@ public class UserControllerTest {
     private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"password\":\"password\", \"area\":{\"id\":\"1\"}}";
 
     @Mock
-	private UserService userService;
+    private UserService userService;
 
     @Mock
     private AreaService areaService;
@@ -59,16 +59,16 @@ public class UserControllerTest {
 
     @Mock
     private DashboardService dashboardService;
-	
-	@InjectMocks
-	private UserController userController = new UserController();
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() throws Exception {
-		mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-	}
+
+    @InjectMocks
+    private UserController userController = new UserController();
+
+    private MockMvc mockMvc;
+
+    @Before
+    public void setup() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+    }
 
     /*@Test
     public void testGetIndicatorsInUserArea() throws Exception {
@@ -370,23 +370,23 @@ public class UserControllerTest {
         verify(userService, times(1)).register((UserEntity) anyObject());
     }
 
-	@Test
-	public void testRegisterSuccessful() throws Exception {
-		mockMvc.perform(put("/api/users")
+    @Test
+    public void testRegisterSuccessful() throws Exception {
+        mockMvc.perform(put("/api/users")
                     .content(REGISTER_JSON)
-	                .contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-		verify(userService, times(1)).register((UserEntity) anyObject());
-	}
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(userService, times(1)).register((UserEntity) anyObject());
+    }
 
-	@Test
-	public void testRegisterInvalidEmail() throws Exception {
+    @Test
+    public void testRegisterInvalidEmail() throws Exception {
         mockMvc.perform(put("/api/users")
                 .content(REGISTER_JSON_INVALID_EMAIL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         verify(userService, times(0)).register((UserEntity) anyObject());
-	}
+    }
 
     @Test
     public void testRegisterUsernameEmptyValidation() throws Exception {

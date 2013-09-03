@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -25,7 +24,7 @@ import static org.junit.Assert.assertArrayEquals;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class ExportServiceIT {
 
-    private static final String csvValue = "\"Area\",\"Frequency\",\"Date\",\"Value\"\n\"name\",\"name\",\"2013-08-20\",\"10\"\n";
+    private static final String CSV_VALUE = "\"Area\",\"Frequency\",\"Date\",\"Value\"\n\"name\",\"name\",\"2013-08-20\",\"10\"\n";
 
     @Autowired
     private ExportService exportService;
@@ -56,6 +55,6 @@ public class ExportServiceIT {
     public void testExportIndicatorValues() throws IOException, ParseException {
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntityList);
 
-        assertArrayEquals(csvValue.getBytes(), bytes);
+        assertArrayEquals(CSV_VALUE.getBytes(), bytes);
     }
 }

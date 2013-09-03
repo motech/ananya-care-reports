@@ -137,17 +137,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
         return indicatorDao.getIndicatorsByCategoryId(categoryId);
     }
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private Set<AreaEntity> getAllChildEntities(AreaEntity areaEntity) {
-        Set<AreaEntity> areas = new LinkedHashSet<>();
-
-        areas.add(areaEntity);
-        for (AreaEntity area : areaEntity.getChildAreas()) {
-            areas.addAll(getAllChildEntities(area));
-        }
-
-        return areas;
-    }
 
     @Transactional
     @Override

@@ -165,7 +165,7 @@ public abstract class PhasePT {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Thread[] users = new Thread[reportLookersCount];
-        for (int i = 0; i<reportLookersCount; i++) {
+        for (int i = 0; i < reportLookersCount; i++) {
             users[i] = new UserThread(scenarioInstance, "User-" + i);
             users[i].start();
             if (i < (PARTS - 1) * reportLookersCount / PARTS) {

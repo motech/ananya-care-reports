@@ -46,6 +46,6 @@ public class ErrorControllerTest {
                 .requestAttr("javax.servlet.error.request_uri", REQUEST_URI))
                 .andExpect(status().isOk());
 
-        verify(errorController, times(1)).getErrorPage((HttpServletRequest)anyObject());
+        verify(errorController, times(1)).getErrorPage((HttpServletRequest) anyObject());
     }
 }

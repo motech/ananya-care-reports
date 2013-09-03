@@ -231,7 +231,7 @@ public class PerformanceTestHelper {
         indicatorDao.save(indicatorEntity);
         for (AreaEntity area: areaService.getAllAreas()) {
             DateTime dateTime = new DateTime();
-            for (int i=0; i<CALCULATE_VALUES_FOR_PERIOD_DAYS; i++) {
+            for (int i = 0; i < CALCULATE_VALUES_FOR_PERIOD_DAYS; i++) {
                 addCalculatedValueForDate(indicatorEntity, area, dateTime.toDate());
                 dateTime = dateTime.plusDays(1);
             }

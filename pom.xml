@@ -45,6 +45,7 @@
         <pmd.skip>${check.code.skip}</pmd.skip>
         <checkstyle.skip>${check.code.skip}</checkstyle.skip>
         <test.phase>Default</test.phase>
+        <include.tests>false</include.tests>
 
         <test.jdbc.driverClassName>org.postgresql.Driver</test.jdbc.driverClassName>
         <test.jdbc.url>jdbc:postgresql://127.0.0.1:5432</test.jdbc.url>
@@ -278,7 +279,7 @@
                     <rulesets>
                         <ruleset>${modules.root.dir}/pmd.xml</ruleset>
                     </rulesets>
-                    <includeTests>false</includeTests>
+                    <includeTests>${include.tests}</includeTests>
                     <targetJdk>${jdk.version}</targetJdk>
                     <skip>${pmd.skip}</skip>
                 </configuration>
@@ -299,7 +300,7 @@
                 <version>2.10</version>
                 <configuration>
                     <configLocation>${modules.root.dir}/checkstyle.xml</configLocation>
-                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <includeTestSourceDirectory>${include.tests}</includeTestSourceDirectory>
                     <enableFilesSummary>true</enableFilesSummary>
                     <failsOnError>true</failsOnError>
                     <consoleOutput>true</consoleOutput>
@@ -326,7 +327,7 @@
                     <excludeFilterFile>${modules.root.dir}/findbugs-exclude.xml</excludeFilterFile>
                     <includeFilterFile>${modules.root.dir}/findbugs-include.xml</includeFilterFile>
                     <skip>${findbugs.skip}</skip>
-                    <includeTests>false</includeTests>
+                    <includeTests>${include.tests}</includeTests>
                 </configuration>
                 <executions>
                     <execution>

@@ -36,17 +36,17 @@ public class ReportControllerTest {
     private static final String UPDATE_REPORT_JSON = "{\"indicatorId\":\"1\", \"reportTypeId\":\"1\", \"labelX\":\"Label X\", \"labelY\":\"Label Y\"}";
 
     @Mock
-	private ReportService reportService;
-	
-	@InjectMocks
-	private ReportController reportController = new ReportController();
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() throws Exception {
-		mockMvc = MockMvcBuilders.standaloneSetup(reportController).build();
-	}
+    private ReportService reportService;
+    
+    @InjectMocks
+    private ReportController reportController = new ReportController();
+    
+    private MockMvc mockMvc;
+    
+    @Before
+    public void setup() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(reportController).build();
+    }
 
     @Test
     public void testSaveReport() throws Exception {
