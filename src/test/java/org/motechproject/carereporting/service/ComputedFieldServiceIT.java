@@ -85,7 +85,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
 
     @Test
     public void testGetAllComputedFieldsWithoutOrigin() {
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFieldsWithoutOrigin();
+        Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields(false);
 
         assertNotNull(computedFieldEntities);
         assertEquals(0, computedFieldEntities.size());

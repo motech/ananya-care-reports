@@ -67,7 +67,7 @@ import java.util.TreeMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = "classpath:testContext.xml")
+@ContextConfiguration(locations = "classpath:performanceTestContext.xml")
 public abstract class PhasePT {
 
     private static final Logger LOGGER = Logger.getLogger(PhasePT.class);

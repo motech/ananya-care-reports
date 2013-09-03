@@ -1,8 +1,5 @@
 package org.dwQueryBuilder.data;
 
-import org.dwQueryBuilder.data.DwQueryCombination;
-import org.dwQueryBuilder.data.GroupBy;
-import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 
 import java.util.LinkedHashSet;

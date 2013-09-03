@@ -35,7 +35,7 @@
                                  referencedTableName="dashboard"
                                  referencedColumnNames="dashboard_id"/>
     </changeSet>
-
+    
     <changeSet id="CARE #37 (1)" author="Lech Różański">
         <sql>
             alter table dashboard_app.dw_query
@@ -48,6 +48,10 @@
             drop table dashboard_app.complex_dw_query;
             drop table dashboard_app.simple_dw_query;
         </sql>
+    </changeSet>
+
+    <changeSet id="CARE #51" author="Adrian Boguszewski">
+        <dropColumn tableName="language" columnName="defined" schemaName="dashboard_app"/>
     </changeSet>
 
 </databaseChangeLog>

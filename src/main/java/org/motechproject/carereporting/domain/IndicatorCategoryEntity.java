@@ -31,6 +31,7 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private String name;
 
+    @NotNull
     @Column (name = "short_code", unique = true)
     @JsonView({ BaseView.class })
     private String shortCode;

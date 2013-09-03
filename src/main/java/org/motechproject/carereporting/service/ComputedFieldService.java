@@ -16,7 +16,7 @@ public interface ComputedFieldService {
 
     ComputedFieldEntity getComputedFieldById(Integer computedFieldId);
 
-    Set<ComputedFieldEntity> getAllComputedFieldsWithoutOrigin();
+    Set<ComputedFieldEntity> getAllComputedFields(boolean origin);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
     void createNewComputedField(ComputedFieldEntity computedFieldEntity);

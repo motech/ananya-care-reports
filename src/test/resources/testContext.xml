@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:security="http://www.springframework.org/schema/security"
@@ -77,9 +78,5 @@
     <bean id="formEntityInitializer" class="org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer" init-method="loadFormsFromDB" />
 
     <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
-
-    <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabaseWithRandomIndicators" depends-on="formEntityInitializer">
-        <constructor-arg type="int" value="30"/>
-    </bean>
 
 </beans>

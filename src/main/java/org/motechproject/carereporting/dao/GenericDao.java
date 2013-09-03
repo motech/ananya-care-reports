@@ -1,10 +1,12 @@
 package org.motechproject.carereporting.dao;
 
 import org.motechproject.carereporting.domain.AbstractEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Set;
 
+@Transactional
 public interface GenericDao<T extends AbstractEntity> {
 
     Set<T> getAll();
