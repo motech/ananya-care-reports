@@ -353,7 +353,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         break;
                     }
                 }
-             $('a[href="#tab_' + data.id + '"]').click();
+                $scope.defaultDashboard = data.tabPosition;
             }).error(function() {
                 $errorService.genericError($scope, 'dashboard.error.cannotGetDefaultDashboard');
             })
