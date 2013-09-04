@@ -10,7 +10,7 @@
     <reports>
         <report type="Line Chart" />
     </reports>
-    <area name="Bihar" level="State"/>
+    <area level="District"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
         <dw-query>

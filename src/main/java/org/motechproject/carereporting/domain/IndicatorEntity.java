@@ -52,10 +52,9 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<IndicatorCategoryEntity> categories;
 
     @NotNull
+    @JoinColumn(name = "area_level_id", referencedColumnName = "level_id", nullable = false)
     @ManyToOne
-    @JoinColumn(name = "area_id", referencedColumnName = "area_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
-    private AreaEntity area;
+    private LevelEntity areaLevel;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
@@ -137,12 +136,12 @@ public class IndicatorEntity extends AbstractEntity {
         this.categories = categories;
     }
 
-    public AreaEntity getArea() {
-        return area;
+    public LevelEntity getAreaLevel() {
+        return areaLevel;
     }
 
-    public void setArea(AreaEntity area) {
-        this.area = area;
+    public void setAreaLevel(LevelEntity areaLevel) {
+        this.areaLevel = areaLevel;
     }
 
     public Set<ReportEntity> getReports() {

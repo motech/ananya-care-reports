@@ -13,7 +13,7 @@
     <reports>
         <report type="Line Chart" label-x="Time" label-y="Value" />
     </reports>
-    <area name="Bihar" level="State"/>
+    <area level="State"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
         <dw-query>

@@ -6,18 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "area")
 public class Area {
 
-    private String name;
-
     private Level level;
-
-    @XmlAttribute
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @XmlAttribute
     public Level getLevel() {

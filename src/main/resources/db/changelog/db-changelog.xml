@@ -47,4 +47,19 @@
         <dropColumn tableName="language" columnName="defined" schemaName="dashboard_app"/>
     </changeSet>
 
+    <changeSet id="CARE #37" author="Krzysztof Kaczmarczyk">
+        <dropColumn columnName="area_id"
+                    schemaName="dashboard_app"
+                    tableName="indicator"
+                />
+        <addColumn tableName="indicator" schemaName="dashboard_app">
+            <column name="area_level_id" type="bigint"/>
+        </addColumn>
+        <addNotNullConstraint columnName="area_level_id"
+                              tableName="indicator"/>
+        <addForeignKeyConstraint baseTableName="indicator" baseColumnNames="area_level_id"
+                                 constraintName="fk_indicator_area_level"
+                                 referencedColumnNames="level_id" referencedTableName="level"/>
+    </changeSet>
+
 </databaseChangeLog>
