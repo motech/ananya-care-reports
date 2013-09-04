@@ -57,7 +57,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.reportRows = [];
     $scope.allReportsRows = [];
     $scope.reportValues = [];
-    $scope.userAreaId = [];
 
     $scope.prepareAllReportRows = function() {
         $scope.allReportsRows = [];
@@ -81,7 +80,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     report.indicatorId = indicator.id;
                     report.needsRefreshing = true;
                     report.computing = indicator.isComputed;
-                    report.indicatorAreaId = $scope.userArea.id;
+                    report.indicatorAreaId = indicator.area.id;
                     report.indicatorName = indicator.name;
                     report.frequencyId = indicator.defaultFrequency.id;
                     report.additive = indicator.isAdditive;
@@ -186,7 +185,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchCurrentUserAreas = function() {
         $http.get('api/users/logged_in/area')
             .success(function(areaId) {
-                $scope.userArea=areaId;
                 $scope.fetchTrendAreas(areaId);
             });
     };

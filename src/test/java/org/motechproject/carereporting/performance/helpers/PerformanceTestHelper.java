@@ -229,7 +229,7 @@ public class PerformanceTestHelper {
         IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(new FileInputStream(indicator));
         indicatorEntity.setName(name);
         indicatorDao.save(indicatorEntity);
-        for (AreaEntity area: areaService.getAllAreas()) {
+        for (AreaEntity area: areaService.getAllAreasByParentAreaId(indicatorEntity.getArea().getId())) {
             DateTime dateTime = new DateTime();
             for (int i = 0; i < CALCULATE_VALUES_FOR_PERIOD_DAYS; i++) {
                 addCalculatedValueForDate(indicatorEntity, area, dateTime.toDate());

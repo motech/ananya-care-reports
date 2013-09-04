@@ -51,6 +51,12 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
     private Set<IndicatorCategoryEntity> categories;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "area_id", referencedColumnName = "area_id", nullable = false)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
+    private AreaEntity area;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity owner;
@@ -129,6 +135,14 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setCategories(Set<IndicatorCategoryEntity> categories) {
         this.categories = categories;
+    }
+
+    public AreaEntity getArea() {
+        return area;
+    }
+
+    public void setArea(AreaEntity area) {
+        this.area = area;
     }
 
     public Set<ReportEntity> getReports() {

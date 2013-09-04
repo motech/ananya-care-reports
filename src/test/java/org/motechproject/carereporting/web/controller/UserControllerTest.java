@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
+import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -18,6 +20,7 @@ import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -27,6 +30,7 @@ import java.util.Set;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,10 +59,10 @@ public class UserControllerTest {
     private AreaService areaService;
 
     @Mock
-    private IndicatorService indicatorService;
+    private DashboardService dashboardService;
 
     @Mock
-    private DashboardService dashboardService;
+    private IndicatorService indicatorService;
 
     @InjectMocks
     private UserController userController = new UserController();
@@ -67,10 +71,10 @@ public class UserControllerTest {
 
     @Before
     public void setup() throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+    	mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
-    /*@Test
+    @Test
     public void testGetIndicatorsInUserArea() throws Exception {
         Integer id = 1;
         String username = "username";
@@ -99,7 +103,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].name").value(indicatorName));
 
         verify(indicatorService).getAllIndicatorsUnderUserArea(id);
-    }*/
+    }
 
     @Test
     public void testGetAllAreas() throws Exception {

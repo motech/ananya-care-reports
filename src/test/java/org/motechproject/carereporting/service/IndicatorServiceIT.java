@@ -49,9 +49,6 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private AreaService areaService;
-
     @Before
     public void setupAuthentication() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -72,6 +69,11 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     @Test
     public void testGetIndicatorsByCategoryId() {
         assertEquals(EXPECTED_CATEGORY_INDICATORS_COUNT, indicatorService.getIndicatorsByCategoryId(CATEGORY_ID).size());
+    }
+
+    @Test
+    public void testGetAllIndicatorsUnderUserArea() {
+        assertNotNull(indicatorService.getAllIndicatorsUnderUserArea(USER_ID));
     }
 
     @Test
@@ -153,7 +155,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setId(id);
         IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
-                areaService.getAreaById(1), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.TEN, frequencyEntity, new Date());
+                indicator.getArea(), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.TEN, frequencyEntity, new Date());
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         assertNotNull(indicatorService.getAllIndicatorValues().iterator().next());
     }
@@ -165,7 +167,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
         FrequencyEntity frequencyEntity = new FrequencyEntity();
         frequencyEntity.setId(id);
         IndicatorValueEntity indicatorValueEntity = new IndicatorValueEntity(indicator,
-                areaService.getAreaById(1), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, frequencyEntity, new Date());
+                indicator.getArea(), BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, frequencyEntity, new Date());
         indicatorService.createNewIndicatorValue(indicatorValueEntity);
         indicatorValueEntity.setValue(BigDecimal.TEN);
         indicatorService.updateIndicatorValue(indicatorValueEntity);

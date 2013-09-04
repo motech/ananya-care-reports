@@ -13,13 +13,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="CARE #37" author="Krzysztof Kaczmarczyk">
-        <dropColumn columnName="area_id"
-                    schemaName="dashboard_app"
-                    tableName="indicator"
-                />
-    </changeSet>
-
     <changeSet id="CARE #86" author="Adrian Boguszewski">
         <addColumn tableName="computed_field" schemaName="dashboard_app">
             <column name="origin" type="boolean" defaultValue="t"/>

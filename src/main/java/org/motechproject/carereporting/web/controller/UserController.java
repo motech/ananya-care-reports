@@ -51,8 +51,10 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getIndicatorsInUserArea() {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+
         return this.writeAsString(BaseView.class,
-                indicatorService.getAllIndicators());
+                indicatorService.getAllIndicatorsUnderUserArea(userEntity.getArea().getId()));
     }
 
     @RequestMapping(value = "/logged_in/area", method = RequestMethod.GET,
