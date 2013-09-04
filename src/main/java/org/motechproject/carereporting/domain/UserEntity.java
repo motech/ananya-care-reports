@@ -48,11 +48,11 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     private String salt;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "area_id")
     private AreaEntity area;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "default_language_id")
     private LanguageEntity defaultLanguage;
 

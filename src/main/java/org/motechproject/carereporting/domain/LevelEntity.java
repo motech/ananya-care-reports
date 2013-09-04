@@ -9,6 +9,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,11 +28,11 @@ public class LevelEntity extends AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_level_id")
     private LevelEntity parentLevel;
 
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, targetEntity = AreaEntity.class)
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
     private Set<AreaEntity> areas;
 
     @Column(name = "hierarchy_depth")

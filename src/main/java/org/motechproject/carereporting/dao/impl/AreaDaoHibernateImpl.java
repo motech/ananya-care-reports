@@ -5,15 +5,15 @@ import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Component
 public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> implements AreaDao {
 
     @Override
-    public List<AreaEntity> getAllChildAreasByParentAreaId(Integer parentAreaId) {
-        List<AreaEntity> areas = new ArrayList<>();
+    public Set<AreaEntity> getAllChildAreasByParentAreaId(Integer parentAreaId) {
+        Set<AreaEntity> areas = new LinkedHashSet<>();
         for (AreaEntity area: getDirectChildAreas(parentAreaId)) {
             areas.add(area);
             areas.addAll(getAllChildAreasByParentAreaId(area.getId()));
@@ -23,20 +23,20 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<AreaEntity> getDirectChildAreas(Integer parentAreaId) {
-        return getCurrentSession()
+    public Set<AreaEntity> getDirectChildAreas(Integer parentAreaId) {
+        return new LinkedHashSet<AreaEntity>(getCurrentSession()
                 .createCriteria(AreaEntity.class)
                 .add(Restrictions.eq("parentArea.id", parentAreaId))
-                .list();
+                .list());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<AreaEntity> getAreasByLevelId(Integer levelId) {
-        return getCurrentSession()
+    public Set<AreaEntity> getAreasByLevelId(Integer levelId) {
+        return new LinkedHashSet<AreaEntity>(getCurrentSession()
                 .createQuery("from AreaEntity where level.id = :levelId")
                 .setParameter("levelId", levelId)
-                .list();
+                .list());
     }
 
 }

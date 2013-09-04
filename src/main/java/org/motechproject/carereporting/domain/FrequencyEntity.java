@@ -8,6 +8,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -26,14 +27,14 @@ public class FrequencyEntity extends AbstractEntity {
     @JsonView({ BaseView.class })
     private String frequencyName;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_frequency_id")
     private FrequencyEntity parentFrequency;
 
-    @OneToOne(mappedBy = "parentFrequency")
+    @OneToOne(mappedBy = "parentFrequency", fetch = FetchType.LAZY)
     private FrequencyEntity childFrequency;
 
-    @OneToOne(mappedBy = "frequency")
+    @OneToOne(mappedBy = "frequency", fetch = FetchType.LAZY)
     private CronTaskEntity cronTask;
 
     @OneToMany(mappedBy = "frequency")

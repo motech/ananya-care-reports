@@ -175,7 +175,7 @@ public class LanguageServiceImpl implements LanguageService {
     private String getMessagesFromFilePlain(String languageCode) {
         try {
             String code = extractLanguageCode(languageCode);
-            String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
+            String fileName = String.format(CARE_MESSAGE_DIRECTORY + "/" + FILE_NAME, code);
 
             Set<String> defaultMessages = getDefaultMessageFileContents();
             if (StringUtils.isBlank(code) || code.equals(DEFAULT_LANGUAGE_CODE)) {

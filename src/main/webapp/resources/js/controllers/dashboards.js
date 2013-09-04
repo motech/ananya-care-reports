@@ -263,6 +263,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.trendPerCategory = {};
 
     $scope.fetchTrends = function() {
+    if($scope.areaId != undefined) {
         var startDate = $("#start-date input").val(),
             endDate = $("#end-date input").val(),
             url;
@@ -319,6 +320,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
             $scope.loading = false;
         });
+        }
     };
 
     $scope.maps = [];

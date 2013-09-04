@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +29,7 @@ public class AreaDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Test
     public void testFindAllChildAreasByParentAreaId() {
-        List<AreaEntity> areaEntityList = areaDao.getAllChildAreasByParentAreaId(PARENT_AREA_ID);
+        Set<AreaEntity> areaEntityList = areaDao.getAllChildAreasByParentAreaId(PARENT_AREA_ID);
 
         assertNotNull(areaEntityList);
         assertEquals(EXPECTED_CHILD_AREAS, areaEntityList.size());
@@ -36,7 +37,7 @@ public class AreaDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Test
     public void testFindDirectChildAreas() {
-        List<AreaEntity> areaEntityList = areaDao.getDirectChildAreas(PARENT_AREA_ID);
+        Set<AreaEntity> areaEntityList = areaDao.getDirectChildAreas(PARENT_AREA_ID);
 
         assertNotNull(areaEntityList);
         assertEquals(EXPECTED_DIRECT_CHILD_AREAS, areaEntityList.size());
@@ -44,7 +45,7 @@ public class AreaDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Test
     public void testFindAreasByLevelId() {
-        List<AreaEntity> areaEntityList = areaDao.getAreasByLevelId(LEVEL_ID);
+        Set<AreaEntity> areaEntityList = areaDao.getAreasByLevelId(LEVEL_ID);
 
         assertNotNull(areaEntityList);
         assertEquals(EXPECTED_AREAS_BY_LEVEL_ID, areaEntityList.size());

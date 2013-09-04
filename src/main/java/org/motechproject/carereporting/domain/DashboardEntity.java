@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -41,14 +42,14 @@ public class DashboardEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "tab_position")
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ BaseView.class, DashboardJsonView.class })
     private Short tabPosition;
 
-    @OneToOne(mappedBy = "dashboard", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "dashboard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonView({ DashboardJsonView.class })
     private IndicatorCategoryEntity indicatorCategory;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "report_dashboard", joinColumns = { @JoinColumn(name = "dashboard_id") },
             inverseJoinColumns = { @JoinColumn(name = "report_id") })
     private Set<ReportEntity> reports;

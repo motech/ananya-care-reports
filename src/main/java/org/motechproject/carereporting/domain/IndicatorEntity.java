@@ -45,7 +45,7 @@ public class IndicatorEntity extends AbstractEntity {
     private DwQueryEntity numerator;
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })

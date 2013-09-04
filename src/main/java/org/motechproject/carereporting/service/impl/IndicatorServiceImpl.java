@@ -408,19 +408,15 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(
-            Integer indicatorId, Integer parentAreaId, Integer frequencyId, Date startDate, Date endDate) {
-        IndicatorEntity indicator = getIndicatorById(indicatorId);
-        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
+    public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(Integer indicatorId, Integer parentAreaId, Integer frequencyId, Date startDate, Date endDate) {
+        IndicatorEntity indicator = indicatorDao.getById(indicatorId);
+
         if (indicator.getTrend() == null) {
-            return areasTrends;
+            throw new IllegalArgumentException("Cannot calculate trend value for indicator with null trend.");
         }
-        Set<AreaEntity> areas;
-        if (parentAreaId != null) {
-            areas = areaService.getAllAreasByParentAreaId(parentAreaId);
-        } else {
-            areas = areaService.getAllTopLevelAreas();
-        }
+        Set<AreaEntity> areas = areaService.getAllAreasByParentAreaId(parentAreaId);
+
+        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
         for (AreaEntity area: areas) {
             int trend = getTrendForIndicator(area, indicator, frequencyId, startDate, endDate);
             areasTrends.put(area, trend);
@@ -531,10 +527,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
-
-        if (indicator.getTrend() == null) {
-            throw new IllegalArgumentException("Cannot calculate trend value for indicator with null trend.");
-        }
         FrequencyEntity frequency = cronService.getFrequencyById(frequencyId);
         Date[] dates = DateResolver.resolveDates(frequency, startDate, endDate);
 
@@ -551,6 +543,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         } else if (diff.compareTo(indicator.getTrend()) > 0) {
             return TREND_POSITIVE;
         }
+
         return TREND_NEUTRAL;
     }
 

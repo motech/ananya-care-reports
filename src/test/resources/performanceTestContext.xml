@@ -7,12 +7,12 @@
     <import resource="classpath:/testContext.xml"/>
 
     <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabase" depends-on="formEntityInitializer, liquibase">
-        <constructor-arg index="0" value="2"/>
-        <constructor-arg index="1" value="7"/>
-        <constructor-arg index="2" value="1"/>
-        <constructor-arg index="3" value="5"/>
-        <constructor-arg index="4" value="9"/>
-        <constructor-arg index="5" value="2"/>
+        <constructor-arg index="0" value="20"/>
+        <constructor-arg index="1" value="780"/>
+        <constructor-arg index="2" value="100"/>
+        <constructor-arg index="3" value="50"/>
+        <constructor-arg index="4" value="90"/>
+        <constructor-arg index="5" value="2000"/>
     </bean>
 
 </beans>
