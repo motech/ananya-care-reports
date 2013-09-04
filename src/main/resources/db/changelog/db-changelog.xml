@@ -53,7 +53,7 @@
                     tableName="indicator"
                 />
         <addColumn tableName="indicator" schemaName="dashboard_app">
-            <column name="area_level_id" type="bigint"/>
+            <column name="area_level_id" type="bigint" defaultValue="1"/>
         </addColumn>
         <addNotNullConstraint columnName="area_level_id"
                               tableName="indicator"/>
