@@ -158,14 +158,24 @@
     </xs:complexType>
 
     <xs:complexType name="where_condition">
-        <xs:sequence>
+        <xs:sequence minOccurs="1" maxOccurs="1">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="table-name" type="xs:string" />
                 <xs:element name="field" type="xs:string" />
                 <xs:element name="second-field" type="xs:string" />
-                <xs:element name="operator" type="xs:string" />
+                <xs:element name="operator" type="comparison_operator" />
                 <xs:element name="offset" type="xs:integer" />
+                <xs:element name="second-offset" type="xs:integer" />
+                <xs:element name="date" type="xs:date" />
+                <xs:element name="second-date" type="xs:date" />
                 <xs:element name="value" type="xs:string" />
+                <xs:element name="values">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="value" type="xs:string" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:choice>
         </xs:sequence>
         <xs:attribute name="type" use="required">
@@ -176,6 +186,7 @@
                     <xs:enumeration value="fieldComparison" />
                     <xs:enumeration value="dateWithOffsetDiff" />
                     <xs:enumeration value="dateRange" />
+                    <xs:enumeration value="dateValue" />
                     <xs:enumeration value="enumRange" />
                     <xs:enumeration value="period" />
                     <xs:enumeration value="calculationEndDate" />

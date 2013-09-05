@@ -812,3 +812,16 @@ hr {
     border: none;
     border-top: 1px solid rgb(220, 220, 220);
 }
+
+.page-margin-bottom {
+    margin-bottom: 50px !important;
+}
+
+.where-group {
+    padding-left: 10px;
+    line-height: 25px;
+}
+
+.btn-append {
+    margin-left: 10px;
+}

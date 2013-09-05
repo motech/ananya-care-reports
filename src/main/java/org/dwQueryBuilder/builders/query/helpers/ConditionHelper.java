@@ -133,7 +133,12 @@ public final class ConditionHelper {
             FieldComparison fieldComparison = (FieldComparison) whereCondition;
             Field field2 = SelectColumnHelper.resolveSelectColumn(
                     schemaName, fieldComparison.getSelectColumn2(), useSchemaName, useAlias);
-            condition = buildCondition(field1, fieldComparison.getOperator(), field2);
+            condition = buildCondition(
+                    field1,
+                    Integer.parseInt(fieldComparison.getColumn1Offset()),
+                    fieldComparison.getOperator(),
+                    field2,
+                    Integer.parseInt(fieldComparison.getColumn2Offset()));
 
         } else if (whereCondition instanceof EnumRangeComparison) {
 
@@ -169,27 +174,41 @@ public final class ConditionHelper {
         }
     }
 
-    public static Condition buildCondition(Field field, ComparisonType comparisonType, Field value) {
+    public static Condition buildCondition(Field field, Integer field1Offset, ComparisonType comparisonType,
+                                           Field value, Integer field2Offset) {
+        Field field1 = resolveOffsetForField(field, field1Offset);
+        Field field2 = resolveOffsetForField(value, field2Offset);
+
         try {
             switch (comparisonType) {
                 case Less:
-                    return field.lessThan(value);
+                    return field1.lessThan(field2);
                 case LessEqual:
-                    return field.lessOrEqual(value);
+                    return field1.lessOrEqual(field2);
                 case Equal:
-                    return field.equal(value);
+                    return field1.equal(field2);
                 case NotEqual:
-                    return field.notEqual(value);
+                    return field1.notEqual(field2);
                 case Greater:
-                    return field.greaterThan(value);
+                    return field1.greaterThan(field2);
                 case GreaterEqual:
-                    return field.greaterOrEqual(value);
+                    return field1.greaterOrEqual(field2);
                 default:
                     return null;
             }
         } catch (Exception e) {
             throw new QueryBuilderRuntimeException(e);
         }
+    }
+
+    private static Field resolveOffsetForField(Field field, Integer fieldOffset) {
+        if (fieldOffset > 0) {
+            return field.add(fieldOffset);
+        } else if (fieldOffset < 0) {
+            return field.sub(Math.abs(fieldOffset));
+        }
+
+        return field;
     }
 
     public static Condition buildCondition(String schemaName,

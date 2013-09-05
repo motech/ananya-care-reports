@@ -36,12 +36,14 @@ public final class CombinationHelper {
                                                     tableName,
                                                     dwQueryCombination.getForeignKeyFieldName()
                                             ),
+                                            0,
                                             ComparisonType.Equal,
                                             fieldByName(
                                                     schemaName,
                                                     referencedTableName,
                                                     dwQueryCombination.getReferencedFieldName()
-                                            )
+                                            ),
+                                            0
                                     ));
                 case Union:
                     return select.union(DwQueryHelper.buildFromDwQuery(

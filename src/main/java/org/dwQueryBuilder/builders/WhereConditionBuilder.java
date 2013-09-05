@@ -336,6 +336,24 @@ public class WhereConditionBuilder {
         this.selectColumn1 = new SelectColumn(table1Name, column1Name);
         this.operator = operator;
         this.selectColumn2 = new SelectColumn(table2Name, column2Name);
+        this.column1Offset = "0";
+        this.column2Offset = "0";
+
+        return this;
+    }
+
+    public WhereConditionBuilder withFieldComparison(String table1Name, String column1Name,
+                                                     String column1Offset,
+                                                     ComparisonType operator,
+                                                     String table2Name, String column2Name,
+                                                     String column2Offset) {
+        this.reset();
+
+        this.selectColumn1 = new SelectColumn(table1Name, column1Name);
+        this.operator = operator;
+        this.selectColumn2 = new SelectColumn(table2Name, column2Name);
+        this.column1Offset = column1Offset;
+        this.column2Offset = column2Offset;
 
         return this;
     }
@@ -348,6 +366,24 @@ public class WhereConditionBuilder {
         this.selectColumn1 = selectColumn1;
         this.operator = operator;
         this.selectColumn2 = selectColumn2;
+        this.column1Offset = "0";
+        this.column2Offset = "0";
+
+        return this;
+    }
+
+    public WhereConditionBuilder withFieldComparison(SelectColumn selectColumn1,
+                                                     String column1Offset,
+                                                     ComparisonType operator,
+                                                     SelectColumn selectColumn2,
+                                                     String column2Offset) {
+        this.reset();
+
+        this.selectColumn1 = selectColumn1;
+        this.operator = operator;
+        this.selectColumn2 = selectColumn2;
+        this.column1Offset = column1Offset;
+        this.column2Offset = column2Offset;
 
         return this;
     }
@@ -360,6 +396,22 @@ public class WhereConditionBuilder {
         this.selectColumn1 = selectColumn1Builder.build();
         this.operator = operator;
         this.selectColumn2 = selectColumn2Builder.build();
+
+        return this;
+    }
+
+    public WhereConditionBuilder withFieldComparison(SelectColumnBuilder selectColumn1Builder,
+                                                     String column1Offset,
+                                                     ComparisonType operator,
+                                                     SelectColumnBuilder selectColumn2Builder,
+                                                     String column2Offset) {
+        this.reset();
+
+        this.selectColumn1 = selectColumn1Builder.build();
+        this.operator = operator;
+        this.selectColumn2 = selectColumn2Builder.build();
+        this.column1Offset = column1Offset;
+        this.column2Offset = column2Offset;
 
         return this;
     }
@@ -451,8 +503,10 @@ public class WhereConditionBuilder {
 
                 whereCondition = new FieldComparison(
                         selectColumn1,
+                        column1Offset,
                         operator,
-                        selectColumn2);
+                        selectColumn2,
+                        column2Offset);
 
             } else if (isEnumRangeComparison()) {
                 // Enum Range Comparison
@@ -470,72 +524,72 @@ public class WhereConditionBuilder {
     }
 
     private Boolean isDateDiffComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
-        Boolean iscolumn2NotBlank = selectColumn2 != null
+        Boolean isColumn2NotBlank = selectColumn2 != null
                 && StringUtils.isNotBlank(selectColumn2.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn2.getComputedColumn().getFieldName());
         Boolean isValueValid = StringUtils.isNotBlank(value) && StringUtils.isNumeric(value);
 
-        return (iscolumn1NotBlank
-                && iscolumn2NotBlank
+        return (isColumn1NotBlank
+                && isColumn2NotBlank
                 && operator != null
                 && isValueValid);
     }
 
     private Boolean isDateRangeComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
         Boolean isDateRangeValid = StringUtils.isNotBlank(date1) && StringUtils.isNotBlank(date2);
-        Boolean iscolumn1OffsetValid = StringUtils.isNotBlank(column1Offset);
+        Boolean isColumn1OffsetValid = StringUtils.isNotBlank(column1Offset);
 
-        return (iscolumn1NotBlank
+        return (isColumn1NotBlank
                 && isDateRangeValid
-                && iscolumn1OffsetValid);
+                && isColumn1OffsetValid);
     }
 
     private Boolean isDateValueComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
         Boolean isComparisonValid = operator != null && StringUtils.isNotBlank(value)
                 && StringUtils.isNotBlank(column1Offset);
 
-        return (iscolumn1NotBlank
+        return (isColumn1NotBlank
                 && isComparisonValid);
     }
 
     private Boolean isValueComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
 
-        return (iscolumn1NotBlank
+        return (isColumn1NotBlank
                 && operator != null
                 && StringUtils.isNotBlank(value));
     }
 
     private Boolean isFieldComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
-        Boolean iscolumn2NotBlank = selectColumn2 != null
+        Boolean isColumn2NotBlank = selectColumn2 != null
                 && StringUtils.isNotBlank(selectColumn2.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn2.getComputedColumn().getFieldName());
+        Boolean areOffsetsPresent = StringUtils.isNotBlank(column1Offset) && StringUtils.isNotBlank(column2Offset);
+        Boolean areColumnsOk = isColumn1NotBlank && isColumn2NotBlank && areOffsetsPresent;
 
-        return (iscolumn1NotBlank
-                && iscolumn2NotBlank
-                && operator != null);
+        return (areColumnsOk && operator != null);
     }
 
     private Boolean isEnumRangeComparison() {
-        Boolean iscolumn1NotBlank = selectColumn1 != null
+        Boolean isColumn1NotBlank = selectColumn1 != null
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getTableName())
                 && StringUtils.isNotBlank(selectColumn1.getComputedColumn().getFieldName());
 
-        return (iscolumn1NotBlank
+        return (isColumn1NotBlank
                 && values != null);
     }
 }

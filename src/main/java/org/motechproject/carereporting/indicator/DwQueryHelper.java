@@ -12,6 +12,7 @@ import org.dwQueryBuilder.builders.WhereConditionBuilder;
 import org.dwQueryBuilder.builders.WhereConditionGroupBuilder;
 import org.dwQueryBuilder.builders.steps.ComputedColumnBuilderOperationStep;
 import org.dwQueryBuilder.data.ComputedColumn;
+import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
@@ -20,14 +21,17 @@ import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.OperatorType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
-import org.dwQueryBuilder.data.DwQuery;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionValueEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
@@ -42,6 +46,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DwQueryHelper {
 
@@ -140,6 +145,12 @@ public class DwQueryHelper {
         } else if (condition instanceof DateDiffComparisonConditionEntity) {
             builder.withCondition(prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition));
             return;
+        } else if (condition instanceof DateRangeComparisonConditionEntity) {
+            builder.withCondition(prepareDateRangeComparisonCondition((DateRangeComparisonConditionEntity) condition));
+        } else if (condition instanceof DateValueComparisonConditionEntity) {
+            builder.withCondition(prepareDateValueComparisonCondition((DateValueComparisonConditionEntity) condition));
+        } else if (condition instanceof EnumRangeComparisonConditionEntity) {
+            builder.withCondition(prepareEnumRangeComparisonCondition((EnumRangeComparisonConditionEntity) condition));
         } else if (condition instanceof PeriodConditionEntity) {
             PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
             if (periodCondition.getOffset() != null) {
@@ -161,7 +172,7 @@ public class DwQueryHelper {
         return new WhereConditionBuilder()
                 .withValueComparison(
                         prepareComputedField(condition.getField1()),
-                        ComparisonType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        ComparisonType.fromSymbol(condition.getOperator().getName()),
                         condition.getValue());
     }
 
@@ -169,9 +180,44 @@ public class DwQueryHelper {
         return new WhereConditionBuilder()
                 .withDateDiffComparison(
                         prepareComputedField(condition.getField1()),
-                        ComparisonType.fromSymbol(condition.getComparisonSymbol().getName()),
+                        ComparisonType.fromSymbol(condition.getOperator().getName()),
                         prepareComputedField(condition.getField2()),
-                        SECONDS_PER_DAY * condition.getValue());
+                        SECONDS_PER_DAY * condition.getValue(),
+                        condition.getOffset1(),
+                        condition.getOffset2());
+    }
+
+    private WhereConditionBuilder prepareDateRangeComparisonCondition(DateRangeComparisonConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateRangeComparison(
+                        prepareComputedField(condition.getField1()),
+                        condition.getDate1().toString(),
+                        condition.getDate2().toString(),
+                        condition.getOffset1()
+                );
+    }
+
+    private WhereConditionBuilder prepareDateValueComparisonCondition(DateValueComparisonConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        prepareComputedField(condition.getField1()),
+                        ComparisonType.fromSymbol(condition.getOperator().getName()),
+                        condition.getValue().toString(),
+                        condition.getOffset1()
+                );
+    }
+
+    private WhereConditionBuilder prepareEnumRangeComparisonCondition(EnumRangeComparisonConditionEntity condition) {
+        Set<String> values = new LinkedHashSet<>();
+        for (EnumRangeComparisonConditionValueEntity value : condition.getValues()) {
+            values.add(value.getValue());
+        }
+
+        return new WhereConditionBuilder()
+                .withEnumRangeComparison(
+                        prepareComputedField(condition.getField1()),
+                        values
+                );
     }
 
     private WhereConditionBuilder preparePeriodConditionToDate(PeriodConditionEntity condition) {

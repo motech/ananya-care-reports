@@ -1,18 +1,14 @@
 package org.motechproject.carereporting.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @Table(name = "comparison_symbol")
@@ -25,9 +21,6 @@ public class ComparisonSymbolEntity extends AbstractEntity {
     @Column (name = "name")
     @JsonView(BaseView.class)
     private String name;
-
-    @OneToMany(mappedBy = "comparisonSymbol", cascade = CascadeType.ALL)
-    private Set<ConditionEntity> conditions;
 
     public ComparisonSymbolEntity() {
 
@@ -43,14 +36,5 @@ public class ComparisonSymbolEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @JsonIgnore
-    public Set<ConditionEntity> getConditions() {
-        return conditions;
-    }
-
-    public void setConditions(Set<ConditionEntity> conditions) {
-        this.conditions = conditions;
     }
 }

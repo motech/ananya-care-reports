@@ -12,15 +12,18 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
-@Table(name = "field_comparison")
+@Table(name = "date_value_comparison")
 @AttributeOverrides({
-        @AttributeOverride(name = "id", column = @Column(name = "field_comparison_id"))
+        @AttributeOverride(name = "id", column = @Column(name = "date_value_comparison_id"))
 })
-@JsonTypeName(value = "field")
-public class FieldComparisonConditionEntity extends ConditionEntity {
+@JsonTypeName(value = "dateValue")
+public class DateValueComparisonConditionEntity extends ConditionEntity {
 
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
@@ -28,30 +31,25 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
     private ComparisonSymbolEntity operator;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "field_2_id")
+    @Column(name = "value")
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
-    private ComputedFieldEntity field2;
+    @Temporal(TemporalType.DATE)
+    private Date value;
 
     @Column(name = "offset_1")
     @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
-    private String offset1;
+    private Integer offset1;
 
-    @Column(name = "offset_2")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
-    private String offset2;
-
-    public FieldComparisonConditionEntity() {
+    public DateValueComparisonConditionEntity() {
         super();
     }
 
-    public FieldComparisonConditionEntity(FieldComparisonConditionEntity conditionEntity) {
+    public DateValueComparisonConditionEntity(DateValueComparisonConditionEntity conditionEntity) {
         super(conditionEntity);
 
         this.operator = conditionEntity.getOperator();
-        this.field2 = conditionEntity.getField2();
+        this.value = conditionEntity.getValue();
         this.offset1 = conditionEntity.getOffset1();
-        this.offset2 = conditionEntity.getOffset2();
     }
 
     public ComparisonSymbolEntity getOperator() {
@@ -62,27 +60,22 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
         this.operator = operator;
     }
 
-    public ComputedFieldEntity getField2() {
-        return field2;
+    public Date getValue() {
+        return value;
     }
 
-    public void setField2(ComputedFieldEntity field2) {
-        this.field2 = field2;
+    /**
+     * @param value A date in the yyyy-[m]m-[d]d format.
+     */
+    public void setValue(Date value) {
+        this.value = value;
     }
 
-    public String getOffset1() {
+    public Integer getOffset1() {
         return offset1;
     }
 
-    public void setOffset1(String offset1) {
+    public void setOffset1(Integer offset1) {
         this.offset1 = offset1;
-    }
-
-    public String getOffset2() {
-        return offset2;
-    }
-
-    public void setOffset2(String offset2) {
-        this.offset2 = offset2;
     }
 }

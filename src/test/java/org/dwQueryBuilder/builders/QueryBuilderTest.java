@@ -88,8 +88,8 @@ public class QueryBuilderTest {
                     "group by \"report\".\"bp_form\".\"ifa_tablets_issued\" having count(\"bp_form\".*) >= '1'";
     private static final String EXPECTED_POSTGRESQL_FIELD_COMPARISON_SQL_STRING =
             "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\" where " +
-                    "\"bp_form\".\"ifa_tablets_issued\" = \"bp_form\".\"ifa_tablets_total\" group by " +
-                    "\"report\".\"bp_form\".\"ifa_tablets_issued\" having count(\"bp_form\".*) >= '1'";
+                    "(\"bp_form\".\"ifa_tablets_issued\" - 1) = (\"bp_form\".\"ifa_tablets_total\" + 1) " +
+                    "group by \"report\".\"bp_form\".\"ifa_tablets_issued\" having count(\"bp_form\".*) >= '1'";
     private static final String EXPECTED_POSTGRESQL_MULTIPLE_JOINS_SQL_STRING =
             "select \"report\".\"mother_case\".\"id\" from \"report\".\"mother_case\" join " +
                     "(select * from \"report\".\"close_mother_form\") as \"close_mother_form\" on " +
@@ -382,8 +382,8 @@ public class QueryBuilderTest {
                         new WhereConditionGroupBuilder()
                                 .withCondition(
                                         new WhereConditionBuilder()
-                                                .withFieldComparison(BP_FORM, IFA_TABLETS_ISSUED,
-                                                        ComparisonType.Equal, BP_FORM, IFA_TABLETS_TOTAL)
+                                                .withFieldComparison(BP_FORM, IFA_TABLETS_ISSUED, "-1",
+                                                        ComparisonType.Equal, BP_FORM, IFA_TABLETS_TOTAL, "1")
                                 )
                 )
                 .withGroupBy(

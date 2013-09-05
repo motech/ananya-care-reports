@@ -186,6 +186,6 @@
     <div class="modal-footer">
         <button class="btn btn-danger pull-left" ng-click="clearAllConditions()" ng-disabled="newConditions.length <= 0">{{msg('complexCondition.button.clear')}}</button>
         <button class="btn btn-primary" ng-click="saveNewComplexCondition()" ng-disabled="!complexCondition.name || newConditions.length <= 0">{{msg('common.save')}}</button>
-        <button class="btn" ng-click="close()">{{msg('common.cancel')}}</button>
+        <button class="btn" ng-click="close('cancel')">{{msg('common.cancel')}}</button>
     </div>
 </form>

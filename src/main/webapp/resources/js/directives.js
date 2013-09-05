@@ -184,4 +184,253 @@
             }
         });
 
+        widgetModule.directive('whereGroup', function($http, $timeout, $dialog, $modal, $q) {
+            return {
+                restrict: 'A',
+                scope: {
+                    msg: '=',
+                    query: '=',
+                    dialog: '='
+                },
+                link: function(scope, element, attrs) {
+                    $timeout(function() {
+                        var query = scope.query;
+
+                        var constructFieldName = function(tableName, fieldName) {
+                            return tableName + '.' + fieldName;
+                        };
+                        var constructFieldNameWithOffset = function(tableName, fieldName, fieldOffset) {
+                            return tableName + '.' + fieldName + ' ' + ((fieldOffset < 0) ? '-' : '+') + ' ' + fieldOffset;
+                        };
+
+                        var constructCondition = function(parentGroup) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                parentGroup: parentGroup,
+                                createValueComparison: function(tableName, fieldName, operator, value) {
+                                    this.type = 'value';
+                                    this.tableName1 = tableName;
+                                    this.fieldName1 = fieldName;
+                                    this.operator = operator;
+                                    this.value = value;
+                                    this.displayName = constructFieldName(tableName, fieldName) + ' ' + operator
+                                                       + ' ' + value;
+                                },
+                                constructElement: function() {
+                                    var conditionElement = angular.element('<div />');
+                                    var removeButton = angular.element('<button />').addClass('btn btn-mini btn-append')
+                                        .append(angular.element('<i />').addClass('icon-trash'));
+
+                                    conditionElement.text(this.displayName);
+                                    conditionElement.append(removeButton);
+                                    removeButton.click(function() {
+                                        conditionElement.remove();
+                                        parentGroup.removeCondition(this.uniqueId);
+                                    });
+
+                                    return conditionElement;
+                                }
+                            };
+                        };
+
+                        var constructFieldComparison = function(tableName1, fieldName1, fieldOffset1,
+                                                                tableName2, fieldName2, fieldOffset2,
+                                                                operator) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                type: 'field',
+                                tableName1: tableName1,
+                                fieldName1: fieldName1,
+                                fieldOffset1: fieldOffset1,
+                                operator: operator,
+                                tableName2: tableName2,
+                                fieldName2: fieldName2,
+                                fieldOffset2: fieldOffset2,
+                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                             + ' ' + operator + ' '
+                                             + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
+                            };
+                        };
+                        var constructDateDiffComparison = function(tableName1, fieldName1, fieldOffset1,
+                                                                   tableName2, fieldName2, fieldOffset2,
+                                                                   operator, value) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                type: 'dateDiff',
+                                tableName1: tableName1,
+                                fieldName1: fieldName1,
+                                fieldOffset1: fieldOffset1,
+                                tableName2: tableName2,
+                                fieldName2: fieldName2,
+                                fieldOffset2: fieldOffset2,
+                                operator: operator,
+                                value: value,
+                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                             + ' - ' + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
+                                             + ' ' + operator + ' ' + value
+                            };
+                        };
+                        var constructDateRangeComparison = function(tableName1, fieldName1, fieldOffset1,
+                                                                    date1, date2) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                type: 'dateRange',
+                                tableName1: tableName1,
+                                fieldName1: fieldName1,
+                                fieldOffset1: fieldOffset1,
+                                date1: date1,
+                                date2: date2,
+                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                             + ' between ' + date1 + ' and ' + date2
+                            };
+                        };
+                        var constructDateValueComparison = function(tableName1, fieldName1, fieldOffset1,
+                                                                    operator, value) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                type: 'dateValue',
+                                tableName1: tableName1,
+                                fieldName1: fieldName1,
+                                fieldOffset1: fieldOffset1,
+                                operator: operator,
+                                value: value,
+                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                             + ' ' + operator + ' ' + value
+                            };
+                        };
+                        var constructEnumRangeComparison = function(tableName1, fieldName1, values) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                type: 'enumRange',
+                                tableName1: tableName1,
+                                fieldName1: fieldName1,
+                                values: values,
+                                displayName: constructFieldName(tableName1, fieldName1)
+                                             + ' in (' + values.join(', ') + ')'
+                            };
+                        };
+
+                        var constructWhereGroup = function(parentGroup) {
+                            return {
+                                uniqueId: new Date().getTime(),
+                                parentGroup: parentGroup,
+                                hierarchyLevel: 0,
+                                groups: [],
+                                conditions: [],
+                                operator: 'and',
+                                removeGroup: function(uniqueId) {
+                                    var index = -1;
+                                    for (var i = 0; i < this.groups.length; i++) {
+                                        if (this.groups[i].uniqueId == uniqueId) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    this.groups.splice(index, 1);
+                                },
+                                removeCondition: function(uniqueId) {
+                                    var index = -1;
+                                    for (var i = 0; i < this.conditions.length; i++) {
+                                        if (this.conditions[i].uniqueId == uniqueId) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    this.conditions.splice(index, 1);
+                                },
+                                constructElement: function() {
+                                    var constructAddGroupButton = function(div, group) {
+                                        return angular.element('<button />').addClass('btn btn-mini')
+                                            .append(angular.element('<i />').addClass('icon-th-list'))
+                                            .click(function() {
+                                                var newGroup = constructWhereGroup(group);
+                                                newGroup.hierarchyLevel = group.hierarchyLevel + 1;
+
+                                                if (group.groups.length > 0) {
+                                                    var andOption = angular.element('<option />').val('and')
+                                                        .text(scope.msg('queries.new.option.and'));
+                                                    var orOption = angular.element('<option />').val('or')
+                                                        .text(scope.msg('queries.new.option.or'));
+
+                                                    var select = angular.element('<select />')
+                                                        .append(andOption)
+                                                        .append(orOption)
+                                                        .change(function(value) {
+                                                            group.operator = $(this).val();
+                                                    })
+                                                    div.append(select);
+                                                }
+
+                                                div.append(newGroup.constructElement());
+                                                group.groups.push(newGroup);
+                                        });
+                                    };
+                                    var constructAddConditionButton = function(div, group) {
+                                        return angular.element('<button />').addClass('btn btn-mini')
+                                            .append(angular.element('<i />').addClass('icon-plus-sign'))
+                                            .click(function() {
+                                                $q.when(dialog()).then(function() {
+                                                    dialog.open().then(function(result) {
+                                                        /*if (result == 'cancel') {
+                                                        return;
+                                                        }*/
+
+                                                        console.log(result);
+                                                        var newCondition = constructCondition(group);
+                                                        newCondition.createValueComparison('table', 'field', '>=', '2');
+                                                        div.append(newCondition.constructElement());
+                                                        group.conditions.push(newCondition);
+                                                    });
+                                                });
+                                            });
+                                    };
+                                    var constructRemoveGroupButton = function(div, group) {
+                                        if (group.hierarchyLevel <= 0) { return; }
+
+                                        return angular.element('<button />').addClass('btn btn-mini')
+                                            .append(angular.element('<i />').addClass('icon-trash'))
+                                            .click(function() {
+                                                if (parentGroup.groups[0].uniqueId == group.uniqueId) {
+                                                    div.next('select').remove();
+                                                }
+                                                else {
+                                                    div.prev('select').remove();
+                                                }
+
+                                                div.remove();
+                                                parentGroup.removeGroup(group.uniqueId);
+                                            });
+                                    };
+
+                                    var whereGroupElement = angular.element('<div />').addClass('where-group');
+                                    var openingBrace = angular.element('<div />').text('(');
+                                    var closingBrace = angular.element('<div />').text(')');
+                                    var groupsElement = angular.element('<div />');
+                                    var conditionsElement = angular.element('<div />');
+                                    var buttonsElement = angular.element('<div />')
+                                        .append(constructAddGroupButton(groupsElement, this))
+                                        .append(constructAddConditionButton(conditionsElement, this))
+                                        .append(constructRemoveGroupButton(whereGroupElement, this));
+
+                                    whereGroupElement.append(openingBrace);
+                                    whereGroupElement.append(groupsElement);
+                                    whereGroupElement.append(conditionsElement);
+                                    whereGroupElement.append(buttonsElement);
+                                    whereGroupElement.append(closingBrace);
+
+                                    return whereGroupElement;
+                                }
+                            };
+                        };
+
+                        var whereGroup = (query.whereGroup == null) ? constructWhereGroup(null) : query.whereGroup;
+                        element.append(whereGroup.constructElement());
+                        query.whereGroup = whereGroup;
+                    });
+                }
+            }
+        });
+
 }());

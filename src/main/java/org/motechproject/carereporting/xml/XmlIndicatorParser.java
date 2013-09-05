@@ -15,7 +15,11 @@ import org.motechproject.carereporting.domain.CombinationEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionValueEntity;
 import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
@@ -60,6 +64,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -228,11 +233,25 @@ public class XmlIndicatorParser {
                 conditionEntity = createCalculationEndDateCondition(condition);
                 break;
             case DATE_WITH_OFFSET_DIFF:
+                conditionEntity = createDateDiffWithOffsetComparisonCondition(condition);
+                break;
             case DATE_RANGE:
+                conditionEntity = createDateRangeComparisonCondition(condition);
+                break;
+            case DATE_VALUE:
+                conditionEntity = createDateValueComparisonCondition(condition);
+                break;
             case ENUM_RANGE:
+                conditionEntity = createEnumRangeComparisonCondition(condition);
+                break;
             default:
         }
-        conditionEntity.setComparisonSymbol(comparisonSymbolDao.getByField("name", condition.getOperator()));
+
+        addField1ToConditionEntity(condition, conditionEntity);
+        return conditionEntity;
+    }
+
+    private void addField1ToConditionEntity(WhereCondition condition, ConditionEntity conditionEntity) {
         Map<String, Object> findBy = new HashMap<>();
         findBy.put("name", condition.getField());
         FormEntity form = formDao.getByField("tableName", condition.getTableName());
@@ -240,14 +259,14 @@ public class XmlIndicatorParser {
         ComputedFieldEntity field = computedFieldDao.getByFields(findBy);
         if (field == null) {
             throw new CareRuntimeException("This indicators depends on computed field: " +
-                condition.getTableName() + "." + condition.getField() + ". Please, define this computed field first.");
+                    condition.getTableName() + "." + condition.getField() + ". Please, define this computed field first.");
         }
         conditionEntity.setField1(field);
-        return conditionEntity;
     }
 
     private ConditionEntity createValueComparisonCondition(WhereCondition condition) {
         ValueComparisonConditionEntity conditionEntity = new ValueComparisonConditionEntity();
+        conditionEntity.setOperator(comparisonSymbolDao.getByField("name", condition.getOperator()));
         conditionEntity.setValue(condition.getValue());
         return conditionEntity;
     }
@@ -259,16 +278,56 @@ public class XmlIndicatorParser {
         return dateDiffComparisonConditionEntity;
     }
 
+    private ConditionEntity createDateDiffWithOffsetComparisonCondition(WhereCondition condition) {
+        DateDiffComparisonConditionEntity dateDiffComparisonConditionEntity = new DateDiffComparisonConditionEntity();
+        dateDiffComparisonConditionEntity.setField2(computedFieldDao.getByField("name", condition.getSecondField()));
+        dateDiffComparisonConditionEntity.setValue(Integer.valueOf(condition.getValue()));
+        dateDiffComparisonConditionEntity.setOffset1(condition.getOffset1());
+        dateDiffComparisonConditionEntity.setOffset2(condition.getOffset2());
+        return dateDiffComparisonConditionEntity;
+    }
+
+    private ConditionEntity createDateRangeComparisonCondition(WhereCondition condition) {
+        Integer offset = (condition.getOffset1() != null) ? condition.getOffset1() : 0;
+
+        DateRangeComparisonConditionEntity dateRangeComparisonConditionEntity = new DateRangeComparisonConditionEntity();
+        dateRangeComparisonConditionEntity.setDate1(condition.getDate1());
+        dateRangeComparisonConditionEntity.setDate2(condition.getDate2());
+        dateRangeComparisonConditionEntity.setOffset1(offset);
+        return dateRangeComparisonConditionEntity;
+    }
+
+    private ConditionEntity createDateValueComparisonCondition(WhereCondition condition) {
+        DateValueComparisonConditionEntity dateValueComparisonConditionEntity = new DateValueComparisonConditionEntity();
+        dateValueComparisonConditionEntity.setOperator(comparisonSymbolDao.getByField("name", condition.getOperator()));
+        dateValueComparisonConditionEntity.setOffset1(condition.getOffset1());
+        dateValueComparisonConditionEntity.setValue(Date.valueOf(condition.getValue()));
+        return dateValueComparisonConditionEntity;
+    }
+
     private ConditionEntity createFieldComparisonCondition(WhereCondition condition) {
         FieldComparisonConditionEntity fieldComparisonConditionEntity = new FieldComparisonConditionEntity();
+        fieldComparisonConditionEntity.setOperator(comparisonSymbolDao.getByField("name", condition.getOperator()));
         fieldComparisonConditionEntity.setField2(computedFieldDao.getByField("name", condition.getSecondField()));
         return fieldComparisonConditionEntity;
+    }
+
+    private ConditionEntity createEnumRangeComparisonCondition(WhereCondition condition) {
+        EnumRangeComparisonConditionEntity enumRangeComparisonConditionEntity = new EnumRangeComparisonConditionEntity();
+        Set<EnumRangeComparisonConditionValueEntity> values = new LinkedHashSet<>();
+
+        for (String value : condition.getValues()) {
+            values.add(new EnumRangeComparisonConditionValueEntity(value));
+        }
+        enumRangeComparisonConditionEntity.setValues(values);
+
+        return enumRangeComparisonConditionEntity;
     }
 
     private ConditionEntity createPeriodCondition(WhereCondition condition) {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
         periodConditionEntity.setColumnName(condition.getField());
-        periodConditionEntity.setOffset(condition.getOffset());
+        periodConditionEntity.setOffset(condition.getOffset1());
         periodConditionEntity.setTableName(condition.getTableName());
         return periodConditionEntity;
     }
@@ -277,7 +336,7 @@ public class XmlIndicatorParser {
         CalculationEndDateConditionEntity conditionEntity = new CalculationEndDateConditionEntity();
         conditionEntity.setTableName(condition.getTableName());
         conditionEntity.setColumnName(condition.getField());
-        conditionEntity.setOffset(condition.getOffset());
+        conditionEntity.setOffset(condition.getOffset1());
         return conditionEntity;
     }
 

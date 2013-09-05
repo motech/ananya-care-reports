@@ -26,14 +26,12 @@ import javax.persistence.Table;
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "field", value = FieldComparisonConditionEntity.class),
         @JsonSubTypes.Type(name = "value", value = ValueComparisonConditionEntity.class),
-        @JsonSubTypes.Type(name = "date", value = DateDiffComparisonConditionEntity.class)
+        @JsonSubTypes.Type(name = "dateDiff", value = DateDiffComparisonConditionEntity.class),
+        @JsonSubTypes.Type(name = "dateRange", value = DateRangeComparisonConditionEntity.class),
+        @JsonSubTypes.Type(name = "dateValue", value = DateValueComparisonConditionEntity.class),
+        @JsonSubTypes.Type(name = "enumRange", value = EnumRangeComparisonConditionEntity.class)
 })
 public abstract class ConditionEntity extends AbstractEntity {
-
-    @ManyToOne
-    @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
-    private ComparisonSymbolEntity comparisonSymbol;
 
     @ManyToOne
     @JoinColumn(name = "field_1_id")
@@ -44,17 +42,7 @@ public abstract class ConditionEntity extends AbstractEntity {
     }
 
     public ConditionEntity(ConditionEntity conditionEntity) {
-        comparisonSymbol = conditionEntity.getComparisonSymbol();
         field1 = conditionEntity.getField1();
-    }
-
-
-    public ComparisonSymbolEntity getComparisonSymbol() {
-        return comparisonSymbol;
-    }
-
-    public void setComparisonSymbol(ComparisonSymbolEntity comparisonSymbol) {
-        this.comparisonSymbol = comparisonSymbol;
     }
 
     public ComputedFieldEntity getField1() {
