@@ -241,13 +241,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.loading = true;
             $scope.fetchTrends();
         } else if (dashboard.name == "Map report") {
+            $("#mapReport0").html('');
             $("#mapReport1").html('');
-            $("#mapReport2").html('');
-            for (var i in $scope.maps) {
-                if ($scope.maps.hasOwnProperty(i)) {
-                    $scope.fetchMapReport($scope.maps[i]);
-                }
-            }
         } else {
             $scope.currentReportsPage = 0;
             $scope.loading = true;
@@ -373,21 +368,22 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.fetchCategoryIndicators = function(map) {
-        if(map.selectedIndicatorCategoryId != null) {
-            $http.get('api/indicator/filter/' + map.selectedIndicatorCategoryId).success(function(indicators) {
-                map.selectedCategoryIndicators = indicators;
-            });
+        if(map.selectedCategory != null) {
+             map.selectedCategoryIndicators = map.selectedCategory.indicators;
+            if(map.selectedCategoryIndicators.length > 0) {
+                map.selectedIndicatorId = map.selectedCategory.indicators[0].id;
+             }
         }
     };
 
     $scope.fetchCategories = function() {
         $http.get('api/indicator/category').success(function(indicatorCategories) {
             $scope.mapCategories = indicatorCategories;
-            $scope.indicatorCategory1 = $scope.indicatorCategory2 = indicatorCategories[0];
-            $scope.$watch('maps[0].selectedIndicatorCategoryId', function(newValue, oldValue) {
+            $scope.maps[0].selectedCategory = $scope.maps[1].selectedCategory = indicatorCategories[0];
+            $scope.$watch('maps[0].selectedCategory', function(newValue, oldValue) {
                 $scope.fetchCategoryIndicators($scope.maps[0]);
             }, true);
-            $scope.$watch('maps[1].selectedIndicatorCategoryId', function(newValue, oldValue) {
+            $scope.$watch('maps[1].selectedCategory', function(newValue, oldValue) {
                 $scope.fetchCategoryIndicators($scope.maps[1]);
             }, true);
         });

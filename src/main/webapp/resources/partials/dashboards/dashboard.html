@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="input-prepend">
                                     <span class="add-on text-success">{{msg('dashboards.map.category')}}:</span>
-                                    <select ng-model="map.selectedIndicatorCategoryId" class="span6" ng-options="category.id as category.name for category in mapCategories" />
+                                    <select ng-model="map.selectedCategory" class="span6" ng-options="category as category.name for category in mapCategories" />
                                 </div>
                                 <div class="input-prepend">
                                     <span class="add-on text-success">{{msg('dashboards.map.indicator')}}:</span>

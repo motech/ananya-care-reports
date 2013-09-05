@@ -51,7 +51,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportEntity getReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId) {
         Map<String, Object> params = new HashMap<>();
         params.put("indicator.id", indicatorId);
-        params.put("reportType", reportType);
+        params.put("reportType.id", reportType.getValue());
 
         return reportDao.getByFields(params);
     }

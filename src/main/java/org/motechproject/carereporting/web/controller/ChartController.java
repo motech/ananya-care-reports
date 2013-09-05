@@ -11,6 +11,7 @@ import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.utils.date.DateResolver;
 import org.motechproject.carereporting.web.chart.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +48,7 @@ public class ChartController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @Cacheable(value = "chart")
     public Chart getChartData(@RequestParam Integer indicatorId,
                               @RequestParam Integer areaId,
                               @RequestParam Integer frequencyId,

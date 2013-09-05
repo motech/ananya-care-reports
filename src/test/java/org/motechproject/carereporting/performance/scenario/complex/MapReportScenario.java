@@ -9,7 +9,6 @@ public class MapReportScenario extends AbstractScenario {
     {
         for (int i = 0; i < 2; i++) {
             addRequests(
-                    new IndicatorFilterIndicatorsScenario(),
                     new MapReportGetMapScenario()
             );
         }
