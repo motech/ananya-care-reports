@@ -8,6 +8,7 @@ import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
+import org.motechproject.carereporting.domain.dto.QueryCreationFormDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -95,5 +96,7 @@ public interface IndicatorService {
     void calculateAllIndicators();
 
     IndicatorCreationFormDto getIndicatorCreationFormDto();
+
+    QueryCreationFormDto getIndicatorQueryCreationFormDto();
 
 }

@@ -14,6 +14,8 @@ public interface ComputedFieldService {
 
     Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId);
 
+    Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId);
+
     ComputedFieldEntity getComputedFieldById(Integer computedFieldId);
 
     Set<ComputedFieldEntity> getAllComputedFields(boolean origin);

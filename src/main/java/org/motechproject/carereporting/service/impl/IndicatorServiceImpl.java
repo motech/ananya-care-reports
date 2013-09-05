@@ -25,6 +25,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
+import org.motechproject.carereporting.domain.dto.QueryCreationFormDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
@@ -487,6 +488,14 @@ public class IndicatorServiceImpl implements IndicatorService {
                 formEntities,
                 complexConditionEntities,
                 reportTypes);
+    }
+
+    @Override
+    public QueryCreationFormDto getIndicatorQueryCreationFormDto() {
+        Set<FormEntity> formEntities = formsService.getAllForms();
+
+        return new QueryCreationFormDto(
+                formEntities);
     }
 
     private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {

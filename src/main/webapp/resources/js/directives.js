@@ -216,6 +216,20 @@
                                     this.displayName = constructFieldName(tableName, fieldName) + ' ' + operator
                                                        + ' ' + value;
                                 },
+                                createFieldComparison: function(tableName1, fieldName1, fieldOffset1,
+                                                                 tableName2, fieldName2, fieldOffset2,
+                                                                 operator) {
+                                    this.tableName1 = tableName1;
+                                    this.fieldName1 = fieldName1;
+                                    this.fieldOffset1 = fieldOffset1;
+                                    this.operator = operator;
+                                    this.tableName2 = tableName2;
+                                    this.fieldName2 = fieldName2;
+                                    this.fieldOffset2 = fieldOffset2;
+                                    this.displayName = constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                                       + ' ' + operator + ' '
+                                                       + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
+                                },
                                 constructElement: function() {
                                     var conditionElement = angular.element('<div />');
                                     var removeButton = angular.element('<button />').addClass('btn btn-mini btn-append')
@@ -233,24 +247,6 @@
                             };
                         };
 
-                        var constructFieldComparison = function(tableName1, fieldName1, fieldOffset1,
-                                                                tableName2, fieldName2, fieldOffset2,
-                                                                operator) {
-                            return {
-                                uniqueId: new Date().getTime(),
-                                type: 'field',
-                                tableName1: tableName1,
-                                fieldName1: fieldName1,
-                                fieldOffset1: fieldOffset1,
-                                operator: operator,
-                                tableName2: tableName2,
-                                fieldName2: fieldName2,
-                                fieldOffset2: fieldOffset2,
-                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
-                                             + ' ' + operator + ' '
-                                             + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
-                            };
-                        };
                         var constructDateDiffComparison = function(tableName1, fieldName1, fieldOffset1,
                                                                    tableName2, fieldName2, fieldOffset2,
                                                                    operator, value) {
@@ -367,22 +363,31 @@
                                                 group.groups.push(newGroup);
                                         });
                                     };
+                                    var resolveConditionType = function(condition, result) {
+                                        switch (result.type) {
+                                            case 'value':
+                                                condition.createValueComparison(result.form1.tableName,
+                                                    result.field1.name, result.operator, result.value);
+                                                break;
+                                            default:
+                                                return;
+                                        }
+                                    };
                                     var constructAddConditionButton = function(div, group) {
                                         return angular.element('<button />').addClass('btn btn-mini')
                                             .append(angular.element('<i />').addClass('icon-plus-sign'))
                                             .click(function() {
-                                                $q.when(dialog()).then(function() {
-                                                    dialog.open().then(function(result) {
-                                                        /*if (result == 'cancel') {
-                                                        return;
-                                                        }*/
+                                                var dialog = scope.dialog();
+                                                dialog.open().then(function(result) {
+                                                    if (result == 'cancel') {
+                                                    return;
+                                                    }
 
-                                                        console.log(result);
-                                                        var newCondition = constructCondition(group);
-                                                        newCondition.createValueComparison('table', 'field', '>=', '2');
-                                                        div.append(newCondition.constructElement());
-                                                        group.conditions.push(newCondition);
-                                                    });
+                                                    console.log(result);
+                                                    var newCondition = constructCondition(group);
+                                                    resolveConditionType(newCondition, result);
+                                                    div.append(newCondition.constructElement());
+                                                    group.conditions.push(newCondition);
                                                 });
                                             });
                                     };

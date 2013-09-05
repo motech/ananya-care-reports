@@ -50,6 +50,14 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Transactional
     @Override
+    public Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId) {
+        List<Criterion> criterions = new LinkedList<>();
+        criterions.add(Restrictions.eq("form.id", formId));
+        return computedFieldDao.getAllByFields(criterions);
+    }
+
+    @Transactional
+    @Override
     public ComputedFieldEntity getComputedFieldById(Integer computedFieldId) {
         return computedFieldDao.getByIdWithFields(computedFieldId, "fieldOperations");
     }

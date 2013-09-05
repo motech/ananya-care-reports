@@ -9,7 +9,7 @@
                 <div class="form-horizontal">
                     <label for="selectedTable" class="control-label">{{msg('queries.new.label.selectedDimension')}}:</label>
                     <div class="control-group">
-                        <select id="selectedTable"></select>
+                        <select id="selectedTable" ng-model="form.dimension" ng-options="item as item.displayName for item in formData.forms"></select>
                         <button class="btn btn-danger pull-right" type="button" ng-hide="$index <= 0" ng-click="removeQuery($index)">{{msg('common.remove')}}</button>
                     </div>
                 </div>
@@ -24,9 +24,9 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="selectColumn in form.selectColumns">
-                        <td>{{selectColumn.function}} {{selectColumn.form.name}}.{{selectColumn.field.name}}</td>
+                        <td>{{selectColumn.function.name}} {{selectColumn.form.displayName}}.{{selectColumn.field.name}}{{selectColumn.nullValueText}}</td>
                         <td>
-                            <button class="btn btn-danger" ng-click="removeSelectColumn($index)">{{msg('common.remove')}}</button>
+                            <button class="btn btn-danger" ng-click="form.removeSelectColumn($index)">{{msg('common.remove')}}</button>
                         </td>
                     </tr>
                     </tbody>
@@ -35,20 +35,20 @@
                 <div class="form-horizontal">
                     <label for="selectedForm_{{$index}}" class="control-label">{{msg('queries.new.label.selectedForm')}}:</label>
                     <div class="control-group">
-                        <select id="selectedForm_{{$index}}"></select>
+                        <select id="selectedForm_{{$index}}" ng-model="form.selectColumn.form" ng-options="item as item.displayName for item in formData.forms"></select>
                     </div>
                     <label for="selectedField_{{$index}}" class="control-label">{{msg('queries.new.label.selectedField')}}:</label>
                     <div class="control-group">
-                        <select id="selectedField_{{$index}}"></select>
+                        <select id="selectedField_{{$index}}" ng-model="form.selectColumn.field" ng-options="item as item.name for item in form.listComputedFields"></select>
                     </div>
                     <label for="selectedFunction_{{$index}}" class="control-label">{{msg('queries.new.label.selectedFunction')}}:</label>
                     <div class="control-group">
-                        <select id="selectedFunction_{{$index}}"></select>
+                        <select id="selectedFunction_{{$index}}" ng-model="form.selectColumn.function" ng-options="item as item.name for item in formData.functions"></select>
                     </div>
                     <label for="selectedNvl_{{$index}}" class="control-label">{{msg('queries.new.label.selectedNvl')}}:</label>
                     <div class="control-group">
-                        <input id="selectedNvl_{{$index}}" type="text" placeholder="{{msg('queries.new.selectedNvlPlaceholder')}}" />
-                        <button class="btn btn-primary">{{msg('common.add')}}</button>
+                        <input id="selectedNvl_{{$index}}" type="text" placeholder="{{msg('queries.new.selectedNvlPlaceholder')}}" ng-model="form.selectColumn.nullValue" />
+                        <button class="btn btn-primary" ng-click="form.addSelectColumn()">{{msg('common.add')}}</button>
                     </div>
                 </div>
             </div>

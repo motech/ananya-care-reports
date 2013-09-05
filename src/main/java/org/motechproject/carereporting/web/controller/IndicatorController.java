@@ -8,6 +8,7 @@ import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -68,6 +69,14 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorCreationFormDto());
     }
 
+    @RequestMapping(value = "/query/creationform", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @Transactional
+    public String getIndicatorQueryCreationFormDto() {
+        return this.writeAsString(QueryJsonView.CreationForm.class,
+                indicatorService.getIndicatorQueryCreationFormDto());
+    }
 
     @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)

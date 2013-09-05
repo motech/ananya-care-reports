@@ -825,3 +825,8 @@ hr {
 .btn-append {
     margin-left: 10px;
 }
+
+.modal-huge {
+    width: 700px;
+    margin-left: -350px;
+}

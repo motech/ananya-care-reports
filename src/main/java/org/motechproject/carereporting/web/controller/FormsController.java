@@ -74,6 +74,14 @@ public class FormsController extends BaseController {
         return this.writeAsString(BaseView.class, computedFieldService.getComputedFieldsByFormId(formId));
     }
 
+    @RequestMapping(value = "/{formId}/computedfields/all", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getAllComputedFieldsByFormId(@PathVariable Integer formId) {
+        return this.writeAsString(BaseView.class, computedFieldService.getAllComputedFieldsByFormId(formId));
+    }
+
     @RequestMapping(value = "/reload", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void reloadFormEntitiesFromDB() {
