@@ -7,6 +7,7 @@ import org.motechproject.carereporting.domain.PermissionEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
@@ -45,13 +46,23 @@ public class UserController extends BaseController {
     @Autowired
     private DashboardService dashboardService;
 
+    private static final Integer ADMIN_ROLE_ID = 1;
+    private static final Integer READ_ONLY_ROLE_ID = 4;
+
     @RequestMapping(value = "/indicators", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getIndicatorsInUserArea() {
-        return this.writeAsString(BaseView.class,
-                indicatorService.getAllIndicators());
+    public String getIndicatorsByUserAccess() {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+
+        if (userEntity.getRoles().contains(userService.getRoleById(ADMIN_ROLE_ID)) || userEntity.getRoles().contains(userService.getRoleById(READ_ONLY_ROLE_ID))) {
+            return this.writeAsString(DashboardJsonView.class,
+                    indicatorService.getAllIndicators());
+        } else {
+            return this.writeAsString(DashboardJsonView.class,
+                indicatorService.getAllIndicatorsByUserAccess(userEntity));
+        }
     }
 
     @RequestMapping(value = "/logged_in/area", method = RequestMethod.GET,

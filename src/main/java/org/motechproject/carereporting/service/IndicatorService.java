@@ -95,4 +95,6 @@ public interface IndicatorService {
 
     QueryCreationFormDto getIndicatorQueryCreationFormDto();
 
+    Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity);
+
 }

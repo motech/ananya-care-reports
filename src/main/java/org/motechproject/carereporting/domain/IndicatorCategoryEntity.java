@@ -3,7 +3,6 @@ package org.motechproject.carereporting.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
-import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.TrendJsonView;
 
@@ -41,8 +40,8 @@ public class IndicatorCategoryEntity extends AbstractEntity {
     @JoinColumn(name = "dashboard_id")
     private DashboardEntity dashboard;
 
-    @ManyToMany(mappedBy = "categories")
-    @JsonView({ DashboardJsonView.class, TrendJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @JsonView({ TrendJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
     private Set<IndicatorEntity> indicators;
 
     public IndicatorCategoryEntity() {

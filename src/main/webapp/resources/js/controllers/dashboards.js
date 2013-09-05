@@ -8,7 +8,7 @@ function sortByDateComparisonFunction(a, b) {
     return parseInt(a) - parseInt(b);
 };
 
-care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile) {
+care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile, $errorService) {
     $scope.title = $scope.msg('dashboards.title');
 
     $scope.startDate = moment().subtract('months', 1).format("L");
@@ -31,7 +31,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             dashboards.sort($scope.compareDashboardPositions);
             $scope.dashboards = dashboards;
             if (Object.keys($scope.dashboards).length > 0) {
-                 $scope.fetchTrends();
                  $scope.getDefaultDashboard();
             }
         });
@@ -57,15 +56,40 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.reportRows = [];
     $scope.allReportsRows = [];
     $scope.reportValues = [];
-    $scope.userAreaId = [];
+    $scope.currentTabIndicators = [];
+
+    $scope.fetchIndicators = function() {
+        $http.get('api/users/indicators')
+            .success(function(indicators) {
+                $scope.indicators = indicators;
+            }).error(function() {
+                $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
+            });
+    };
+
+    $scope.fetchIndicators();
+
+    $scope.getIndicatorsForCategory = function(indicatorCategory){
+    var indicators = [];
+        for (var i = 0; i < $scope.indicators.length ; i++){
+            for (var j = 0; j < $scope.indicators[i].categories.length ; j++){
+                if($scope.indicators[i].categories[j].name == indicatorCategory.name){
+                    indicators.push($scope.indicators[i]);
+                }
+            }
+        }
+        return indicators;
+    }
 
     $scope.prepareAllReportRows = function() {
         $scope.allReportsRows = [];
         if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
             return;
         }
-        for (var i = 0; i < $scope.dashboard.indicatorCategory.indicators.length; i++) {
-            var indicator = $scope.dashboard.indicatorCategory.indicators[i];
+        var indicators = $scope.getIndicatorsForCategory($scope.dashboard.indicatorCategory);
+        $scope.currentTabIndicators = indicators;
+        for (var i = 0; i < indicators.length; i++) {
+            var indicator = indicators[i];
             if (indicator.reports == undefined) {
                 continue;
             }
@@ -112,7 +136,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
             return 0;
         }
-        return Math.ceil($scope.dashboard.indicatorCategory.indicators.length/$scope.reportsPerPage);
+        return Math.ceil($scope.currentTabIndicators.length/$scope.reportsPerPage);
     };
 
     $scope.getPages = function() {
@@ -187,6 +211,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/users/logged_in/area')
             .success(function(areaId) {
                 $scope.userArea=areaId;
+                $scope.areaId=areaId.id;
                 $scope.fetchTrendAreas(areaId);
             });
     };
@@ -287,8 +312,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 var category = $scope.indicatorCategories[c];
                 var key = 'category_' + category.name;
                 $('.tabbable').find('a[data-tab-caption="' + category.name + '"]').addClass('alert alert-info tab-trend');
-
-                for (var i = 0; i < category.indicators.length; i++) {
+                var indicators = $scope.getIndicatorsForCategory(category);
+                for (var i = 0; i < indicators.length; i++) {
                     if ($scope.trendPerCategory[key] === undefined) {
                         $scope.trendPerCategory[key] = {
                             negative: 0,
@@ -296,7 +321,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         };
                     }
 
-                    var trend = category.indicators[i].trend;
+                    var trend = indicators[i].trend;
                     if (trend < 0) {
                         $scope.trendPerCategory[key].negative++;
                     } else if (trend > 0) {

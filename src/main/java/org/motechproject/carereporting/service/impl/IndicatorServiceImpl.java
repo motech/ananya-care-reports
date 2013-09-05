@@ -2,6 +2,8 @@ package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
@@ -118,9 +120,33 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private FormsService formsService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private static final Integer ADMIN_ROLE_ID = 1;
+    private static final Integer READ_ONLY_ROLE_ID = 4;
+
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
         return indicatorDao.getAllWithFields("reports");
+    }
+    @Transactional
+    @Override
+    public Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity) {
+        List <Integer> roleIds = new ArrayList<>();
+        for(RoleEntity roleEntity : userEntity.getRoles()){
+            roleIds.add(roleEntity.getId());
+        }
+        Query query = sessionFactory.getCurrentSession()
+               .createQuery("SELECT i from IndicatorEntity i " +
+                           "JOIN i.roles as r " +
+                           "WHERE (i.areaLevel.id >= :accessLevel " +
+                           "AND r.id IN (:roles)) " +
+                           "OR (i.owner.id = :ownerId)");
+        query.setParameter("accessLevel", userEntity.getArea().getLevelId());
+        query.setParameterList("roles", roleIds);
+        query.setParameter("ownerId", userEntity.getId());
+        return new LinkedHashSet<IndicatorEntity>(query.list());
     }
 
     @Transactional
@@ -349,11 +375,11 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private boolean isIndicatorAccessibleForUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
         return userEntity.equals(indicatorEntity.getOwner()) ||
-                hasIndicatorCommonRoleWithUser(indicatorEntity, userEntity);
+                hasIndicatorCommonRoleWithUser(indicatorEntity, userEntity) && userEntity.getArea().getLevel().getId() <= indicatorEntity.getAreaLevel().getId();
     }
 
     private boolean hasIndicatorCommonRoleWithUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
-        return !Collections.disjoint(indicatorEntity.getRoles(), userEntity.getRoles());
+        return !Collections.disjoint(indicatorEntity.getRoles(), userEntity.getRoles()) || userEntity.getRoles().contains(userService.getRoleById(ADMIN_ROLE_ID)) || userEntity.getRoles().contains(userService.getRoleById(READ_ONLY_ROLE_ID));
     }
 
     @Override

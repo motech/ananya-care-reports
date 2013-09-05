@@ -45,10 +45,10 @@ public class IndicatorEntity extends AbstractEntity {
     private DwQueryEntity numerator;
 
     @NotNull
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<IndicatorCategoryEntity> categories;
 
     @NotNull
@@ -65,7 +65,7 @@ public class IndicatorEntity extends AbstractEntity {
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
 
