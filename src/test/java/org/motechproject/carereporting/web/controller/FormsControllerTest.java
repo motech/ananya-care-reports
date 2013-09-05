@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,7 +118,7 @@ public class FormsControllerTest {
 
     @Test
     public void testGetAllFormsWithDto() throws Exception {
-        List<FormEntity> formEntities = new ArrayList<>();
+        Set<FormEntity> formEntities = new HashSet<>();
         FormListDto formListDto = new FormListDto(formEntities, formEntities, formEntities);
         when(formsService.getAllFormsFromDto()).thenReturn(formListDto);
 

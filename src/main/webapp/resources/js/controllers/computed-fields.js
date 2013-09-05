@@ -26,6 +26,9 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
                     break;
                 }
             }
+            fields.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            })
             $scope.fields = fields;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadFields');
@@ -35,6 +38,9 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     $scope.fetchForms = function() {
         $http.get('api/forms')
         .success(function(forms) {
+            forms.sort(function(a, b) {
+                return a.displayName.localeCompare(b.displayName);
+            })
             $scope.forms = forms;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadForms');

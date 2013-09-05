@@ -1,6 +1,9 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
@@ -12,10 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,19 +42,12 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     @Transactional
     @Override
     public Set<ComputedFieldEntity> getComputedFieldsByFormId(Integer formId) {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("form.id", formId);
-        fields.put("type", FieldType.Number);
+        List<Criterion> criterions = new LinkedList<>();
+        criterions.add(Restrictions.eq("form.id", formId));
+        criterions.add(Restrictions.eq("type", FieldType.Number));
+        criterions.add(Restrictions.not(Restrictions.like("name", "id", MatchMode.ANYWHERE)));
 
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAllByFields(fields);
-
-        Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().getName().indexOf("id") != -1) {
-                iterator.remove();
-            }
-        }
-        return computedFieldEntities;
+        return computedFieldDao.getAllByFields(criterions);
     }
 
     @Transactional
@@ -63,16 +58,7 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Override
     public Set<ComputedFieldEntity> getAllComputedFields(boolean origin) {
-        Set<ComputedFieldEntity> computedFieldEntities = computedFieldDao.getAll();
-
-        Iterator<ComputedFieldEntity> iterator = computedFieldEntities.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().getOrigin() ^ origin) {
-                iterator.remove();
-            }
-        }
-
-        return computedFieldEntities;
+        return computedFieldDao.getAllByField("origin", origin);
     }
 
     @Transactional(readOnly = false)

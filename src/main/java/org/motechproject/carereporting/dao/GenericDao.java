@@ -1,8 +1,10 @@
 package org.motechproject.carereporting.dao;
 
+import org.hibernate.criterion.Criterion;
 import org.motechproject.carereporting.domain.AbstractEntity;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,8 @@ public interface GenericDao<T extends AbstractEntity> {
 
     Set<T> getAllByFields(Map<String, Object> fields);
 
+    Set<T> getAllByFields(List<Criterion> criterions);
+
     T getById(Integer id);
 
     T getByIdWithFields(Integer id, String... fieldNames);
@@ -26,6 +30,8 @@ public interface GenericDao<T extends AbstractEntity> {
     T getByField(String fieldName, Object fieldValue);
 
     T getByFields(Map<String, Object> fields);
+
+    T getByFields(List<Criterion> criterions);
 
     void save(T entity);
 

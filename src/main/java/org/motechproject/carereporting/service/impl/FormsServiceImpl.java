@@ -19,8 +19,6 @@ import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -63,14 +61,6 @@ public class FormsServiceImpl implements FormsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void deleteFormById(Integer id) {
-        FormEntity form = new FormEntity();
-        form.setId(id);
-        formDao.remove(form);
-    }
-
-    @Override
     public FormEntity getFormById(Integer formId) {
         return formDao.getById(formId);
     }
@@ -94,14 +84,14 @@ public class FormsServiceImpl implements FormsService {
     @Transactional
     public Set<String> getTables() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return new HashSet<String>(jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class, careSchemaName));
+        return new HashSet<>(jdbcTemplate.queryForList(TABLE_LIST_SQL, String.class, careSchemaName));
     }
 
     @Override
     @Transactional
     public Set<String> getTableColumns(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        Set<String> columnNames = new HashSet<String>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class,
+        Set<String> columnNames = new HashSet<>(jdbcTemplate.queryForList(COLUMNS_IN_TABLE_SQL, String.class,
             careSchemaName, tableName));
 
         Iterator<String> iterator = columnNames.iterator();
@@ -136,7 +126,7 @@ public class FormsServiceImpl implements FormsService {
     @Override
     public String getForeignKeyForTable(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return new String(jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_TABLE, String.class, tableName));
+        return jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_TABLE, String.class, tableName);
     }
 
     @Override
@@ -146,29 +136,22 @@ public class FormsServiceImpl implements FormsService {
 
     @Override
     public FormListDto getAllFormsFromDto() {
-        Set<FormEntity> formEntities = formDao.getAll();
 
-        List<FormEntity> motherForms = new LinkedList<>();
-        List<FormEntity> childForms = new LinkedList<>();
-        List<FormEntity> otherForms = new LinkedList<>();
+        Set<FormEntity> motherForms = formDao.getByTableName("mother");
+        Set<FormEntity> childForms = formDao.getByTableName("child");
+        Set<FormEntity> otherForms = new LinkedHashSet<>();
+        Set<FormEntity> forms = formDao.getOtherTables();
 
-        for (FormEntity formEntity : formEntities) {
-            if (formEntity.getTableName().indexOf("mother") != -1) {
+        for (FormEntity formEntity : forms) {
+            String foreignKey = getForeignKeyForTable(formEntity.getTableName());
+            if (foreignKey.startsWith("mother")) {
                 motherForms.add(formEntity);
-            } else if (formEntity.getTableName().indexOf("child") != -1) {
+            } else if (foreignKey.startsWith("child")) {
                 childForms.add(formEntity);
             } else {
-                String foreignKey = getForeignKeyForTable(formEntity.getTableName());
-                if (foreignKey.contains("mother")) {
-                    motherForms.add(formEntity);
-                } else if (foreignKey.contains("child")) {
-                    childForms.add(formEntity);
-                } else {
-                    otherForms.add(formEntity);
-                }
+                otherForms.add(formEntity);
             }
         }
-
         return new FormListDto(motherForms, childForms, otherForms);
     }
 

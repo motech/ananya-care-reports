@@ -6,6 +6,7 @@ import org.hibernate.JDBCException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.GenericDao;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +47,24 @@ public abstract class GenericDaoHibernateImpl<T extends AbstractEntity> implemen
         type = (Class<T>) ((ParameterizedType)
                 getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
+    }
+
+    @Override
+    public Set<T> getAllByFields(List<Criterion> criterions) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+        for (Criterion criterion : criterions) {
+            criteria.add(criterion);
+        }
+        return new LinkedHashSet<T>(criteria.list());
+    }
+
+    @Override
+    public T getByFields(List<Criterion> criterions) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+        for (Criterion criterion : criterions) {
+            criteria.add(criterion);
+        }
+        return (T) criteria.uniqueResult();
     }
 
     @Override

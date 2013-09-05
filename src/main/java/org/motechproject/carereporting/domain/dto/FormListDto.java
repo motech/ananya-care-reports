@@ -4,46 +4,47 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
-import java.util.List;
+import java.util.Set;
 
 public class FormListDto {
 
     @JsonView({ IndicatorJsonView.ListFormNames.class })
-    private List<FormEntity> motherForms;
+    private Set<FormEntity> motherForms;
 
     @JsonView({ IndicatorJsonView.ListFormNames.class })
-    private List<FormEntity> childForms;
+    private Set<FormEntity> childForms;
 
     @JsonView({ IndicatorJsonView.ListFormNames.class })
-    private List<FormEntity> otherForms;
+    private Set<FormEntity> otherForms;
 
-    public FormListDto(List<FormEntity> motherForms, List<FormEntity> childForms, List<FormEntity> otherForms) {
+    public FormListDto(Set<FormEntity> motherForms, Set<FormEntity> childForms, Set<FormEntity> otherForms) {
         this.motherForms = motherForms;
         this.childForms = childForms;
         this.otherForms = otherForms;
     }
 
-    public List<FormEntity> getMotherForms() {
+    public Set<FormEntity> getMotherForms() {
         return motherForms;
     }
 
-    public void setMotherForms(List<FormEntity> motherForms) {
+    public void setMotherForms(Set<FormEntity> motherForms) {
         this.motherForms = motherForms;
     }
 
-    public List<FormEntity> getChildForms() {
+    public Set<FormEntity> getChildForms() {
         return childForms;
     }
 
-    public void setChildForms(List<FormEntity> childForms) {
+    public void setChildForms(Set<FormEntity> childForms) {
         this.childForms = childForms;
     }
 
-    public List<FormEntity> getOtherForms() {
+    public Set<FormEntity> getOtherForms() {
         return otherForms;
     }
 
-    public void setOtherForms(List<FormEntity> otherForms) {
+    public void setOtherForms(Set<FormEntity> otherForms) {
         this.otherForms = otherForms;
     }
+
 }
