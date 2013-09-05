@@ -18,16 +18,13 @@ public interface UserService {
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     Set<UserEntity> getAllUsers();
 
-    UserEntity login(String username, String password);
-
     UserEntity getCurrentlyLoggedUser();
 
-    void register(String username, String password, AreaEntity area, Set<RoleEntity> roles);
+    UserEntity register(String username, AreaEntity area, Set<RoleEntity> roles);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void register(UserEntity userEntity);
 
-    @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void updateUser(UserEntity user);
 
     Set<RoleEntity> getAllRoles();
@@ -35,10 +32,16 @@ public interface UserService {
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     RoleEntity getRoleById(Integer id);
 
+    RoleEntity getRoleByName(String name);
+
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void addRole(String roleName);
 
     UserEntity getUserById(Integer id);
+
+    UserEntity getUserByName(String name);
+
+    boolean doesUserExist(String userName);
 
     @PreAuthorize(HAS_ROLE_MANAGE_SYSTEM_USERS)
     void removeUserById(Integer userId);
@@ -61,5 +64,6 @@ public interface UserService {
 
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_ROLE)
     void removeRoleById(Integer id);
+
 }
 

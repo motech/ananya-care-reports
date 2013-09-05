@@ -62,4 +62,14 @@
                                  referencedColumnNames="level_id" referencedTableName="level"/>
     </changeSet>
 
+    <changeSet id="CARE #66" author="Pawel Reise">
+        <sql>
+            alter table dashboard_app.care_user
+            drop column password,
+            drop column email,
+            drop column salt;
+            insert into dashboard_app.role (name) values ('ReadOnly');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

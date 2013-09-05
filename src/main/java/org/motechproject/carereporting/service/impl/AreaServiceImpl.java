@@ -49,11 +49,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Set<AreaEntity> getAllStateAreas() {
-        return getAreasByLevelId(1);
-    }
-
-    @Override
     public Set<AreaEntity> getAllTopLevelAreas() {
         return getAreasByLevelId(2);
     }
@@ -63,6 +58,12 @@ public class AreaServiceImpl implements AreaService {
     public AreaEntity getAreaById(Integer areaId) {
         return areaDao.getById(areaId);
     }
+
+    @Override
+    public AreaEntity getAreaOnLevel(String areaName, String levelName) {
+        return areaDao.getAreaOnLevel(areaName, levelName);
+    }
+
 
     @Override
     @Transactional

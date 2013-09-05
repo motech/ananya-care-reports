@@ -18,10 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Formatter;
 import java.util.Set;
 
 @Service
@@ -52,19 +48,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity getUserByName(String name) {
+        return userDao.getByField("username", name);
+    }
+
+    @Override
+    public boolean doesUserExist(String userName) {
+        return userDao.doesUserExist(userName);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void removeUserById(Integer userId) {
         UserEntity user = new UserEntity();
         user.setId(userId);
         userDao.remove(user);
-    }
-
-    @Transactional
-    @Override
-    public UserEntity login(String username, String password) {
-        String salt = userDao.getSaltForUser(username);
-        String encodedPassword = encodePasswordWithSalt(password, salt);
-        return userDao.getByUsernameAndPassword(username, encodedPassword);
     }
 
     @Override
@@ -74,8 +72,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = false)
     @Override
-    public void register(String username, String password, AreaEntity area, Set<RoleEntity> roles) {
-        UserEntity user = new UserEntity(username, password, roles);
+    public UserEntity register(String username, AreaEntity area, Set<RoleEntity> roles) {
+        UserEntity user = new UserEntity(username, roles);
         user.setArea(area);
 
         LanguageEntity languageEntity = new LanguageEntity();
@@ -83,10 +81,9 @@ public class UserServiceImpl implements UserService {
         user.setDefaultLanguage(languageEntity);
         DashboardEntity dashboardEntity = dashboardService.getDashboardById(1);
         user.setDefaultDashboard(dashboardEntity);
-        String encodedPassword = encodePasswordWithSalt(user.getPassword(), user.getSalt());
-        user.setPassword(encodedPassword);
         try {
             userDao.save(user);
+            return userDao.getByField("username", user.getUsername());
         } catch (ConstraintViolationException e) {
             throw new EntityException("Username already exists", e);
         }
@@ -100,9 +97,6 @@ public class UserServiceImpl implements UserService {
         userEntity.setDefaultLanguage(languageEntity);
         DashboardEntity dashboardEntity = dashboardService.getDashboardById(1);
         userEntity.setDefaultDashboard(dashboardEntity);
-
-        String encodedPassword = encodePasswordWithSalt(userEntity.getPassword(), userEntity.getSalt());
-        userEntity.setPassword(encodedPassword);
         try {
             userDao.save(userEntity);
         } catch (ConstraintViolationException e) {
@@ -116,28 +110,6 @@ public class UserServiceImpl implements UserService {
         userDao.update(user);
     }
 
-    private String encodePasswordWithSalt(String password, String salt) {
-        try {
-            String stringToEncode = password + salt;
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(stringToEncode.getBytes("UTF-8"));
-            return byteToHex(crypt.digest());
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            throw new EntityException("Cannot encode user password", e);
-        }
-    }
-
-    private String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
-    }
-
     @Transactional
     @Override
     public Set<RoleEntity> getAllRoles() {
@@ -148,6 +120,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public RoleEntity getRoleById(Integer id) {
         return roleDao.getById(id);
+    }
+
+    @Transactional
+    @Override
+    public RoleEntity getRoleByName(String name) {
+        return roleDao.getByName(name);
     }
 
     @Transactional(readOnly = false)
@@ -204,11 +182,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeRoleById(Integer id) {
         RoleEntity roleEntity = this.getRoleById(id);
-
-        for (UserEntity userEntity : roleEntity.getUsers()) {
-            userEntity.getRoles().remove(roleEntity);
-        }
-
         roleDao.remove(roleEntity);
     }
 

@@ -2,7 +2,6 @@ package org.motechproject.carereporting.service.impl;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
@@ -45,8 +44,6 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
         List<Criterion> criterions = new LinkedList<>();
         criterions.add(Restrictions.eq("form.id", formId));
         criterions.add(Restrictions.eq("type", FieldType.Number));
-        criterions.add(Restrictions.not(Restrictions.like("name", "id", MatchMode.ANYWHERE)));
-
         return computedFieldDao.getAllByFields(criterions);
     }
 

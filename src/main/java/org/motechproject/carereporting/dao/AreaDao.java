@@ -10,4 +10,5 @@ public interface AreaDao extends GenericDao<AreaEntity> {
     Set<AreaEntity> getDirectChildAreas(Integer parentAreaId);
     Set<AreaEntity> getAreasByLevelId(Integer levelId);
 
+    AreaEntity getAreaOnLevel(String areaName, String levelName);
 }

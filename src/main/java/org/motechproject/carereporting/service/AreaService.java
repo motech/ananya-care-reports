@@ -15,11 +15,11 @@ public interface AreaService {
 
     Set<AreaEntity> getAllAreasByParentAreaId(Integer areaId);
 
-    Set<AreaEntity> getAllStateAreas();
-
     Set<AreaEntity> getAllTopLevelAreas();
 
     AreaEntity getAreaById(Integer areaId);
+
+    AreaEntity getAreaOnLevel(String areaName, String levelName);
 
     Set<LevelEntity> getAllLevels();
 

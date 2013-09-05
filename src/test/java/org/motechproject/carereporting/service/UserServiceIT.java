@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -51,10 +52,8 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testRegisterUser() throws Exception {
         String username = "username3";
-        String password = "password3";
         UserEntity user = new UserEntity();
         user.setUsername(username);
-        user.setPassword(password);
 
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setId(1);
@@ -63,13 +62,13 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         area.setId(1);
         user.setArea(area);
         userService.register(user);
-        assertNotNull(userService.login(username, password));
+        assertNotNull(userService.getUserByName(user.getUsername()));
     }
 
     @Test
     public void testAddRoles() throws Exception {
         addRoles("ROLE1", "ROLE2");
-        assertEquals(5, userService.getAllRoles().size());
+        assertEquals(6, userService.getAllRoles().size());
     }
 
     private void addRoles(String... roles) {
@@ -81,29 +80,26 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testRegisterUserWithRoles() throws Exception {
         String username = "username2";
-        String password = "password2";
         AreaEntity area = new AreaEntity();
         area.setId(1);
-        userService.register(username, password, area, userService.getAllRoles());
-        UserEntity user = userService.login(username, password);
-        assertEquals(3, user.getRoles().size());
+        userService.register(username, area, userService.getAllRoles());
+        UserEntity user = userService.getUserByName(username);
+        assertEquals(4, user.getRoles().size());
     }
 
-    @Test(expected = EntityException.class)
-    public void testLoginFailed() throws Exception {
+    @Test
+    public void testWrongUsername() throws Exception {
         String username = "bad-usernamepg";
-        String password = "bad-password";
-        userService.login(username, password);
+        assertNull(userService.getUserByName(username));
     }
 
     @Test
     public void testUserCreationDate() {
         String username = "username4";
-        String password = "password4";
         AreaEntity area = new AreaEntity();
         area.setId(1);
-        userService.register(username, password, area, new HashSet<RoleEntity>());
-        UserEntity userEntity = userService.login(username, password);
+        userService.register(username, area, new HashSet<RoleEntity>());
+        UserEntity userEntity = userService.getUserByName(username);
 
         assertEquals(true, DateUtils.isSameDay(userEntity.getCreationDate(), new Date()));
     }
@@ -111,9 +107,8 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void testUserModificationDate() {
         String username = "username";
-        String password = "password";
         String newusername = "new user";
-        UserEntity userEntity = new UserEntity(username, password);
+        UserEntity userEntity = new UserEntity(username);
         AreaEntity area = new AreaEntity();
         area.setId(1);
         LanguageEntity languageEntity = new LanguageEntity();
@@ -122,7 +117,7 @@ public class UserServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         userService.register(userEntity);
         userEntity.setUsername(newusername);
         userService.updateUser(userEntity);
-        userEntity = userService.login(newusername, password);
+        userEntity = userService.getUserByName(newusername);
 
         assertNotNull(userEntity.getModificationDate());
     }

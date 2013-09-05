@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -215,10 +214,6 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public void registerUser(@RequestBody @Valid UserEntity userEntity, BindingResult bindingResult,
                              HttpServletRequest request) {
-        if (StringUtils.isEmpty(userEntity.getPassword())) {
-            bindingResult.rejectValue("password", "notNull.userEntity.password");
-        }
-
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }

@@ -1,8 +1,6 @@
 package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +22,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "care_user")
@@ -36,16 +33,6 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @NotNull
     @Column(name = "username", unique = true)
     private String username;
-
-    @Column(name = "password")
-    private String password;
-
-    @Email
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "salt")
-    private String salt;
 
     @NotNull
     @ManyToOne
@@ -70,21 +57,16 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public UserEntity() {
         this.roles = new HashSet<>();
-        this.salt = UUID.randomUUID().toString();
     }
 
-    public UserEntity(String username, String password) {
+    public UserEntity(String username) {
+        this();
         this.username = username;
-        this.password = password;
-        this.roles = new HashSet<>();
-        this.salt = UUID.randomUUID().toString();
     }
 
-    public UserEntity(String username, String password, Set<RoleEntity> roles) {
+    public UserEntity(String username, Set<RoleEntity> roles) {
         this.username = username;
-        this.password = password;
         this.roles = roles;
-        this.salt = UUID.randomUUID().toString();
     }
 
     public DashboardEntity getDefaultDashboard() {
@@ -103,25 +85,12 @@ public class UserEntity extends AbstractEntity implements UserDetails {
         this.area = area;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Set<RoleEntity> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
-    }
-
-    @JsonSetter
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setUsername(String username) {
@@ -143,21 +112,12 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @Override
     @JsonIgnore
     public String getPassword() {
-        return password;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getUsername() {
         return username;
-    }
-
-    @JsonIgnore
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     public LanguageEntity getDefaultLanguage() {

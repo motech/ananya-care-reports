@@ -40,13 +40,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
-    private static final String REGISTER_JSON = "{\"username\":\"username\", \"password\":\"password\", \"area\":{\"id\":\"1\"}}";
-    private static final String REGISTER_JSON_NO_USERNAME = "{\"password\":\"password\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON = "{\"username\":\"username\", \"area\":{\"id\":\"1\"}}";
+    private static final String REGISTER_JSON_NO_USERNAME = "{\"area\":{\"id\":\"1\"}}";
     private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"area\":{\"id\":\"1\"}}";
     private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"email\":\"this is not a valid email\", \"area\":{\"id\":\"1\"}}";
     private static final String CREATE_ROLE_JSON = "{\"id\":\"1\", \"name\":\"name\"}";
     private static final String UPDATE_ROLE_JSON = "{\"name\":\"new name\"}";
-    private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"password\":\"password\", \"area\":{\"id\":\"1\"}}";
+    private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"area\":{\"id\":\"1\"}}";
 
     @Mock
     private UserService userService;
@@ -74,9 +74,8 @@ public class UserControllerTest {
     public void testGetIndicatorsInUserArea() throws Exception {
         Integer id = 1;
         String username = "username";
-        String password = "password";
         UsernamePasswordAuthenticationToken authenticationToken = mock(UsernamePasswordAuthenticationToken.class);
-        UserEntity userEntity = new UserEntity(username, password);
+        UserEntity userEntity = new UserEntity(username);
         AreaEntity areaEntity = new AreaEntity();
         areaEntity.setId(id);
         userEntity.setArea(areaEntity);
@@ -237,8 +236,7 @@ public class UserControllerTest {
     public void testGetAllUsers() throws Exception {
         Integer id = 1;
         String username = "username";
-        String password = "password";
-        UserEntity userEntity = new UserEntity(username, password);
+        UserEntity userEntity = new UserEntity(username);
         userEntity.setId(id);
 
         Set<UserEntity> userEntities = new LinkedHashSet<>();
@@ -392,15 +390,6 @@ public class UserControllerTest {
     public void testRegisterUsernameEmptyValidation() throws Exception {
         mockMvc.perform(put("/api/users")
                 .content(REGISTER_JSON_NO_USERNAME)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        verify(userService, times(0)).register((UserEntity) anyObject());
-    }
-
-    @Test
-    public void testRegisterPasswordEmptyValidation() throws Exception {
-        mockMvc.perform(put("/api/users")
-                .content(REGISTER_JSON_NO_PASSWORD)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         verify(userService, times(0)).register((UserEntity) anyObject());

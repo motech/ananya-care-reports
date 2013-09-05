@@ -39,4 +39,13 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
                 .list());
     }
 
+    @Override
+    public AreaEntity getAreaOnLevel(String areaName, String levelName) {
+        return (AreaEntity) getCurrentSession()
+                .createQuery("from AreaEntity where name = :areaName and level.name = :levelName")
+                .setParameter("areaName", areaName)
+                .setParameter("levelName", levelName)
+                .uniqueResult();
+    }
+
 }

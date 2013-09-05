@@ -138,7 +138,7 @@ public class PerformanceTestHelper {
         List<AreaEntity> areaEntities = new ArrayList<>(areaService.getAllAreas());
 
         for (int i = 0; i < usersCount; i++) {
-            UserEntity userEntity = new UserEntity(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+            UserEntity userEntity = new UserEntity(UUID.randomUUID().toString());
             userEntity.setArea(areaEntities.get(random.nextInt(areaEntities.size())));
             userService.register(userEntity);
         }

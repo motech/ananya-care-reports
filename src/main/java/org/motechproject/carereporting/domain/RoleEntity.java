@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.views.BaseView;
@@ -34,9 +33,6 @@ public class RoleEntity extends AbstractEntity {
             inverseJoinColumns = { @JoinColumn(name = "permission_id") })
     private Set<PermissionEntity> permissions;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<UserEntity> users;
-
     public RoleEntity() {
 
     }
@@ -59,15 +55,6 @@ public class RoleEntity extends AbstractEntity {
 
     public void setPermissions(Set<PermissionEntity> permissions) {
         this.permissions = permissions;
-    }
-
-    @JsonIgnore
-    public Set<UserEntity> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<UserEntity> users) {
-        this.users = users;
     }
 
     @Override
