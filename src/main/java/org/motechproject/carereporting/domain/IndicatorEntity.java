@@ -35,12 +35,12 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
 
@@ -65,11 +65,11 @@ public class IndicatorEntity extends AbstractEntity {
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL)
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private Set<ReportEntity> reports;
 
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicator", cascade = CascadeType.REMOVE)
     private Set<IndicatorValueEntity> indicatorValues;
 
     @NotNull

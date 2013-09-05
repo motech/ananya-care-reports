@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.initializers;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
@@ -39,6 +40,7 @@ public class IndicatorValuesInitializer implements Runnable {
     @Transactional(readOnly = false)
     public void run() {
         LOG.info(indicatorEntity.getName() + ": start calculation");
+        Hibernate.initialize(indicatorEntity.getNumerator());
 
         Date startDate = indicatorService.getDateDepth();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();

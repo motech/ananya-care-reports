@@ -1,7 +1,5 @@
 package org.motechproject.carereporting.service.impl;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
@@ -19,7 +17,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -31,9 +31,6 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportTypeDao reportTypeDao;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Autowired
     private ChartFactory chartFactory;
@@ -52,13 +49,11 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportEntity getReportByTypeAndIndicatorId(ReportType reportType, Integer indicatorId) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from ReportEntity where reportType.id = :reportTypeId"
-                        + " and indicator.id = :indicatorId");
-        query.setParameter("reportTypeId", reportType.getValue());
-        query.setParameter("indicatorId", indicatorId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("indicator.id", indicatorId);
+        params.put("reportType", reportType);
 
-        return (ReportEntity) query.list().get(0);
+        return reportDao.getByFields(params);
     }
 
     @Override
@@ -169,14 +164,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
-        switch (chartType) {
-            case "pie chart":
-                return chartFactory.createPieChart(indicator, values);
-            case "bar chart":
-                return chartFactory.createLineOrBarChart(indicator, values, ReportType.BarChart);
-            case "line chart":
-                return chartFactory.createLineOrBarChart(indicator, values, ReportType.LineChart);
-            default: throw new IllegalArgumentException("Chart type " + chartType +
+        if (chartType.startsWith("pie")) {
+            return chartFactory.createPieChart(indicator, values);
+        } else if (chartType.startsWith("bar")) {
+            return chartFactory.createLineOrBarChart(indicator, values, ReportType.BarChart);
+        } else if (chartType.startsWith("line")) {
+            return chartFactory.createLineOrBarChart(indicator, values, ReportType.LineChart);
+        } else {
+            throw new IllegalArgumentException("Chart type " + chartType +
                     " not supported");
         }
     }

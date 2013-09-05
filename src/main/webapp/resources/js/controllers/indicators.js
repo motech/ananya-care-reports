@@ -25,17 +25,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.title = $scope.msg('indicators.title');
 
     $scope.indicators = [];
-    $scope.selectedCategory = null;
     $scope.category = {};
-
-    $scope.fetchIndicators = function() {
-        $http.get('api/users/indicators')
-            .success(function(indicators) {
-                $scope.indicators = indicators;
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
-            });
-    };
 
     $scope.deleteIndicator = function(indicator) {
         var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
@@ -61,21 +51,13 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.fetchCategories = function() {
         $http.get('api/indicator/category').success(function(category) {
             $scope.category = category;
+            $scope.selectedCategory = null;
         }).error(function(response) {
             $dialog.messageBox($scope.msg('common.error'), $scope.msg('categories.error.cannotLoadCategories'), [{label: 'Ok', cssClass: 'btn'}]).open();
         });
     };
 
     $scope.fetchCategories();
-
-    $scope.fetchIndicatorsByCategoryId = function() {
-        $http.get('api/indicator/filter/' + $scope.selectedCategory)
-            .success(function(indicators) {
-                $scope.indicators = indicators;
-            }).error(function() {
-                $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
-            });
-    };
 
     $scope.recalculate = function() {
         $http.get('api/indicator/calculator/recalculate')
@@ -89,10 +71,18 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     };
 
     $scope.$watch('selectedCategory', function() {
-        if($scope.selectedCategory){
-            $scope.fetchIndicatorsByCategoryId();
+        if($scope.selectedCategory) {
+            for(var i = 0; i < $scope.category.length; i++) {
+                if($scope.category[i].id == $scope.selectedCategory) {
+                    $scope.indicators = $scope.category[i].indicators;
+                    break;
+                }
+            }
         } else {
-            $scope.fetchIndicators();
+            $scope.indicators = new Array();
+            for(var i = 0; i < $scope.category.length; i++) {
+                $scope.indicators = $scope.indicators.concat($scope.category[i].indicators);
+            }
         }
     });
 });

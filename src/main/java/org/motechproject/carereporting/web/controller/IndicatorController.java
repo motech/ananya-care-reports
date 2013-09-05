@@ -140,7 +140,7 @@ public class IndicatorController extends BaseController {
     @Transactional
     public String getIndicatorCategoryList() {
 
-        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class,
+        return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
                 indicatorService.getAllIndicatorCategories());
     }
 

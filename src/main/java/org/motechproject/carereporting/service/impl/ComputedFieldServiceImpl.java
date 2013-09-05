@@ -44,6 +44,7 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
         List<Criterion> criterions = new LinkedList<>();
         criterions.add(Restrictions.eq("form.id", formId));
         criterions.add(Restrictions.eq("type", FieldType.Number));
+
         return computedFieldDao.getAllByFields(criterions);
     }
 
