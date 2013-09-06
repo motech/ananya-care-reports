@@ -216,9 +216,51 @@
                                     this.displayName = constructFieldName(tableName, fieldName) + ' ' + operator
                                                        + ' ' + value;
                                 },
-                                createFieldComparison: function(tableName1, fieldName1, fieldOffset1,
-                                                                 tableName2, fieldName2, fieldOffset2,
-                                                                 operator) {
+                                createDateDiffComparison: function(tableName1, fieldName1, fieldOffset1, tableName2,
+                                                                    fieldName2, fieldOffset2, operator, value) {
+                                    this.type = 'dateDiff';
+                                    this.tableName1 = tableName1;
+                                    this.fieldName1 = fieldName1;
+                                    this.fieldOffset1 = fieldOffset1;
+                                    this.tableName2 = tableName2;
+                                    this.fieldName2 = fieldName2;
+                                    this.fieldOffset2 = fieldOffset2;
+                                    this.operator = operator;
+                                    this.value = value;
+                                    this.displayName = constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                                 + ' - ' + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
+                                                 + ' ' + operator + ' ' + value;
+                                },
+                                createDateRangeComparison: function(tableName1, fieldName1, fieldOffset1, date1, date2) {
+                                    this.type = 'dateRange';
+                                    this.tableName1 = tableName1;
+                                    this.fieldName1 = fieldName1;
+                                    this.fieldOffset1 = fieldOffset1;
+                                    this.date1 = date1;
+                                    this.date2 = date2;
+                                    this.displayName = constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                                 + ' between ' + date1 + ' and ' + date2;
+                                },
+                                createDateValueComparison: function(tableName1, fieldName1, fieldOffset1, operator, value) {
+                                    this.type = 'dateValue';
+                                    this.tableName1 = tableName1;
+                                    this.fieldName1 = fieldName1;
+                                    this.fieldOffset1 = fieldOffset1;
+                                    this.operator = operator;
+                                    this.value = value;
+                                    this.displayName = constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
+                                                 + ' ' + operator + ' ' + value;
+                                },
+                                createEnumRangeComparison: function(tableName1, fieldName1, values) {
+                                    this.type = 'enumRange';
+                                    this.tableName1 = tableName1;
+                                    this.fieldName1 = fieldName1;
+                                    this.values = values;
+                                    this.displayName = constructFieldName(tableName1, fieldName1)
+                                                 + ' in (' + values.join(', ') + ')';
+                                },
+                                createFieldComparison: function(tableName1, fieldName1, fieldOffset1, tableName2,
+                                                                 fieldName2, fieldOffset2, operator) {
                                     this.tableName1 = tableName1;
                                     this.fieldName1 = fieldName1;
                                     this.fieldOffset1 = fieldOffset1;
@@ -244,65 +286,6 @@
 
                                     return conditionElement;
                                 }
-                            };
-                        };
-
-                        var constructDateDiffComparison = function(tableName1, fieldName1, fieldOffset1,
-                                                                   tableName2, fieldName2, fieldOffset2,
-                                                                   operator, value) {
-                            return {
-                                uniqueId: new Date().getTime(),
-                                type: 'dateDiff',
-                                tableName1: tableName1,
-                                fieldName1: fieldName1,
-                                fieldOffset1: fieldOffset1,
-                                tableName2: tableName2,
-                                fieldName2: fieldName2,
-                                fieldOffset2: fieldOffset2,
-                                operator: operator,
-                                value: value,
-                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
-                                             + ' - ' + constructFieldNameWithOffset(tableName2, fieldName2, fieldOffset2)
-                                             + ' ' + operator + ' ' + value
-                            };
-                        };
-                        var constructDateRangeComparison = function(tableName1, fieldName1, fieldOffset1,
-                                                                    date1, date2) {
-                            return {
-                                uniqueId: new Date().getTime(),
-                                type: 'dateRange',
-                                tableName1: tableName1,
-                                fieldName1: fieldName1,
-                                fieldOffset1: fieldOffset1,
-                                date1: date1,
-                                date2: date2,
-                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
-                                             + ' between ' + date1 + ' and ' + date2
-                            };
-                        };
-                        var constructDateValueComparison = function(tableName1, fieldName1, fieldOffset1,
-                                                                    operator, value) {
-                            return {
-                                uniqueId: new Date().getTime(),
-                                type: 'dateValue',
-                                tableName1: tableName1,
-                                fieldName1: fieldName1,
-                                fieldOffset1: fieldOffset1,
-                                operator: operator,
-                                value: value,
-                                displayName: constructFieldNameWithOffset(tableName1, fieldName1, fieldOffset1)
-                                             + ' ' + operator + ' ' + value
-                            };
-                        };
-                        var constructEnumRangeComparison = function(tableName1, fieldName1, values) {
-                            return {
-                                uniqueId: new Date().getTime(),
-                                type: 'enumRange',
-                                tableName1: tableName1,
-                                fieldName1: fieldName1,
-                                values: values,
-                                displayName: constructFieldName(tableName1, fieldName1)
-                                             + ' in (' + values.join(', ') + ')'
                             };
                         };
 
