@@ -18,6 +18,7 @@ import static org.jooq.impl.DSL.max;
 import static org.jooq.impl.DSL.min;
 import static org.jooq.impl.DSL.sum;
 
+@SuppressWarnings("unchecked")
 public final class SelectColumnHelper {
 
     private static final String WILDCARD = "*";

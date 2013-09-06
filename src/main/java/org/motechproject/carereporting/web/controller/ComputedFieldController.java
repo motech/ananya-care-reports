@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
+import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.ComputedFieldView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;
@@ -79,5 +80,21 @@ public class ComputedFieldController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteComputedField(@PathVariable Integer computedFieldId) {
         computedFieldService.deleteComputedField(computedFieldId);
+    }
+
+    @RequestMapping(value = "/operatortype", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getOperatorTypeList() {
+        return this.writeAsString(ComplexConditionJsonView.ListOperatorTypes.class,
+                computedFieldService.getAllOperatorTypes());
+    }
+
+    @RequestMapping(value = "/comparisonsymbol", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getComparisonSymbolList() {
+        return this.writeAsString(ComplexConditionJsonView.ListComparisonSymbols.class,
+                computedFieldService.getAllComparisonSymbols());
     }
 }

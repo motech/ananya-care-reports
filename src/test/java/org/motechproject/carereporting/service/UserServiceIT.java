@@ -9,7 +9,6 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.LanguageEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
-import org.motechproject.carereporting.exception.EntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

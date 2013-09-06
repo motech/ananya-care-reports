@@ -43,6 +43,14 @@ public class DashboardController extends BaseController {
                 dashboards);
     }
 
+    @RequestMapping(value = "/dto", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getAllDashboardsFromDto() {
+        return writeAsString(DashboardJsonView.class,
+                dashboardService.getAllDashboardsFromDto());
+    }
+
     private void filterDashboardsByUserRoles(HttpServletRequest request, Set<DashboardEntity> dashboards) {
         if (!request.isUserInRole("CAN_VIEW_MAP_REPORT")) {
             removeFromDashboardsByName(dashboards, "Map report");
@@ -75,5 +83,7 @@ public class DashboardController extends BaseController {
     public void saveDashboardsPositions(@RequestBody List<DashboardPositionDto> dashboardsPositions) {
         dashboardService.saveDashboardsPositions(dashboardsPositions);
     }
+
+
 
 }

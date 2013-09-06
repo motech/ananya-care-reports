@@ -3,6 +3,7 @@ package org.motechproject.carereporting.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -26,6 +27,7 @@ public class LevelEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "name")
+    @JsonView({ IndicatorJsonView.CreationForm.class })
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +38,7 @@ public class LevelEntity extends AbstractEntity {
     private Set<AreaEntity> areas;
 
     @Column(name = "hierarchy_depth")
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ DashboardJsonView.class, IndicatorJsonView.CreationForm.class })
     private Integer hierarchyDepth;
 
     public LevelEntity() {

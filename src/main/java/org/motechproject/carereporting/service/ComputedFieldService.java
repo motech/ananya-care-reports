@@ -1,6 +1,8 @@
 package org.motechproject.carereporting.service;
 
+import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.OperatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -31,5 +33,13 @@ public interface ComputedFieldService {
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)
     void deleteComputedField(Integer id);
+
+    Set<OperatorTypeEntity> getAllOperatorTypes();
+
+    OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId);
+
+    Set<ComparisonSymbolEntity> getAllComparisonSymbols();
+
+    ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId);
 
 }

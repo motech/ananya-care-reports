@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public class CareReportingAuthenticationProvider implements AuthenticationProvider {
 
     private static final Integer SUPER_USER_AREA_ID = 1;
@@ -56,7 +57,6 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Authentication authenticate(Authentication authentication) {
         final String login = prepareCommCareLogin(authentication);
         final String password = ((String) authentication.getCredentials()).trim();
@@ -69,10 +69,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
 
         try {
             RestTemplate restTemplate = new RestTemplate(createSecureTransport(login, password));
-            MultiValueMap commCareAuthenticationData = new LinkedMultiValueMap<String, String>() {{
+            MultiValueMap commCareAuthenticationData = new LinkedMultiValueMap<String, String>() { {
                 add("username", login);
                 add("password", password);
-            }};
+            } };
             String userJson = restTemplate.postForObject(commCareUrl, commCareAuthenticationData, String.class);
             Map<String, Object> result = new ObjectMapper().readValue(userJson, Map.class);
             UserEntity user = prepareCommCareUser(result);
@@ -166,10 +166,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         return apiResult.get("user_data") != null;
     }
 
-    private Set<RoleEntity> getMobileUserRoles(Map<String,Object> apiResult) {
+    private Set<RoleEntity> getMobileUserRoles(Map<String, Object> apiResult) {
         Set<RoleEntity> roles = new HashSet<>();
         Map<String, String> userData = (Map<String, String>) apiResult.get("user_data");
-        roles.add(userService.getRoleByName((String) userData.get("reportview")));
+        roles.add(userService.getRoleByName(userData.get("reportview")));
         return roles;
     }
 
@@ -190,7 +190,7 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             return areaService.getAreaById(1);
         }
         String level = getUserLevel(userData);
-        String area = (String) userData.get(level);
+        String area = userData.get(level);
         return areaService.getAreaOnLevel(area, level);
     }
 
@@ -205,7 +205,6 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         return "country";
     }
 
-    @SuppressWarnings("unchecked")
     protected ClientHttpRequestFactory createSecureTransport(String username, String password) {
         HttpClient client = new HttpClient();
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);

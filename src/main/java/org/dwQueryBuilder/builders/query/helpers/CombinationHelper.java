@@ -10,6 +10,7 @@ import org.jooq.SelectJoinStep;
 
 import static org.jooq.impl.DSL.fieldByName;
 
+@SuppressWarnings("unchecked")
 public final class CombinationHelper {
 
     private CombinationHelper() {

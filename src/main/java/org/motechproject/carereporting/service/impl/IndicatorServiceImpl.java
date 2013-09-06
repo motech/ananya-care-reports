@@ -9,7 +9,6 @@ import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
-import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FormEntity;
@@ -18,6 +17,7 @@ import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -31,7 +31,6 @@ import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
-import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.ExportService;
@@ -121,9 +120,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private FormsService formsService;
-
-    @Autowired
-    private ComplexConditionService complexConditionService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -479,14 +475,16 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<IndicatorCategoryEntity> categoryEntities = this.getAllIndicatorCategories();
         Set<RoleEntity> roleEntities = userService.getAllRoles();
         Set<FormEntity> formEntities = formsService.getAllForms();
-        Set<ComplexConditionEntity> complexConditionEntities = complexConditionService.getAllComplexConditions();
         Set<ReportTypeEntity> reportTypes = reportService.getAllReportTypes();
+        Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
+        Set<LevelEntity> levelEntities = areaService.getAllLevels();
 
         return new IndicatorCreationFormDto(
                 categoryEntities,
                 roleEntities,
                 formEntities,
-                complexConditionEntities,
+                levelEntities,
+                frequencyEntities,
                 reportTypes);
     }
 

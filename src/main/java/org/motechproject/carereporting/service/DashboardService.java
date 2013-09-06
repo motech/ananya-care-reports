@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.dto.DashboardDto;
 import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
 
 import java.util.List;
@@ -19,5 +20,7 @@ public interface DashboardService {
     void saveDashboardsPositions(List<DashboardPositionDto> dashboardsPositions);
 
     DashboardEntity getDashboardById(Integer id);
+
+    DashboardDto getAllDashboardsFromDto();
 
 }

@@ -105,11 +105,6 @@ public final class ChartFactory {
         }
         BigDecimal chartValue = indicatorNumeratorsCombined.divide(indicatorDenominatorsCombined, SCALE, RoundingMode.HALF_UP);
 
-        ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
-                ReportType.PieChart, indicator.getId());
-        String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
-        String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();
-
         return createTemplateChart(indicator.getName())
                 .grid(new GridBuilder()
                         .verticalLines(false)
@@ -122,10 +117,8 @@ public final class ChartFactory {
                         .show(true)
                         .explode(EXPLOSION_NUMBER))
                 .serie(new SerieBuilder()
-                        .label(labelX)
                         .point(BigDecimal.ZERO, chartValue))
                 .serie(new SerieBuilder()
-                        .label(labelY)
                         .point(BigDecimal.ZERO, BigDecimal.ONE.subtract(chartValue)))
                 .build();
     }

@@ -10,7 +10,7 @@
     </owners>
     <trend>3</trend>
     <reports>
-        <report type="Pie Chart" />
+        <report type="Pie Chart" label-x="ss" label-y="dds"/>
         <report type="Line Chart" label-x="Time" label-y="% mothers" />
         <report type="Bar Chart" label-x="Time" label-y="% mothers" />
     </reports>

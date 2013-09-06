@@ -1,9 +1,10 @@
 package org.motechproject.carereporting.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.motechproject.carereporting.domain.ComplexConditionEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
@@ -22,7 +23,10 @@ public class IndicatorCreationFormDto {
     private Set<FormEntity> forms;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
-    private Set<ComplexConditionEntity> complexConditions;
+    private Set<LevelEntity> levels;
+
+    @JsonView({ IndicatorJsonView.CreationForm.class })
+    private Set<FrequencyEntity> frequencies;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<ReportTypeEntity> reportTypes;
@@ -31,16 +35,29 @@ public class IndicatorCreationFormDto {
 
     }
 
-    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories,
-                                    Set<RoleEntity> roles,
-                                    Set<FormEntity> forms,
-                                    Set<ComplexConditionEntity> complexConditions,
-                                    Set<ReportTypeEntity> reportTypes) {
+    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles, Set<FormEntity> forms, Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes) {
         this.categories = categories;
         this.roles = roles;
         this.forms = forms;
-        this.complexConditions = complexConditions;
+        this.levels = levels;
+        this.frequencies = frequencies;
         this.reportTypes = reportTypes;
+    }
+
+    public Set<LevelEntity> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(Set<LevelEntity> levels) {
+        this.levels = levels;
+    }
+
+    public Set<FrequencyEntity> getFrequencies() {
+        return frequencies;
+    }
+
+    public void setFrequencies(Set<FrequencyEntity> frequencies) {
+        this.frequencies = frequencies;
     }
 
     public Set<IndicatorCategoryEntity> getCategories() {
@@ -65,14 +82,6 @@ public class IndicatorCreationFormDto {
 
     public void setForms(Set<FormEntity> forms) {
         this.forms = forms;
-    }
-
-    public Set<ComplexConditionEntity> getComplexConditions() {
-        return complexConditions;
-    }
-
-    public void setComplexConditions(Set<ComplexConditionEntity> complexConditions) {
-        this.complexConditions = complexConditions;
     }
 
     public Set<ReportTypeEntity> getReportTypes() {

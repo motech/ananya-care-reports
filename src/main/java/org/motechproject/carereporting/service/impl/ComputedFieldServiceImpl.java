@@ -3,9 +3,13 @@ package org.motechproject.carereporting.service.impl;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
+import org.motechproject.carereporting.dao.OperatorTypeDao;
+import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
+import org.motechproject.carereporting.domain.OperatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.ComputedFieldDto;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.ComputedFieldService;
@@ -31,6 +35,13 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private OperatorTypeDao operatorTypeDao;
+
+    @Autowired
+    private ComparisonSymbolDao comparisonSymbolDao;
+
 
     @Transactional
     @Override
@@ -108,6 +119,30 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     public void deleteComputedField(Integer id) {
         ComputedFieldEntity computedFieldEntity = computedFieldDao.getById(id);
         computedFieldDao.remove(computedFieldEntity);
+    }
+
+    @Override
+    @Transactional
+    public Set<OperatorTypeEntity> getAllOperatorTypes() {
+        return operatorTypeDao.getAll();
+    }
+
+    @Override
+    @Transactional
+    public OperatorTypeEntity getOperatorTypeById(Integer operatorTypeId) {
+        return operatorTypeDao.getById(operatorTypeId);
+    }
+
+    @Override
+    @Transactional
+    public Set<ComparisonSymbolEntity> getAllComparisonSymbols() {
+        return comparisonSymbolDao.getAll();
+    }
+
+    @Override
+    @Transactional
+    public ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId) {
+        return comparisonSymbolDao.getById(comparisonSymbolId);
     }
 
 }

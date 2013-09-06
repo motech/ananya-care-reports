@@ -37,6 +37,7 @@ public class CombinationEntity extends AbstractEntity {
         type = combination.getType();
         foreignKey = combination.getForeignKey();
         referencedKey = combination.getReferencedKey();
+        dwQuery = combination.getDwQuery() != null ? new DwQueryEntity(combination.getDwQuery()) : null;
     }
 
     public String getType() {

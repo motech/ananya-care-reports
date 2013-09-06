@@ -27,6 +27,7 @@ import static org.jooq.impl.DSL.falseCondition;
 import static org.jooq.impl.DSL.trueCondition;
 import static org.jooq.impl.DSL.val;
 
+@SuppressWarnings("unchecked")
 public final class ConditionHelper {
 
     private ConditionHelper() {

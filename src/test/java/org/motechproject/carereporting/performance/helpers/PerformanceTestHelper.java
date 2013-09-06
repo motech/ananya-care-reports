@@ -17,7 +17,6 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.service.AreaService;
-import org.motechproject.carereporting.service.ComplexConditionService;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -80,9 +79,6 @@ public class PerformanceTestHelper {
 
     @Autowired
     private LanguageDao languageDao;
-
-    @Autowired
-    private ComplexConditionService complexConditionService;
 
     private Random random = new Random();
 
@@ -163,7 +159,7 @@ public class PerformanceTestHelper {
         List<ComputedFieldEntity> computedFieldEntities = new ArrayList<>(computedFieldService.getAllComputedFields(true));
         FieldType[] fieldTypes = FieldType.values();
         List<FormEntity> formEntities = new ArrayList<>(formsService.getAllForms());
-        List<OperatorTypeEntity> operatorTypeEntities = new ArrayList<>(complexConditionService.getAllOperatorTypes());
+        List<OperatorTypeEntity> operatorTypeEntities = new ArrayList<>(computedFieldService.getAllOperatorTypes());
 
         for (int i = 0; i < computedFieldsCount; i++) {
             ComputedFieldEntity computedFieldEntity = new ComputedFieldEntity();

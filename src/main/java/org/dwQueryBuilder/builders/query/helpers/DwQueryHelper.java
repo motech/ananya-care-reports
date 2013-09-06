@@ -92,6 +92,7 @@ public final class DwQueryHelper {
         return newSelect;
     }
 
+    @SuppressWarnings("unchecked")
     public static SelectConditionStep buildFromQuery(String schemaName,
                                                      SelectSelectStep selectSelectStep,
                                                      DwQuery simpleDwQuery) {
