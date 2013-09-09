@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.comparison_symbol
   CONSTRAINT comparison_symbol_name_uk UNIQUE (name )
 );
 
-CREATE TABLE dashboard_app.condition
+CREATE TABLE IF NOT EXISTS dashboard_app.condition
 (
   condition_id serial NOT NULL,
   field_1_id integer,
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.where_group_where_group
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE dashboard_app.dw_query
+CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
 (
   dw_query_id serial NOT NULL,
   combination_id integer,
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.field
   CONSTRAINT field_uk UNIQUE (form_id , name )
 );
 
-CREATE TABLE dashboard_app.field_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.field_comparison
 (
   field_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -313,7 +313,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.field_operation
   CONSTRAINT field_operation_uk UNIQUE (field_1_id , field_2_id , operator_type_id , computed_field_id )
 );
 
-CREATE TABLE dashboard_app.date_diff_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.date_diff_comparison
 (
   date_diff_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.area
   CONSTRAINT area_name_uk UNIQUE (name )
 );
 
-CREATE TABLE dashboard_app.care_user
+CREATE TABLE IF NOT EXISTS dashboard_app.care_user
 (
   user_id serial NOT NULL,
   username character varying(100) NOT NULL,
@@ -417,7 +417,7 @@ CREATE TABLE dashboard_app.care_user
   CONSTRAINT user_username_uk UNIQUE (username )
 );
 
-CREATE TABLE dashboard_app.indicator
+CREATE TABLE IF NOT EXISTS dashboard_app.indicator
 (
   indicator_id serial NOT NULL,
   frequency_id integer NOT NULL,
@@ -628,7 +628,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.report_dashboard
   CONSTRAINT report_dashboard_uk UNIQUE (report_id , dashboard_id )
 );
 
-CREATE TABLE dashboard_app.value_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.value_comparison
 (
   value_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -645,7 +645,7 @@ CREATE TABLE dashboard_app.value_comparison
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE dashboard_app.date_range_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.date_range_comparison
 (
   date_range_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -660,7 +660,7 @@ CREATE TABLE dashboard_app.date_range_comparison
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE dashboard_app.date_value_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.date_value_comparison
 (
   date_value_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -678,7 +678,7 @@ CREATE TABLE dashboard_app.date_value_comparison
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE dashboard_app.enum_range_comparison
+CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_comparison
 (
   enum_range_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -690,7 +690,7 @@ CREATE TABLE dashboard_app.enum_range_comparison
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE dashboard_app.enum_range_comparison_value
+CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_comparison_value
 (
   enum_range_comparison_value_id serial NOT NULL,
   enum_range_comparison_id integer NOT NULL,

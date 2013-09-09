@@ -38,9 +38,9 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                         url: 'api/indicator/' + indicator.id
                     })
                     .success(function(data, status, headers, config) {
-                        $scope.selectedCategory=null;
-                        $scope.fetchIndicators();
-                        $location.path( "/indicators" );
+                        $scope.selectedCategory = null;
+                        $scope.indicators = [];
+                        $scope.fetchCategories();
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
