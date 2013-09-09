@@ -16,7 +16,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="item in indicator.categories">
+                        <tr ng-repeat="item in selectedCategories">
                             <td class="span9">
                                 <span>{{item.name}}</span>
                             </td>
@@ -40,16 +40,16 @@
                         <div>
                             <ul class="unstyled">
                                 <li>
-                                    <input id="indicatorOwner_all" ng-disabled="indicator.owners[0]" type="checkbox" ng-click="selectAllRoles()" ng-checked="isAllSelected()" />
+                                    <input id="indicatorOwner_all" ng-disabled="selectedOwners[0]" type="checkbox" ng-click="selectAllRoles()" ng-checked="isAllSelected()" />
                                     <label class="inline" for="indicatorOwner_all">{{msg('common.all')}}</label>
                                 </li>
                                 <li ng-repeat="item in formData.roles">
-                                    <input id="indicatorOwner_{{item.id}}" ng-disabled="indicator.owners[0]" type="checkbox" ng-model="indicator.owners[item.id]" value="{{item.id}}" />
+                                    <input id="indicatorOwner_{{item.id}}" ng-disabled="selectedOwners[0]" type="checkbox" ng-model="selectedOwners[item.id]" value="{{item.id}}" />
                                     <label class="inline" for="indicatorOwner_{{item.id}}">{{item.name}}</label>
                                 </li>
                             </ul>
                         </div>
-                        <input id="indicatorOwner_priv" type="checkbox" ng-model="indicator.owners[0]" />
+                        <input id="indicatorOwner_priv" type="checkbox" ng-model="selectedOwners[0]" />
                         <label class="inline" for="indicatorOwner_priv">{{msg('common.private')}}</label>
                     </fieldset>
                 </div>
@@ -70,9 +70,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="item in indicator.charts">
+                                <tr ng-repeat="item in indicator.reports">
                                     <td class="span9">
-                                        <span>{{item.name}}</span>
+                                        <span>{{item.reportType.name}}</span>
                                     </td>
                                     <td class="span3">
                                         <button class="span12 btn" ng-click="removeChart($index)">{{msg('common.remove')}}</button>
@@ -80,8 +80,8 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <select ng-model="selectedChart" ng-options="item as item.name for item in formData.reportTypes" class="input-block-level"></select>
-                            <div ng-show="selectedChart != null && selectedChart.name != 'Pie Chart'">
+                            <select ng-model="selectedChart.reportType" ng-options="item as item.name for item in listCharts" class="input-block-level"></select>
+                            <div ng-show="selectedChart.reportType != null && selectedChart.reportType.name != 'Pie Chart'">
                                 <label for="label-x">{{msg('indicators.form.chart.labelX')}}: </label>
                                 <input id="label-x" type="text" ng-model="selectedChart.labelX" class="input-block-level" placeholder="{{msg('indicators.form.name.placeholder')}}" />
                                 <label for="label-y">{{msg('indicators.form.chart.labelY')}}: </label>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="row-fluid" id="formButtons">
                     <div class="btn-group">
-                        <button class="btn btn-primary " ng-click="submit()" ng-disabled="form.$invalid || indicator.categories.length <= 0 || indicator.charts.length <= 0 || !isAtLeastOneSelected()">{{msg('common.save')}}</button>
+                        <button class="btn btn-primary " ng-click="submit()" ng-disabled="form.$invalid || selectedCategories.length <= 0 || indicator.reports.length <= 0 || !atLeastOneSelected()">{{msg('common.save')}}</button>
                     </div>
                 </div>
             </div>

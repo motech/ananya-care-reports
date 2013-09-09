@@ -1,7 +1,6 @@
 package org.motechproject.carereporting.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
@@ -20,9 +19,6 @@ public class IndicatorCreationFormDto {
     private Set<RoleEntity> roles;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
-    private Set<FormEntity> forms;
-
-    @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<LevelEntity> levels;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
@@ -35,10 +31,9 @@ public class IndicatorCreationFormDto {
 
     }
 
-    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles, Set<FormEntity> forms, Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes) {
+    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles, Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes) {
         this.categories = categories;
         this.roles = roles;
-        this.forms = forms;
         this.levels = levels;
         this.frequencies = frequencies;
         this.reportTypes = reportTypes;
@@ -74,14 +69,6 @@ public class IndicatorCreationFormDto {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
-    }
-
-    public Set<FormEntity> getForms() {
-        return forms;
-    }
-
-    public void setForms(Set<FormEntity> forms) {
-        this.forms = forms;
     }
 
     public Set<ReportTypeEntity> getReportTypes() {

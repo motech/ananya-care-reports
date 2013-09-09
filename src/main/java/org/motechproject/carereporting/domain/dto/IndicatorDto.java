@@ -3,7 +3,6 @@ package org.motechproject.carereporting.domain.dto;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.ReportEntity;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,38 +12,23 @@ public class IndicatorDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
-    private Integer id;
-
-    @NotNull
-    @Min(1)
-    private Integer indicatorType;
+    @NotEmpty
+    private String name;
 
     @NotNull
     private Set<Integer> categories;
 
     @NotNull
-    @Min(1)
-    private Integer area;
+    private Integer level;
 
     @NotNull
     private Set<Integer> owners;
 
     @NotNull
-    private Integer computedField;
-
-    private Integer complexCondition;
-
-    private Set<Integer> values;
-
-    @NotNull
-    private Set<ReportEntity> reports;
-
-    @NotNull
     private Integer frequency;
 
     @NotNull
-    @NotEmpty
-    private String name;
+    private Set<ReportEntity> reports;
 
     private BigDecimal trend;
 
@@ -52,20 +36,62 @@ public class IndicatorDto implements Serializable {
 
     }
 
-    public IndicatorDto(Integer indicatorType, Set<Integer> categories, Integer area, Set<Integer> owners,
-                        Integer computedField, Integer complexCondition, Set<Integer> values, Set<ReportEntity> reports,
-                        Integer frequency, String name, BigDecimal trend) {
-        this.indicatorType = indicatorType;
-        this.categories = categories;
-        this.area = area;
-        this.owners = owners;
-        this.computedField = computedField;
-        this.complexCondition = complexCondition;
-        this.values = values;
-        this.reports = reports;
-        this.frequency = frequency;
+    public IndicatorDto(String name, Set<Integer> categories, Integer level, Set<Integer> owners, Integer frequency, Set<ReportEntity> reports, BigDecimal trend) {
         this.name = name;
+        this.categories = categories;
+        this.level = level;
+        this.owners = owners;
+        this.frequency = frequency;
+        this.reports = reports;
         this.trend = trend;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<Integer> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Integer> categories) {
+        this.categories = categories;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Set<Integer> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(Set<Integer> owners) {
+        this.owners = owners;
+    }
+
+    public Integer getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
+    }
+
+    public Set<ReportEntity> getReports() {
+        return reports;
+    }
+
+    public void setReports(Set<ReportEntity> reports) {
+        this.reports = reports;
     }
 
     public BigDecimal getTrend() {
@@ -76,51 +102,4 @@ public class IndicatorDto implements Serializable {
         this.trend = trend;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getIndicatorType() {
-        return indicatorType;
-    }
-
-    public Set<Integer> getCategories() {
-        return categories;
-    }
-
-    public Integer getArea() {
-        return area;
-    }
-
-    public Set<Integer> getOwners() {
-        return owners;
-    }
-
-    public Integer getComputedField() {
-        return computedField;
-    }
-
-    public Integer getComplexCondition() {
-        return complexCondition;
-    }
-
-    public Set<Integer> getValues() {
-        return values;
-    }
-
-    public Set<ReportEntity> getReports() {
-        return reports;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

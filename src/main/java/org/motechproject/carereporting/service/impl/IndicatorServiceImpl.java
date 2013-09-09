@@ -18,7 +18,6 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
-import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.UserEntity;
@@ -59,7 +58,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -152,12 +150,39 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
-        //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
         indicatorEntity.setReports(indicatorDto.getReports());
         indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
+        indicatorEntity.setAreaLevel(findLevelEntityFromDto(indicatorDto));
         indicatorEntity.setName(indicatorDto.getName());
         indicatorEntity.setTrend(indicatorDto.getTrend());
+        indicatorEntity.setOwner(findUserEntityFromDto(indicatorDto));
+        indicatorEntity.setRoles(findRoleEntitiesFromDto(indicatorDto));
+        indicatorEntity.setComputed(false);
         createNewIndicator(indicatorEntity);
+    }
+
+    private Set<RoleEntity> findRoleEntitiesFromDto(IndicatorDto indicatorDto) {
+        Set<RoleEntity> roleEntities = new LinkedHashSet<>();
+
+        for (Integer roleEntityId : indicatorDto.getOwners()) {
+            if (roleEntityId != 0) {
+                roleEntities.add(userService.getRoleById(roleEntityId));
+            }
+        }
+
+        return roleEntities;
+    }
+
+    private UserEntity findUserEntityFromDto(IndicatorDto indicatorDto) {
+        if (indicatorDto.getOwners().size() == 1 && Integer.valueOf(0).equals(indicatorDto.getOwners().iterator().next())) {
+            return userService.getCurrentlyLoggedUser();
+        }
+
+        return null;
+    }
+
+    private LevelEntity findLevelEntityFromDto(IndicatorDto indicatorDto) {
+        return areaService.getLevelById(indicatorDto.getLevel());
     }
 
     private FrequencyEntity findFrequencyEntityFromDto(IndicatorDto indicatorDto) {
@@ -180,39 +205,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
-        IndicatorEntity indicatorEntity = this.getIndicatorById(indicatorDto.getId());
 
-        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
-        //indicatorEntity.setOwners(findUserEntitiesFromDto(indicatorDto)); TODO: set owner and roles
-        indicatorEntity.setTrend(indicatorDto.getTrend());
-        indicatorEntity.setReports(setUpdatedReports(indicatorDto.getReports(), indicatorEntity));
-        indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
-        indicatorEntity.setName(indicatorDto.getName());
-
-        indicatorDao.update(indicatorEntity);
-    }
-
-
-    private Set<ReportEntity> setUpdatedReports(Set<ReportEntity> reportsFromDto, IndicatorEntity indicatorEntity) {
-        Set<ReportEntity> reportsUpdated = new HashSet<>();
-        Set<ReportEntity> reportsToUpdate = indicatorEntity.getReports();
-        for (ReportEntity reportForm : reportsFromDto) {
-            if (reportForm.getId() == null) {
-                reportForm.setIndicator(indicatorEntity);
-                reportsUpdated.add(reportForm);
-                continue;
-            }
-            for (ReportEntity reportToUpdate : reportsToUpdate) {
-                if (reportForm.getId() != null && reportForm.getId().equals(reportToUpdate.getId())) {
-                    reportToUpdate.setReportType(reportForm.getReportType());
-                    reportsUpdated.add(reportToUpdate);
-                    break;
-                }
-            }
-        }
-        reportsToUpdate.removeAll(reportsUpdated);
-        reportService.deleteReportSet(reportsToUpdate);
-        return reportsUpdated;
     }
 
     private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromDto(
@@ -474,7 +467,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     public IndicatorCreationFormDto getIndicatorCreationFormDto() {
         Set<IndicatorCategoryEntity> categoryEntities = this.getAllIndicatorCategories();
         Set<RoleEntity> roleEntities = userService.getAllRoles();
-        Set<FormEntity> formEntities = formsService.getAllForms();
         Set<ReportTypeEntity> reportTypes = reportService.getAllReportTypes();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
         Set<LevelEntity> levelEntities = areaService.getAllLevels();
@@ -482,7 +474,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         return new IndicatorCreationFormDto(
                 categoryEntities,
                 roleEntities,
-                formEntities,
                 levelEntities,
                 frequencyEntities,
                 reportTypes);

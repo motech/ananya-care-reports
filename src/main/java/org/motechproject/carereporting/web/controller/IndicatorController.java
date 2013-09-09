@@ -113,7 +113,6 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorDto.setId(indicatorId);
         indicatorService.updateIndicatorFromDto(indicatorDto);
     }
 

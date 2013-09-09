@@ -90,10 +90,13 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
                                                       $dialog, $location, $errorService, $route) {
     $scope.title = $scope.msg('indicators.title');
+    $scope.selectedCategories = [];
+    $scope.selectedOwners = [];
+    $scope.selectedChart = {};
     $scope.indicator = {
         categories: [],
         owners: [],
-        charts: []
+        reports: []
     };
 
     $scope.initializeInputFields = function() {
@@ -102,20 +105,18 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
         $scope.indicator.level = $scope.formData.levels[0].id;
         $scope.indicator.frequency = $scope.formData.frequencies[0].id;
-        $scope.selectedChart = $scope.formData.reportTypes[0];
+        $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
         $scope.selectedCategory = $scope.listCategories[0];
-        $scope.selectedForm = $scope.formData.forms[0].id;
 
         for(var i = 0; i < $scope.formData.roles.length; i++) {
             var id = $scope.formData.roles[i].id;
-            $scope.indicator.owners[id] = false;
+            $scope.selectedOwners[id] = false;
         }
     };
 
     $scope.sortFormDataArrays = function() {
         $scope.formData.categories.sortByField('name');
         $scope.formData.roles.sortByField('name');
-        $scope.formData.forms.sortByField('displayName');
         $scope.formData.reportTypes.sortByField('name');
     };
 
@@ -127,27 +128,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
 
-    $scope.fetchComputedFieldsForForm = function(formId) {
-        $http.get('api/forms/' + formId + '/computedfields').success(function(computedFields) {
-            computedFields.sortByField('name');
-            $scope.formData.computedFields = computedFields;
-            if(computedFields.length > 0) {
-                $scope.indicator.computedField = computedFields[0].id;
-            }
-        }).error(function() {
-            $errorService.genericError($scope, 'indicators.form.error.cannotLoadComputedFieldList');
-        });
-    };
-
-    $scope.$watch('selectedForm', function(newValue, oldValue) {
-        if (newValue != null) {
-            $scope.fetchComputedFieldsForForm($scope.selectedForm);
-        }
-    });
-
     $scope.addCategory = function() {
-        $scope.indicator.categories.push($scope.selectedCategory);
-        $scope.indicator.categories.sortByField('name');
+        $scope.selectedCategories.push($scope.selectedCategory);
+        $scope.selectedCategories.sortByField('name');
 
         for (var i = $scope.listCategories.length - 1; i >= 0; i--) {
             if ($scope.listCategories[i].id === $scope.selectedCategory.id) {
@@ -159,29 +142,30 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.addChart = function() {
-        $scope.indicator.charts.push($scope.selectedChart);
+        $scope.indicator.reports.push($scope.selectedChart);
 
         for (var i = $scope.listCharts.length - 1; i >= 0; i--) {
-            if ($scope.listCharts[i].id === $scope.selectedChart.id) {
+            if ($scope.listCharts[i].id === $scope.selectedChart.reportType.id) {
                 $scope.listCharts.splice(i, 1);
-                $scope.selectedChart = $scope.listCharts[0];
+                $scope.selectedChart = {};
+                $scope.selectedChart.reportType = $scope.listCharts[0];
                 break;
             }
         }
     }
 
     $scope.removeCategory = function(index) {
-        $scope.listCategories.push($scope.indicator.categories[index]);
+        $scope.listCategories.push($scope.selectedCategories[index]);
         $scope.listCategories.sortByField('name');
-        $scope.indicator.categories.splice(index, 1);
+        $scope.selectedCategories.splice(index, 1);
         $scope.selectedCategory = $scope.listCategories[0];
     };
 
     $scope.removeChart = function(index) {
-        $scope.listCharts.push($scope.indicator.charts[index]);
+        $scope.listCharts.push($scope.indicator.reports[index].reportType);
         $scope.listCharts.sortByField('name');
-        $scope.indicator.charts.splice(index, 1);
-        $scope.selectedChart = $scope.listCharts[0];
+        $scope.indicator.reports.splice(index, 1);
+        $scope.selectedChart.reportType = $scope.listCharts[0];
     };
 
     $scope.addNewIndicator = function() {
@@ -197,7 +181,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
         for(var i = 0; i < $scope.formData.roles.length; i++) {
             var id = $scope.formData.roles[i].id;
-            $scope.indicator.owners[id] = check;
+            $scope.selectedOwners[id] = check;
         }
     };
 
@@ -206,8 +190,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         if($scope.formData != undefined) {
             for (var i = 0; i < $scope.formData.roles.length; i++) {
                  var id = $scope.formData.roles[i].id;
-                 if($scope.indicator.owners[id] === true)
+                 if($scope.selectedOwners[id] === true) {
                     sum++;
+                 }
              }
          }
          return sum;
@@ -218,9 +203,36 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         return sum != 0 && $scope.formData.roles.length == sum;
     };
 
-    $scope.isAtLeastOneSelected = function() {
-        return $scope.sumRoles() > 0;
-    }
+    $scope.atLeastOneSelected = function() {
+        return $scope.sumRoles() > 0 || $scope.selectedOwners[0];
+    };
+
+    $scope.submit = function() {
+        for(var i = 0; i < $scope.selectedCategories.length; i++) {
+            $scope.indicator.categories.push($scope.selectedCategories[i].id);
+        }
+        if($scope.selectedOwners[0] === true) {
+            $scope.indicator.owners.push(0);
+        } else {
+            for (var i = 0; i < $scope.formData.roles.length; i++) {
+                 var id = $scope.formData.roles[i].id;
+                 if($scope.selectedOwners[id] === true) {
+                     $scope.indicator.owners.push(id);
+                 }
+            }
+        }
+        $http({
+            url: "api/indicator",
+            method: "POST",
+            data: $scope.indicator,
+            headers: { 'Content-Type': 'application/json' }
+        }).success(function() {
+                $location.path( "/indicators" );
+        }).error(function(data, status, headers, config) {
+                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+        });
+    };
+
 });
 
 care.controller('calculatorController', function($scope, $http, $dialog, $location, $errorService) {
