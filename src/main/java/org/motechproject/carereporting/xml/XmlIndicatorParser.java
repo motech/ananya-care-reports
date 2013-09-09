@@ -145,6 +145,7 @@ public class XmlIndicatorParser {
         indicatorEntity.setTrend(indicator.getTrend());
         indicatorEntity.setReports(prepareReports(indicator.getReports()));
         indicatorEntity.setAdditive(indicator.getAdditive());
+        indicatorEntity.setCategorized(indicator.isCategorized());
         for (ReportEntity report: indicatorEntity.getReports()) {
             report.setIndicator(indicatorEntity);
         }
@@ -317,7 +318,9 @@ public class XmlIndicatorParser {
         Set<EnumRangeComparisonConditionValueEntity> values = new LinkedHashSet<>();
 
         for (String value : condition.getValues()) {
-            values.add(new EnumRangeComparisonConditionValueEntity(value));
+            EnumRangeComparisonConditionValueEntity enumValue = new EnumRangeComparisonConditionValueEntity(value);
+            enumValue.setCondition(enumRangeComparisonConditionEntity);
+            values.add(enumValue);
         }
         enumRangeComparisonConditionEntity.setValues(values);
 

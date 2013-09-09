@@ -71,6 +71,7 @@
                 <xs:element name="denominator" minOccurs="0" type="query" />
             </xs:sequence>
             <xs:attribute name="additive" type="xs:boolean"/>
+            <xs:attribute name="categorized" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 

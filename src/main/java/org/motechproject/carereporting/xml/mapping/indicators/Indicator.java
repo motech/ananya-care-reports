@@ -12,6 +12,8 @@ public class Indicator {
 
     private Boolean additive;
 
+    private Boolean categorized;
+
     private String name;
 
     private List<Category> categories;
@@ -41,6 +43,15 @@ public class Indicator {
 
     public void setAdditive(Boolean additive) {
         this.additive = additive;
+    }
+
+    @XmlAttribute
+    public Boolean isCategorized() {
+        return categorized;
+    }
+
+    public void setCategorized(Boolean categorized) {
+        this.categorized = categorized;
     }
 
     public String getName() {

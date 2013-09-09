@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface IndicatorValueDao extends GenericDao<IndicatorValueEntity> {
 
-    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
+    List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
+                                                         Date startDate, Date endDate, String category);
 
     void removeByIndicator(IndicatorEntity indicatorEntity);
 }

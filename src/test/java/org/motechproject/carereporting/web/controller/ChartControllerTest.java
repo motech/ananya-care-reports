@@ -11,6 +11,7 @@ import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.dto.IndicatorValueDto;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.ExportService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -96,7 +97,7 @@ public class ChartControllerTest {
 
         verify(indicatorService, times(1)).getIndicatorById(anyInt());
         verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(),
-                (Date) anyObject(), (Date) anyObject());
+                (Date) anyObject(), (Date) anyObject(), anyString());
     }
 
     @Test
@@ -113,7 +114,7 @@ public class ChartControllerTest {
                 .andExpect(status().isOk());
 
         verify(indicatorService, times(1)).getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(),
-                (Date) anyObject(), (Date) anyObject());
+                (Date) anyObject(), (Date) anyObject(), anyString());
     }
 
     @Test
@@ -123,7 +124,7 @@ public class ChartControllerTest {
         indicatorValueEntityList.add(indicatorValueEntity);
         when(indicatorValueEntity.getIndicator()).thenReturn(indicatorEntity);
         when(indicatorEntity.getName()).thenReturn("");
-        when(indicatorService.getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(), (Date) anyObject(), (Date) anyObject())).thenReturn(indicatorValueEntityList);
+        when(indicatorService.getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(), (Date) anyObject(), (Date) anyObject(), anyString())).thenReturn(indicatorValueEntityList);
 
         mockMvc.perform(get("/api/chart/data/export")
                 .param("indicatorId", "1")
@@ -149,7 +150,7 @@ public class ChartControllerTest {
         when(areaEntity.getId()).thenReturn(1);
         when(indicatorService.getIndicatorById(anyInt())).thenReturn(indicatorEntity);
         when(reportService.prepareChart((IndicatorEntity) anyObject(),
-                anyString(), anyListOf(IndicatorValueEntity.class))).thenReturn(new Chart());
+                anyString(), anyListOf(IndicatorValueDto.class))).thenReturn(new Chart());
     }
 
 }

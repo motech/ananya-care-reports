@@ -7,7 +7,6 @@ import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -24,7 +23,7 @@ import java.util.Set;
 public class EnumRangeComparisonConditionEntity extends ConditionEntity {
 
     @NotNull
-    @OneToMany(mappedBy = "condition", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "condition")
     @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
     private Set<EnumRangeComparisonConditionValueEntity> values;
 

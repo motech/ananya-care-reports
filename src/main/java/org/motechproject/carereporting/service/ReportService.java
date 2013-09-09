@@ -1,9 +1,10 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.motechproject.carereporting.domain.dto.CategorizedValueDto;
+import org.motechproject.carereporting.domain.dto.IndicatorValueDto;
 import org.motechproject.carereporting.domain.dto.ReportDto;
 import org.motechproject.carereporting.domain.types.ReportType;
 import org.motechproject.carereporting.web.chart.Chart;
@@ -42,5 +43,7 @@ public interface ReportService {
 
     void deleteReportType(ReportTypeEntity reportTypeEntity);
 
-    Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values);
+    Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueDto> values);
+
+    Chart prepareCategorizedChart(IndicatorEntity indicator, String chartType, List<CategorizedValueDto> values);
 }

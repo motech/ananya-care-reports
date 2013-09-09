@@ -74,6 +74,10 @@ public class ChartBuilder extends ParamsBuilder {
         return (ChartBuilder) param(PARAM_SELECTION, builder.build());
     }
 
+    public ChartBuilder markers(ParamsBuilder builder) {
+        return (ChartBuilder) param("markers", builder.build());
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Chart build() {

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SerieBuilder {
+public class SerieBuilder extends ParamsBuilder {
 
     private Serie serie = new Serie();
     private Map<BigDecimal, BigDecimal> data;
@@ -14,6 +14,7 @@ public class SerieBuilder {
     public SerieBuilder() {
         data = new LinkedHashMap<>();
         serie.setData(data);
+        serie.setSettings(this.getSettings());
     }
 
     public SerieBuilder label(String label) {

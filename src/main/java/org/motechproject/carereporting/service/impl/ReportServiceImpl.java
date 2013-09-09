@@ -3,9 +3,10 @@ package org.motechproject.carereporting.service.impl;
 import org.motechproject.carereporting.dao.ReportDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
 import org.motechproject.carereporting.domain.IndicatorEntity;
-import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
+import org.motechproject.carereporting.domain.dto.CategorizedValueDto;
+import org.motechproject.carereporting.domain.dto.IndicatorValueDto;
 import org.motechproject.carereporting.domain.dto.ReportDto;
 import org.motechproject.carereporting.domain.types.ReportType;
 import org.motechproject.carereporting.exception.EntityException;
@@ -163,7 +164,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueEntity> values) {
+    public Chart prepareChart(IndicatorEntity indicator, String chartType, List<IndicatorValueDto> values) {
         if (chartType.startsWith("pie")) {
             return chartFactory.createPieChart(indicator, values);
         } else if (chartType.startsWith("bar")) {
@@ -171,8 +172,18 @@ public class ReportServiceImpl implements ReportService {
         } else if (chartType.startsWith("line")) {
             return chartFactory.createLineOrBarChart(indicator, values, ReportType.LineChart);
         } else {
-            throw new IllegalArgumentException("Chart type " + chartType +
+            throw new IllegalArgumentException("Chart type " + chartType + " not supported");
+        }
+    }
+
+    @Override
+    public Chart prepareCategorizedChart(IndicatorEntity indicator, String chartType, List<CategorizedValueDto> values) {
+        switch (chartType) {
+            case "clustered bar chart":
+                return chartFactory.createClusteredBarChart(indicator, values);
+            default: throw new IllegalArgumentException("Chart type " + chartType +
                     " not supported");
         }
     }
+
 }

@@ -6,7 +6,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,8 +17,8 @@ import javax.persistence.Table;
 })
 public class EnumRangeComparisonConditionValueEntity extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "enum_range_comparison_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "enum_range_comparison_id")
     private EnumRangeComparisonConditionEntity condition;
 
     @Column(name = "value")

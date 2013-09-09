@@ -14,9 +14,11 @@ import java.util.List;
 public class OtherPeriodValueCalculator extends IndicatorValueCalculator {
 
     @Override
-    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to) {
+    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to,
+                                                                  String category) {
         FrequencyEntity frequencyEntity = getChildFrequency(frequency);
-        List<IndicatorValueEntity> valueEntities = getIndicatorService().getIndicatorValuesForArea(indicator.getId(), area.getId(), frequencyEntity.getId(), from, to);
+        List<IndicatorValueEntity> valueEntities = getIndicatorService().getIndicatorValuesForArea(indicator.getId(),
+                area.getId(), frequencyEntity.getId(), from, to, category);
 
         BigDecimal numeratorValue = BigDecimal.ZERO;
         BigDecimal denominatorValue = BigDecimal.ZERO;

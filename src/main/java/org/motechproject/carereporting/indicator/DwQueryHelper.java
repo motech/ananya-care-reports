@@ -141,10 +141,8 @@ public class DwQueryHelper {
     private void addCondition(WhereConditionGroupBuilder builder, ConditionEntity condition) {
         if (condition instanceof ValueComparisonConditionEntity) {
             builder.withCondition(prepareValueComparisonCondition((ValueComparisonConditionEntity) condition));
-            return;
         } else if (condition instanceof DateDiffComparisonConditionEntity) {
             builder.withCondition(prepareDateDiffComparisonCondition((DateDiffComparisonConditionEntity) condition));
-            return;
         } else if (condition instanceof DateRangeComparisonConditionEntity) {
             builder.withCondition(prepareDateRangeComparisonCondition((DateRangeComparisonConditionEntity) condition));
         } else if (condition instanceof DateValueComparisonConditionEntity) {
@@ -159,13 +157,12 @@ public class DwQueryHelper {
             } else {
                 builder.withCondition(prepareDateBetweenCondition(periodCondition));
             }
-            return;
         } else if (condition instanceof CalculationEndDateConditionEntity) {
             CalculationEndDateConditionEntity conditionEntity = (CalculationEndDateConditionEntity) condition;
             builder.withCondition(prepareCalculationEndDateCondition(conditionEntity));
-            return;
+        } else {
+            throw new IllegalArgumentException("Condition type not supported.");
         }
-        throw new IllegalArgumentException("Condition type not supported.");
     }
 
     private WhereConditionBuilder prepareValueComparisonCondition(ValueComparisonConditionEntity condition) {

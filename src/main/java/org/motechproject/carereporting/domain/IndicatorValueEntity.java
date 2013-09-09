@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.dto.IndicatorValueDto;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -57,6 +58,9 @@ public class IndicatorValueEntity extends AbstractEntity {
     @Column(name = "date")
     @JsonView({ DashboardJsonView.class })
     private Date date;
+
+    @Column(name = "category")
+    private String category;
 
     public IndicatorValueEntity() {
 
@@ -140,5 +144,17 @@ public class IndicatorValueEntity extends AbstractEntity {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public IndicatorValueDto toDto() {
+        return new IndicatorValueDto(date, numerator, denominator, value);
     }
 }

@@ -16,6 +16,10 @@ public class ParamsBuilder {
         return this;
     }
 
+    public Map<String, Object> getSettings() {
+        return settings;
+    }
+
     public Object build() {
         return settings;
     }

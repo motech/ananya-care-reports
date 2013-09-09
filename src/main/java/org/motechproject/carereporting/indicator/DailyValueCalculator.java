@@ -35,7 +35,8 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
     private DwQueryHelper dwQueryHelper = new DwQueryHelper();
 
     @Override
-    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to) {
+    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to,
+                                                                  String category) {
         BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
         BigDecimal denominatorValue = BigDecimal.ZERO;
         BigDecimal result = null;

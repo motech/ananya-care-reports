@@ -47,5 +47,16 @@
             );
         </sql>
     </changeSet>
+    
+    <changeSet id="CARE #73" author="Pawel Reise">
+        <sql>
+            alter table dashboard_app.enum_range_comparison_value
+                add column value varchar(50);
+            alter table dashboard_app.indicator
+                add column is_categorized boolean;
+            alter table dashboard_app.indicator_value
+                add column category varchar(50);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

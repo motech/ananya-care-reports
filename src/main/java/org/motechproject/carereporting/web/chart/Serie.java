@@ -10,6 +10,7 @@ public class Serie implements Serializable {
 
     private Map<BigDecimal, BigDecimal> data;
     private String label;
+    private Map<String, Object> settings;
 
     public Serie() {
     }
@@ -42,6 +43,14 @@ public class Serie implements Serializable {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Map<String, Object> getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Map<String, Object> settings) {
+        this.settings = settings;
     }
 
 }

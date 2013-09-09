@@ -96,6 +96,9 @@ public class IndicatorEntity extends AbstractEntity {
     @JsonView({ DashboardJsonView.class })
     private Boolean isAdditive;
 
+    @Column(name = "is_categorized", nullable = true)
+    private Boolean isCategorized;
+
     public Boolean getAdditive() {
         return isAdditive;
     }
@@ -198,5 +201,13 @@ public class IndicatorEntity extends AbstractEntity {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public Boolean isCategorized() {
+        return isCategorized != null ? isCategorized : false;
+    }
+
+    public void setCategorized(Boolean categorized) {
+        isCategorized = categorized;
     }
 }

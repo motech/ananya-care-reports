@@ -46,7 +46,7 @@ public class IndicatorValueDaoIT extends AbstractTransactionalJUnit4SpringContex
 
         indicatorValueDao.removeByIndicator(indicator);
 
-        List<IndicatorValueEntity> valueEntities1 = indicatorValueDao.getIndicatorValuesForArea(id, id, id, DateUtils.addDays(new Date(), -1), DateUtils.addDays(new Date(), -1));
+        List<IndicatorValueEntity> valueEntities1 = indicatorValueDao.getIndicatorValuesForArea(id, id, id, DateUtils.addDays(new Date(), -1), DateUtils.addDays(new Date(), -1), null);
 
         assertEquals(0, valueEntities1.size());
     }

@@ -347,8 +347,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     @Transactional
     public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
-                                                                Date startDate, Date endDate) {
-        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, frequencyId, startDate, endDate);
+                                                                Date startDate, Date endDate, String category) {
+        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, frequencyId, startDate, endDate, category);
     }
 
     @Override
@@ -500,7 +500,8 @@ public class IndicatorServiceImpl implements IndicatorService {
         FrequencyEntity frequency = cronService.getFrequencyById(frequencyId);
         Date[] dates = DateResolver.resolveDates(frequency, startDate, endDate);
 
-        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicator.getId(), area.getId(), frequencyId, dates[0], dates[1]);
+        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicator.getId(), area.getId(),
+                frequencyId, dates[0], dates[1], null);
 
         if (values.size() < 2) {
             return TREND_NEUTRAL;

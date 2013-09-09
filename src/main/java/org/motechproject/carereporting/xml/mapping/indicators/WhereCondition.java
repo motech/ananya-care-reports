@@ -2,6 +2,7 @@ package org.motechproject.carereporting.xml.mapping.indicators;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
@@ -118,6 +119,8 @@ public class WhereCondition {
         this.tableName = tableName;
     }
 
+    @XmlElementWrapper(name = "values")
+    @XmlElement(name = "value")
     public List<String> getValues() {
         return values;
     }
