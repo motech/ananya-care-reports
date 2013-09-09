@@ -1,21 +1,23 @@
 SET search_path = dashboard_app;
 
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('state', 0, null, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('district', 1, 1, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('block', 2, 2, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('hsc', 3, 3, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('awc', 4, 4, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('country', 0, null, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('state', 1, 1, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('district', 2, 2, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('block', 3, 3, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('hsc', 4, 4, now(), now());
+insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('awc', 5, 5, now(), now());
 
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Bihar', 1, null, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Begusarai', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Champaran East', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Patna', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Saharsa', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('India', 1, null, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Bihar', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Begusarai', 3, 2, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Champaran East', 3, 2, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Patna', 3, 2, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Saharsa', 3, 2, now(), now());
 
 insert into role (name, creation_date, modification_date) values ('Admin', now(), now());
 insert into role (name, creation_date, modification_date) values ('Operational Manager', now(), now());
 insert into role (name, creation_date, modification_date) values ('Program Manager', now(), now());
-insert into role (name, creation_date, modification_date) values ('ReadOnly', now(), now());
+insert into role (name, creation_date, modification_date) values ('Read Only', now(), now());
 
 insert into permission(name, creation_date, modification_date) values ('CAN_MANAGE_DASHBOARDS', now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_VIEW_PERFORMANCE_SUMMARY', now(), now());
@@ -61,6 +63,8 @@ insert into role_permission (role_id, permission_id) values (3, 4);
 insert into role_permission (role_id, permission_id) values (3, 5);
 insert into role_permission (role_id, permission_id) values (3, 6);
 insert into role_permission (role_id, permission_id) values (4, 1);
+insert into role_permission (role_id, permission_id) values (4, 2);
+insert into role_permission (role_id, permission_id) values (4, 3);
 
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Performance summary', 0, now(), now());
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Map report', 1, now(), now());

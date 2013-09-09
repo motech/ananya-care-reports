@@ -21,7 +21,7 @@ public class AreaDaoIT extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
     private AreaDao areaDao;
 
-    private static final int PARENT_AREA_ID = 1;
+    private static final int PARENT_AREA_ID = 2;
     private static final int EXPECTED_CHILD_AREAS = 4;
     private static final int EXPECTED_DIRECT_CHILD_AREAS = 4;
     private static final int LEVEL_ID = 1;

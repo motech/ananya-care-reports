@@ -85,18 +85,18 @@
                                 </ul>
                         </li>
                         </sec:authorize>
+                        <sec:authorize access="hasRole('CAN_CREATE_CATEGORIES')">
                         <li class="dropdown-submenu">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.categories')}}</a>
                              <ul class="dropdown-menu">
                                 <li><a href="#/categories"><i class="icon-list"></i> {{msg('menu.categories.list')}}</a></li>
-                                <sec:authorize access="hasRole('CAN_CREATE_CATEGORIES')">
                                     <li><a href="#/categories/new"><i class="icon-plus-sign"></i> {{msg('menu.categories.add')}}</a></li>
-                                </sec:authorize>
                              </ul>
                         </li>
-                         <li class="divider"></li>
-                         <li><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
-                         <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
+                        <li class="divider"></li>
+                        </sec:authorize>
+                        <li><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
+                        <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
                              <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                              <li><a href="#/indicators/new"><i class="icon-plus-sign"></i> {{msg('menu.indicators.define')}}</a></li>
                         </sec:authorize>
@@ -107,7 +107,7 @@
                  <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                    <sec:authorize access="hasRole('CAN_MANAGE_FORMS')">
+                    <sec:authorize access="hasRole('CAN_EDIT_FORMS')">
                         <li><a href="#/forms"><i class="icon-briefcase"></i> {{msg('menu.forms')}}</a></li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS')">
