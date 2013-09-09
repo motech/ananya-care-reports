@@ -5,5 +5,8 @@ public enum SelectColumnFunctionType {
     Sum,
     Average,
     Max,
-    Min
+    Min,
+    Mode,
+    Median,
+    StandardDeviation
 }

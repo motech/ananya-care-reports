@@ -13,7 +13,6 @@ import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
-import org.jooq.AggregateFunction;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
@@ -221,7 +220,7 @@ public final class ConditionHelper {
             Param param = val(value);
 
             if (selectColumn.getFunction() != null) {
-                AggregateFunction aggregateFunction = SelectColumnHelper.resolveAggregateFunction(
+                Field aggregateFunction = SelectColumnHelper.resolveAggregateFunction(
                         schemaName, selectColumn, useSchemaName);
 
                 switch (comparisonType) {

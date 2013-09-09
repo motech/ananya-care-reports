@@ -1,0 +1,26 @@
+<indicator additive="false">
+    <name>Median weight at birth</name>
+    <categories>
+        <category name="Birth preparedness plan"/>
+    </categories>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <reportviews>
+            <reportview name="Program Manager"/>
+        </reportviews>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Line Chart" label-x="Time" label-y="Median weight" />
+    </reports>
+    <area level="Block"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Median" fieldName="first_weight" tableName="delivery_child_form" />
+            </select-columns>
+            <dimension tableName="delivery_child_form" />
+        </dw-query>
+    </numerator>
+</indicator>

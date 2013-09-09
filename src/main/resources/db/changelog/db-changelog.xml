@@ -5,4 +5,47 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
+    <changeSet id="CARE #72" author="Łukasz Gąsior">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION _final_median(numeric[])
+                RETURNS numeric AS
+                $$
+                SELECT AVG(val)
+                FROM (
+                    SELECT val
+                    FROM unnest($1) val
+                    ORDER BY 1
+                    LIMIT  2 - MOD(array_upper($1, 1), 2)
+                    OFFSET CEIL(array_upper($1, 1) / 2.0) - 1
+                ) sub;
+                $$
+                LANGUAGE 'sql' IMMUTABLE;
+
+            CREATE AGGREGATE median(numeric) (
+                SFUNC=array_append,
+                STYPE=numeric[],
+                FINALFUNC=_final_median,
+                INITCOND='{}'
+            );
+
+            CREATE OR REPLACE FUNCTION _final_mode(anyarray)
+                RETURNS anyelement AS
+                $BODY$
+                SELECT a
+                FROM unnest($1) a
+                GROUP BY 1
+                ORDER BY COUNT(1) DESC, 1
+                LIMIT 1;
+                $BODY$
+                LANGUAGE 'sql' IMMUTABLE;
+
+            CREATE AGGREGATE mode(anyelement) (
+                SFUNC=array_append,
+                STYPE=anyarray,
+                FINALFUNC=_final_mode,
+                INITCOND='{}'
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

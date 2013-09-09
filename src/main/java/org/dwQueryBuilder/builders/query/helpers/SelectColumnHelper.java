@@ -14,8 +14,10 @@ import static org.jooq.impl.DSL.avg;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.fieldByName;
+import static org.jooq.impl.DSL.function;
 import static org.jooq.impl.DSL.max;
 import static org.jooq.impl.DSL.min;
+import static org.jooq.impl.DSL.stddevPop;
 import static org.jooq.impl.DSL.sum;
 
 @SuppressWarnings("unchecked")
@@ -86,10 +88,10 @@ public final class SelectColumnHelper {
         return null;
     }
 
-    public static AggregateFunction resolveAggregateFunction(String schemaName,
+    public static Field resolveAggregateFunction(String schemaName,
                                                              SelectColumn selectColumn,
                                                              Boolean useSchemaName) {
-        AggregateFunction aggregateFunction;
+        Field aggregateFunction;
 
         if (selectColumn.getComputedColumn().getFieldName().equals(WILDCARD)) {
             aggregateFunction = buildSelectColumnFunctionForWildcard(schemaName, selectColumn, useSchemaName);
@@ -137,9 +139,9 @@ public final class SelectColumnHelper {
         return field;
     }
 
-    public static AggregateFunction buildSelectColumnFunction(String schemaName,
-                                                              SelectColumn selectColumn,
-                                                              Boolean useSchemaName) {
+    public static Field buildSelectColumnFunction(String schemaName,
+                                                  SelectColumn selectColumn,
+                                                  Boolean useSchemaName) {
         try {
             Field field = resolveComputedColumn(schemaName, selectColumn.getComputedColumn(), useSchemaName);
             if (selectColumn.hasNullValue()) {
@@ -157,6 +159,12 @@ public final class SelectColumnHelper {
                     return min(field);
                 case Sum:
                     return sum(field);
+                case Mode:
+                    return function("mode", Integer.class, field);
+                case Median:
+                    return function("median", Integer.class, field);
+                case StandardDeviation:
+                    return stddevPop(field);
                 default:
                     throw new NotImplementedException();
             }
