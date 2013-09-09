@@ -42,7 +42,7 @@ public class IndicatorValuesInitializer implements Runnable {
         LOG.info(indicatorEntity.getName() + ": start calculation");
         Hibernate.initialize(indicatorEntity.getNumerator());
 
-        Date startDate = indicatorService.getDateDepth();
+        Date startDate = cronService.getDateDepth();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
 
         for (FrequencyEntity frequencyEntity: frequencyEntities) {

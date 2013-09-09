@@ -2,7 +2,6 @@ package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
-import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
@@ -118,9 +117,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private FormsService formsService;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
@@ -432,19 +428,6 @@ public class IndicatorServiceImpl implements IndicatorService {
             ClassPathResource caseListReportXmlFile = new ClassPathResource("xml/" + tableName + ".xml");
             return xmlCaseListReportParser.parse(caseListReportXmlFile.getFile());
         }
-    }
-
-    @Override
-    public Date getDateDepth() {
-        String sqlString = "SELECT date_depth FROM dashboard_app.date_depth";
-        return (Date) sessionFactory.getCurrentSession().createSQLQuery(sqlString).uniqueResult();
-    }
-
-    @Override
-    @Transactional
-    public void updateDateDepth(Date newDateDepth) {
-        String sqlString = "UPDATE dashboard_app.date_depth set date_depth = :dateDepth";
-        sessionFactory.getCurrentSession().createSQLQuery(sqlString).setParameter("dateDepth", newDateDepth).executeUpdate();
     }
 
     @Override

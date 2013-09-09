@@ -33,7 +33,7 @@
                     <where-group>
                         <where-condition type="valueComparison">
                             <table-name>bp_form</table-name>
-                            <field>add_offset</field>
+                            <field>delivery_offset_days</field>
                             <operator>&lt;=</operator>
                             <value>90</value>
                         </where-condition>

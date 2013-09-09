@@ -23,20 +23,11 @@ public class PermissionEntity extends AbstractEntity {
     @Column(name = "name", unique = true)
     private String name;
 
-    @NotNull
-    @Column(name = "display_name")
-    private String displayName;
-
     @ManyToMany(mappedBy = "permissions")
     private Set<RoleEntity> roles;
 
     public PermissionEntity() {
 
-    }
-
-    public PermissionEntity(String name, String displayName) {
-        this.name = name;
-        this.displayName = displayName;
     }
 
     public String getName() {
@@ -45,14 +36,6 @@ public class PermissionEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     @JsonIgnore

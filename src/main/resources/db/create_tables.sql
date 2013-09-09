@@ -16,27 +16,13 @@ CREATE TABLE IF NOT EXISTS dashboard_app.comparison_symbol
   CONSTRAINT comparison_symbol_name_uk UNIQUE (name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.complex_condition
-(
-  complex_condition_id serial NOT NULL,
-  name character varying(100) NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT complex_condition_pk PRIMARY KEY (complex_condition_id ),
-  CONSTRAINT complex_condition_name_uk UNIQUE (name )
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.condition
+CREATE TABLE dashboard_app.condition
 (
   condition_id serial NOT NULL,
   field_1_id integer,
-  comparison_symbol_id integer,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
-  CONSTRAINT condition_pk PRIMARY KEY (condition_id ),
-  CONSTRAINT condition_comparison_symbol_id_fk FOREIGN KEY (comparison_symbol_id)
-      REFERENCES dashboard_app.comparison_symbol (comparison_symbol_id) MATCH FULL
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT condition_pk PRIMARY KEY (condition_id )
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app.calculation_end_date_comparison
@@ -84,16 +70,47 @@ CREATE TABLE IF NOT EXISTS dashboard_app.date_depth
   date_depth timestamp without time zone
 );
 
+CREATE TABLE IF NOT EXISTS dashboard_app.form
+(
+  form_id serial NOT NULL,
+  table_name character varying(50) NOT NULL,
+  display_name character varying(100) NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT form_pk PRIMARY KEY (form_id ),
+  CONSTRAINT form_display_name_uk UNIQUE (display_name ),
+  CONSTRAINT form_table_name_uk UNIQUE (table_name )
+);
+
+
+CREATE TABLE IF NOT EXISTS dashboard_app.computed_field
+(
+  computed_field_id serial NOT NULL,
+  form_id integer NOT NULL,
+  origin boolean DEFAULT true,
+  name character varying(100) NOT NULL,
+  type character varying(50) NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT computed_field_pk PRIMARY KEY (computed_field_id ),
+  CONSTRAINT computed_field_form_id_fk FOREIGN KEY (form_id)
+      REFERENCES dashboard_app.form (form_id) MATCH FULL
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT computed_field_name_uk UNIQUE (form_id , name )
+);
+
 CREATE TABLE IF NOT EXISTS dashboard_app.select_column
 (
   select_column_id serial NOT NULL,
-  name character varying NOT NULL,
+  computed_field_id integer,
   function character varying,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   table_name character varying,
   null_value character varying,
-  CONSTRAINT select_column_pk PRIMARY KEY (select_column_id )
+  CONSTRAINT select_column_pk PRIMARY KEY (select_column_id),
+  CONSTRAINT computed_field_fk FOREIGN KEY (computed_field_id)
+      REFERENCES dashboard_app.computed_field(computed_field_id)
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app."having"
@@ -159,7 +176,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.where_group_where_group
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
+CREATE TABLE dashboard_app.dw_query
 (
   dw_query_id serial NOT NULL,
   combination_id integer,
@@ -168,6 +185,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
   modification_date timestamp without time zone,
   where_group_id integer,
   has_period_condition boolean,
+  table_name character varying(100),
   CONSTRAINT dw_query_pk PRIMARY KEY (dw_query_id ),
   CONSTRAINT dw_query_grouped_by_id FOREIGN KEY (grouped_by_id)
       REFERENCES dashboard_app.grouped_by (grouped_by_id) MATCH FULL
@@ -197,21 +215,6 @@ ALTER TABLE dashboard_app.dw_query
       REFERENCES dashboard_app.combination (combination_id) MATCH FULL
       ON UPDATE SET NULL ON DELETE SET NULL;
 
-CREATE TABLE IF NOT EXISTS dashboard_app.complex_dw_query
-(
-  complex_dw_query_id serial NOT NULL,
-  dw_query_id integer NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  dimension character varying,
-  dimension_key character varying,
-  fact_key character varying,
-  CONSTRAINT complex_dw_query_pk PRIMARY KEY (complex_dw_query_id ),
-  CONSTRAINT complex_dw_query_dw_query_id FOREIGN KEY (dw_query_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_condition
 (
   dw_query_id integer NOT NULL,
@@ -238,44 +241,6 @@ CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_select_column
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.fact
-(
-  fact_id serial NOT NULL,
-  table_id integer NOT NULL,
-  combine_type character varying,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT fact_pk PRIMARY KEY (fact_id ),
-  CONSTRAINT fact_table_id FOREIGN KEY (table_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.fact_complex_dw_query
-(
-  complex_dw_query_id integer NOT NULL,
-  fact_id integer NOT NULL,
-  CONSTRAINT complex_dw_query_fact_pk PRIMARY KEY (complex_dw_query_id , fact_id ),
-  CONSTRAINT complex_dw_query_fact_complex_dw_query_id FOREIGN KEY (complex_dw_query_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT complex_dw_query_fact_fact_id FOREIGN KEY (fact_id)
-      REFERENCES dashboard_app.fact (fact_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.form
-(
-  form_id serial NOT NULL,
-  table_name character varying(50) NOT NULL,
-  display_name character varying(100) NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT form_pk PRIMARY KEY (form_id ),
-  CONSTRAINT form_display_name_uk UNIQUE (display_name ),
-  CONSTRAINT form_table_name_uk UNIQUE (table_name )
-);
-
 CREATE TABLE IF NOT EXISTS dashboard_app.field
 (
   field_id serial NOT NULL,
@@ -291,29 +256,20 @@ CREATE TABLE IF NOT EXISTS dashboard_app.field
   CONSTRAINT field_uk UNIQUE (form_id , name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.computed_field
-(
-  computed_field_id serial NOT NULL,
-  form_id integer NOT NULL,
-  name character varying(100) NOT NULL,
-  type character varying(50) NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT computed_field_pk PRIMARY KEY (computed_field_id ),
-  CONSTRAINT computed_field_form_id_fk FOREIGN KEY (form_id)
-      REFERENCES dashboard_app.form (form_id) MATCH FULL
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT computed_field_name_uk UNIQUE (form_id , name )
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.field_comparison
+CREATE TABLE dashboard_app.field_comparison
 (
   field_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
   field_2_id integer NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
+  comparison_symbol_id integer NOT NULL,
+  offset_1 integer DEFAULT 0,
+  offset_2 integer DEFAULT 0,
   CONSTRAINT field_comparison_pk PRIMARY KEY (field_comparison_id ),
+  CONSTRAINT field_comparison_comparison_symbol_id FOREIGN KEY (comparison_symbol_id)
+      REFERENCES dashboard_app.comparison_symbol (comparison_symbol_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT field_comparison_condition_id FOREIGN KEY (condition_id)
       REFERENCES dashboard_app.condition (condition_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE,
@@ -357,7 +313,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.field_operation
   CONSTRAINT field_operation_uk UNIQUE (field_1_id , field_2_id , operator_type_id , computed_field_id )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.date_diff_comparison
+CREATE TABLE dashboard_app.date_diff_comparison
 (
   date_diff_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
@@ -365,9 +321,15 @@ CREATE TABLE IF NOT EXISTS dashboard_app.date_diff_comparison
   value integer NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
+  comparison_symbol_id integer NOT NULL,
+  offset_1 integer DEFAULT 0,
+  offset_2 integer DEFAULT 0,
   CONSTRAINT date_diff_comparison_pk PRIMARY KEY (date_diff_comparison_id ),
   CONSTRAINT date_diff_comparison_field_2_id FOREIGN KEY (field_2_id)
       REFERENCES dashboard_app.computed_field (computed_field_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT field_comparison_comparison_symbol_id FOREIGN KEY (comparison_symbol_id)
+      REFERENCES dashboard_app.comparison_symbol (comparison_symbol_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT field_comparison_condition_id FOREIGN KEY (condition_id)
       REFERENCES dashboard_app.condition (condition_id) MATCH FULL
@@ -393,7 +355,6 @@ CREATE TABLE IF NOT EXISTS dashboard_app.language
   language_id serial NOT NULL,
   code character varying(2) NOT NULL,
   name character varying(50) NOT NULL,
-  defined boolean NOT NULL DEFAULT false,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   CONSTRAINT language_pk PRIMARY KEY (language_id ),
@@ -434,17 +395,15 @@ CREATE TABLE IF NOT EXISTS dashboard_app.area
   CONSTRAINT area_name_uk UNIQUE (name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.care_user
+CREATE TABLE dashboard_app.care_user
 (
   user_id serial NOT NULL,
   username character varying(100) NOT NULL,
-  password character varying(40) NOT NULL,
-  email character varying(120),
   area_id integer NOT NULL,
-  salt character varying(40) NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   default_language_id integer NOT NULL DEFAULT 1,
+  default_dashboard_id integer DEFAULT 1,
   CONSTRAINT user_pk PRIMARY KEY (user_id ),
   CONSTRAINT care_user_area_id_fk FOREIGN KEY (area_id)
       REFERENCES dashboard_app.area (area_id) MATCH FULL
@@ -452,13 +411,15 @@ CREATE TABLE IF NOT EXISTS dashboard_app.care_user
   CONSTRAINT care_user_default_language_id_fk FOREIGN KEY (default_language_id)
       REFERENCES dashboard_app.language (language_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE SET DEFAULT,
+  CONSTRAINT default_dashboard_id_fk FOREIGN KEY (default_dashboard_id)
+      REFERENCES dashboard_app.dashboard (dashboard_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT user_username_uk UNIQUE (username )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.indicator
+CREATE TABLE dashboard_app.indicator
 (
   indicator_id serial NOT NULL,
-  area_id integer NOT NULL,
   frequency_id integer NOT NULL,
   name character varying NOT NULL,
   creation_date timestamp without time zone,
@@ -469,12 +430,13 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator
   user_id integer,
   is_computed boolean DEFAULT false,
   is_additive boolean DEFAULT false,
+  area_level_id bigint NOT NULL DEFAULT 1::bigint,
   CONSTRAINT indicator_pk PRIMARY KEY (indicator_id ),
+  CONSTRAINT fk_indicator_area_level FOREIGN KEY (area_level_id)
+      REFERENCES dashboard_app.level (level_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT frequency_fk FOREIGN KEY (frequency_id)
       REFERENCES dashboard_app.frequency (frequency_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT indicator_area_id_fk FOREIGN KEY (area_id)
-      REFERENCES dashboard_app.area (area_id) MATCH FULL
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT indicator_denominator_id FOREIGN KEY (denominator_id)
       REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
@@ -572,11 +534,9 @@ CREATE TABLE IF NOT EXISTS dashboard_app.permission
 (
   permission_id serial NOT NULL,
   name character varying(100) NOT NULL,
-  display_name character varying(100) NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   CONSTRAINT permission_pk PRIMARY KEY (permission_id ),
-  CONSTRAINT permission_display_name_uk UNIQUE (display_name ),
   CONSTRAINT permission_name_uk UNIQUE (name )
 );
 
@@ -668,28 +628,76 @@ CREATE TABLE IF NOT EXISTS dashboard_app.report_dashboard
   CONSTRAINT report_dashboard_uk UNIQUE (report_id , dashboard_id )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.simple_dw_query
-(
-  simple_dw_query_id serial NOT NULL,
-  dw_query_id integer NOT NULL,
-  table_name character varying,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT simple_dw_query_pk PRIMARY KEY (simple_dw_query_id ),
-  CONSTRAINT simple_dw_query_dw_query_id FOREIGN KEY (dw_query_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.value_comparison
+CREATE TABLE dashboard_app.value_comparison
 (
   value_comparison_id serial NOT NULL,
   condition_id integer NOT NULL,
   value character varying(50) NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
+  comparison_symbol_id integer NOT NULL DEFAULT 1,
   CONSTRAINT value_comparison_pk PRIMARY KEY (value_comparison_id ),
+  CONSTRAINT field_comparison_comparison_symbol_id FOREIGN KEY (comparison_symbol_id)
+      REFERENCES dashboard_app.comparison_symbol (comparison_symbol_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT field_comparison_condition_id FOREIGN KEY (condition_id)
       REFERENCES dashboard_app.condition (condition_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE dashboard_app.date_range_comparison
+(
+  date_range_comparison_id serial NOT NULL,
+  condition_id integer NOT NULL,
+  date_1 date NOT NULL,
+  date_2 date NOT NULL,
+  offset_1 integer DEFAULT 0,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT date_range_comparison_pk PRIMARY KEY (date_range_comparison_id ),
+  CONSTRAINT date_range_comparison_condition_id FOREIGN KEY (condition_id)
+      REFERENCES dashboard_app.condition (condition_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE dashboard_app.date_value_comparison
+(
+  date_value_comparison_id serial NOT NULL,
+  condition_id integer NOT NULL,
+  comparison_symbol_id integer NOT NULL,
+  value date NOT NULL,
+  offset_1 integer DEFAULT 0,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT date_value_comparison_pk PRIMARY KEY (date_value_comparison_id ),
+  CONSTRAINT date_value_comparison_comparison_symbol_id FOREIGN KEY (comparison_symbol_id)
+      REFERENCES dashboard_app.comparison_symbol (comparison_symbol_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT date_value_comparison_condition_id FOREIGN KEY (condition_id)
+      REFERENCES dashboard_app.condition (condition_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE dashboard_app.enum_range_comparison
+(
+  enum_range_comparison_id serial NOT NULL,
+  condition_id integer NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT enum_range_comparison_pk PRIMARY KEY (enum_range_comparison_id ),
+  CONSTRAINT date_value_comparison_condition_id FOREIGN KEY (condition_id)
+      REFERENCES dashboard_app.condition (condition_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE dashboard_app.enum_range_comparison_value
+(
+  enum_range_comparison_value_id serial NOT NULL,
+  enum_range_comparison_id integer NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT enum_range_comparison_value_pk PRIMARY KEY (enum_range_comparison_value_id ),
+  CONSTRAINT enum_range_comparison_value_enum_range_comparison FOREIGN KEY (enum_range_comparison_id)
+      REFERENCES dashboard_app.enum_range_comparison (enum_range_comparison_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE
 );

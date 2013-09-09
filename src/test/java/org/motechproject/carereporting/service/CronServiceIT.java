@@ -1,14 +1,21 @@
 package org.motechproject.carereporting.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +31,22 @@ public class CronServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     @Autowired
     private CronService cronService;
 
+    @Autowired
+    private UserService userService;
+
     private static final String TASK_NAME = "weekly";
+    private static final int USER_ID = 1;
+
+    @Before
+    public void setupAuthentication() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        String[] permissions = {"CAN_EDIT_CALCULATION"};
+        for (String permission: permissions) {
+            authorities.add(new SimpleGrantedAuthority(permission));
+        }
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userService.getUserById(USER_ID), null, authorities));
+    }
 
     @Test
     public void testGetCronTaskByFrequencyName() {

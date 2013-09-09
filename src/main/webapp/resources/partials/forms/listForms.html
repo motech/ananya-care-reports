@@ -15,7 +15,12 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="form in mother_forms | orderBy:'+displayName'">
-                        <td><a href="#/forms/{{form.id}}">{{form.displayName}}</a></td>
+                        <td>
+                            <sec:authorize access="hasRole('CAN_EDIT_CALCULATION')">
+
+                            <a href="#/forms/{{form.id}}">{{form.displayName}}</a>
+                                </sec:authorize>
+                        </td>
                         <td>{{form.tableName}}</td>
                     </tr>
                     </tbody>

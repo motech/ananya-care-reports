@@ -256,9 +256,9 @@ public class UserControllerTest {
     public void testGetAllPermissions() throws Exception {
         Integer id = 1;
         String name = "name";
-        String displayName = "displayName";
-        PermissionEntity permissionEntity = new PermissionEntity(name, displayName);
+        PermissionEntity permissionEntity = new PermissionEntity();
         permissionEntity.setId(id);
+        permissionEntity.setName(name);
 
         Set<PermissionEntity> permissionEntities = new LinkedHashSet<>();
         permissionEntities.add(permissionEntity);
@@ -268,8 +268,7 @@ public class UserControllerTest {
         mockMvc.perform(get("/api/users/permissions"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
-                .andExpect(jsonPath("$[0].name").value(name))
-                .andExpect(jsonPath("$[0].displayName").value(displayName));
+                .andExpect(jsonPath("$[0].name").value(name));
 
         verify(userService).getAllPermissions();
     }

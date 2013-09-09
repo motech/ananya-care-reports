@@ -58,7 +58,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     });
 
     $scope.fetchOperators = function() {
-        $http.get('api/complexcondition/operatortype')
+        $http.get('api/computedfields/operatortype')
             .success(function(operators) {
                 operators.sortByField('name');
                 $scope.listOperators = operators;

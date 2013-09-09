@@ -69,11 +69,14 @@
          <div class="navbar-inner">
              <a class="brand" href="https://www.commcarehq.org/"><img src="resources/images/commcare-logo.png" alt="CommCare HQ Logo" /></a>
              <ul class="nav">
-                 <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
-                 <!-- TODO: Add `Manage reports` menu option when this feature is implemented. -->
+                 <sec:authorize access="hasRole('CAN_MANAGE_DASHBOARDS')">
+                     <li data-match-route="/"><a href="#">{{msg('menu.dashboards')}}</a></li>
+                 </sec:authorize>
+                 <sec:authorize access="hasRole('CAN_EDIT_CALCULATION') || hasRole('CAN_CREATE_CATEGORIES') || hasRole('CAN_CREATE_INDICATORS')">
                  <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.indicators')}}<b class="caret"></b></a>
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.indicators')}} <b class="caret"></b></a>
                      <ul class="dropdown-menu">
+                        <sec:authorize access="hasRole('CAN_EDIT_CALCULATION')">
                         <li class="dropdown-submenu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.calculator')}}</a>
                                 <ul class="dropdown-menu">
@@ -81,6 +84,7 @@
                                     <li><a href="" ng-click="launchDateDepthDialog()"><i class="icon-calendar"></i> {{msg('menu.calculator.dateDepth')}}</a></li>
                                 </ul>
                         </li>
+                        </sec:authorize>
                         <li class="dropdown-submenu">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.categories')}}</a>
                              <ul class="dropdown-menu">
@@ -92,37 +96,45 @@
                         </li>
                          <li class="divider"></li>
                          <li><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
-                         <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                          <sec:authorize access="hasRole('CAN_CREATE_INDICATORS')">
+                             <li><a href="#/indicator/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
                              <li><a href="#/indicators/new"><i class="icon-plus-sign"></i> {{msg('menu.indicators.define')}}</a></li>
                         </sec:authorize>
                      </ul>
                  </li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
-                  <ul class="dropdown-menu">
-                      <li><a href="#/forms"><i class="icon-briefcase"></i> {{msg('menu.forms')}}</a></li>
-                      <li><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
-                      <li class="dropdown-submenu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
-                          <ul class="dropdown-menu">
-                              <li class="dropdown-submenu">
-                                  <a href=""><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
-                                  <ul class="dropdown-menu">
-                                      <li ng-repeat="item in listLanguages">
-                                          <a href="#" ng-click="selectLanguage(item)">
+                 </sec:authorize>
+                 <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS') || hasRole('CAN_CREATE_LANGUAGES') || hasRole('CAN_MANAGE_FORMS')">
+                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.admin')}} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <sec:authorize access="hasRole('CAN_MANAGE_FORMS')">
+                        <li><a href="#/forms"><i class="icon-briefcase"></i> {{msg('menu.forms')}}</a></li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS')">
+                        <li><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('CAN_CREATE_LANGUAGES')">
+                        <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{msg('menu.languages')}}</a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href=""><i class="icon-globe"></i> {{msg('menu.languages.select')}}</a>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="item in listLanguages">
+                                        <a href="#" ng-click="selectLanguage(item)">
                                             <i class="icon-arrow-right" ng-show="defaultLanguage.code == item.code"></i>
                                             {{item.name}}
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </li>
-                              <li><a href="#/messages"><i class="icon-list"></i> {{msg('menu.languages.list')}}</a></li>
-                          </ul>
-                      </li>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#/messages"><i class="icon-list"></i> {{msg('menu.languages.list')}}</a></li>
+                        </ul>
+                    </li>
+                    </sec:authorize>
                   </ul>
                 </li>
-
+                </sec:authorize>
              </ul>
              <div class="pull-right">
                  <a href="logout" class="btn btn-primary">{{msg('menu.logout')}}</a>

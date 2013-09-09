@@ -273,7 +273,7 @@ public class IndicatorController extends BaseController {
     @ResponseBody
     public String getDateDepth() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        return sdf.format(indicatorService.getDateDepth());
+        return sdf.format(cronService.getDateDepth());
     }
 
     @RequestMapping(value = "/calculator/dateDepth", method = RequestMethod.PUT,
@@ -284,7 +284,7 @@ public class IndicatorController extends BaseController {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
-        indicatorService.updateDateDepth(newDateDepth);
+        cronService.updateDateDepth(newDateDepth);
     }
 
     @RequestMapping(value = "calculator/recalculate", method = RequestMethod.GET)

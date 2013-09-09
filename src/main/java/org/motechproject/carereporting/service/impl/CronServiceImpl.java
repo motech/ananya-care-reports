@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.SessionFactory;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.dao.CronTaskDao;
 import org.motechproject.carereporting.dao.FrequencyDao;
@@ -12,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Set;
 
 @Service
@@ -27,6 +29,10 @@ public class CronServiceImpl implements CronService {
 
     @Autowired
     private FrequencyDao frequencyDao;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
 
     @Override
     public Set<CronTaskEntity> getAllCronTasks() {
@@ -65,6 +71,19 @@ public class CronServiceImpl implements CronService {
     @Override
     public FrequencyEntity getFrequencyById(Integer frequencyId) {
         return frequencyDao.getById(frequencyId);
+    }
+
+    @Override
+    public Date getDateDepth() {
+        String sqlString = "SELECT date_depth FROM dashboard_app.date_depth";
+        return (Date) sessionFactory.getCurrentSession().createSQLQuery(sqlString).uniqueResult();
+    }
+
+    @Override
+    @Transactional
+    public void updateDateDepth(Date newDateDepth) {
+        String sqlString = "UPDATE dashboard_app.date_depth set date_depth = :dateDepth";
+        sessionFactory.getCurrentSession().createSQLQuery(sqlString).setParameter("dateDepth", newDateDepth).executeUpdate();
     }
 
 }
