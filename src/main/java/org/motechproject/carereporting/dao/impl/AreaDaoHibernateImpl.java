@@ -1,5 +1,6 @@
 package org.motechproject.carereporting.dao.impl;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -41,11 +42,12 @@ public class AreaDaoHibernateImpl extends GenericDaoHibernateImpl<AreaEntity> im
 
     @Override
     public AreaEntity getAreaOnLevel(String areaName, String levelName) {
-        return (AreaEntity) getCurrentSession()
-                .createQuery("from AreaEntity where name = :areaName and level.name = :levelName")
-                .setParameter("areaName", areaName)
-                .setParameter("levelName", levelName)
-                .uniqueResult();
+        Criteria criteria = getCurrentSession()
+                .createCriteria(AreaEntity.class)
+                .createAlias("level", "l")
+                .add(Restrictions.ilike("name", areaName))
+                .add(Restrictions.eq("l.name", levelName));
+        return (AreaEntity) criteria.uniqueResult();
     }
 
 }

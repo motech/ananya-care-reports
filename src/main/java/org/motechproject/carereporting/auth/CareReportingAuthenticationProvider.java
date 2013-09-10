@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -77,10 +76,10 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
             Map<String, Object> result = new ObjectMapper().readValue(userJson, Map.class);
             UserEntity user = prepareCommCareUser(result);
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        } catch (RestClientException e) {
-            throw new BadCredentialsException("Bad CommCare username / password!", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CareRuntimeException(e);
+        } catch (Exception e) {
+            throw new BadCredentialsException("Bad CommCare username / password!", e);
         }
     }
 
