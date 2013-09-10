@@ -148,6 +148,8 @@ h5 {
 
 .map-report {
     height: 400px;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 .legend-color {
@@ -239,9 +241,9 @@ h5 {
 }
 
 .indicator-title {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
-    padding: 7px;
+    padding: 4px;
     height: 40px;
 }
 

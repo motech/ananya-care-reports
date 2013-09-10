@@ -11,8 +11,8 @@ function sortByDateComparisonFunction(a, b) {
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile, $errorService) {
     $scope.title = $scope.msg('dashboards.title');
 
-    $scope.startDate = moment().subtract('months', 1).format("L");
-    $scope.endDate = moment().format("L");
+    $scope.startDate = moment().subtract('months', 1);
+    $scope.endDate = moment();
 
     $scope.indicatorCategories = [];
     $scope.charts = {};
@@ -267,8 +267,27 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             $scope.loading = true;
             $scope.fetchTrends();
         } else if (dashboard.name == "Map report") {
-            $("#mapReport0").html('');
-            $("#mapReport1").html('');
+            for (var i=0; i<$scope.maps.length; i+=1) {
+                var map = $scope.maps[i];
+                $('#maprange' + i).daterangepicker({
+                    ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                    },
+                    startDate: moment().subtract('days', 29),
+                    endDate: moment()
+                    }, function(start, end) {
+                        map.startDate = start;
+                        map.endDate = end;
+                        $('#maprange' + i).val(start.format('L') + ' - ' + end.format('L'));
+                });
+                $('#maprange' + i).val(map.startDate.format('L') + ' - ' + map.endDate.format('L'));
+                $("#mapReport" + i).html('');
+            }
         } else {
             $scope.currentReportsPage = 0;
             $scope.loading = true;
@@ -287,15 +306,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchTrends = function() {
     if($scope.areaId != undefined) {
-        var startDate = $("#start-date input").val(),
-            endDate = $("#end-date input").val(),
+        var startDate = $scope.startDate.format('L'),
+            endDate = $scope.endDate.format('L'),
             url;
-        if (startDate == undefined) {
-            startDate = $scope.startDate;
-        }
-        if (endDate == undefined) {
-            endDate = $scope.endDate;
-        }
         url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") +
                 '&endDate=' + moment(endDate).format("DD/MM/YYYY") +
                 '&areaId=' + $scope.areaId +
@@ -349,8 +362,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.maps = [];
     for (i=0; i<2; i+=1) {
         $scope.maps[i] = {
-            startDate: new Date(moment().subtract('months', 1).format("L")),
-            endDate: new Date(moment().format("L")),
+            startDate: moment().subtract('months', 1),
+            endDate: moment(),
             selectedIndicatorCategoryId: null,
             selectedCategoryIndicators: [],
             selectedIndicatorId: null,
@@ -419,7 +432,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchMapReport = function(map, stateCode) {
         if(map.selectedIndicatorId != null) {
-            var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + moment(map.startDate).format('L') + '&endDate=' + moment(map.endDate).format('L') +
+            var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate.format('L') + '&endDate=' + map.endDate.format('L') +
                        '&frequencyId=' + map.frequencyId + "&level=" + map.level;
             if (stateCode != undefined) {
                 url += "&state=" + stateCode;
@@ -559,4 +572,23 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.formatDate = function(date) {
         return moment(date).format("L HH:mm");
     };
+
+    $('#reportrange').daterangepicker({
+    ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+        'Last 7 Days': [moment().subtract('days', 6), moment()],
+        'Last 30 Days': [moment().subtract('days', 29), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+    },
+    startDate: moment().subtract('days', 29),
+    endDate: moment()
+    }, function(start, end) {
+        $scope.startDate = start;
+        $scope.endDate = end;
+        $('#reportrange').val(start.format('L') + ' - ' + end.format('L'));
+    });
+    $('#reportrange').val($scope.startDate.format('L') + ' - ' + $scope.endDate.format('L'));
+
 });

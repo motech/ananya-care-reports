@@ -25,6 +25,7 @@
         <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-timepicker.css" />
         <link rel="stylesheet" type="text/css" href="resources/css/jquery-ui-1.10.3.custom.min.css" />
         <link rel="stylesheet" type="text/css" href="resources/css/jquery-jvectormap-1.2.2.css" />
+        <link rel="stylesheet" type="text/css" href="resources/css/daterangepicker.css" />
         <link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
         <script src="resources/lib/jquery/jquery-1.10.1.min.js"></script>
@@ -42,6 +43,7 @@
         <script src="resources/lib/bootstrap-datepicker.js"></script>
         <script src="resources/lib/bootstrap-timepicker.js"></script>
         <script src="resources/lib/moment.min.js"></script>
+        <script src="resources/lib/daterangepicker.js"></script>
         <script src="resources/js/localization.js"></script>
         <script src="resources/js/app.js" type="text/javascript"></script>
         <script src="resources/js/services.js" type="text/javascript"></script>
