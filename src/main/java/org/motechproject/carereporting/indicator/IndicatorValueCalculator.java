@@ -25,6 +25,7 @@ import java.util.Set;
 public abstract class IndicatorValueCalculator {
 
     private static final int SCALE = 4;
+    private static final Integer SUPER_USER_AREA_ID = 1;
 
     @Autowired
     private IndicatorService indicatorService;
@@ -38,6 +39,9 @@ public abstract class IndicatorValueCalculator {
 
     public void calculateAndPersistIndicatorValue(IndicatorEntity indicator, FrequencyEntity frequency, Date from, Date to) {
         for (AreaEntity area : areaService.getAllAreas()) {
+            if (area.getId().equals(SUPER_USER_AREA_ID)) {
+                    continue;
+            }
             if (indicator.isCategorized()) {
                 EnumRangeComparisonConditionEntity enumRangeCondition = getEnumCategoriesForIndicator(indicator);
                 List<IndicatorValueEntity> values = calculateCategorizedIndicatorValues(indicator, enumRangeCondition, frequency, from, to, area);

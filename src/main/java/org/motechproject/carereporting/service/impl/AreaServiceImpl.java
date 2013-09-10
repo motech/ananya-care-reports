@@ -23,6 +23,8 @@ public class AreaServiceImpl implements AreaService {
     @Autowired
     private LevelDao levelDao;
 
+    private static final Integer SUPER_USER_AREA_ID = 1;
+
     @Override
     @Transactional
     public Set<AreaEntity> getAllAreas() {
@@ -43,7 +45,9 @@ public class AreaServiceImpl implements AreaService {
     @Transactional
     public Set<AreaEntity> getAllAreasByParentAreaId(Integer areaId) {
         HashSet<AreaEntity> areaEntities = new LinkedHashSet<>();
-        areaEntities.add(areaDao.getById(areaId));
+        if (!areaId.equals(SUPER_USER_AREA_ID)) {
+            areaEntities.add(areaDao.getById(areaId));
+        }
         areaEntities.addAll(areaDao.getAllChildAreasByParentAreaId(areaId));
         return areaEntities;
     }

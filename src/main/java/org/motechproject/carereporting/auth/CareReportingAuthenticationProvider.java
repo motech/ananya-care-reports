@@ -37,7 +37,7 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     private static final Integer SUPER_USER_AREA_ID = 1;
     private static final String SUPER_USER_NAME = "Super user";
     private static final String SUPER_USER_ROLE = "Admin";
-    private static final String SUPER_USER_READ_ONLY_ROLE = "ReadOnly";
+    private static final String SUPER_USER_READ_ONLY_ROLE = "Read Only";
 
     @Autowired
     private UserService userService;

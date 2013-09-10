@@ -40,7 +40,7 @@ public class AreaEntity extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "parent_area_id")
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
     private AreaEntity parentArea;
 
     @OneToMany(mappedBy = "parentArea")

@@ -9,7 +9,7 @@ BEGIN
     FOR state_loop_var IN (SELECT DISTINCT state FROM report.location_dimension)
     LOOP
         INSERT INTO DASHBOARD_APP.AREA (name, level_id, parent_area_id, creation_date, modification_date)
-            values (state_loop_var, (select level_id from dashboard_app.level where name = \'state\'), null, now(), now());
+            values (state_loop_var, (select level_id from dashboard_app.level where name = \'state\'), 1, now(), now());
     END LOOP;
 
     FOR district_loop_var IN (SELECT DISTINCT district FROM report.location_dimension)
@@ -31,8 +31,8 @@ BEGIN
 END'
 LANGUAGE 'plpgsql';
 
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('India', 1, null, now(), now());
 select fetchAreasFromReportingDB();
-
 CREATE OR REPLACE FUNCTION dashboard_app.populateAreaFunction() RETURNS trigger AS
 E'BEGIN
     IF (select distinct area_id from dashboard_app.area where name = NEW.state
