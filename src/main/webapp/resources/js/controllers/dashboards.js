@@ -31,6 +31,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             dashboards.sort($scope.compareDashboardPositions);
             $scope.dashboards = dashboards;
             if (Object.keys($scope.dashboards).length > 0) {
+                 $scope.fetchTrends();
                  $scope.getDefaultDashboard();
             }
         });
