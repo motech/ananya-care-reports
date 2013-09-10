@@ -121,7 +121,7 @@ public class ChartController extends BaseController {
                                                     @RequestParam Date startDate,
                                                     @RequestParam Date endDate) throws IOException, ParseException {
 
-        List<IndicatorValueEntity> indicatorValueEntities = getIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate);
+        List<IndicatorValueEntity> indicatorValueEntities = indicatorService.getIndicatorValuesForCsv(indicatorId, areaId, frequencyId, startDate, endDate);
         byte[] bytes = exportService.convertIndicatorValuesToBytes(indicatorValueEntities);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm");

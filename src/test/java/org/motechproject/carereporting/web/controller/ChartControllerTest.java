@@ -124,7 +124,7 @@ public class ChartControllerTest {
         indicatorValueEntityList.add(indicatorValueEntity);
         when(indicatorValueEntity.getIndicator()).thenReturn(indicatorEntity);
         when(indicatorEntity.getName()).thenReturn("");
-        when(indicatorService.getIndicatorValuesForArea(anyInt(), anyInt(), anyInt(), (Date) anyObject(), (Date) anyObject(), anyString())).thenReturn(indicatorValueEntityList);
+        when(indicatorService.getIndicatorValuesForCsv(anyInt(), anyInt(), anyInt(), (Date) anyObject(), (Date) anyObject())).thenReturn(indicatorValueEntityList);
 
         mockMvc.perform(get("/api/chart/data/export")
                 .param("indicatorId", "1")

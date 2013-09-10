@@ -134,6 +134,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
+    @SuppressWarnings("unchecked")
     public Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity) {
         List <Integer> roleIds = new ArrayList<>();
         for (RoleEntity roleEntity : userEntity.getRoles()) {
@@ -149,6 +150,20 @@ public class IndicatorServiceImpl implements IndicatorService {
         query.setParameterList("roles", roleIds);
         query.setParameter("ownerId", userEntity.getId());
         return new LinkedHashSet<IndicatorEntity>(query.list());
+    }
+
+    @Override
+    public List<IndicatorValueEntity> getIndicatorValuesForCsv(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate) {
+        FrequencyEntity frequencyEntity = cronService.getFrequencyById(frequencyId);
+        Date[] dates = DateResolver.resolveDates(frequencyEntity, startDate, endDate);
+        List<IndicatorValueEntity> valueEntities = getIndicatorValuesForArea(indicatorId, areaId, frequencyId, dates[0], dates[1], null);
+
+        for (IndicatorValueEntity indicatorValueEntity : valueEntities) {
+            Hibernate.initialize(indicatorValueEntity.getArea());
+            Hibernate.initialize(indicatorValueEntity.getIndicator());
+        }
+
+        return valueEntities;
     }
 
     @Transactional

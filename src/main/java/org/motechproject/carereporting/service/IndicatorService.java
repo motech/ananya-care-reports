@@ -98,4 +98,5 @@ public interface IndicatorService {
 
     Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity);
 
+    List<IndicatorValueEntity> getIndicatorValuesForCsv(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
 }
