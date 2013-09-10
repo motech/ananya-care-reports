@@ -38,7 +38,7 @@ E'BEGIN
     IF (select distinct area_id from dashboard_app.area where name = NEW.state
     and level_id = (select level_id from dashboard_app.level where name = \'state\')) IS NULL THEN
         INSERT INTO DASHBOARD_APP.AREA (name, level_id, parent_area_id, creation_date, modification_date)
-        VALUES (NEW.state, (select level_id from dashboard_app.level where name = \'state\'), null, now(), now());
+        VALUES (NEW.state, (select level_id from dashboard_app.level where name = \'state\'), 1, now(), now());
     END IF;
     IF (select distinct area_id from dashboard_app.area where name = NEW.district
     and level_id = (select level_id from dashboard_app.level where name = \'district\')) IS NULL THEN
