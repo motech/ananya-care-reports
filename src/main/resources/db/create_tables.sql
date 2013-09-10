@@ -568,7 +568,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator_role
 
 CREATE TABLE IF NOT EXISTS dashboard_app.indicator_value
 (
-  indicator_value_id serial NOT NULL,
+  indicator_value_id bigserial NOT NULL,
   indicator_id integer NOT NULL,
   area_id integer NOT NULL,
   value numeric(19,6) NOT NULL,
