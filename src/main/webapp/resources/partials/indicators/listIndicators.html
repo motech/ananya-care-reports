@@ -4,9 +4,7 @@
     <div class="span10 hq-content">
         <div>
             <b>{{msg('indicators.list.chooseCategory')}}</b>
-            <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category">
-                <option value="">{{msg('indicators.list.allCategories')}}</option>
-            </select>
+            <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category" />
         </div>
         <table class="table table-hover" ng-show="indicators.length > 0">
             <thead>
@@ -25,8 +23,8 @@
         <br ng-show="indicators.length == 0"/>
         <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
         <p class="text-center">
-            <span class="btn btn-primary" ng-click="recalculate()">{{msg('indicators.list.recalculate')}}</span>
-            <a class="btn btn-primary" href="#/indicator/upload-xml">{{msg('indicators.list.addNew')}}</a>
+            <button class="btn btn-primary" ng-click="recalculate()" ng-disabled="isAnyComputed()">{{msg('indicators.list.recalculate')}}</button>
+            <a class="btn btn-primary" href="#/indicators/upload-xml">{{msg('indicators.list.addNew')}}</a>
         </p>
     </div>
 </div>

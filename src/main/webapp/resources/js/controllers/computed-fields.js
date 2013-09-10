@@ -30,6 +30,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
                 return a.name.localeCompare(b.name);
             })
             $scope.fields = fields;
+            $scope.selectedField = $scope.fields[0].id;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadFields');
         });
@@ -42,6 +43,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
                 return a.displayName.localeCompare(b.displayName);
             })
             $scope.forms = forms;
+            $scope.computedField.form = $scope.forms[0].id;
         }).error(function() {
             $errorService.genericError($scope, 'computedFields.error.cannotLoadForms');
         });
@@ -151,7 +153,7 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     };
 
     $scope.loadComputedField = function(computedField) {
-    // TODO: selected fields doesn't appear when computed field is clicked once
+    //TODO: selected fields doesn't appear when computed field is clicked once
        // if(computedField.id != $scope.computedField.id) {
             $http({
                 url: "api/computedfields/" + computedField.id,

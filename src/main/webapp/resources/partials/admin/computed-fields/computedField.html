@@ -40,7 +40,7 @@
                                 <th colspan="2">{{msg('computedField.selectedFieldsHeader')}}:</th>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="item in selectedFields">
+                                <tr ng-repeat="(key, item) in selectedFields">
                                     <td><span ng-show="item.operator">{{item.operator.name}}&nbsp;</span>{{item.field.name}}</td>
                                     <td>
                                         <button class="btn" ng-click="removeField(key)">{{msg('common.remove')}}</button>
