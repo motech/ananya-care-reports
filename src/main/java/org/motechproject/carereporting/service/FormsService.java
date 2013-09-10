@@ -23,8 +23,6 @@ public interface FormsService {
 
     Set<FormEntity> getAllForms();
 
-    Set<FormEntity> getAllFormsWithFields(String... fieldNames);
-
     Set<String> getTables();
 
     Set<String> getTableColumns(String tableName);

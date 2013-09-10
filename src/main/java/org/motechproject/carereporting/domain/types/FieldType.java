@@ -6,18 +6,17 @@ public enum FieldType {
     public static FieldType getValueOf(String value) {
         switch (value) {
             case "integer":
-                return Number;
             case "smallint":
-                return Number;
             case "numeric":
                 return Number;
             case "boolean":
                 return Boolean;
             case "character varying":
+            case "text":
                 return String;
             case "date":
-                return Date;
             case "timestamp with time zone":
+            case "timestamp without time zone":
                 return Date;
             default:
                 return null;

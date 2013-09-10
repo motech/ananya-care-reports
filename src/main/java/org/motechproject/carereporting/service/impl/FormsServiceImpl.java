@@ -1,5 +1,8 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FormEntity;
@@ -19,6 +22,8 @@ import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -35,7 +40,7 @@ public class FormsServiceImpl implements FormsService {
     private String careSchemaName;
 
     private static final String TABLE_LIST_SQL =
-            "SELECT table_name FROM information_schema.tables WHERE (table_name like '%_form' OR table_name like '%_case') and table_schema = ?";
+            "SELECT table_name FROM information_schema.tables WHERE table_schema = ?";
 
     private static final String COLUMNS_IN_TABLE_SQL =
             "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema= ? AND TABLE_NAME = ?";
@@ -72,12 +77,12 @@ public class FormsServiceImpl implements FormsService {
 
     @Override
     public Set<FormEntity> getAllForms() {
-        return formDao.getAll();
-    }
+        List<Criterion> criterionList = new LinkedList<>();
+        criterionList.add(Restrictions.or(
+                Restrictions.ilike("tableName", "_form", MatchMode.END),
+                Restrictions.ilike("tableName", "_case", MatchMode.END)));
 
-    @Override
-    public Set<FormEntity> getAllFormsWithFields(String... fieldNames) {
-        return formDao.getAllWithFields(fieldNames);
+        return formDao.getAllByFields(criterionList);
     }
 
     @Override

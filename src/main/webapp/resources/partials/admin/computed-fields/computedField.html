@@ -37,11 +37,12 @@
                         <div class="nested-well">
                             <table class="table table-highlight">
                                 <thead>
-                                <th colspan="2">{{msg('computedField.selectedFieldsHeader')}}:</th>
+                                <th colspan="3">{{msg('computedField.selectedFieldsHeader')}}:</th>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="(key, item) in selectedFields">
-                                    <td><span ng-show="item.operator">{{item.operator.name}}&nbsp;</span>{{item.field.name}}</td>
+                                    <td><span ng-show="item.operator">{{item.operator.name}}&nbsp;</span></td>
+                                    <td>{{item.field.name}}</td>
                                     <td>
                                         <button class="btn" ng-click="removeField(key)">{{msg('common.remove')}}</button>
                                     </td>
@@ -55,8 +56,8 @@
                             <select id="field" ng-model="selectedField" ng-options="item.id as item.name for (key, item) in fields"></select>
                         </p>
                         <p>
-                            <span class="btn" ng-click="addField()" ng-disabled="fields.length <= 0">{{msg('computedField.button.add')}}</span>
-                            <span class="btn btn-primary pull-right" ng-click="save()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('common.save')}}</span>
+                            <button class="btn" ng-click="addField()" ng-disabled="fields.length <= 0">{{msg('computedField.button.add')}}</button>
+                            <button class="btn btn-primary pull-right" ng-click="save()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('common.save')}}</button>
                         </p>
                     </form>
                 </div>

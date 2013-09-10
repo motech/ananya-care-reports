@@ -153,8 +153,6 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     };
 
     $scope.loadComputedField = function(computedField) {
-    //TODO: selected fields doesn't appear when computed field is clicked once
-       // if(computedField.id != $scope.computedField.id) {
             $http({
                 url: "api/computedfields/" + computedField.id,
                 method: "GET",
@@ -178,7 +176,6 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
             }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
-       // }
     };
 
     $scope.deleteComputedField = function(computedField) {

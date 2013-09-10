@@ -13,18 +13,26 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class FormDaoHibernateImpl extends GenericDaoHibernateImpl<FormEntity> implements FormDao {
 
+    private static final String TABLE_NAME = "tableName";
+
     @Override
     public Set<FormEntity> getByTableName(String name) {
         return new LinkedHashSet<FormEntity>(getCurrentSession().createCriteria(FormEntity.class)
-                .add(Restrictions.like("tableName", name, MatchMode.ANYWHERE))
+                .add(Restrictions.like(TABLE_NAME, name, MatchMode.ANYWHERE))
+                .add(Restrictions.or(
+                        Restrictions.ilike(TABLE_NAME, "_form", MatchMode.END),
+                        Restrictions.ilike(TABLE_NAME, "_case", MatchMode.END)))
                 .list());
     }
 
     @Override
     public Set<FormEntity> getOtherTables() {
         return new LinkedHashSet<FormEntity>(getCurrentSession().createCriteria(FormEntity.class)
-                .add(Restrictions.not(Restrictions.like("tableName", "mother", MatchMode.ANYWHERE)))
-                .add(Restrictions.not(Restrictions.like("tableName", "child", MatchMode.ANYWHERE)))
+                .add(Restrictions.not(Restrictions.like(TABLE_NAME, "mother", MatchMode.ANYWHERE)))
+                .add(Restrictions.not(Restrictions.like(TABLE_NAME, "child", MatchMode.ANYWHERE)))
+                .add(Restrictions.or(
+                        Restrictions.ilike(TABLE_NAME, "_form", MatchMode.END),
+                        Restrictions.ilike(TABLE_NAME, "_case", MatchMode.END)))
                 .list());
     }
 
