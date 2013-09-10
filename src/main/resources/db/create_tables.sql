@@ -1,5 +1,47 @@
 SET client_encoding = 'UTF8';
 
+DROP AGGREGATE IF EXISTS mode(anyelement);
+DROP AGGREGATE IF EXISTS median(numeric);
+
+CREATE OR REPLACE FUNCTION _final_median(numeric[])
+RETURNS numeric AS
+$$
+    SELECT AVG(val)
+    FROM (
+        SELECT val
+        FROM unnest($1) val
+        ORDER BY 1
+        LIMIT  2 - MOD(array_upper($1, 1), 2)
+        OFFSET CEIL(array_upper($1, 1) / 2.0) - 1
+    ) sub
+$$
+LANGUAGE 'sql' IMMUTABLE;
+
+CREATE AGGREGATE median(numeric) (
+    SFUNC=array_append,
+    STYPE=numeric[],
+    FINALFUNC=_final_median,
+    INITCOND='{}'
+);
+
+CREATE OR REPLACE FUNCTION _final_mode(anyarray)
+RETURNS anyelement AS
+$$
+    SELECT a
+    FROM unnest($1) a
+    GROUP BY 1
+    ORDER BY COUNT(1) DESC, 1
+    LIMIT 1
+$$
+LANGUAGE 'sql' IMMUTABLE;
+
+CREATE AGGREGATE mode(anyelement) (
+    SFUNC=array_append,
+    STYPE=anyarray,
+    FINALFUNC=_final_mode,
+    INITCOND='{}'
+);
+
 CREATE SCHEMA dashboard_app;
 
 ALTER SCHEMA dashboard_app OWNER TO postgres;
@@ -429,6 +471,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator
   user_id integer,
   is_computed boolean DEFAULT false,
   is_additive boolean DEFAULT false,
+  is_categorized boolean DEFAULT false,
   area_level_id bigint NOT NULL DEFAULT 1::bigint,
   CONSTRAINT indicator_pk PRIMARY KEY (indicator_id ),
   CONSTRAINT fk_indicator_area_level FOREIGN KEY (area_level_id)
@@ -576,6 +619,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator_value
   numerator numeric(19,6),
   denominator numeric(19,6),
   frequency_id integer NOT NULL,
+  category varchar(50),
   date timestamp with time zone,
   CONSTRAINT indicator_value_pk PRIMARY KEY (indicator_value_id ),
   CONSTRAINT indicator_value_area_id_fk FOREIGN KEY (area_id)
@@ -693,6 +737,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_comparison_value
 (
   enum_range_comparison_value_id serial NOT NULL,
   enum_range_comparison_id integer NOT NULL,
+  value varchar(50),
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
   CONSTRAINT enum_range_comparison_value_pk PRIMARY KEY (enum_range_comparison_value_id ),
