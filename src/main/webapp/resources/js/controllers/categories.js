@@ -18,7 +18,7 @@ care.controller('categoriesController', function($scope, $http, $dialog, $routeP
     $scope.submitCategory = function(category) {
         $http({method: 'PUT', url: 'api/indicator/category' + (category.id !== undefined ? ('/' + category.id) : ''), data: category})
             .success(function(response) {
-                $location.path( "/categories" );
+                $location.path( "/indicators/categories" );
             }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });

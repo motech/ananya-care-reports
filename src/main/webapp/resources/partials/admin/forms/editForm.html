@@ -1,8 +1,8 @@
 <div ng:init="$root.pageTitle = title"></div>
 
-<div class="container">
-    <h1 class="text-center">{{msg('forms.form.header')}}</h1>
-    <div class="well span7 offset2">
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/admin/sidebar.html"'></div>
+    <div class="span10 hq-content">
         <form class="form-horizontal" name="formForm">
             <div class="control-group">
                 <label class="control-label" for="tableName">{{msg('forms.form.table.label')}}: </label>

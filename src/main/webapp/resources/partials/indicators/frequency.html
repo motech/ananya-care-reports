@@ -1,0 +1,18 @@
+<div ng:init="$root.pageTitle = title"></div>
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
+    <div class="span10 hq-content">
+        <form id="defineFrequencyForm" name="defineForm" novalidate>
+            <div class="row">
+                <div class="control-group input-append">
+                    <label for="startTime">{{msg('indicatorCalculator.calculationTime.label.time')}}</label>
+                    <input id="startTime" type="text" data-template="dropdown" data-minute-step="1" data-show-meridian="false" ng-model="time" bs-timepicker>
+                    <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" ng-click="saveTime()">{{msg('common.save')}}</button>
+            </div>
+        </form>
+    </div>
+</div>

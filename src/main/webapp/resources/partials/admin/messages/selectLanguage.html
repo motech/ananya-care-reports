@@ -1,0 +1,12 @@
+<div ng:init="$root.pageTitle = title"></div>
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/admin/sidebar.html"'></div>
+    <div class="span10 hq-content">
+        <p>Select language</p>
+        <ul>
+            <li ng-repeat="item in listLanguages">
+                <span style="cursor: pointer;" ng-click="selectLanguage(item)"><i class="icon-arrow-right" ng-show="defaultLanguage.code == item.code"></i> {{item.name}}</span>
+            </li>
+        </ul>
+    </div>
+</div>

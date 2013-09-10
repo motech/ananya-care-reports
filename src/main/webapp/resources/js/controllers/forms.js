@@ -20,7 +20,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
                 url: 'api/forms/' + form.id,
                 data: form})
             .success(function(response) {
-                $location.path( "/forms" );
+                $location.path( "/admin/forms" );
             }).error(function(data, status, headers, config) {
                 $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
             });

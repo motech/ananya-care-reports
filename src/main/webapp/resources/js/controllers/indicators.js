@@ -250,7 +250,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
 });
 
-care.controller('calculatorController', function($scope, $http, $dialog, $location, $errorService) {
+care.controller('dateDepthController', function($scope, $http, $dialog, $location, $errorService) {
+    $scope.title = $scope.msg('menu.calculator.frequency');
+});
+
+care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService) {
+    $scope.title = $scope.msg('indicatorCalculator.dateDepth.header');
+
     $scope.time = null;
 
     $scope.fetchDailyTaskTime = function() {

@@ -1,0 +1,16 @@
+<div class="sidebar span2">
+    <nav>
+        <ul class="nav nav-list">
+            <li class="nav-header">Indicators</li>
+            <li ng-class="{active: getLocation() == '#/indicators'}"><a href="#/indicators"><i class="icon-list"></i> {{msg('indicators.list.header')}}</a></li>
+            <li ng-class="{active: getLocation() == '#/indicators/upload-xml'}"><a href="#/indicators/upload-xml"><i class="icon-upload"></i> {{msg('menu.indicators.uploadXml')}}</a></li>
+            <li ng-class="{active: getLocation() == '#/indicators/new'}"><a href="#/indicators/new"><i class="icon-plus-sign"></i> {{msg('menu.indicators.define')}}</a></li>
+            <li class="nav-header">{{msg('menu.calculator')}}</li>
+            <li ng-class="{active: getLocation() == '#/indicators/calculation-time'}"><a href="#/indicators/calculation-time"><i class="icon-time"></i> {{msg('menu.calculator.frequency')}}</a></li>
+            <li ng-class="{active: getLocation() == '#/indicators/date-depth'}"><a href="#/indicators/date-depth"><i class="icon-calendar"></i> {{msg('menu.calculator.dateDepth')}}</a></li>
+            <li class="nav-header">{{msg('menu.categories')}}</li>
+            <li ng-class="{active: getLocation() == '#/indicators/categories'}"><a href="#/indicators/categories"><i class="icon-list"></i> {{msg('menu.categories.list')}}</a></li>
+            <li ng-class="{active: getLocation() == '#/indicators/categories/new'}"><a href="#/indicators/categories/new"><i class="icon-plus-sign"></i> {{msg('menu.categories.add')}}</a></li>
+        </ul>
+    </nav>
+</div>

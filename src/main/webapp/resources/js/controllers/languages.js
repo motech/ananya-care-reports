@@ -36,12 +36,12 @@ care.controller('languageListController', function($scope, $rootScope, $simplifi
     $scope.fetchLanguages();
 
     $scope.defineLanguage = function() {
-        $location.url('messages/' + $scope.language.code
+        $location.url('/admin/languages/' + $scope.language.code
             + '?templateCode=' + $scope.selectedLanguage + '&edit=false');
     };
 
     $scope.editLanguage = function(language) {
-        $location.url('messages/' + language.code
+        $location.url('/admin/languages/' + language.code
             + '?templateCode=' + language.code + '&edit=true');
     };
 
@@ -68,6 +68,48 @@ care.controller('languageListController', function($scope, $rootScope, $simplifi
 
 care.controller('messageController', function($scope, $rootScope, $simplifiedHttpService,
         $http, $dialog, $routeParams, $errorService, $location, $timeout) {
+
+ $scope.fetchActiveUserDefaultLanguage = function() {
+        $simplifiedHttpService.get($scope, 'api/users/logged_in/language',
+                'languages.error.cannotLoadLanguage', function(language) {
+            $scope.defaultLanguage = language;
+            i18nService.init(language.code);
+        });
+    };
+    $timeout($scope.fetchActiveUserDefaultLanguage, 0);
+
+    $rootScope.$watch('languagesChanged', function() {
+        if ($rootScope.languagesChanged !== undefined && $rootScope.languagesChanged !== false) {
+            $rootScope.languagesChanged = false;
+            $scope.fetchLanguages();
+        }
+    });
+
+  $scope.selectLanguage = function(language) {
+        $http({
+            url: 'api/users/logged_in/language',
+            method: 'PUT',
+            data: language,
+            headers: { 'Content-Type': 'application/json' }
+        }).success(function() {
+            $scope.defaultLanguage = language;
+            i18nService.init(language.code);
+        });
+    };
+
+   $scope.listLanguages = [];
+    $scope.defaultLanguage = null;
+
+    $scope.fetchLanguages = function() {
+        $simplifiedHttpService.get($scope, 'api/languages',
+                'languages.error.cannotLoadLanguageList', function(languages) {
+            languages.sort();
+            $scope.listLanguages = languages;
+        });
+    };
+    $timeout($scope.fetchLanguages, 0);
+
+
     $scope.title = $scope.msg('languages.edit.title');
 
     $scope.isEdit = ($routeParams['edit'] == 'true');

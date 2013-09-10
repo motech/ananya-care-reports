@@ -1,0 +1,66 @@
+<div ng:init="$root.pageTitle = title"></div>
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/admin/sidebar.html"'></div>
+    <div class="span10 hq-content">
+        <div class="row">
+            <div class="span4 computed-fields-list">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="span6">{{msg('categories.list.name')}}</th>
+                        <th>{{msg('common.actions')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="computedField in computedFields">
+                        <td><a href="" ng-click="loadComputedField(computedField)">{{computedField.name}}</a></td>
+                        <td><span class="btn btn-link" ng-click="deleteComputedField(computedField)"><i class="icon-remove"></i></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="span6">
+                <div class="well">
+                    <form class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label" for="name">Name:</label>
+                            <div class="controls">
+                                <input type="text" ng-model="computedField.name" id="name" required>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="form">Form:</label>
+                            <div class="controls">
+                                <select id="form" ng-model="computedField.form" ng-click="changeForm()" ng-options="item.id as item.displayName for (key, item) in forms"></select>
+                            </div>
+                        </div>
+                        <div class="nested-well">
+                            <table class="table table-highlight">
+                                <thead>
+                                <th colspan="2">{{msg('computedField.selectedFieldsHeader')}}:</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in selectedFields">
+                                    <td><span ng-show="item.operator">{{item.operator.name}}&nbsp;</span>{{item.field.name}}</td>
+                                    <td>
+                                        <button class="btn" ng-click="removeField(key)">{{msg('common.remove')}}</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <label for="field">{{msg('computedField.label.selectField')}}:</label>
+                        <p>
+                            <select id="operator" class="span3" ng-model="selectedOperator" ng-options="item as item.name for (key, item) in listOperators" ng-disabled="selectedFields.length < 1"></select>
+                            <select id="field" ng-model="selectedField" ng-options="item.id as item.name for (key, item) in fields"></select>
+                        </p>
+                        <p>
+                            <span class="btn" ng-click="addField()" ng-disabled="fields.length <= 0">{{msg('computedField.button.add')}}</span>
+                            <span class="btn btn-primary pull-right" ng-click="save()" ng-disabled="createForm.$invalid || selectedFields.length <= 0">{{msg('common.save')}}</span>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,7 @@
 <div ng:init="$root.pageTitle = title"></div>
-
-<div class="container">
-    <h1 class="text-center">{{formHeaderMsg}}</h1>
-    <div class="well span7 offset2">
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
+    <div class="span10 hq-content">
         <form class="form-horizontal" name="categoryForm">
             <div class="control-group">
                 <label class="control-label">{{msg('categories.list.name')}}:</label>

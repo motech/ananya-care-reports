@@ -1,7 +1,7 @@
 <div ng:init="$root.pageTitle = title"></div>
-<div class="container">
-    <h1 class="text-center">{{msg('indicators.uploadXml.title')}}</h1>
-    <div class="well span7 offset2">
+<div class="row-fluid">
+    <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
+    <div class="span10 hq-content">
         <form method="post" action="api/indicator/upload" enctype="multipart/form-data">
             <input type="file" name="file" />
             <input type="submit" value="{{msg('indicators.uploadXml.submit')}}" />
