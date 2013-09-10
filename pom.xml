@@ -416,6 +416,7 @@
                             <autocommit>true</autocommit>
                             <srcFiles>
                                 <srcFile>src/main/resources/db/create_tables.sql</srcFile>
+                                <srcFile>src/main/resources/db/insert_level_data.sql</srcFile>
                                 <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
                                 <srcFile>src/main/resources/db/insert_test_data.sql</srcFile>
                             </srcFiles>
@@ -543,6 +544,8 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/resources/db/create_tables.sql</srcFile>
+                                        <srcFile>src/main/resources/db/insert_level_data.sql</srcFile>
+                                        <srcFile>src/main/resources/db/insert_area_data.sql</srcFile>
                                         <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
                                     </srcFiles>
                                 </configuration>

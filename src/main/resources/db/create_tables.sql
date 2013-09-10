@@ -391,8 +391,7 @@ CREATE TABLE IF NOT EXISTS dashboard_app.area
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT area_parent_area_id_fk FOREIGN KEY (parent_area_id)
       REFERENCES dashboard_app.area (area_id) MATCH FULL
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT area_name_uk UNIQUE (name )
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app.care_user

@@ -28,7 +28,7 @@ public class AreaServiceIT extends AbstractTransactionalJUnit4SpringContextTests
     private static final int EXPECTED_AREAS_BY_PARENT_AREA_ID = 4;
     private static final int EXPECTED_AREAS_DIRECT_CHILD_BY_PARENT_AREA_ID = 5;
     private static final Integer AREA_ID = 1;
-    private static final int EXPECTED_LEVELS_ALL = 5;
+    private static final int EXPECTED_LEVELS_ALL = 3;
     private static final String CREATE_AREA_NAME = "AREA_SERVICE_IT_TEST_AREA";
     private static final String CREATE_LEVEL_NAME = "AREA_SERVICE_IT_TEST_LEVEL";
     private static final String UPDATE_AREA_NAME = "AREA_SERVICE_IT_TEST_AREA_2";

@@ -1,17 +1,3 @@
-SET search_path = dashboard_app;
-
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('state', 0, null, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('district', 1, 1, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('block', 2, 2, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('hsc', 3, 3, now(), now());
-insert into level (name, hierarchy_depth, parent_level_id, creation_date, modification_date) values ('awc', 4, 4, now(), now());
-
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Bihar', 1, null, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Begusarai', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Champaran East', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Patna', 2, 1, now(), now());
-insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Saharsa', 2, 1, now(), now());
-
 insert into role (name, creation_date, modification_date) values ('Admin', now(), now());
 insert into role (name, creation_date, modification_date) values ('Operational Manager', now(), now());
 insert into role (name, creation_date, modification_date) values ('Program Manager', now(), now());

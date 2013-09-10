@@ -1,3 +1,9 @@
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Bihar', 1, null, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Begusarai', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Champaran East', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Patna', 2, 1, now(), now());
+insert into area (name, level_id, parent_area_id, creation_date, modification_date) values ('Saharsa', 2, 1, now(), now());
+
 INSERT INTO care_user (username, area_id, creation_date, modification_date)
 VALUES ('test', 1, now(), now());
 

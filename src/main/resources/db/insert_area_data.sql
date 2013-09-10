@@ -1,0 +1,34 @@
+SET search_path = dashboard_app;
+
+CREATE OR REPLACE FUNCTION dashboard_app.fetchAreasFromReportingDB() RETURNS void as
+E'DECLARE
+    state_loop_var varchar(255);
+    district_loop_var varchar(255);
+    block_loop_var varchar(255);
+BEGIN
+    FOR state_loop_var IN (SELECT DISTINCT state FROM report.location_dimension)
+    LOOP
+        INSERT INTO DASHBOARD_APP.AREA (name, level_id, parent_area_id, creation_date, modification_date)
+            values (state_loop_var, (select level_id from dashboard_app.level where name = \'state\'), null, now(), now());
+    END LOOP;
+
+    FOR district_loop_var IN (SELECT DISTINCT district FROM report.location_dimension)
+    LOOP
+        INSERT INTO DASHBOARD_APP.AREA (name, level_id, parent_area_id, creation_date, modification_date)
+            values (district_loop_var, (select level_id from dashboard_app.level where name = \'district\'),
+            (select area_id from dashboard_app.area where
+                name = (select distinct state from report.location_dimension where district = district_loop_var)), now(), now());
+    END LOOP;
+
+    FOR block_loop_var IN (SELECT DISTINCT block FROM report.location_dimension)
+    LOOP
+        INSERT INTO DASHBOARD_APP.AREA (name, level_id, parent_area_id, creation_date, modification_date)
+            values (block_loop_var, (select level_id from dashboard_app.level where name = \'block\'),
+            (select area_id from dashboard_app.area where
+                name = (select distinct district from report.location_dimension where block = block_loop_var)
+                and level_id = (select level_id from dashboard_app.level where name = \'district\')), now(), now());
+    END LOOP;
+END'
+LANGUAGE 'plpgsql';
+
+select fetchAreasFromReportingDB();
