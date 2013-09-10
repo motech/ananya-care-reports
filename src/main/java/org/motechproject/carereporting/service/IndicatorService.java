@@ -6,6 +6,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.dto.DwQueryDto;
 import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.QueryCreationFormDto;
@@ -99,4 +100,7 @@ public interface IndicatorService {
     Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity);
 
     List<IndicatorValueEntity> getIndicatorValuesForCsv(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
+
+    void createNewDwQuery(DwQueryDto dwQueryDto);
+
 }

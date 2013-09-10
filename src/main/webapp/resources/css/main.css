@@ -275,7 +275,7 @@ hr {
 }
 
 .page-margin-bottom {
-    margin-bottom: 50px !important;
+    margin-bottom: 150px !important;
 }
 
 .where-group {
@@ -290,4 +290,12 @@ hr {
 .modal-huge {
     width: 700px;
     margin-left: -350px;
+}
+
+.alert-tall {
+    min-height: 60px !important;
+}
+
+div.alert-tall .alert-tall-label {
+    margin-top: 20px;
 }

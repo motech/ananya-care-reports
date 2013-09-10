@@ -5,6 +5,7 @@ import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
+import org.motechproject.carereporting.domain.dto.DwQueryDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
@@ -76,6 +77,19 @@ public class IndicatorController extends BaseController {
     public String getIndicatorQueryCreationFormDto() {
         return this.writeAsString(QueryJsonView.CreationForm.class,
                 indicatorService.getIndicatorQueryCreationFormDto());
+    }
+
+    @RequestMapping(value = "/query/new", method = RequestMethod.POST,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void createNewDwQuery(@RequestBody @Valid DwQueryDto dwQueryDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+
+        indicatorService.createNewDwQuery(dwQueryDto);
     }
 
     @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

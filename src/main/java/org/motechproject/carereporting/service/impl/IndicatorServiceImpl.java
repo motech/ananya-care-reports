@@ -6,32 +6,55 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
+import org.motechproject.carereporting.dao.DwQueryDao;
 import org.motechproject.carereporting.dao.IndicatorCategoryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CombinationEntity;
+import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
+import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.DateValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionEntity;
+import org.motechproject.carereporting.domain.EnumRangeComparisonConditionValueEntity;
+import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
+import org.motechproject.carereporting.domain.GroupedByEntity;
+import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
+import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.UserEntity;
+import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
+import org.motechproject.carereporting.domain.WhereGroupEntity;
+import org.motechproject.carereporting.domain.dto.DwQueryDto;
+import org.motechproject.carereporting.domain.dto.GroupByDto;
 import org.motechproject.carereporting.domain.dto.IndicatorCreationFormDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.QueryCreationFormDto;
+import org.motechproject.carereporting.domain.dto.SelectColumnDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
+import org.motechproject.carereporting.domain.dto.WhereConditionDto;
+import org.motechproject.carereporting.domain.dto.WhereGroupDto;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.ExportService;
@@ -122,6 +145,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     private FormsService formsService;
 
     @Autowired
+    private DwQueryDao dwQueryDao;
+
+    @Autowired
+    private ComputedFieldService computedFieldService;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     private static final Integer ADMIN_ROLE_ID = 1;
@@ -164,6 +193,186 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
 
         return valueEntities;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void createNewDwQuery(DwQueryDto dwQueryDto) {
+        this.dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
+    }
+
+    private DwQueryEntity getDwQueryEntityFromDto(DwQueryDto dwQueryDto) {
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
+
+        Set<SelectColumnEntity> selectColumnEntities = new LinkedHashSet<>();
+        for (SelectColumnDto selectColumnDto : dwQueryDto.getSelectColumns()) {
+            SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
+            ComputedFieldEntity computedFieldEntity = (selectColumnDto.getField() == null)
+                    ? null : computedFieldService.getComputedFieldById(selectColumnDto.getField());
+
+            selectColumnEntity.setComputedField(computedFieldEntity);
+            selectColumnEntity.setFunctionName(selectColumnDto.getFunction());
+            selectColumnEntity.setNullValue(selectColumnDto.getNullValue());
+        }
+
+        dwQueryEntity.setTableName(dwQueryDto.getDimension());
+        dwQueryEntity.setSelectColumns(selectColumnEntities);
+        dwQueryEntity.setWhereGroup(resolveWhereGroupDto(dwQueryEntity, dwQueryDto.getWhereGroup()));
+        resolveGroupByDto(dwQueryDto.getGroupBy(), dwQueryEntity);
+        resolveCombination(dwQueryEntity, dwQueryDto);
+
+        return dwQueryEntity;
+    }
+
+    private void resolveGroupByDto(GroupByDto groupBy, DwQueryEntity dwQueryEntity) {
+        if (groupBy == null) {
+            return;
+        }
+
+        GroupedByEntity groupedByEntity = new GroupedByEntity();
+        groupedByEntity.setTableName(groupBy.getTableName());
+        groupedByEntity.setFieldName(groupBy.getFieldName());
+
+        if (groupBy.getHaving() != null) {
+            HavingEntity havingEntity = new HavingEntity();
+
+            SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
+            selectColumnEntity.setComputedField(computedFieldService.getComputedFieldById(groupBy.getFieldId()));
+            selectColumnEntity.setFunctionName(groupBy.getHaving().getFunction());
+
+            havingEntity.setSelectColumnEntity(selectColumnEntity);
+            havingEntity.setOperator(groupBy.getHaving().getOperator());
+            havingEntity.setValue(groupBy.getHaving().getValue());
+
+            groupedByEntity.setHaving(havingEntity);
+        }
+
+        dwQueryEntity.setGroupedBy(groupedByEntity);
+    }
+
+    private void resolveCombination(DwQueryEntity dwQueryEntity, DwQueryDto dwQueryDto) {
+        if (dwQueryDto.getCombineWith() == null) {
+            return;
+        }
+
+        CombinationEntity combinationEntity = new CombinationEntity();
+        combinationEntity.setType(dwQueryDto.getJoinType());
+        combinationEntity.setForeignKey(dwQueryDto.getKey1());
+        combinationEntity.setReferencedKey(dwQueryDto.getKey2());
+        combinationEntity.setDwQuery(getDwQueryEntityFromDto(dwQueryDto.getCombineWith()));
+
+        dwQueryEntity.setCombination(combinationEntity);
+    }
+
+    private WhereGroupEntity resolveWhereGroupDto(DwQueryEntity dwQueryEntity, WhereGroupDto whereGroup) {
+        WhereGroupEntity whereGroupEntity = new WhereGroupEntity();
+
+        if (whereGroup.getGroups() != null) {
+            for (WhereGroupDto whereGroupDto : whereGroup.getGroups()) {
+                whereGroupEntity.getWhereGroups().add(resolveWhereGroupDto(dwQueryEntity, whereGroupDto));
+            }
+        }
+
+        if (whereGroup.getConditions() != null) {
+            for (WhereConditionDto whereConditionDto : whereGroup.getConditions()) {
+                whereGroupEntity.getConditions().add(resolveWhereConditionDto(dwQueryEntity, whereConditionDto));
+            }
+        }
+
+        return whereGroupEntity;
+    }
+
+    private ConditionEntity resolveWhereConditionDto(DwQueryEntity dwQueryEntity, WhereConditionDto whereConditionDto) {
+        switch (whereConditionDto.getType()) {
+            case "dateDiff":
+                return prepareDateDiffCondition(whereConditionDto);
+            case "dateRange":
+                return prepareDateRangeCondition(whereConditionDto);
+            case "dateValue":
+                return prepareDateValueCondition(whereConditionDto);
+            case "enumRange":
+                return prepareEnumRangeCondition(whereConditionDto);
+            case "field":
+                return prepareFieldCondition(whereConditionDto);
+            case "value":
+                return prepareValueCondition(whereConditionDto);
+            case "period":
+                dwQueryEntity.setHasPeriodCondition(true);
+                return preparePeriodCondition(whereConditionDto);
+            default:
+                return null;
+        }
+    }
+
+    private ConditionEntity prepareDateDiffCondition(WhereConditionDto whereConditionDto) {
+        DateDiffComparisonConditionEntity dateDiffCondition = new DateDiffComparisonConditionEntity();
+        dateDiffCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        dateDiffCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
+        dateDiffCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        dateDiffCondition.setOffset1(whereConditionDto.getFieldOffset1());
+        dateDiffCondition.setOffset2(whereConditionDto.getFieldOffset2());
+        dateDiffCondition.setValue(Integer.parseInt(whereConditionDto.getValue()));
+        return dateDiffCondition;
+    }
+
+    private ConditionEntity prepareDateRangeCondition(WhereConditionDto whereConditionDto) {
+        DateRangeComparisonConditionEntity dateRangeCondition = new DateRangeComparisonConditionEntity();
+        dateRangeCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        dateRangeCondition.setOffset1(whereConditionDto.getFieldOffset1());
+        dateRangeCondition.setDate1(whereConditionDto.getDate1());
+        dateRangeCondition.setDate2(whereConditionDto.getDate2());
+        return dateRangeCondition;
+    }
+
+    private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
+        DateValueComparisonConditionEntity dateValueCondition = new DateValueComparisonConditionEntity();
+        dateValueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        dateValueCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        dateValueCondition.setOffset1(whereConditionDto.getFieldOffset1());
+        dateValueCondition.setValue(new Date(whereConditionDto.getValue()));
+        return dateValueCondition;
+    }
+
+    private ConditionEntity prepareEnumRangeCondition(WhereConditionDto whereConditionDto) {
+        EnumRangeComparisonConditionEntity enumRangeCondition = new EnumRangeComparisonConditionEntity();
+        enumRangeCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        Set<EnumRangeComparisonConditionValueEntity> values = new LinkedHashSet<>();
+        for (String value : whereConditionDto.getValues()) {
+            EnumRangeComparisonConditionValueEntity valueEntity = new EnumRangeComparisonConditionValueEntity();
+            valueEntity.setCondition(enumRangeCondition);
+            valueEntity.setValue(value);
+            values.add(valueEntity);
+        }
+        enumRangeCondition.setValues(values);
+        return enumRangeCondition;
+    }
+
+    private ConditionEntity prepareFieldCondition(WhereConditionDto whereConditionDto) {
+        FieldComparisonConditionEntity fieldCondition = new FieldComparisonConditionEntity();
+        fieldCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        fieldCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
+        fieldCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        String offset1 = (whereConditionDto.getFieldOffset1() == null) ? null : whereConditionDto.getFieldOffset1().toString();
+        String offset2 = (whereConditionDto.getFieldOffset2() == null) ? null : whereConditionDto.getFieldOffset2().toString();
+        fieldCondition.setOffset1(offset1);
+        fieldCondition.setOffset2(offset2);
+        return fieldCondition;
+    }
+
+    private ConditionEntity prepareValueCondition(WhereConditionDto whereConditionDto) {
+        ValueComparisonConditionEntity valueCondition = new ValueComparisonConditionEntity();
+        valueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        valueCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        valueCondition.setValue(whereConditionDto.getValue());
+        return valueCondition;
+    }
+
+    private ConditionEntity preparePeriodCondition(WhereConditionDto whereConditionDto) {
+        PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
+        periodConditionEntity.setTableName(whereConditionDto.getTableName1());
+        periodConditionEntity.setColumnName(computedFieldService.getComputedFieldById(whereConditionDto.getField1()).getName());
+        periodConditionEntity.setOffset(whereConditionDto.getFieldOffset1());
+        return periodConditionEntity;
     }
 
     @Transactional
