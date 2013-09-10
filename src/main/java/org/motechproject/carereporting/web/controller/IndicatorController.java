@@ -287,9 +287,9 @@ public class IndicatorController extends BaseController {
         cronService.updateDateDepth(newDateDepth);
     }
 
-    @RequestMapping(value = "calculator/recalculate", method = RequestMethod.GET)
+    @RequestMapping(value = "calculator/recalculate/{categoryId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void recalculateIndicators() {
-        indicatorService.calculateAllIndicators();
+    public void recalculateIndicators(@PathVariable Integer categoryId) {
+        indicatorService.calculateAllIndicators(categoryId);
     }
 }

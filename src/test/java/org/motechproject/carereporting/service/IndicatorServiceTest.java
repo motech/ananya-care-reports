@@ -65,7 +65,7 @@ public class IndicatorServiceTest {
         doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
         doNothing().when(indicatorValueDao).removeByIndicator((IndicatorEntity) anyObject());
 
-        indicatorService.calculateAllIndicators();
+        indicatorService.calculateAllIndicators(0);
 
         verify(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
         verify(indicatorDao).update((IndicatorEntity) anyObject());
@@ -108,10 +108,10 @@ public class IndicatorServiceTest {
         indicatorEntity.setId(TEST_INDICATOR_ID);
         indicatorEntity.setName(TEST_INDICATOR_NAME);
 
-        when(indicatorDao.getByIdWithFields(TEST_INDICATOR_ID, WITH_FIELDS_REPORTS)).thenReturn(indicatorEntity);
+        when(indicatorDao.getById(TEST_INDICATOR_ID)).thenReturn(indicatorEntity);
         IndicatorEntity returnedIndicator = indicatorService.getIndicatorById(TEST_INDICATOR_ID);
 
-        verify(indicatorDao).getByIdWithFields(TEST_INDICATOR_ID, WITH_FIELDS_REPORTS);
+        verify(indicatorDao).getById(TEST_INDICATOR_ID);
 
         assertEquals(TEST_INDICATOR_ID, returnedIndicator.getId());
         assertEquals(TEST_INDICATOR_NAME, returnedIndicator.getName());

@@ -25,7 +25,17 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.title = $scope.msg('indicators.title');
 
     $scope.indicators = [];
-    $scope.category = {};
+
+    $scope.$watch('selectedCategory', function() {
+        if($scope.selectedCategory != null) {
+            for(var i = 0; i < $scope.category.length; i++) {
+                if($scope.category[i].id == $scope.selectedCategory) {
+                    $scope.indicators = $scope.category[i].indicators;
+                    break;
+                }
+            }
+        }
+    });
 
     $scope.deleteIndicator = function(indicator) {
         var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
@@ -38,8 +48,6 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                         url: 'api/indicator/' + indicator.id
                     })
                     .success(function(data, status, headers, config) {
-                        $scope.selectedCategory = null;
-                        $scope.indicators = [];
                         $scope.fetchCategories();
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
@@ -50,8 +58,16 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 
     $scope.fetchCategories = function() {
         $http.get('api/indicator/category').success(function(category) {
-            $scope.category = category;
-            $scope.selectedCategory = null;
+            $scope.category = new Array();
+            var ind = new Array();
+            for(var i = 0; i < category.length; i++) {
+                ind = ind.concat(category[i].indicators);
+            }
+            var name = $scope.msg('indicators.list.allCategories');
+            $scope.category.push({id: 0, indicators: ind, name: $scope.msg('indicators.list.allCategories')});
+            $scope.category = $scope.category.concat(category);
+            $scope.indicators = [];
+            $scope.selectedCategory = 0;
         }).error(function(response) {
             $dialog.messageBox($scope.msg('common.error'), $scope.msg('categories.error.cannotLoadCategories'), [{label: 'Ok', cssClass: 'btn'}]).open();
         });
@@ -60,7 +76,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.fetchCategories();
 
     $scope.recalculate = function() {
-        $http.get('api/indicator/calculator/recalculate')
+        $http.get('api/indicator/calculator/recalculate/' + $scope.selectedCategory)
             .success(function() {
                 $location.path( "/" );
             })
@@ -70,21 +86,20 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 
     };
 
-    $scope.$watch('selectedCategory', function() {
-        if($scope.selectedCategory) {
-            for(var i = 0; i < $scope.category.length; i++) {
-                if($scope.category[i].id == $scope.selectedCategory) {
-                    $scope.indicators = $scope.category[i].indicators;
-                    break;
-                }
-            }
-        } else {
-            $scope.indicators = new Array();
-            for(var i = 0; i < $scope.category.length; i++) {
-                $scope.indicators = $scope.indicators.concat($scope.category[i].indicators);
+    $scope.isAnyComputed = function() {
+        if($scope.indicators.length == 0) {
+            return true;
+        }
+
+        for(var i = 0; i < $scope.indicators.length; i++) {
+            if(!$scope.indicators[i].isComputed) {
+                return true;
             }
         }
-    });
+
+        return false;
+    };
+
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,

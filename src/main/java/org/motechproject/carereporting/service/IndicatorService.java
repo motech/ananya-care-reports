@@ -90,7 +90,7 @@ public interface IndicatorService {
 
     void calculateIndicator(IndicatorEntity indicatorEntity);
 
-    void calculateAllIndicators();
+    void calculateAllIndicators(Integer categoryId);
 
     IndicatorCreationFormDto getIndicatorCreationFormDto();
 

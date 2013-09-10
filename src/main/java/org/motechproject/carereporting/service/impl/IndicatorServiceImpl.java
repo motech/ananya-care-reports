@@ -2,6 +2,7 @@ package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.dwQueryBuilder.builders.QueryBuilder;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
@@ -130,11 +131,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     public Set<IndicatorEntity> getAllIndicators() {
         return indicatorDao.getAllWithFields("reports");
     }
+
     @Transactional
     @Override
     public Set<IndicatorEntity> getAllIndicatorsByUserAccess(UserEntity userEntity) {
         List <Integer> roleIds = new ArrayList<>();
-        for(RoleEntity roleEntity : userEntity.getRoles()){
+        for (RoleEntity roleEntity : userEntity.getRoles()) {
             roleIds.add(roleEntity.getId());
         }
         Query query = sessionFactory.getCurrentSession()
@@ -158,7 +160,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional
     @Override
     public IndicatorEntity getIndicatorById(Integer id) {
-        return indicatorDao.getByIdWithFields(id, "reports");
+        return indicatorDao.getById(id);
     }
 
     @Transactional(readOnly = false)
@@ -464,9 +466,18 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional(readOnly = false)
-    public void calculateAllIndicators() {
-        for (IndicatorEntity indicator : indicatorDao.getAll()) {
+    public void calculateAllIndicators(Integer categoryId) {
+        Set<IndicatorEntity> indicatorEntities;
+
+        if (categoryId != 0) {
+            indicatorEntities = indicatorCategoryDao.getById(categoryId).getIndicators();
+        } else {
+            indicatorEntities = indicatorDao.getAll();
+        }
+
+        for (IndicatorEntity indicator : indicatorEntities) {
             indicatorValueDao.removeByIndicator(indicator);
+            Hibernate.initialize(indicator.getNumerator());
             setComputedForIndicator(indicator, false);
             calculateIndicator(indicator);
         }

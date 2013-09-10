@@ -292,12 +292,12 @@ public class IndicatorControllerTest {
 
     @Test
     public void testRecalculateIndicators() throws Exception {
-        Mockito.doNothing().when(indicatorService).calculateAllIndicators();
+        Mockito.doNothing().when(indicatorService).calculateAllIndicators(0);
 
-        mockMvc.perform(get("/api/indicator/calculator/recalculate"))
+        mockMvc.perform(get("/api/indicator/calculator/recalculate/0"))
                 .andExpect(status().isOk());
 
-        verify(indicatorService).calculateAllIndicators();
+        verify(indicatorService).calculateAllIndicators(0);
     }
 
 }
