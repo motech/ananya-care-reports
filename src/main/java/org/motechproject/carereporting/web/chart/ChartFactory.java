@@ -16,6 +16,7 @@ import org.motechproject.carereporting.web.chart.builder.LegendBuilder;
 import org.motechproject.carereporting.web.chart.builder.MouseBuilder;
 import org.motechproject.carereporting.web.chart.builder.ParamsBuilder;
 import org.motechproject.carereporting.web.chart.builder.PieBuilder;
+import org.motechproject.carereporting.web.chart.builder.SelectionBuilder;
 import org.motechproject.carereporting.web.chart.builder.SerieBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,7 @@ public final class ChartFactory {
     private static final int SCALE = 4;
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
     private static final int EXPLOSION_NUMBER = 6;
+    private static final int SELECTION_FPS = 30;
 
     // for 1.0 - there is no space between clusters
     private static final double BAR_CLUSTER_SCALE = 0.5;
@@ -86,7 +88,10 @@ public final class ChartFactory {
                         .max(yMinAndMax[1]))
                 .grid(new GridBuilder()
                         .minorVerticalLines(true))
-                .serie(createSerieForIndicatorValues(values));
+                .serie(createSerieForIndicatorValues(values))
+                .selection(new SelectionBuilder()
+                        .fps(SELECTION_FPS)
+                        .mode(SelectionBuilder.Mode.X));
 
         if (ReportType.BarChart.equals(type)) {
             chart.bars(new BarsBuilder()
@@ -180,7 +185,10 @@ public final class ChartFactory {
                         .show(true)
                         .barWidth(barWidth))
                 .markers(new ParamsBuilder().param("show", true))
-                .mouse(new MouseBuilder().track(false));
+                .mouse(new MouseBuilder().track(false))
+                .selection(new SelectionBuilder()
+                        .fps(SELECTION_FPS)
+                        .mode(SelectionBuilder.Mode.X));
 
         for (SerieBuilder serieBuilder : serieBuilders) {
             chart.serie(serieBuilder);

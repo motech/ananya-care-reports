@@ -22,6 +22,18 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.reportsPerPage = 3;
     $scope.loading = true;
 
+    $scope.fullscreenReport = null;
+
+    $scope.fullscreen = function(report) {
+        if($scope.fullscreenReport == null) {
+            $scope.fullscreenReport = report;
+            $scope.reportRows[report.position.x][report.position.y] = null;
+        } else {
+            $scope.reportRows[report.position.x][report.position.y] = report;
+            $scope.fullscreenReport = null;
+        }
+    };
+
     $scope.compareDashboardPositions = function(dashboardA, dashboardB) {
         return parseInt(dashboardA.tabPosition) - parseInt(dashboardB.tabPosition);
     };
@@ -116,6 +128,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     report.from = moment().subtract('months', 1).format("L");
                     report.to = moment().format("L");
                     report.canExportCaseListReport = true;
+                    report.position = {};
+                    report.position.x = i % $scope.reportsPerPage;
+                    report.position.y = r;
                     reportRow.push(report);
                 }
             }

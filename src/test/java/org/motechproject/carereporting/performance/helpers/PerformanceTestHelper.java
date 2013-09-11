@@ -196,7 +196,7 @@ public class PerformanceTestHelper {
     private void populateDatabaseWithRandomAreas() {
         List<LevelEntity> levelEntities = new ArrayList<>(areaService.getAllLevels());
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < levelEntities.size(); i++) {
             addArea(i, levelEntities);
         }
     }

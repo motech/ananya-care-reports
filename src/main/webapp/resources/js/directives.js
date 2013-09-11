@@ -142,8 +142,7 @@
                 link: function (scope, element, attrs) {
                     attrs.$observe('value', function(report) {
                         var report;
-                        if (!attrs.value || !element[0] || element[0].clientWidth <= 0
-                                || element[0].clientHeight <= 0) {
+                        if (!attrs.value || !element[0]) {
                             return;
                         }
                         report = JSON.parse(attrs.value);
@@ -172,7 +171,27 @@
                                     chart.settings.mouse.trackFormatter = function(obj) {
                                         return '('+moment(new Date(parseInt(obj.x))).format("MM/DD/YYYY")+', '+obj.y+')';
                                     };
-                                    Flotr.draw(element[0], chart.data, chart.settings);
+                                    var drawChart = function(opts) {
+                                            var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
+                                            Flotr.draw(element[0], chart.data, o);
+                                    };
+
+                                    drawChart();
+
+                                    if(chart.settings.pie == undefined) {
+                                        Flotr.EventAdapter.observe(element[0], 'flotr:select', function(area) {
+                                            drawChart({
+                                                xaxis: {
+                                                    min: area.x1,
+                                                    max: area.x2
+                                                }
+                                            });
+                                        });
+
+                                        Flotr.EventAdapter.observe(element[0], 'flotr:click', function() {
+                                            drawChart();
+                                        });
+                                    }
                                 }).error(function(data, status, headers, config) {
                                     $dialog.messageBox(scope.msg('common.error'), data, [{label: scope.msg('common.ok'), cssClass: 'btn'}]).open();
                                 });
