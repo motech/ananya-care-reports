@@ -5,13 +5,13 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
     delete $rootScope.mainScope;
 
     $scope.listConditionTypes = [
-        { name: 'dateDiff', code: 'queries.conditionDialog.conditionType.dateDiff' },
-        { name: 'dateRange', code: 'queries.conditionDialog.conditionType.dateRange' },
-        { name: 'dateValue', code: 'queries.conditionDialog.conditionType.dateValue' },
-        { name: 'enumRange', code: 'queries.conditionDialog.conditionType.enumRange' },
-        { name: 'value', code: 'queries.conditionDialog.conditionType.value' },
-        { name: 'field', code: 'queries.conditionDialog.conditionType.field' },
-        { name: 'period', code: 'queries.conditionDialog.conditionType.period' }
+        { name: 'dateDiff', code: 'queries.whereConditionDialog.conditionType.dateDiff' },
+        { name: 'dateRange', code: 'queries.whereConditionDialog.conditionType.dateRange' },
+        { name: 'dateValue', code: 'queries.whereConditionDialog.conditionType.dateValue' },
+        { name: 'enumRange', code: 'queries.whereConditionDialog.conditionType.enumRange' },
+        { name: 'value', code: 'queries.whereConditionDialog.conditionType.value' },
+        { name: 'field', code: 'queries.whereConditionDialog.conditionType.field' },
+        { name: 'period', code: 'queries.whereConditionDialog.conditionType.period' }
     ];
 
     $scope.formData = {
@@ -57,7 +57,7 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
             $scope.condition.form1 = formData.forms[0];
             $scope.condition.form2 = formData.forms[0];
         }).error(function() {
-            $errorService.genericError($scope, 'queries.new.error.cannotLoadFormList');
+            $errorService.genericError($scope, 'queries.error.cannotLoadFormList');
         });
     };
     $scope.fetchFormData();
@@ -109,7 +109,7 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
             var computedField = $scope.formData['computedFields' + index][0];
             $scope.condition['field' + index] = computedField;
         }).error(function() {
-            $errorService.genericError($scope, 'queries.new.error.cannotLoadComputedFieldList');
+            $errorService.genericError($scope, 'queries.error.cannotLoadComputedFieldList');
         });
     };
 
@@ -177,6 +177,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
                                                     $dialog, $location, $errorService, $route, $timeout) {
     $scope.title = $scope.msg('queries.new.title');
     $scope.formData = {
+        queryName: null,
         dimension: null,
         forms: [
             { tableName: null, displayName: '---' }
@@ -206,7 +207,11 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
 
     $scope.initQueryForms = function() {
         $scope.listQueryJoinTypes = [
-            'Union', 'UnionAll', 'Intersect', 'Except', 'Join'
+            { code: 'Union', name: $scope.msg('queries.new.joinType.union') },
+            { code: 'UnionAll', name: $scope.msg('queries.new.joinType.unionAll') },
+            { code: 'Intersect', name: $scope.msg('queries.new.joinType.intersect') },
+            { code: 'Join', name: $scope.msg('queries.new.joinType.join') },
+            { code: 'Except', name: $scope.msg('queries.new.joinType.except') }
         ];
         $scope.queryForms = [];
         $scope.addQueryForm();
@@ -222,7 +227,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             $scope.initQueryForms();
             $scope.queryForms[0].form = $scope.formData.forms[0];
         }).error(function() {
-            $errorService.genericError($scope, 'queries.new.error.cannotLoadFormList');
+            $errorService.genericError($scope, 'queries.error.cannotLoadFormList');
         });
     };
     $scope.fetchFormData();
@@ -248,7 +253,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             queryForm.groupBy.having.function = queryForm.groupByFunctions[0];
             queryForm.groupBy.having.operator = $scope.formData.operators[0].name;
         }).error(function() {
-            $errorService.genericError($scope, 'queries.new.error.cannotLoadComputedFieldList');
+            $errorService.genericError($scope, 'queries.error.cannotLoadComputedFieldList');
         });
     };
 
@@ -256,7 +261,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         $http.get('api/forms/' + form.id + '/computedfields/all').success(function(computedFields) {
             $scope.assignComputedFieldList(queryForm, computedFields);
         }).error(function() {
-            $errorService.genericError($scope, 'queries.new.error.cannotLoadComputedFieldList');
+            $errorService.genericError($scope, 'queries.error.cannotLoadComputedFieldList');
         });
     };
 
@@ -360,6 +365,9 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
 
         $scope.$watch('queryForms[' + ($scope.queryForms.length - 1) + '].groupBy.having.function', function(newValue, oldValue) {
             $scope.queryForms[$scope.queryForms.length - 1].groupBy.having.value = null;
+            if (newValue == null || newValue.code == 'none') {
+                $scope.queryForms[$scope.queryForms.length - 1].groupBy.having.operator = '---';
+            }
         });
 
         $scope.$watch('queryForms[' + ($scope.queryForms.length - 1) + '].groupBy.having.operator', function(newValue, oldValue) {
@@ -373,6 +381,19 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
 
     $scope.removeQuery = function(index) {
         $scope.queryForms.splice(index, 1);
+    };
+
+    $scope.isFormValid = function() {
+        var isValid = true;
+
+        if ($scope.formData.queryName == null || $scope.formData.queryName.length <= 0) {
+            return false;
+        }
+        for (var i = 0; i < $scope.queryForms.length; i++) {
+
+        }
+
+        return isValid;
     };
 
     $scope.save = function() {
@@ -412,6 +433,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             cleanWhereGroup(queryForm.whereGroup);
 
             return {
+                name: $scope.formData.queryName,
                 dimension: queryForm.dimension.tableName,
                 selectColumns: queryForm.selectColumns,
                 joinType: null,
@@ -423,7 +445,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
                 addCombineWith: function(joinType, key1, key2, dwQuery) {
                     this.key1 = key1.name;
                     this.key2 = key2.name;
-                    this.joinType = joinType;
+                    this.joinType = joinType.code;
                     this.combineWith = dwQuery;
                 },
                 addGroupBy: function(groupBy) {
@@ -452,6 +474,9 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         var lastDwQuery = null;
         for (var i = $scope.queryForms.length - 1; i >= 0; i--) {
             var dwQuery = constructDwQuery($scope.queryForms[i]);
+            if (i > 0) {
+                dwQuery.name += '_' + i;
+            }
 
             if (lastDwQuery != null) {
                 var queryForm = $scope.queryForms[i + 1];
@@ -460,11 +485,12 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             if ($scope.queryForms[i].groupBy != null) {
                 dwQuery.addGroupBy($scope.queryForms[i].groupBy);
             }
+
             lastDwQuery = dwQuery;
         }
 
         $http({
-            url: 'api/indicator/query/new',
+            url: 'api/indicator/queries/new',
             method: "POST",
             data: lastDwQuery,
             headers: { 'Content-Type': 'application/json' }
@@ -473,5 +499,39 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         }).error(function(data, status, headers, config) {
             $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
         });
+    };
+});
+
+care.controller('queryListController', function($scope, $http, $location, $dialog, $errorService) {
+    $scope.queries = [];
+
+    $scope.fetchQueries = function() {
+        $http.get('api/indicator/queries').success(function(queries) {
+            queries.sortByField('name');
+            $scope.queries = queries;
+        }).error(function() {
+            $errorService.genericError($scope, 'queries.error.cannotLoadQueryList');
+        });
+    };
+    $scope.fetchQueries();
+
+    $scope.deleteQuery = function(index) {
+        var query = $scope.queries[index];
+        var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
+        $dialog.messageBox($scope.msg('queries.list.confirmDelete.header', query.name), $scope.msg('queries.list.confirmDelete.message', query.name), btns)
+            .open()
+            .then(function(result) {
+                if (result === 'yes') {
+                    $http({
+                        method: 'DELETE',
+                        url: 'api/indicator/queries/' + query.id
+                    })
+                    .success(function(data, status, headers, config) {
+                        $scope.queries.splice(index, 1);
+                    }).error(function(response) {
+                        $errorService.genericError($scope, 'queries.list.error.cannotDeleteQuery', query.name);
+                    });
+                }
+            });
     };
 });

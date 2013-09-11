@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
@@ -27,16 +28,22 @@ public class IndicatorCreationFormDto {
     @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<ReportTypeEntity> reportTypes;
 
+    @JsonView({ IndicatorJsonView.CreationForm.class })
+    private Set<DwQueryEntity> dwQueries;
+
     public IndicatorCreationFormDto() {
 
     }
 
-    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles, Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes) {
+    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles,
+                                    Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes,
+                                    Set<DwQueryEntity> dwQueries) {
         this.categories = categories;
         this.roles = roles;
         this.levels = levels;
         this.frequencies = frequencies;
         this.reportTypes = reportTypes;
+        this.dwQueries = dwQueries;
     }
 
     public Set<LevelEntity> getLevels() {
@@ -77,5 +84,13 @@ public class IndicatorCreationFormDto {
 
     public void setReportTypes(Set<ReportTypeEntity> reportTypes) {
         this.reportTypes = reportTypes;
+    }
+
+    public Set<DwQueryEntity> getDwQueries() {
+        return dwQueries;
+    }
+
+    public void setDwQueries(Set<DwQueryEntity> dwQueries) {
+        this.dwQueries = dwQueries;
     }
 }

@@ -32,8 +32,8 @@ care.factory('$errorService', function($dialog) {
 
             $dialog.dialog(scope.opts).open();
         },
-        genericError: function(scope, message) {
-            $dialog.messageBox("Error", scope.msg(message), [{label: scope.msg('ok'), cssClass: 'btn'}]).open();
+        genericError: function(scope, message, param) {
+            $dialog.messageBox("Error", scope.msg(message, param), [{label: scope.msg('ok'), cssClass: 'btn'}]).open();
         }
     }
 });

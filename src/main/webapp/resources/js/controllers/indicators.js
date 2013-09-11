@@ -24,12 +24,13 @@ care.controller('uploadIndicatorController', function($scope) {
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
     $scope.title = $scope.msg('indicators.title');
 
+    $scope.category = [];
     $scope.indicators = [];
 
     $scope.$watch('selectedCategory', function() {
-        if($scope.selectedCategory != null) {
-            for(var i = 0; i < $scope.category.length; i++) {
-                if($scope.category[i].id == $scope.selectedCategory) {
+        if ($scope.selectedCategory != null) {
+            for (var i = 0; i < $scope.category.length; i++) {
+                if ($scope.category[i].id == $scope.selectedCategory) {
                     $scope.indicators = $scope.category[i].indicators;
                     break;
                 }
@@ -63,9 +64,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             for(var i = 0; i < category.length; i++) {
                 ind = ind.concat(category[i].indicators);
             }
-            var name = $scope.msg('indicators.list.allCategories');
-            $scope.category.push({id: 0, indicators: ind, name: $scope.msg('indicators.list.allCategories')});
-            $scope.category = $scope.category.concat(category);
+            $scope.category = category;
             $scope.indicators = [];
             $scope.selectedCategory = 0;
         }).error(function(response) {
@@ -111,28 +110,36 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $scope.indicator = {
         categories: [],
         owners: [],
-        reports: []
-    };
-
-    $scope.initializeInputFields = function() {
-        $scope.listCategories = $scope.formData.categories;
-        $scope.listCharts = $scope.formData.reportTypes;
-
-        $scope.indicator.level = $scope.formData.levels[0].id;
-        $scope.indicator.frequency = $scope.formData.frequencies[0].id;
-        $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
-        $scope.selectedCategory = $scope.listCategories[0];
-
-        for(var i = 0; i < $scope.formData.roles.length; i++) {
-            var id = $scope.formData.roles[i].id;
-            $scope.selectedOwners[id] = false;
-        }
+        reports: [],
+        numerator: null,
+        denominator: -1,
+        categorized: false,
+        trend: null,
+        additive: false
     };
 
     $scope.sortFormDataArrays = function() {
         $scope.formData.categories.sortByField('name');
         $scope.formData.roles.sortByField('name');
         $scope.formData.reportTypes.sortByField('name');
+        $scope.formData.dwQueries.sortByField('name');
+    };
+
+    $scope.initializeInputFields = function() {
+        $scope.listCategories = $scope.formData.categories;
+        $scope.listCharts = $scope.formData.reportTypes;
+        $scope.formData.denominatorDwQueries = [{ id: -1, name: '---' }].concat($scope.formData.dwQueries);
+
+        $scope.indicator.level = $scope.formData.levels[0].id;
+        $scope.indicator.frequency = $scope.formData.frequencies[0].id;
+        $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
+        $scope.selectedCategory = $scope.listCategories[0];
+        $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
+
+        for(var i = 0; i < $scope.formData.roles.length; i++) {
+            var id = $scope.formData.roles[i].id;
+            $scope.selectedOwners[id] = false;
+        }
     };
 
     $http.get("api/indicator/creationform").success(function(indicatorCreationFormDto) {
@@ -188,13 +195,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.selectAllRoles = function() {
-         if($scope.isAllSelected() == true) {
+         if ($scope.isAllSelected() == true) {
              var check = false;
          } else {
-             var check = true;
+            var check = true;
          }
 
-        for(var i = 0; i < $scope.formData.roles.length; i++) {
+        for (var i = 0; i < $scope.formData.roles.length; i++) {
             var id = $scope.formData.roles[i].id;
             $scope.selectedOwners[id] = check;
         }
@@ -202,10 +209,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
     $scope.sumRoles = function() {
         var sum = 0;
-        if($scope.formData != undefined) {
+        if ($scope.formData != undefined) {
             for (var i = 0; i < $scope.formData.roles.length; i++) {
                  var id = $scope.formData.roles[i].id;
-                 if($scope.selectedOwners[id] === true) {
+                 if ($scope.selectedOwners[id] === true) {
                     sum++;
                  }
              }
@@ -223,15 +230,19 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.submit = function() {
-        for(var i = 0; i < $scope.selectedCategories.length; i++) {
+        if ($scope.indicator.denominator == null || $scope.indicator.denominator == -1) {
+            $scope.indicator.denominator = null;
+        }
+
+        for (var i = 0; i < $scope.selectedCategories.length; i++) {
             $scope.indicator.categories.push($scope.selectedCategories[i].id);
         }
-        if($scope.selectedOwners[0] === true) {
+        if ($scope.selectedOwners[0] === true) {
             $scope.indicator.owners.push(0);
         } else {
             for (var i = 0; i < $scope.formData.roles.length; i++) {
                  var id = $scope.formData.roles[i].id;
-                 if($scope.selectedOwners[id] === true) {
+                 if ($scope.selectedOwners[id] === true) {
                      $scope.indicator.owners.push(id);
                  }
             }

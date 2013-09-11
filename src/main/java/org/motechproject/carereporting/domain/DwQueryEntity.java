@@ -1,5 +1,8 @@
 package org.motechproject.carereporting.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -7,9 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,25 +26,31 @@ public class DwQueryEntity extends AbstractEntity {
     @Column(name = "table_name", length = 100)
     private String tableName;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
-            inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
+    @OneToMany(mappedBy = "dwQuery", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<SelectColumnEntity> selectColumns;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "dwQuery", cascade = CascadeType.ALL)
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")
     private CombinationEntity combination;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
     private GroupedByEntity groupedBy;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 
     @Column(name = "has_period_condition")
     private boolean hasPeriodCondition;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "parent_id", referencedColumnName = "dw_query_id")
+    private DwQueryEntity parentQuery;
+
+    @JsonView({ BaseView.class })
+    @Column(name = "name")
+    private String name;
 
     public DwQueryEntity() {
     }
@@ -57,6 +65,8 @@ public class DwQueryEntity extends AbstractEntity {
         combination = dwQueryEntity.getCombination() != null ? new CombinationEntity(dwQueryEntity.getCombination()) : null;
         groupedBy = dwQueryEntity.getGroupedBy() != null ? new GroupedByEntity(dwQueryEntity.getGroupedBy()) : null;
         whereGroup = dwQueryEntity.getWhereGroup() != null ? new WhereGroupEntity(dwQueryEntity.getWhereGroup()) : null;
+        parentQuery = dwQueryEntity.getParentQuery();
+        name = dwQueryEntity.getName();
     }
 
     public String getTableName() {
@@ -105,5 +115,21 @@ public class DwQueryEntity extends AbstractEntity {
 
     public void setHasPeriodCondition(boolean hasPeriodCondition) {
         this.hasPeriodCondition = hasPeriodCondition;
+    }
+
+    public DwQueryEntity getParentQuery() {
+        return parentQuery;
+    }
+
+    public void setParentQuery(DwQueryEntity parentQuery) {
+        this.parentQuery = parentQuery;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -145,4 +145,10 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
         return comparisonSymbolDao.getById(comparisonSymbolId);
     }
 
+    @Override
+    @Transactional
+    public ComparisonSymbolEntity getComparisonSymbolByName(String name) {
+        return comparisonSymbolDao.getByField("name", name);
+    }
+
 }

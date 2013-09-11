@@ -2,6 +2,7 @@ package org.motechproject.carereporting.web.controller;
 
 import org.apache.log4j.Logger;
 import org.motechproject.carereporting.domain.CronTaskEntity;
+import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -86,7 +87,24 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorQueryCreationFormDto());
     }
 
-    @RequestMapping(value = "/query/new", method = RequestMethod.POST,
+    @RequestMapping(value = "/queries", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getAllDwQueries() {
+        return this.writeAsString(BaseView.class, indicatorService.getAllTopLevelDwQueries());
+    }
+
+    @RequestMapping(value = "/queries/{dwQueryId}", method = RequestMethod.DELETE,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void deleteDwQueryById(@PathVariable Integer dwQueryId) {
+        DwQueryEntity dwQueryEntity = indicatorService.getDwQueryById(dwQueryId);
+        indicatorService.deleteDwQuery(dwQueryEntity);
+    }
+
+    @RequestMapping(value = "/queries/new", method = RequestMethod.POST,
             consumes = { MediaType.APPLICATION_JSON_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)

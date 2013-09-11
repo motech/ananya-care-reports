@@ -10,6 +10,7 @@
             .when('/indicators/upload-xml', { templateUrl: 'resources/partials/indicators/uploadXml.html', controller: 'uploadIndicatorController'})
             .when('/indicators/calculation-time', { templateUrl: 'resources/partials/indicators/frequency.html', controller: 'frequencyController'})
             .when('/indicators/date-depth', { templateUrl: 'resources/partials/indicators/dateDepth.html', controller: 'dateDepthController'})
+            .when('/indicators/queries', { templateUrl: 'resources/partials/indicators/listQueries.html', controller: 'queryListController' })
             .when('/indicators/queries/new', { templateUrl: 'resources/partials/indicators/createDwQuery.html', controller: 'createDwQueryController' })
             .when('/admin/forms', { templateUrl: 'resources/partials/admin/forms/listForms.html', controller: 'formListController' })
             .when('/admin/forms/:formId', { templateUrl: 'resources/partials/admin/forms/editForm.html', controller: 'formController' })

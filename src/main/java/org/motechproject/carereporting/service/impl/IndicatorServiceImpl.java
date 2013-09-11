@@ -13,7 +13,6 @@ import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
-import org.motechproject.carereporting.domain.ComparisonSymbolEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
@@ -34,6 +33,7 @@ import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
+import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
@@ -196,11 +196,33 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    public Set<DwQueryEntity> getAllTopLevelDwQueries() {
+        return dwQueryDao.getAllByField("parentQuery", null);
+    }
+
+    @Override
+    public Set<DwQueryEntity> getAllDwQueries() {
+        return dwQueryDao.getAll();
+    }
+
+    @Override
+    public DwQueryEntity getDwQueryById(Integer dwQueryId) {
+        return dwQueryDao.getById(dwQueryId);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
         this.dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteDwQuery(DwQueryEntity dwQueryEntity) {
+        this.dwQueryDao.remove(dwQueryEntity);
+    }
+
+    @Transactional(readOnly = false)
     private DwQueryEntity getDwQueryEntityFromDto(DwQueryDto dwQueryDto) {
         DwQueryEntity dwQueryEntity = new DwQueryEntity();
 
@@ -213,8 +235,11 @@ public class IndicatorServiceImpl implements IndicatorService {
             selectColumnEntity.setComputedField(computedFieldEntity);
             selectColumnEntity.setFunctionName(selectColumnDto.getFunction());
             selectColumnEntity.setNullValue(selectColumnDto.getNullValue());
+            selectColumnEntity.setDwQuery(dwQueryEntity);
+            selectColumnEntities.add(selectColumnEntity);
         }
 
+        dwQueryEntity.setName(dwQueryDto.getName());
         dwQueryEntity.setTableName(dwQueryDto.getDimension());
         dwQueryEntity.setSelectColumns(selectColumnEntities);
         dwQueryEntity.setWhereGroup(resolveWhereGroupDto(dwQueryEntity, dwQueryDto.getWhereGroup()));
@@ -260,6 +285,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         combinationEntity.setForeignKey(dwQueryDto.getKey1());
         combinationEntity.setReferencedKey(dwQueryDto.getKey2());
         combinationEntity.setDwQuery(getDwQueryEntityFromDto(dwQueryDto.getCombineWith()));
+        combinationEntity.getDwQuery().setParentQuery(dwQueryEntity);
 
         dwQueryEntity.setCombination(combinationEntity);
     }
@@ -308,7 +334,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         DateDiffComparisonConditionEntity dateDiffCondition = new DateDiffComparisonConditionEntity();
         dateDiffCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
         dateDiffCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
-        dateDiffCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        dateDiffCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         dateDiffCondition.setOffset1(whereConditionDto.getFieldOffset1());
         dateDiffCondition.setOffset2(whereConditionDto.getFieldOffset2());
         dateDiffCondition.setValue(Integer.parseInt(whereConditionDto.getValue()));
@@ -327,7 +353,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
         DateValueComparisonConditionEntity dateValueCondition = new DateValueComparisonConditionEntity();
         dateValueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        dateValueCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        dateValueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         dateValueCondition.setOffset1(whereConditionDto.getFieldOffset1());
         dateValueCondition.setValue(new Date(whereConditionDto.getValue()));
         return dateValueCondition;
@@ -351,7 +377,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         FieldComparisonConditionEntity fieldCondition = new FieldComparisonConditionEntity();
         fieldCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
         fieldCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
-        fieldCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        fieldCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         String offset1 = (whereConditionDto.getFieldOffset1() == null) ? null : whereConditionDto.getFieldOffset1().toString();
         String offset2 = (whereConditionDto.getFieldOffset2() == null) ? null : whereConditionDto.getFieldOffset2().toString();
         fieldCondition.setOffset1(offset1);
@@ -362,7 +388,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private ConditionEntity prepareValueCondition(WhereConditionDto whereConditionDto) {
         ValueComparisonConditionEntity valueCondition = new ValueComparisonConditionEntity();
         valueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        valueCondition.setOperator(new ComparisonSymbolEntity(whereConditionDto.getOperator()));
+        valueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         valueCondition.setValue(whereConditionDto.getValue());
         return valueCondition;
     }
@@ -395,17 +421,27 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setReports(indicatorDto.getReports());
+        for (ReportEntity reportEntity : indicatorEntity.getReports()) {
+            reportEntity.setIndicator(indicatorEntity);
+        }
         indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
         indicatorEntity.setAreaLevel(findLevelEntityFromDto(indicatorDto));
         indicatorEntity.setName(indicatorDto.getName());
         indicatorEntity.setTrend(indicatorDto.getTrend());
         indicatorEntity.setOwner(findUserEntityFromDto(indicatorDto));
         indicatorEntity.setRoles(findRoleEntitiesFromDto(indicatorDto));
+        indicatorEntity.setNumerator(this.getDwQueryById(indicatorDto.getNumerator()));
+        if (indicatorDto.getDenominator() != null) {
+            indicatorEntity.setDenominator(this.getDwQueryById(indicatorDto.getDenominator()));
+        }
         indicatorEntity.setComputed(false);
+        indicatorEntity.setAdditive(indicatorDto.isAdditive());
+        indicatorEntity.setCategorized(indicatorDto.isCategorized());
         createNewIndicator(indicatorEntity);
     }
 
@@ -714,13 +750,15 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<ReportTypeEntity> reportTypes = reportService.getAllReportTypes();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
         Set<LevelEntity> levelEntities = areaService.getAllLevels();
+        Set<DwQueryEntity> dwQueries = this.getAllTopLevelDwQueries();
 
         return new IndicatorCreationFormDto(
                 categoryEntities,
                 roleEntities,
                 levelEntities,
                 frequencyEntities,
-                reportTypes);
+                reportTypes,
+                dwQueries);
     }
 
     @Override

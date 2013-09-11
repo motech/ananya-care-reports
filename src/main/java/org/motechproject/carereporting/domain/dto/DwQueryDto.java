@@ -20,12 +20,15 @@ public class DwQueryDto {
 
     private GroupByDto groupBy;
 
+    private String name;
+
     public DwQueryDto() {
 
     }
 
     public DwQueryDto(String dimension, List<SelectColumnDto> selectColumns, WhereGroupDto whereGroup,
-                      String joinType, String key1, String key2, DwQueryDto combineWith, GroupByDto groupBy) {
+                      String joinType, String key1, String key2, DwQueryDto combineWith, GroupByDto groupBy,
+                      String name) {
         this.dimension = dimension;
         this.selectColumns = selectColumns;
         this.whereGroup = whereGroup;
@@ -34,6 +37,7 @@ public class DwQueryDto {
         this.key2 = key2;
         this.combineWith = combineWith;
         this.groupBy = groupBy;
+        this.name = name;
     }
 
     public String getDimension() {
@@ -98,5 +102,13 @@ public class DwQueryDto {
 
     public void setGroupBy(GroupByDto groupBy) {
         this.groupBy = groupBy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.service;
 
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
@@ -100,6 +101,14 @@ public interface IndicatorService {
 
     List<IndicatorValueEntity> getIndicatorValuesForCsv(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
 
+    Set<DwQueryEntity> getAllTopLevelDwQueries();
+
+    Set<DwQueryEntity> getAllDwQueries();
+
+    DwQueryEntity getDwQueryById(Integer dwQueryId);
+
     void createNewDwQuery(DwQueryDto dwQueryDto);
+
+    void deleteDwQuery(DwQueryEntity dwQueryEntity);
 
 }

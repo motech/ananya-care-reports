@@ -42,4 +42,6 @@ public interface ComputedFieldService {
 
     ComparisonSymbolEntity getComparisonSymbolById(Integer comparisonSymbolId);
 
+    ComparisonSymbolEntity getComparisonSymbolByName(String name);
+
 }

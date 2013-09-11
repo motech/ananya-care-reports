@@ -4,7 +4,7 @@
     <div class="span10 hq-content">
         <div>
             <b>{{msg('indicators.list.chooseCategory')}}</b>
-            <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category" />
+            <select id="tableName" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category"></select>
         </div>
         <table class="table table-hover" ng-show="indicators.length > 0">
             <thead>

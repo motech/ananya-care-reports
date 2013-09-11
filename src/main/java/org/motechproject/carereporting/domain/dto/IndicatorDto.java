@@ -32,11 +32,24 @@ public class IndicatorDto implements Serializable {
 
     private BigDecimal trend;
 
+    @NotNull
+    private Integer numerator;
+
+    private Integer denominator;
+
+    @NotNull
+    private Boolean additive;
+
+    @NotNull
+    private Boolean categorized;
+
     public IndicatorDto() {
 
     }
 
-    public IndicatorDto(String name, Set<Integer> categories, Integer level, Set<Integer> owners, Integer frequency, Set<ReportEntity> reports, BigDecimal trend) {
+    public IndicatorDto(String name, Set<Integer> categories, Integer level, Set<Integer> owners, Integer frequency,
+                        Set<ReportEntity> reports, BigDecimal trend, Integer numerator, Integer denominator,
+                        Boolean additive, Boolean categorized) {
         this.name = name;
         this.categories = categories;
         this.level = level;
@@ -44,6 +57,10 @@ public class IndicatorDto implements Serializable {
         this.frequency = frequency;
         this.reports = reports;
         this.trend = trend;
+        this.numerator = numerator;
+        this.denominator = denominator;
+        this.additive = additive;
+        this.categorized = categorized;
     }
 
     public String getName() {
@@ -102,4 +119,35 @@ public class IndicatorDto implements Serializable {
         this.trend = trend;
     }
 
+    public Integer getNumerator() {
+        return numerator;
+    }
+
+    public void setNumerator(Integer numerator) {
+        this.numerator = numerator;
+    }
+
+    public Integer getDenominator() {
+        return denominator;
+    }
+
+    public void setDenominator(Integer denominator) {
+        this.denominator = denominator;
+    }
+
+    public Boolean isAdditive() {
+        return additive;
+    }
+
+    public void setAdditive(Boolean additive) {
+        this.additive = additive;
+    }
+
+    public Boolean isCategorized() {
+        return categorized;
+    }
+
+    public void setCategorized(Boolean categorized) {
+        this.categorized = categorized;
+    }
 }
