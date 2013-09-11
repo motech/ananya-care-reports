@@ -372,7 +372,7 @@ public class XmlIndicatorParser {
         }
         dwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
         for (SelectColumn selectColumn: dwQuery.getSelectColumns()) {
-            dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn, null));
+            dwQueryEntity.getSelectColumns().add(prepareSelectColumn(selectColumn, null, dwQueryEntity));
         }
         if (dwQuery.getCombineWith() != null) {
             dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
@@ -403,11 +403,12 @@ public class XmlIndicatorParser {
         return false;
     }
 
-    private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn, String defaultTableName) {
+    private SelectColumnEntity prepareSelectColumn(SelectColumn selectColumn, String defaultTableName, DwQueryEntity dwQueryEntity) {
         if (StringUtils.isEmpty(selectColumn.getTableName())) {
             selectColumn.setTableName(defaultTableName);
         }
         SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
+        selectColumnEntity.setDwQuery(dwQueryEntity);
         selectColumnEntity.setFunctionName(selectColumn.getAggregation());
         Map<String, Object> findBy = new HashMap<>();
         findBy.put("name", selectColumn.getFieldName());
