@@ -183,29 +183,52 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $scope.showReports();
     };
 
+    $scope.sortFunction = function(a,b) {
+        if ( $scope.findHighestParentArea(a).id != $scope.findHighestParentArea(b).id ) {
+            return a.name.localeCompare(b.name);
+        } else if ( a.level.hierarchyDepth - b.level.hierarchyDepth < 0 ) {
+            return -1;
+        } else if ( a.level.hierarchyDepth - b.level.hierarchyDepth > 0 ) {
+            return 1;
+        } else if ( a.level.hierarchyDepth == b.level.hierarchyDepth ) {
+            return a.name.localeCompare(b.name);
+        }
+    };
+
+    $scope.findHighestParentArea = function(area) {
+        switch (area.level.hierarchyDepth){
+            case 1:
+                return area;
+                break;
+            case 2:
+                return area.parentArea;
+                break;
+            case 3:
+                return area.parentArea.parentArea;
+                break;
+        }
+    };
+
     $scope.fetchTrendAreas = function(area) {
         $http.get('api/dashboards/user-areas/' + area.id)
             .success(function(areas) {
-               areas.sort(function(a, b) {
-                    return a.level.hierarchyDepth - b.level.hierarchyDepth || a.name.localeCompare(b.name);
-               });
-               var arr = Array();
+                areas.sort($scope.sortFunction);
+                    var arr = Array();
+                    $scope.topAreaLevel = areas[0].level.hierarchyDepth;
 
-               $scope.topAreaLevel = areas[0].level.hierarchyDepth;
+                    for (var index=0; index<areas.length; index++) {
+                        var levelDiff = areas[index].level.hierarchyDepth - $scope.topAreaLevel;
+                        var padding = '';
+                        for (var i = 0; i < levelDiff; i++) {
+                            padding += '--- ';
+                        }
 
-               for (var index=0; index<areas.length; index++) {
-                    var levelDiff = areas[index].level.hierarchyDepth - $scope.topAreaLevel;
-                    var padding = '';
-                    for (var i = 0; i < levelDiff; i++) {
-                        padding += '--- ';
+                        areas[index].name = padding + areas[index].name;
+                        arr.push(areas[index]);
                     }
-
-                    areas[index].name = padding + areas[index].name;
-                    arr.push(areas[index]);
-               }
-               $scope.areas = arr;
-               $scope.areaId = areas[0].id;
-        });
+                    $scope.areas = arr;
+                    $scope.areaId = areas[0].id;
+            });
     };
 
     $scope.fetchCurrentUserAreas = function() {
@@ -221,9 +244,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchAreas = function(reportRow) {
         $http.get('api/dashboards/user-areas/' + reportRow[0].indicatorAreaId)
             .success(function(areas) {
-               areas.sort(function(a, b) {
-                   return a.level.hierarchyDepth - b.level.hierarchyDepth || a.name.localeCompare(b.name);
-               });
+               areas.sort($scope.sortFunction);
                var arr = Array();
 
                $scope.topAreaLevel = areas[0].level.hierarchyDepth;
