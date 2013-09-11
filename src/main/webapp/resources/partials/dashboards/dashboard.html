@@ -188,8 +188,8 @@
 <div class="span10 hq-content" ng-show="fullscreenReport">
     <p class="text-center indicator-title">{{fullscreenReport.indicatorName}}</p>
     <div class="indicator-cell">
-        <div class="indicator-cell-header">
-            <div class="row">
+        <div class="row">
+            <div class="span7 offset3">
                 <span class="input-prepend input-date">
                     <span class="add-on"><i class="icon-calendar"></i></span>
                     <input style="width: 90px;" type="date" ng-disabled="!fullscreenReport.computing" ng-model="fullscreenReport.from" bs-datepicker ng-change="reportFromDateChanged(fullscreenReport)" />
