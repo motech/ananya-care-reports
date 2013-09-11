@@ -178,12 +178,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Chart prepareCategorizedChart(IndicatorEntity indicator, String chartType, List<CategorizedValueDto> values) {
-        switch (chartType) {
-            case "clustered bar chart":
-                return chartFactory.createClusteredBarChart(indicator, values);
-            default: throw new IllegalArgumentException("Chart type " + chartType +
-                    " not supported");
-        }
+        return chartFactory.createClusteredChart(indicator, values, ReportType.fromString(chartType));
     }
 
 }

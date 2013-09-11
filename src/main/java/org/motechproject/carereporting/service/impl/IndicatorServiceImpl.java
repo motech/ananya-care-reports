@@ -50,6 +50,7 @@ import org.motechproject.carereporting.domain.dto.SelectColumnDto;
 import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
 import org.motechproject.carereporting.domain.dto.WhereConditionDto;
 import org.motechproject.carereporting.domain.dto.WhereGroupDto;
+import org.motechproject.carereporting.exception.CareNoValuesException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
@@ -610,7 +611,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional
     public List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
                                                                 Date startDate, Date endDate, String category) {
-        return indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId, frequencyId, startDate, endDate, category);
+        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicatorId, areaId,
+                frequencyId, startDate, endDate, category);
+        if (values.size() == 0) {
+            throw new CareNoValuesException();
+        }
+        return values;
     }
 
     @Override

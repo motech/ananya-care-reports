@@ -168,9 +168,15 @@
                                     if (chart.settings.title != undefined) {
                                         delete chart.settings.title;
                                     }
-                                    chart.settings.mouse.trackFormatter = function(obj) {
-                                        return '('+moment(new Date(parseInt(obj.x))).format("L")+', '+obj.y+')';
-                                    };
+                                    if (chart.data.length > 1 && report.reportType.name.toLowerCase() == 'bar chart') {
+                                        chart.settings.mouse.trackFormatter = function(obj) {
+                                            return obj.y;
+                                        };
+                                    } else {
+                                        chart.settings.mouse.trackFormatter = function(obj) {
+                                            return '('+moment(new Date(parseInt(obj.x))).format("MM/DD/YYYY")+', '+obj.y+')';
+                                        };
+                                    }
                                     var drawChart = function(opts) {
                                             var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});
                                             Flotr.draw(element[0], chart.data, o);

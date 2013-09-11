@@ -64,7 +64,7 @@ public class ChartController extends BaseController {
         IndicatorEntity indicator = indicatorService.getIndicatorById(indicatorId);
         List<IndicatorValueEntity> indicatorValues;
         List<IndicatorValueDto> dtos = new ArrayList<IndicatorValueDto>();
-        if ("clustered bar chart".equals(chartType)) {
+        if (indicator.isCategorized()) {
             return reportService.prepareCategorizedChart(indicator, chartType,
                     getCategorizedIndicatorValues(indicatorId, areaId, frequencyId, startDate, endDate));
         } else {

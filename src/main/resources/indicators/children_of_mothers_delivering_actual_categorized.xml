@@ -1,5 +1,5 @@
 <indicator additive="true" categorized="true">
-    <name>Test indicator with clustered bar chart</name>
+    <name>Number of children delivered in the period categorized</name>
     <categories>
         <category name="Birth preparedness plan"/>
     </categories>
@@ -11,7 +11,9 @@
     </owners>
     <trend>3</trend>
     <reports>
-        <report type="Clustered Bar Chart" label-x="Time" label-y="Value" />
+        <report type="Bar Chart" label-x="Time" label-y="Value" />
+        <report type="Line Chart" label-x="Time" label-y="Value" />
+        <report type="Pie Chart" label-x="Time" label-y="Value" />
     </reports>
     <area level="Block"/>
     <default-frequency>Daily</default-frequency>

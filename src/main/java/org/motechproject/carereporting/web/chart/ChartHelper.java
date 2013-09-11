@@ -40,6 +40,21 @@ public final class ChartHelper {
         return new double[] {startTime - delta, endTime + delta};
     }
 
+    public static double[] getMinAndMaxMarginFromValueCategorized(List<CategorizedValueDto> values, int percent, boolean findMin) {
+        double min = Double.MAX_VALUE;
+        double max = 0;
+        for (CategorizedValueDto categorizedValue : values) {
+            double[] categoryMinAndMax = getMinAndMaxMarginFromValue(categorizedValue.getValues(), percent, findMin);
+            if (min > categoryMinAndMax[0]) {
+                min = categoryMinAndMax[0];
+            }
+            if (max < categoryMinAndMax[1]) {
+                max = categoryMinAndMax[1];
+            }
+        }
+        return new double[] {min, max};
+    }
+
     public static double[] getMinAndMaxMarginFromValue(List<IndicatorValueDto> values, int percent, boolean findMin) {
         double min = values.get(0).getValue().doubleValue();
         double max = values.get(0).getValue().doubleValue();
@@ -65,10 +80,16 @@ public final class ChartHelper {
         return new double[] {findMin ? min - delta : 0, max + delta};
     }
 
-    public static double getBarWidthForCategorizedChart(List<CategorizedValueDto> values) {
-        double firstToLast =
-                values.get(0).getValues().get(values.get(0).getValues().size() - 1).getDate().getTime() -
-                        values.get(0).getValues().get(0).getDate().getTime();
+    public static double getBarWidthForCategorizedChart(List<CategorizedValueDto> values, double xMinAndMax[]) {
+        double firstToLast;
+
+        if (values.get(0).getValues().size() == 1) {
+            firstToLast = (xMinAndMax[1] - xMinAndMax[0]) / 2;
+        } else {
+            firstToLast =
+                    values.get(0).getValues().get(values.get(0).getValues().size() - 1).getDate().getTime() -
+                            values.get(0).getValues().get(0).getDate().getTime();
+        }
 
         return firstToLast / values.get(0).getValues().size() / 2;
     }

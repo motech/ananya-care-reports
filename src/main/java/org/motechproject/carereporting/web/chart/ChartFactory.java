@@ -6,7 +6,6 @@ import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.dto.CategorizedValueDto;
 import org.motechproject.carereporting.domain.dto.IndicatorValueDto;
 import org.motechproject.carereporting.domain.types.ReportType;
-import org.motechproject.carereporting.exception.CareNoValuesException;
 import org.motechproject.carereporting.service.ReportService;
 import org.motechproject.carereporting.web.chart.builder.AxisBuilder;
 import org.motechproject.carereporting.web.chart.builder.BarsBuilder;
@@ -14,7 +13,6 @@ import org.motechproject.carereporting.web.chart.builder.ChartBuilder;
 import org.motechproject.carereporting.web.chart.builder.GridBuilder;
 import org.motechproject.carereporting.web.chart.builder.LegendBuilder;
 import org.motechproject.carereporting.web.chart.builder.MouseBuilder;
-import org.motechproject.carereporting.web.chart.builder.ParamsBuilder;
 import org.motechproject.carereporting.web.chart.builder.PieBuilder;
 import org.motechproject.carereporting.web.chart.builder.SelectionBuilder;
 import org.motechproject.carereporting.web.chart.builder.SerieBuilder;
@@ -55,10 +53,6 @@ public final class ChartFactory {
     }
 
     public Chart createLineOrBarChart(IndicatorEntity indicator, List<IndicatorValueDto> values, ReportType type) {
-        if (values.size() == 0) {
-            throw new CareNoValuesException();
-        }
-
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
                 type, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
@@ -104,10 +98,6 @@ public final class ChartFactory {
     }
 
     public Chart createPieChart(IndicatorEntity indicator, List<IndicatorValueDto> values) {
-        if (values.size() == 0) {
-            throw new CareNoValuesException();
-        }
-
         BigDecimal indicatorNumeratorsCombined = BigDecimal.ZERO;
         BigDecimal indicatorDenominatorsCombined = BigDecimal.ZERO;
         for (IndicatorValueDto value : values) {
@@ -147,12 +137,23 @@ public final class ChartFactory {
                         .position("s"));
     }
 
-    public Chart createClusteredBarChart(IndicatorEntity indicator, List<CategorizedValueDto> values) {
+    public Chart createClusteredChart(IndicatorEntity indicator, List<CategorizedValueDto> values, ReportType type) {
         double[] xMinAndMax = ChartHelper.getMinAndMaxMarginFromDateCategorized(values);
-        double barWidth = ChartHelper.getBarWidthForCategorizedChart(values);
+
+        double [] yMinAndMax = null;
+        if (ReportType.LineChart.equals(type)) {
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, 3, true);
+        } else if (ReportType.BarChart.equals(type)) {
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, PERCENT, false);
+        }
+
+        double barWidth = 0;
+        if (ReportType.BarChart.equals(type)) {
+            barWidth = ChartHelper.getBarWidthForCategorizedChart(values, xMinAndMax);
+        }
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
-                ReportType.ClusteredBarChart, indicator.getId());
+                ReportType.BarChart, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
         String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();
 
@@ -163,38 +164,80 @@ public final class ChartFactory {
             for (IndicatorValueDto value : categorizedValue.getValues()) {
                 Date date = DateUtils.addHours(value.getDate(), -HOURS);
                 serieBuilder.point(BigDecimal.valueOf(date.getTime() + xPosition), value.getValue());
+                serieBuilder.label(categorizedValue.getCategoryName());
             }
             xPosition = xPosition > 0 ? -xPosition : xPosition + barWidth;
             serieBuilders.add(serieBuilder);
         }
 
         ChartBuilder chart = createTemplateChart(indicator.getName())
-                .xAxis(new AxisBuilder()
-                        .title(labelX)
-                        .timeformat("%m/%d/%y")
-                        .mode(AxisBuilder.Mode.TIME)
-                        .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
-                        .min(xMinAndMax[0])
-                        .max(xMinAndMax[1]))
-                .yAxis(new AxisBuilder()
-                        .title(labelY)
-                        .min(0))
-                .grid(new GridBuilder()
-                        .minorVerticalLines(true))
-                .bars(new BarsBuilder()
+                .legend(new LegendBuilder()
                         .show(true)
-                        .barWidth(barWidth))
-                .markers(new ParamsBuilder().param("show", true))
-                .mouse(new MouseBuilder().track(false))
+                        .backgroundColor("#FFFFFF")
+                        .labelBoxMargin(0)
+                        .labelBoxBorderColor("#FFFFFF")
+                        .margin(2)
+                        .backgroundOpacity(0))
                 .selection(new SelectionBuilder()
                         .fps(SELECTION_FPS)
                         .mode(SelectionBuilder.Mode.X));
+
+        createGrid(chart, type);
+        createXAxis(chart, type, xMinAndMax, labelX);
+        createYAxis(chart, type, yMinAndMax, labelY);
+        createBarsOrPie(chart, type, barWidth);
 
         for (SerieBuilder serieBuilder : serieBuilders) {
             chart.serie(serieBuilder);
         }
 
         return chart.build();
+    }
+
+    private void createGrid(ChartBuilder chart, ReportType type) {
+        GridBuilder gridBuilder = new GridBuilder();
+        if (type.equals(ReportType.PieChart)) {
+            gridBuilder
+                    .horizontalLines(false)
+                    .verticalLines(false);
+        }
+        chart.grid(gridBuilder
+                .minorVerticalLines(true));
+    }
+
+    private void createXAxis(ChartBuilder chart, ReportType type, double[] xMinAndMax, String labelX) {
+        AxisBuilder axisBuilder = new AxisBuilder();
+        if (type.equals(ReportType.PieChart)) {
+            axisBuilder.showLabels(false);
+        }
+        chart.xAxis(axisBuilder
+                .title(labelX)
+                .timeformat("%m/%d/%y")
+                .mode(AxisBuilder.Mode.TIME)
+                .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
+                .min(xMinAndMax[0])
+                .max(xMinAndMax[1]));
+    }
+
+    private void createYAxis(ChartBuilder chart, ReportType type, double[] yMinAndMax, String labelY) {
+        if (type.equals(ReportType.PieChart)) {
+            chart.yAxis(new AxisBuilder().showLabels(false));
+        } else {
+            chart.yAxis(new AxisBuilder()
+                    .title(labelY)
+                    .min(yMinAndMax[0]));
+        }
+    }
+
+
+    private void createBarsOrPie(ChartBuilder chart, ReportType type, double barWidth) {
+        if (ReportType.BarChart.equals(type)) {
+            chart.bars(new BarsBuilder()
+                    .show(true)
+                    .barWidth(barWidth));
+        } else if (ReportType.PieChart.equals(type)) {
+            chart.pie(new PieBuilder().show(true));
+        }
     }
 
 }
