@@ -34,5 +34,8 @@ public interface FormsService {
     Set<ComputedFieldEntity> getAllComputedFieldsByFormId(Integer formId);
 
     FormListDto getAllFormsFromDto();
+
+    Set<FormEntity> getAllTables();
+
 }
 

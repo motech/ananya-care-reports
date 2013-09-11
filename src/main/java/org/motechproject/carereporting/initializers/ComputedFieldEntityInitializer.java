@@ -31,7 +31,7 @@ public class ComputedFieldEntityInitializer {
     @Transactional(readOnly = false)
     public void loadFormsFromDB() {
         Set<String> formTables = formsService.getTables();
-        Set<FormEntity> formEntities = formsService.getAllForms();
+        Set<FormEntity> formEntities = formsService.getAllTables();
         Map<String, FormEntity> newFormEntities = new HashMap<>();
 
         for (String formTable : formTables) {

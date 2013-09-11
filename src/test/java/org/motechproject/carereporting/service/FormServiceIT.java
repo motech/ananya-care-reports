@@ -2,6 +2,7 @@ package org.motechproject.carereporting.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.carereporting.domain.FormEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -17,15 +18,15 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = "classpath:testContext.xml")
 public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
-    private static final Integer EXPETED_NUMBER_OF_TABLES = 34;
-    private static final Integer EXPECTED_NUMBER_OF_COLUMNS = 11;
+    private static final int EXPETED_NUMBER_OF_TABLES = 34;
+    private static final int EXPETED_NUMBER_OF_FORMS = 27;
+    private static final int EXPECTED_NUMBER_OF_COLUMNS = 11;
 
     @Autowired
     private FormsService formsService;
 
     @Test
     public void testGetTables() {
-        int tablesNumber = EXPETED_NUMBER_OF_TABLES;
         String[] tab = new String[]{
                 "cf_child_form",
                 "bp_form",
@@ -55,14 +56,13 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
         };
         Set<String> tables = formsService.getTables();
 
-        assertEquals(tablesNumber, tables.size());
+        assertEquals(EXPETED_NUMBER_OF_TABLES, tables.size());
         assertThat(tables, hasItems(tab));
     }
 
     @Test
     public void testGetTableColumns() {
         String tableName = "abort_form";
-        int columnsNumber = EXPECTED_NUMBER_OF_COLUMNS;
         String[] tab = new String[] {
                 "date_aborted",
                 "birth_status",
@@ -75,7 +75,7 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
         Set<String> columns = formsService.getTableColumns(tableName);
 
-        assertEquals(columnsNumber, columns.size());
+        assertEquals(EXPECTED_NUMBER_OF_COLUMNS, columns.size());
         assertThat(columns, hasItems(tab));
     }
 
@@ -88,4 +88,19 @@ public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests
 
         assertEquals(foreignKey, result);
     }
+
+    @Test
+    public void testGetAllTables() {
+        Set<FormEntity> formEntities = formsService.getAllTables();
+
+        assertEquals(EXPETED_NUMBER_OF_TABLES, formEntities.size());
+    }
+
+    @Test
+    public void testGetAllForms() {
+        Set<FormEntity> formEntities = formsService.getAllForms();
+
+        assertEquals(EXPETED_NUMBER_OF_FORMS, formEntities.size());
+    }
+
 }

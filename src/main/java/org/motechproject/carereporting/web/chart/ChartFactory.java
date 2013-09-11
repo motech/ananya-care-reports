@@ -147,7 +147,7 @@ public final class ChartFactory {
         double barWidth = ChartHelper.getBarWidthForCategorizedChart(values);
 
         ReportEntity reportEntity = reportService.getReportByTypeAndIndicatorId(
-                ReportType.ClusterdBarChart, indicator.getId());
+                ReportType.ClusteredBarChart, indicator.getId());
         String labelX = (reportEntity.getLabelX() == null) ? "" : reportEntity.getLabelX();
         String labelY = (reportEntity.getLabelY() == null) ? "" : reportEntity.getLabelY();
 

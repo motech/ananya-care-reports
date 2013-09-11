@@ -160,6 +160,11 @@ public class FormsServiceImpl implements FormsService {
         return new FormListDto(motherForms, childForms, otherForms);
     }
 
+    @Override
+    public Set<FormEntity> getAllTables() {
+        return formDao.getAll();
+    }
+
 }
 
 
