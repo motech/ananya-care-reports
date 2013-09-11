@@ -243,8 +243,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
                 $location.path( "/indicators" );
-        }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+        }).error(function(response, status, headers, config) {
+                $errorService.apiError($scope, response);
         });
     };
 
@@ -252,6 +252,35 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 
 care.controller('dateDepthController', function($scope, $http, $dialog, $location, $errorService) {
     $scope.title = $scope.msg('menu.calculator.frequency');
+
+    $scope.dateDepth = [];
+
+        $scope.fetchDateDepth = function() {
+            $http({
+                url: "api/indicator/calculator/dateDepth",
+                method: "GET",
+            }).success(function(dateDepth) {
+                 $scope.dateDepth = moment.utc(dateDepth, "MM-DD-YYYY").toDate();
+            }).error(function(response) {
+                $errorService.genericError($scope, 'indicatorCalculator.dateDepth.error.cannotLoadTime');
+            });
+        };
+
+        $scope.fetchDateDepth();
+
+        $scope.saveDateDepth = function() {
+            $http({
+                url: "api/indicator/calculator/dateDepth",
+                method: "PUT",
+                headers: { 'Content-Type': 'application/json' },
+                data: $scope.dateDepth,
+                dialog: this
+            }).success(function(data, status, headers, config) {
+                $dialog.messageBox("Date depth saved", "Saved successfully.", [{label: 'Ok', cssClass: 'btn'}]).open();
+            }).error(function(response, status, headers, config) {
+                $errorService.apiError($scope, response);
+            });
+        };
 });
 
 care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService) {
@@ -280,37 +309,9 @@ care.controller('frequencyController', function($scope, $http, $dialog, $locatio
             dialog: this
         }).success(function(data, status, headers, config) {
             config.dialog.dismiss();
-        }).error(function(data, status, headers, config) {
-            $errorService.genericError($scope, 'indicatorCalculator.calculationTime.error.cannotSaveTime');
+        }).error(function(response, status, headers, config) {
+            $errorService.apiError($scope, response);
         });
     };
 
-    $scope.dateDepth = [];
-
-    $scope.fetchDateDepth = function() {
-        $http({
-            url: "api/indicator/calculator/dateDepth",
-            method: "GET",
-        }).success(function(dateDepth) {
-             $scope.dateDepth = moment.utc(dateDepth, "MM-DD-YYYY").toDate();
-        }).error(function() {
-            $errorService.genericError($scope, 'indicatorCalculator.dateDepth.error.cannotLoadTime');
-        });
-    };
-
-    $scope.fetchDateDepth();
-
-    $scope.saveDateDepth = function() {
-        $http({
-            url: "api/indicator/calculator/dateDepth",
-            method: "PUT",
-            headers: { 'Content-Type': 'application/json' },
-            data: $scope.dateDepth,
-            dialog: this
-        }).success(function(data, status, headers, config) {
-            config.dialog.dismiss();
-        }).error(function(data, status, headers, config) {
-            $errorService.genericError($scope, 'indicatorCalculator.dateDepth.error.cannotSaveTime');
-        });
-    };
 });

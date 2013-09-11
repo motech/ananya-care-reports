@@ -10,8 +10,8 @@ care.controller('categoriesController', function($scope, $http, $dialog, $routeP
             $http.get('api/indicator/category/' + $scope.categoryId)
                 .success(function(cat) {
                     $scope.category = cat;
-                }).error(function() {
-                    $dialog.messageBox("Error", $scope.msg('categories.error.cannotLoadCategory'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                }).error(function(response) {
+                    $errorService.apiError($scope, response);
                 });
         };
 
@@ -19,8 +19,8 @@ care.controller('categoriesController', function($scope, $http, $dialog, $routeP
         $http({method: 'PUT', url: 'api/indicator/category' + (category.id !== undefined ? ('/' + category.id) : ''), data: category})
             .success(function(response) {
                 $location.path( "/indicators/categories" );
-            }).error(function(data, status, headers, config) {
-                $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            }).error(function(response, status, headers, config) {
+                $errorService.apiError($scope, response);
             });
     };
 
@@ -40,7 +40,7 @@ care.controller('categoriesListController', function($scope, $http, $dialog, $ro
         $http.get('api/indicator/category').success(function(category) {
             $scope.category = category;
         }).error(function(response) {
-            $dialog.messageBox($scope.msg('common.error'), $scope.msg('categories.error.cannotLoadCategories'), [{label: 'Ok', cssClass: 'btn'}]).open();
+            $errorService.apiError($scope, response);
         });
     };
 

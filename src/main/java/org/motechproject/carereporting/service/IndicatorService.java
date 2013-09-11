@@ -33,7 +33,6 @@ public interface IndicatorService {
 
     IndicatorEntity getIndicatorById(Integer id);
 
-    @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)

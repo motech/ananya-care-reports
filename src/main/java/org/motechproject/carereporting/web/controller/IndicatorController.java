@@ -11,14 +11,17 @@ import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.QueryJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
+import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
+import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.xml.XmlIndicatorParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.UnmarshalException;
 import java.text.SimpleDateFormat;
@@ -47,6 +51,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private CronService cronService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private XmlIndicatorParser xmlIndicatorParser;
@@ -161,7 +168,6 @@ public class IndicatorController extends BaseController {
     @ResponseBody
     @Transactional
     public String getIndicatorCategoryList() {
-
         return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
                 indicatorService.getAllIndicatorCategories());
     }
@@ -170,6 +176,7 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
     public String getIndicatoryCategory(@PathVariable Integer indicatorCategoryId) {
         return this.writeAsString(IndicatorJsonView.IndicatorDetails.class, indicatorService.getIndicatorCategoryById(indicatorCategoryId));
     }
@@ -177,12 +184,12 @@ public class IndicatorController extends BaseController {
     @RequestMapping(value = "/category", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
     public void createNewIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
-
         indicatorService.createNewIndicatorCategory(indicatorCategoryEntity);
     }
 
@@ -190,6 +197,7 @@ public class IndicatorController extends BaseController {
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = false)
+    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
     public void updateIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
             BindingResult bindingResult, @PathVariable Integer indicatorCategoryId) {
         if (bindingResult.hasErrors()) {
@@ -237,9 +245,10 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttrs) {
+    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttrs, HttpServletRequest request) {
         try {
             IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
+            checkIndicatorOwnerPermissions(indicatorEntity, request);
             indicatorService.createNewIndicator(indicatorEntity);
             return "redirect:/#/indicators";
         } catch (UnmarshalException e) {
@@ -259,6 +268,22 @@ public class IndicatorController extends BaseController {
             redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/#/indicators/upload-xml";
+    }
+
+    private void checkIndicatorOwnerPermissions(IndicatorEntity indicatorEntity, HttpServletRequest request) {
+        if (!canUserCreateIndicators(request)) {
+            if (!isCurrentUserOwnerOfIndicator(indicatorEntity) || (indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0)) {
+                throw new CareRuntimeException("You don't have permission to create this kind of indicator.");
+            }
+        }
+    }
+
+    private boolean isCurrentUserOwnerOfIndicator(IndicatorEntity indicatorEntity) {
+        return indicatorEntity.getOwner().equals(userService.getCurrentlyLoggedUser());
+    }
+
+    private boolean canUserCreateIndicators(HttpServletRequest request) {
+        return request.isUserInRole("CAN_CREATE_INDICATORS");
     }
 
     @RequestMapping(value = "{indicatorId}/export/caselistreport", method = RequestMethod.GET)
