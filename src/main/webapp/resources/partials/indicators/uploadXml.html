@@ -3,7 +3,7 @@
     <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
     <div class="span10 hq-content">
         <form method="post" action="api/indicator/upload" enctype="multipart/form-data">
-            <input type="file" name="file" />
+            <input type="file" name="file" multiple />
             <input type="submit" value="{{msg('indicators.uploadXml.submit')}}" />
         </form>
         <p ng-show="error != undefined">{{error}}</p>

@@ -245,11 +245,13 @@ public class IndicatorController extends BaseController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String uploadIndicatorXml(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttrs, HttpServletRequest request) {
+    public String uploadIndicatorXml(@RequestParam("file") MultipartFile[] files, RedirectAttributes redirectAttrs, HttpServletRequest request) {
         try {
-            IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
-            checkIndicatorOwnerPermissions(indicatorEntity, request);
-            indicatorService.createNewIndicator(indicatorEntity);
+            for (MultipartFile file : files) {
+                IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
+                checkIndicatorOwnerPermissions(indicatorEntity, request);
+                indicatorService.createNewIndicator(indicatorEntity);
+            }
             return "redirect:/#/indicators";
         } catch (UnmarshalException e) {
             String message;
