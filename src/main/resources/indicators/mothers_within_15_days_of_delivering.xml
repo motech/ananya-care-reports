@@ -11,6 +11,7 @@
     <trend>3</trend>
     <reports>
         <report type="Line Chart" label-x="Time" label-y="Value" />
+        <report type="Bar Chart" label-x="Time" label-y="Value" />
     </reports>
     <area level="District"/>
     <default-frequency>Daily</default-frequency>

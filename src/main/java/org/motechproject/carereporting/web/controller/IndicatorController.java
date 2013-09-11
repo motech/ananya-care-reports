@@ -258,7 +258,7 @@ public class IndicatorController extends BaseController {
             Logger.getLogger(IndicatorController.class).error("", e);
             redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/#/indicator/upload-xml";
+        return "redirect:/#/indicators/upload-xml";
     }
 
     @RequestMapping(value = "{indicatorId}/export/caselistreport", method = RequestMethod.GET)

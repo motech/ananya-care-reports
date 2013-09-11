@@ -325,7 +325,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
                 var category = $scope.indicatorCategories[c];
                 var key = 'category_' + category.name;
-                $('.tabbable').find('a[data-tab-caption="' + category.name + '"]').addClass('alert alert-info tab-trend');
                 var indicators = $scope.getIndicatorsForCategory(category);
                 for (var i = 0; i < indicators.length; i++) {
                     if ($scope.trendPerCategory[key] === undefined) {
@@ -340,17 +339,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         $scope.trendPerCategory[key].negative++;
                     } else if (trend > 0) {
                         $scope.trendPerCategory[key].positive++;
-                    }
-                }
-
-                var trend = $scope.trendPerCategory[key];
-                if (trend !== undefined) {
-                    if (trend.positive > trend.negative) {
-                        $('.tabbable').find('a[data-tab-caption="' + category.name + '"]')
-                            .removeClass('alert-info').addClass('alert-success');
-                    } else if (trend.positive < trend.negative) {
-                        $('.tabbable').find('a[data-tab-caption="' + category.name + '"]')
-                            .removeClass('alert-info').addClass('alert-danger');
                     }
                 }
             }

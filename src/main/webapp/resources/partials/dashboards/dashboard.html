@@ -12,7 +12,7 @@
         <div class="tabbable">
             <ul class="nav nav-tabs">
                 <li ng-repeat="dashboard in dashboards" ng-class="{ active: $index == defaultDashboard }">
-                    <a class="alert" data-tab-caption="{{dashboard.name}}" href="#tab_{{$index + 1}}" data-toggle="tab" ng-click="tabChanged(dashboard)">{{dashboard.name}}</a>
+                    <a class="alert-info" data-tab-caption="{{dashboard.name}}" href="#tab_{{$index + 1}}" data-toggle="tab" ng-click="tabChanged(dashboard)">{{dashboard.name}}</a>
                 </li>
                 <span ng-click="setDefaultDashboard()" class="btn btn-inverse pull-right">{{msg('dashboards.default')}}</span>
             </ul>
