@@ -158,8 +158,8 @@
                             if(report.frequencyId != undefined && report.areaId != undefined) {
                                 var url = 'api/chart?chartType=' + report.reportType.name.toLowerCase()
                                     + '&indicatorId=' + report.indicatorId
-                                    + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
-                                    + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
+                                    + '&startDate=' + moment(report.from).format("L")
+                                    + '&endDate=' + moment(report.to).format("L")
                                     + "&frequencyId=" + report.frequencyId
                                     + "&areaId=" + report.areaId;
 
@@ -169,7 +169,7 @@
                                         delete chart.settings.title;
                                     }
                                     chart.settings.mouse.trackFormatter = function(obj) {
-                                        return '('+moment(new Date(parseInt(obj.x))).format("MM/DD/YYYY")+', '+obj.y+')';
+                                        return '('+moment(new Date(parseInt(obj.x))).format("L")+', '+obj.y+')';
                                     };
                                     var drawChart = function(opts) {
                                             var o = Flotr._.extend(Flotr._.clone(chart.settings), opts || {});

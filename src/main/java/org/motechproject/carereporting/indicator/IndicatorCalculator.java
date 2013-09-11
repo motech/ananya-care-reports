@@ -43,7 +43,7 @@ public class IndicatorCalculator {
 
             if (!indicator.getNumerator().getHasPeriodCondition() && !indicator.getAdditive()) {
                 try {
-                    start = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"dd/MM/yyyy"});
+                    start = DateUtils.parseDate(DateResolver.START_DATE, new String[]{"MM/dd/yyyy"});
                 } catch (ParseException e) {
                     LOG.error("", e);
                 }

@@ -615,7 +615,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         if (indicator.getTrend() == null) {
             throw new IllegalArgumentException("Cannot calculate trend value for indicator with null trend.");
         }
-        Set<AreaEntity> areas = areaService.getAllAreasByParentAreaId(parentAreaId);
+        Set<AreaEntity> areas = areaService.getAreasByParentAreaId(parentAreaId);
 
         Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
         for (AreaEntity area: areas) {

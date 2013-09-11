@@ -345,8 +345,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         var startDate = $scope.startDate.format('L'),
             endDate = $scope.endDate.format('L'),
             url;
-        url = 'api/trend?startDate=' + moment(startDate).format("DD/MM/YYYY") +
-                '&endDate=' + moment(endDate).format("DD/MM/YYYY") +
+        url = 'api/trend?startDate=' + moment(startDate).format("L") +
+                '&endDate=' + moment(endDate).format("L") +
                 '&areaId=' + $scope.areaId +
                 '&frequencyId=' + $scope.frequencyId;
         $http.get(url)
@@ -539,8 +539,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.exportToCsv = function(report) {
         var indicatorId = report.indicatorId;
         var url = 'api/chart/data/export/?indicatorId=' + indicatorId
-            + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
-            + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
+            + '&startDate=' + moment(report.from).format("L")
+            + '&endDate=' + moment(report.to).format("L")
             + '&frequencyId=' + report.frequencyId;
 
         if (!isNaN(report.areaId) && isFinite(report.areaId)) {
@@ -552,8 +552,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.exportCaseListReportToCsv = function(report) {
             var indicatorId = report.indicatorId;
             var url = 'api/indicator/' + indicatorId + '/export/caselistreport'
-                + '?fromDate=' + moment(report.from).format("DD/MM/YYYY")
-                + '&toDate=' + moment(report.to).format("DD/MM/YYYY")
+                + '?fromDate=' + moment(report.from).format("L")
+                + '&toDate=' + moment(report.to).format("L")
                 + '&areaId=' + report.areaId;
 
             window.open(url);
@@ -579,8 +579,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchChartData = function(report) {
         var indicatorId = report.indicatorId;
         var url = 'api/chart/data/?indicatorId=' + indicatorId
-            + '&startDate=' + moment(report.from).format("DD/MM/YYYY")
-            + '&endDate=' + moment(report.to).format("DD/MM/YYYY")
+            + '&startDate=' + moment(report.from).format("L")
+            + '&endDate=' + moment(report.to).format("L")
             + '&frequencyId=' + report.frequencyId;
 
         if (!isNaN(report.areaId) && isFinite(report.areaId)) {

@@ -23,6 +23,8 @@ import java.util.Map;
 @Controller
 public class MapReportController extends BaseController {
 
+    private static final String TOP_LEVEL_AREA_NAME = "BIHAR";
+
     @Autowired
     private IndicatorService indicatorService;
 
@@ -44,7 +46,7 @@ public class MapReportController extends BaseController {
             AreaEntity area = areaService.getByName(state);
             areaId = area != null ? area.getId() : user.getArea().getId();
         } else {
-            areaId = user.getArea().getId();
+            areaId = areaService.getByName(TOP_LEVEL_AREA_NAME).getId();
         }
         return indicatorService.getIndicatorTrendForChildAreas(indicatorId, areaId, frequencyId, startDate, endDate);
     }
