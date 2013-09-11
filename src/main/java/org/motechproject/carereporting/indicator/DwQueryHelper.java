@@ -90,10 +90,12 @@ public class DwQueryHelper {
     }
 
     private GroupBy prepareGroupBy(GroupedByEntity groupByEntity) {
-        return new GroupByConditionBuilder()
-                .withField(groupByEntity.getTableName(), groupByEntity.getFieldName())
-                .withHaving(prepareHaving(groupByEntity.getHaving(), groupByEntity.getTableName(), groupByEntity.getFieldName()))
-                .build();
+        GroupByConditionBuilder builder = new GroupByConditionBuilder()
+                .withField(groupByEntity.getTableName(), groupByEntity.getFieldName());
+        if (groupByEntity.getHaving() != null) {
+            builder.withHaving(prepareHaving(groupByEntity.getHaving(), groupByEntity.getTableName(), groupByEntity.getFieldName()));
+        }
+        return builder.build();
     }
 
     private HavingConditionBuilder prepareHaving(HavingEntity havingEntity, String tableName, String fieldName) {
