@@ -141,48 +141,6 @@ CREATE TABLE IF NOT EXISTS dashboard_app.computed_field
   CONSTRAINT computed_field_name_uk UNIQUE (form_id , name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.select_column
-(
-  select_column_id serial NOT NULL,
-  computed_field_id integer,
-  function character varying,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  table_name character varying,
-  null_value character varying,
-  CONSTRAINT select_column_pk PRIMARY KEY (select_column_id),
-  CONSTRAINT computed_field_fk FOREIGN KEY (computed_field_id)
-      REFERENCES dashboard_app.computed_field(computed_field_id)
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app."having"
-(
-  having_id serial NOT NULL,
-  select_column_id integer NOT NULL,
-  operator character varying NOT NULL,
-  value character varying NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT having_pk PRIMARY KEY (having_id ),
-  CONSTRAINT having_select_column_id FOREIGN KEY (select_column_id)
-      REFERENCES dashboard_app.select_column (select_column_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.grouped_by
-(
-  grouped_by_id serial NOT NULL,
-  having_id integer,
-  table_name character varying NOT NULL,
-  field_name character varying NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT grouped_by_pk PRIMARY KEY (grouped_by_id ),
-  CONSTRAINT grouped_by_having_id FOREIGN KEY (having_id)
-      REFERENCES dashboard_app."having" (having_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL
-);
-
 CREATE TABLE IF NOT EXISTS dashboard_app.where_group
 (
   where_group_id serial NOT NULL,
@@ -218,6 +176,49 @@ CREATE TABLE IF NOT EXISTS dashboard_app.where_group_where_group
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS dashboard_app.select_column
+(
+  select_column_id serial NOT NULL,
+  computed_field_id integer,
+  function character varying,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  table_name character varying,
+  null_value character varying,
+  dw_query_id integer not null,
+  CONSTRAINT select_column_pk PRIMARY KEY (select_column_id),
+  CONSTRAINT computed_field_fk FOREIGN KEY (computed_field_id)
+      REFERENCES dashboard_app.computed_field(computed_field_id)
+);
+
+CREATE TABLE IF NOT EXISTS dashboard_app."having"
+(
+  having_id serial NOT NULL,
+  select_column_id integer NOT NULL,
+  operator character varying NOT NULL,
+  value character varying NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT having_pk PRIMARY KEY (having_id ),
+  CONSTRAINT having_select_column_id FOREIGN KEY (select_column_id)
+      REFERENCES dashboard_app.select_column (select_column_id) MATCH FULL
+      ON UPDATE SET NULL ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS dashboard_app.grouped_by
+(
+  grouped_by_id serial NOT NULL,
+  having_id integer,
+  table_name character varying NOT NULL,
+  field_name character varying NOT NULL,
+  creation_date timestamp without time zone,
+  modification_date timestamp without time zone,
+  CONSTRAINT grouped_by_pk PRIMARY KEY (grouped_by_id ),
+  CONSTRAINT grouped_by_having_id FOREIGN KEY (having_id)
+      REFERENCES dashboard_app."having" (having_id) MATCH FULL
+      ON UPDATE SET NULL ON DELETE SET NULL
+);
+
 CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
 (
   dw_query_id serial NOT NULL,
@@ -228,14 +229,25 @@ CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
   where_group_id integer,
   has_period_condition boolean,
   table_name character varying(100),
+  parent_id integer,
+  name character varying(100),
   CONSTRAINT dw_query_pk PRIMARY KEY (dw_query_id ),
   CONSTRAINT dw_query_grouped_by_id FOREIGN KEY (grouped_by_id)
       REFERENCES dashboard_app.grouped_by (grouped_by_id) MATCH FULL
       ON UPDATE SET NULL ON DELETE SET NULL,
   CONSTRAINT dw_query_where_group_id FOREIGN KEY (where_group_id)
       REFERENCES dashboard_app.where_group (where_group_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL
+      ON UPDATE SET NULL ON DELETE SET NULL,
+  CONSTRAINT dw_query_parent_id FOREIGN KEY (parent_id)
+      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
+  CONSTRAINT dw_query_uk UNIQUE (name)
 );
+
+ALTER TABLE dashboard_app.select_column
+    ADD CONSTRAINT select_column_dw_query_id FOREIGN KEY (dw_query_id)
+        REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
+        ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
 
 CREATE TABLE IF NOT EXISTS dashboard_app.combination
 (
@@ -267,19 +279,6 @@ CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_condition
       ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT dw_query_condition_dw_query_id FOREIGN KEY (dw_query_id)
       REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_select_column
-(
-  select_column_id integer NOT NULL,
-  dw_query_id integer NOT NULL,
-  CONSTRAINT dw_query_select_column_pk PRIMARY KEY (select_column_id , dw_query_id ),
-  CONSTRAINT dw_query_select_column_dw_query_id FOREIGN KEY (dw_query_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT dw_query_select_column_select_column_id FOREIGN KEY (select_column_id)
-      REFERENCES dashboard_app.select_column (select_column_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 

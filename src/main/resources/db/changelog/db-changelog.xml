@@ -11,24 +11,4 @@
         </sql>
     </changeSet>
 
-    <changeSet id="CARE #25" author="Lech Różański">
-        <sql>
-            alter table dashboard_app.dw_query
-                add column parent_id integer,
-                add column name character varying(100),
-                add constraint dw_query_parent_id foreign key (parent_id)
-                    references dashboard_app.dw_query (dw_query_id) match full
-                    on update cascade on delete cascade not deferrable,
-                add constraint dw_query_uk unique (name);
-
-            drop table dashboard_app.dw_query_select_column;
-
-            alter table dashboard_app.select_column
-                add column dw_query_id integer not null,
-                add constraint select_column_dw_query_id foreign key (dw_query_id)
-                    references dashboard_app.dw_query (dw_query_id) match full
-                    on update cascade on delete cascade not deferrable;
-        </sql>
-    </changeSet>
-
 </databaseChangeLog>

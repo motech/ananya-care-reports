@@ -88,7 +88,8 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     private void createIndicator() {
-        IndicatorDto indicatorDto = new IndicatorDto("name", new HashSet<Integer>(), 1, new HashSet<Integer>(), 1, new HashSet<ReportEntity>(), new BigDecimal(30));
+        IndicatorDto indicatorDto = new IndicatorDto("name", new HashSet<Integer>(), 1, new HashSet<Integer>(), 1,
+                new HashSet<ReportEntity>(), new BigDecimal(30), 1, null, false, false);
         indicatorService.createNewIndicatorFromDto(indicatorDto);
     }
 

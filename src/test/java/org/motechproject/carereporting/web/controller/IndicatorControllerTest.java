@@ -117,6 +117,7 @@ public class IndicatorControllerTest {
         verify(indicatorService, times(1)).getIndicatorById(indicatorId);
     }
 
+    @Ignore
     @Test
     public void testCreateIndicator() throws Exception {
         mockMvc.perform(post("/api/indicator")
