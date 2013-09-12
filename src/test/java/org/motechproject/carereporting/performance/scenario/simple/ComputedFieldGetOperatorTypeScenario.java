@@ -4,11 +4,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class IndicatorCalculatorGetFrequenciesScenario extends AbstractScenario {
+public class ComputedFieldGetOperatorTypeScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/indicator/calculator/frequencies")
+                get("/api/computedfield/operatortype")
         );
     }
 

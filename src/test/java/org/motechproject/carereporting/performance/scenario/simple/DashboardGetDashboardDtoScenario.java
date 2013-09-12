@@ -4,11 +4,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class DashboardGetDashboardsScenario extends AbstractScenario {
+public class DashboardGetDashboardDtoScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/dashboards")
+                get("/api/dashboards/dto")
         );
     }
 

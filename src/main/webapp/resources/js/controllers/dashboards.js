@@ -243,7 +243,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                    var levelDiff = areas[index].level.hierarchyDepth - $scope.topAreaLevel;
                    var padding = '';
                    for (var i = 0; i < levelDiff; i++) {
-                       padding += '-- ';
+                       padding += '--- ';
                    }
 
                    areas[index].name = padding + areas[index].name;

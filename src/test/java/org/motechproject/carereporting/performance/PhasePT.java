@@ -8,15 +8,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
+import org.motechproject.carereporting.performance.scenario.complex.ChartsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineIndicatorScenario;
+import org.motechproject.carereporting.performance.scenario.complex.DefineLanguageScenario;
+import org.motechproject.carereporting.performance.scenario.complex.DefineQueryScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
 import org.motechproject.carereporting.performance.scenario.complex.PerformanceSummaryScenario;
-import org.motechproject.carereporting.performance.scenario.simple.ComplexConditionGetOperatorTypeScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetComputedFieldsWithoutOriginScenario;
-import org.motechproject.carereporting.performance.scenario.simple.DashboardGetDashboardsScenario;
+import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetOperatorTypeScenario;
+import org.motechproject.carereporting.performance.scenario.simple.DashboardGetDashboardDtoScenario;
 import org.motechproject.carereporting.performance.scenario.simple.DashboardGetUserAreasScenario;
 import org.motechproject.carereporting.performance.scenario.simple.FormGetComputedFieldScenario;
 import org.motechproject.carereporting.performance.scenario.simple.FormGetFormScenario;
@@ -26,9 +29,10 @@ import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalc
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDepthDateScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoriesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoryScenario;
-import org.motechproject.carereporting.performance.scenario.simple.IndicatorFilterIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetCreationFormScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetIndicatorsScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetQueriesScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetQueryCreationFormScenario;
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetLanguagesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetMessagesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetPlainMessagesScenario;
@@ -38,7 +42,6 @@ import org.motechproject.carereporting.performance.scenario.simple.ReportExportT
 import org.motechproject.carereporting.performance.scenario.simple.ReportGetChartScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ReportGetDataScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ReportGetTrendScenario;
-import org.motechproject.carereporting.performance.scenario.simple.UserGetLoggedUserAreaScenario;
 import org.motechproject.carereporting.performance.scenario.simple.UserGetLoggedUserLanguageScenario;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.UserService;
@@ -75,7 +78,7 @@ public abstract class PhasePT {
     private static final int PEEK_COEFFICIENT = 4;
     private static final int PARTS = 5;
     private static final int MILLISECONDS_PER_SECOND = 1000;
-    private static final String[] MOCK_AUTHORITIES = {"CAN_CREATE_COMPUTED_FIELDS"};
+    private static final String[] MOCK_AUTHORITIES = {"CAN_CREATE_COMPUTED_FIELDS", "CAN_EDIT_CATEGORIES"};
 
     private long elapsedTime;
     private int reportLookersCount;
@@ -234,20 +237,6 @@ public abstract class PhasePT {
         }
     }
 
-    @Test
-    public void testGetDashboards() throws Exception {
-        runTest(DashboardGetDashboardsScenario.class);
-    }
-
-    @Test
-    public void testGetFormComputedFields() throws Exception {
-        runTest(FormGetComputedFieldScenario.class);
-    }
-
-    @Test
-    public void testGetFormsFromDto() throws Exception {
-        runTest(FormGetFormsFromDtoScenario.class);
-    }
 
     @Test
     public void testGetComputedFields() throws Exception {
@@ -260,7 +249,12 @@ public abstract class PhasePT {
 
     @Test
     public void testGetOperatorTypes() throws Exception {
-        runTest(ComplexConditionGetOperatorTypeScenario.class);
+        runTest(ComputedFieldGetOperatorTypeScenario.class);
+    }
+
+    @Test
+    public void testGetDashboardDto() throws Exception {
+        runTest(DashboardGetDashboardDtoScenario.class);
     }
 
     @Test
@@ -269,8 +263,18 @@ public abstract class PhasePT {
     }
 
     @Test
+    public void testGetFormComputedFields() throws Exception {
+        runTest(FormGetComputedFieldScenario.class);
+    }
+
+    @Test
     public void testGetForm() throws Exception {
         runTest(FormGetFormScenario.class);
+    }
+
+    @Test
+    public void testGetFormsFromDto() throws Exception {
+        runTest(FormGetFormsFromDtoScenario.class);
     }
 
     @Test
@@ -299,13 +303,23 @@ public abstract class PhasePT {
     }
 
     @Test
-    public void testFilterIndicators() throws Exception {
-        runTest(IndicatorFilterIndicatorsScenario.class);
+    public void testGetCreationForm() throws Exception {
+        runTest(IndicatorGetCreationFormScenario.class);
     }
 
     @Test
     public void testGetIndicators() throws Exception {
         runTest(IndicatorGetIndicatorsScenario.class);
+    }
+
+    @Test
+    public void testGetQueries() throws Exception {
+        runTest(IndicatorGetQueriesScenario.class);
+    }
+
+    @Test
+    public void testGetQueryCreationForm() throws Exception {
+        runTest(IndicatorGetQueryCreationFormScenario.class);
     }
 
     @Test
@@ -354,18 +368,18 @@ public abstract class PhasePT {
     }
 
     @Test
-    public void testGetLoggedUserArea() throws Exception {
-        runTest(UserGetLoggedUserAreaScenario.class);
-    }
-
-    @Test
     public void testGetLoggedUserLanguage() throws Exception {
         runTest(UserGetLoggedUserLanguageScenario.class);
     }
 
     @Test
-    public void testGetCreationForm() throws Exception {
-        runTest(IndicatorGetCreationFormScenario.class);
+    public void testCharts() throws Exception {
+        runTest(ChartsScenario.class);
+    }
+
+    @Test
+    public void testComputedFields() throws Exception {
+        runTest(ComputedFieldsScenario.class);
     }
 
     @Test
@@ -374,8 +388,18 @@ public abstract class PhasePT {
     }
 
     @Test
-    public void testComputedFields() throws Exception {
-        runTest(ComputedFieldsScenario.class);
+    public void testDefineQuery() throws Exception {
+        runTest(DefineQueryScenario.class);
+    }
+
+    @Test
+    public void testDefineLanguage() throws Exception {
+        runTest(DefineLanguageScenario.class);
+    }
+
+    @Test
+    public void testLoadPage() throws Exception {
+        runTest(LoadPageScenario.class);
     }
 
     @Test
@@ -386,11 +410,6 @@ public abstract class PhasePT {
     @Test
     public void testPerformanceDashboard() throws Exception {
         runTest(PerformanceSummaryScenario.class);
-    }
-
-    @Test
-    public void testLoadPage() throws Exception {
-        runTest(LoadPageScenario.class);
     }
 
 }

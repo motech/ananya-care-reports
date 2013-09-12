@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.performance.helpers;
 
 import org.joda.time.DateTime;
+import org.motechproject.carereporting.dao.DwQueryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.LanguageDao;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -80,6 +82,9 @@ public class PerformanceTestHelper {
     @Autowired
     private LanguageDao languageDao;
 
+    @Autowired
+    private DwQueryDao dwQueryDao;
+
     private Random random = new Random();
 
     public PerformanceTestHelper() {
@@ -122,7 +127,7 @@ public class PerformanceTestHelper {
             File indicator = indicators[random.nextInt(indicators.length)];
             try {
                 createIndicator(indicator, "test-indicator-" + indicatorsCount);
-            } catch (CareRuntimeException e) {
+            } catch (RuntimeException e) {
                 LOG.warning("Cannot parse indicator: " + indicator.getPath());
                 LOG.info("Remained: " + indicatorsCount + " indicators");
                 indicatorsCount++;
@@ -223,7 +228,11 @@ public class PerformanceTestHelper {
 
     private void createIndicator(File indicator, String name) throws IOException, JAXBException {
         IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(new FileInputStream(indicator));
-        indicatorEntity.setName(name);
+        indicatorEntity.setName(name + indicatorEntity.getName());
+        dwQueryDao.save(indicatorEntity.getNumerator());
+        if(indicatorEntity.getDenominator() != null) {
+            dwQueryDao.save(indicatorEntity.getDenominator());
+        }
         indicatorDao.save(indicatorEntity);
         for (AreaEntity area: areaService.getAllAreas()) {
             DateTime dateTime = new DateTime();

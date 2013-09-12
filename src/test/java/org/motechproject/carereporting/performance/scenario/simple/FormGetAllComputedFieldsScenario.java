@@ -4,11 +4,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class UserGetLoggedUserAreaScenario extends AbstractScenario {
+public class FormGetAllComputedFieldsScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/users/logged_in/area")
+                get("/api/forms/23/computedfields/all")
         );
     }
 

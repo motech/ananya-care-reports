@@ -351,7 +351,7 @@ public class XmlIndicatorParser {
                         query.getIndicatorName() + "' which has not been added yet. Please, add this indicator first.");
             }
 
-            return new DwQueryEntity(indicator.getNumerator());
+            return indicator.getNumerator();
         } else {
             return prepareDwQuery(query.getDwQuery());
         }

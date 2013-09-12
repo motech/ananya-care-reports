@@ -8,7 +8,7 @@ public class DashboardGetUserAreasScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/dashboards/user-areas/1")
+                get("/api/dashboards/user-areas")
         );
     }
 

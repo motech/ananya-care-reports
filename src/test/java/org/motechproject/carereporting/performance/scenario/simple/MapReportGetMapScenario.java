@@ -14,6 +14,7 @@ public class MapReportGetMapScenario extends AbstractScenario {
                     .param("startDate", "01/06/2013")
                     .param("endDate", "01/08/2013")
                     .param("level", "state")
+                    .param("state", "state")
         );
     }
 
