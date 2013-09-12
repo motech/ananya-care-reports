@@ -133,9 +133,7 @@
                             <legend>{{msg('indicators.form.indicatorsList')}}:</legend>
                             <div>
                                 <label for="categoryName">{{msg('indicators.list.chooseCategory')}}</label>
-                                <select id="categoryName" class="input-block-level" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category">
-                                    <option value="">{{msg('indicators.list.allCategories')}}</option>
-                                </select>
+                                <select id="categoryName" class="input-block-level" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category"></select>
                             </div>
                             <table class="table table-hover" ng-show="indicators.length > 0">
                                 <thead>

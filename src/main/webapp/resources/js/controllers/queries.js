@@ -384,16 +384,19 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
     };
 
     $scope.isFormValid = function() {
-        var isValid = true;
-
         if ($scope.formData.queryName == null || $scope.formData.queryName.length <= 0) {
             return false;
         }
         for (var i = 0; i < $scope.queryForms.length; i++) {
-
+            if ($scope.queryForms[i].selectColumns == null || $scope.queryForms[i].selectColumns.length <= 0) {
+                return false;
+            }
+            if (i > 0 && ($scope.queryForms[i].key1 == null || $scope.queryForms[i].key2 == null)) {
+                return false;
+            }
         }
 
-        return isValid;
+        return true;
     };
 
     $scope.save = function() {

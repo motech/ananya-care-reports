@@ -64,7 +64,12 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             for(var i = 0; i < category.length; i++) {
                 ind = ind.concat(category[i].indicators);
             }
-            $scope.category = category;
+            var name = $scope.msg('indicators.list.allCategories');
+            $scope.category = [{
+                id: 0,
+                indicators: ind,
+                name: $scope.msg('indicators.list.allCategories')
+            }].concat(category);
             $scope.indicators = [];
             $scope.selectedCategory = 0;
         }).error(function(response) {

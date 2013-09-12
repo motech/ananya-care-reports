@@ -396,6 +396,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity preparePeriodCondition(WhereConditionDto whereConditionDto) {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
+        periodConditionEntity.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
         periodConditionEntity.setTableName(whereConditionDto.getTableName1());
         periodConditionEntity.setColumnName(computedFieldService.getComputedFieldById(whereConditionDto.getField1()).getName());
         periodConditionEntity.setOffset(whereConditionDto.getFieldOffset1());
