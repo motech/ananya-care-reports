@@ -40,11 +40,11 @@ public final class ChartHelper {
         return new double[] {startTime - delta, endTime + delta};
     }
 
-    public static double[] getMinAndMaxMarginFromValueCategorized(List<CategorizedValueDto> values, int percent, boolean findMin) {
+    public static double[] getMinAndMaxMarginFromValueCategorized(List<CategorizedValueDto> values, int percentDown, int percentUp, boolean findMin) {
         double min = Double.MAX_VALUE;
         double max = 0;
         for (CategorizedValueDto categorizedValue : values) {
-            double[] categoryMinAndMax = getMinAndMaxMarginFromValue(categorizedValue.getValues(), percent, findMin);
+            double[] categoryMinAndMax = getMinAndMaxMarginFromValue(categorizedValue.getValues(), percentDown, percentUp, findMin);
             if (min > categoryMinAndMax[0]) {
                 min = categoryMinAndMax[0];
             }
@@ -55,7 +55,7 @@ public final class ChartHelper {
         return new double[] {min, max};
     }
 
-    public static double[] getMinAndMaxMarginFromValue(List<IndicatorValueDto> values, int percent, boolean findMin) {
+    public static double[] getMinAndMaxMarginFromValue(List<IndicatorValueDto> values, int percentDown, int percentUp, boolean findMin) {
         double min = values.get(0).getValue().doubleValue();
         double max = values.get(0).getValue().doubleValue();
 
@@ -75,12 +75,13 @@ public final class ChartHelper {
             }
         }
 
-        double delta = (max - min) * percent / PERCENT;
+        double deltaDown = (max - min) * percentDown / PERCENT;
+        double deltaUp = (max - min) * percentUp / PERCENT;
 
-        return new double[] {findMin ? min - delta : 0, max + delta};
+        return new double[] {findMin ? min - deltaDown : 0, max + deltaUp};
     }
 
-    public static double getBarWidthForCategorizedChart(List<CategorizedValueDto> values, double xMinAndMax[]) {
+    public static double getBarWidthForCategorizedChart(List<CategorizedValueDto> values, double[] xMinAndMax) {
         double firstToLast;
 
         if (values.get(0).getValues().size() == 1) {

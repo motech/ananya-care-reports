@@ -9,6 +9,7 @@ function sortByDateComparisonFunction(a, b) {
 };
 
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile, $errorService) {
+
     $scope.title = $scope.msg('dashboards.title');
 
     $scope.startDate = moment().subtract('months', 1);
@@ -39,33 +40,26 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.fetchDashboards = function() {
-        $http.get('api/dashboards').success(function(dashboards) {
-            dashboards.sort($scope.compareDashboardPositions);
-            $scope.dashboards = dashboards;
-            if (Object.keys($scope.dashboards).length > 0) {
-                 $scope.fetchTrends();
-                 $scope.getDefaultDashboard();
+        $http.get('api/dashboards/dto').success(function(dto) {
+            $scope.dashboards = dto.dashboards;
+            $scope.dashboards.sort($scope.compareDashboardPositions);
+            $scope.frequencies = dto.frequencies;
+            $scope.frequencyId = dto.frequencies[0].id;
+            $scope.userArea = dto.area;
+            $scope.areaId = dto.area.id;
+            $scope.sortAreas(dto.areas);
+            for(var i = 0; i < $scope.dashboards.length; i++) {
+                    if($scope.dashboards[i].id == dto.defaultDashboard.id) {
+                        $scope.tabChanged($scope.dashboards[i]);
+                        $scope.defaultDashboard = dto.defaultDashboard.tabPosition;
+                        break;
+                    }
             }
+        }).error(function() {
+            $errorService.genericError($scope, 'error');
         });
     };
 
-    $scope.fetchChartData = function(element) {
-        $rootScope.indicatorId = $(element).parents('td').attr('data-indicator-id');
-
-        $simplifiedHttpService.get($scope, 'resources/partials/dashboards/chartDetails.html',
-                'dashboards.charts.error.cannotLoadChartDetails', function(htmlData) {
-            var html = $compile(htmlData)($scope);
-            $(element).html(html);
-        });
-    };
-
-    $scope.fetchFrequencies = function() {
-        $http.get('api/indicator/calculator/frequencies').success(function(frequencies) {
-            $scope.frequencies = frequencies;
-            $scope.frequencyId = frequencies[0].id;
-        });
-    };
-    $scope.fetchFrequencies();
     $scope.reportRows = [];
     $scope.allReportsRows = [];
     $scope.reportValues = [];
@@ -160,20 +154,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     }
 
     $scope.reportFromDateChanged = function(report) {
-        report.from = moment(report.from);
-        report.to = moment(report.to);
-
         if (moment(report.to).diff(report.from, 'days') < 0) {
-            report.from = moment(report.to).format("L");
+            report.from = moment(report.from).format("L");
         }
     };
 
     $scope.reportToDateChanged = function(report) {
-        report.from = moment(report.from);
-        report.to = moment(report.to);
-
         if (moment(report.to).diff(report.from, 'days') < 0) {
-            report.to = moment(report.from).format("L");
+            report.to = moment(report.to).format("L");
         }
     };
 
@@ -224,9 +212,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         }
     };
 
-    $scope.fetchTrendAreas = function(area) {
-        $http.get('api/dashboards/user-areas/' + area.id)
-            .success(function(areas) {
+    $scope.sortAreas = function(areas) {
                 areas.sort($scope.sortFunction);
                     var arr = Array();
                     $scope.topAreaLevel = areas[0].level.hierarchyDepth;
@@ -243,18 +229,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     }
                     $scope.areas = arr;
                     $scope.areaId = areas[0].id;
-            });
     };
-
-    $scope.fetchCurrentUserAreas = function() {
-        $http.get('api/users/logged_in/area')
-            .success(function(areaId) {
-                $scope.userArea=areaId;
-                $scope.areaId=areaId.id;
-                $scope.fetchTrendAreas(areaId);
-            });
-    };
-    $scope.fetchCurrentUserAreas();
 
     $scope.fetchAreas = function(reportRow) {
         $http.get('api/dashboards/user-areas/' + reportRow[0].indicatorAreaId)
@@ -404,21 +379,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.analyze = function() {
         $scope.fetchTrends();
-    }
-
-    $scope.getDefaultDashboard = function() {
-        $http.get("api/users/logged_in/dashboard")
-            .success(function(data) {
-                for(var i = 0; i < $scope.dashboards.length; i++) {
-                    if($scope.dashboards[i].id == data.id) {
-                        $scope.tabChanged($scope.dashboards[i]);
-                        break;
-                    }
-                }
-                $scope.defaultDashboard = data.tabPosition;
-            }).error(function() {
-                $errorService.genericError($scope, 'dashboard.error.cannotGetDefaultDashboard');
-            })
     }
 
     $scope.setDefaultDashboard = function() {

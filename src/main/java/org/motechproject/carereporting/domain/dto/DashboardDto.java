@@ -1,29 +1,44 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
+import org.motechproject.carereporting.domain.views.DashboardJsonView;
 
 import java.util.Set;
 
 public class DashboardDto {
 
+    @JsonView({ DashboardJsonView.class })
     private Set<FrequencyEntity> frequencies;
 
+    @JsonView({ DashboardJsonView.class })
+    private AreaEntity area;
+
+    @JsonView({ DashboardJsonView.class })
     private Set<AreaEntity> areas;
 
+    @JsonView({ DashboardJsonView.class })
     private Set<DashboardEntity> dashboards;
 
+    @JsonView({ DashboardJsonView.class })
     private DashboardEntity defaultDashboard;
 
-    private Set<TrendIndicatorCategoryDto> trendDtos;
-
-    public DashboardDto(Set<FrequencyEntity> frequencies, Set<AreaEntity> areas, Set<DashboardEntity> dashboards, DashboardEntity defaultDashboard, Set<TrendIndicatorCategoryDto> trendDtos) {
+    public DashboardDto(Set<FrequencyEntity> frequencies, AreaEntity area, Set<AreaEntity> areas, Set<DashboardEntity> dashboards, DashboardEntity defaultDashboard) {
         this.frequencies = frequencies;
+        this.area = area;
         this.areas = areas;
         this.dashboards = dashboards;
         this.defaultDashboard = defaultDashboard;
-        this.trendDtos = trendDtos;
+    }
+
+    public AreaEntity getArea() {
+        return area;
+    }
+
+    public void setArea(AreaEntity area) {
+        this.area = area;
     }
 
     public Set<FrequencyEntity> getFrequencies() {
@@ -56,13 +71,5 @@ public class DashboardDto {
 
     public void setDefaultDashboard(DashboardEntity defaultDashboard) {
         this.defaultDashboard = defaultDashboard;
-    }
-
-    public Set<TrendIndicatorCategoryDto> getTrendDtos() {
-        return trendDtos;
-    }
-
-    public void setTrendDtos(Set<TrendIndicatorCategoryDto> trendDtos) {
-        this.trendDtos = trendDtos;
     }
 }

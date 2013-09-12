@@ -31,7 +31,6 @@ public final class ChartFactory {
     @Autowired
     private ReportService reportService;
 
-    private static final int PERCENT = 5;
     private static final int HOURS = 22;
     private static final int SCALE = 4;
     private static final int CREATE_LINE_CHART_VARIABLE = 4;
@@ -61,9 +60,9 @@ public final class ChartFactory {
         double [] yMinAndMax = null;
 
         if (ReportType.LineChart.equals(type)) {
-            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 3, true);
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 3, 3, true);
         } else if (ReportType.BarChart.equals(type)) {
-            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, PERCENT, false);
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValue(values, 0, 5, false);
         }
 
         double[] xMinAndMax = ChartHelper.getMinAndMaxMarginFromDate(values);
@@ -142,9 +141,9 @@ public final class ChartFactory {
 
         double [] yMinAndMax = null;
         if (ReportType.LineChart.equals(type)) {
-            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, 3, true);
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, 3, 15, true);
         } else if (ReportType.BarChart.equals(type)) {
-            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, PERCENT, false);
+            yMinAndMax = ChartHelper.getMinAndMaxMarginFromValueCategorized(values, 0, 15, false);
         }
 
         double barWidth = 0;
@@ -177,10 +176,12 @@ public final class ChartFactory {
                         .labelBoxMargin(0)
                         .labelBoxBorderColor("#FFFFFF")
                         .margin(2)
-                        .backgroundOpacity(0))
-                .selection(new SelectionBuilder()
-                        .fps(SELECTION_FPS)
-                        .mode(SelectionBuilder.Mode.X));
+                        .backgroundOpacity(0));
+        if (!ReportType.PieChart.equals(type)) {
+            chart.selection(new SelectionBuilder()
+                    .fps(SELECTION_FPS)
+                    .mode(SelectionBuilder.Mode.X));
+        }
 
         createGrid(chart, type);
         createXAxis(chart, type, xMinAndMax, labelX);
@@ -225,7 +226,8 @@ public final class ChartFactory {
         } else {
             chart.yAxis(new AxisBuilder()
                     .title(labelY)
-                    .min(yMinAndMax[0]));
+                    .min(yMinAndMax[0])
+                    .max(yMinAndMax[1]));
         }
     }
 

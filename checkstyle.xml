@@ -263,7 +263,7 @@
             <property name="severity" value="error"/>
         </module>
         <module name="CyclomaticComplexity">
-            <property name="max" value="11"/>
+            <property name="max" value="12"/>
         </module>
     </module>
 </module>

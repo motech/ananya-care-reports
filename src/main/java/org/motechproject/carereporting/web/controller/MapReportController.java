@@ -6,6 +6,7 @@ import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,7 @@ public class MapReportController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @Cacheable(value = "map")
     public Map<AreaEntity, Integer> getMapReportData(@RequestParam Integer indicatorId, @RequestParam Integer frequencyId,
                                                  @RequestParam Date startDate, @RequestParam Date endDate, @RequestParam String level,
                                                  @RequestParam(required = false) String state) {

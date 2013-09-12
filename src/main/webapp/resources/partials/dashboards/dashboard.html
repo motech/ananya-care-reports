@@ -142,7 +142,7 @@
                                 </div>
                             </div>
                             <div class="chart-container-wrapper">
-                                <div id="report_{{report.id}}" class="chart-container" indicator-chart value="{{report}}" ng-show="report.displayType == 'chart'"></div>
+                                <div id="report_{{report.id}}" class="chart-container" indicator-chart ng-dblclick="fullscreen(report)" value="{{report}}" ng-show="report.displayType == 'chart'"></div>
                                 <div class="chart-container" ng-show="report.displayType == 'table'">
                                     <div class="row-fluid">
                                         <table class="span11 table table-hover table-striped table-bordered centered" ng-show="report.chart.length > 0">
@@ -210,7 +210,7 @@
             </div>
         </div>
         <div class="fullscreen-chart-container-wrapper">
-            <div id="fullscreenReport_{{fullscreenReport.id}}" class="fullscreen-chart-container" indicator-chart value="{{fullscreenReport}}" ng-show="fullscreenReport.displayType == 'chart'"></div>
+            <div id="fullscreenReport_{{fullscreenReport.id}}" class="fullscreen-chart-container" indicator-chart ng-dblclick="fullscreen(fullscreenReport)" value="{{fullscreenReport}}" ng-show="fullscreenReport.displayType == 'chart'"></div>
             <div class="fullscreen-chart-container" ng-show="fullscreenReport.displayType == 'table'">
                 <div class="row-fluid">
                     <table class="table table-hover table-striped table-bordered centered" ng-show="fullscreenReport.chart.length > 0">
