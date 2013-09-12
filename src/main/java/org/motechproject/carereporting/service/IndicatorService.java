@@ -36,8 +36,7 @@ public interface IndicatorService {
 
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
-    @PreAuthorize(HAS_ROLE_CAN_CREATE_INDICATORS)
-    void createNewIndicatorFromDto(IndicatorDto indicatorDto);
+    IndicatorEntity createIndicatorEntityFromDto(IndicatorDto indicatorDto);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
     void updateIndicator(IndicatorEntity indicatorEntity);

@@ -258,9 +258,9 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
-                $location.path( "/indicators" );
+            $location.path( "/indicators" );
         }).error(function(response, status, headers, config) {
-                $errorService.apiError($scope, response);
+            $errorService.apiError($scope, response);
         });
     };
 

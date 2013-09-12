@@ -5,6 +5,7 @@ import org.motechproject.carereporting.domain.dto.DashboardPositionDto;
 import org.motechproject.carereporting.domain.views.DashboardJsonView;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
+import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,12 @@ public class DashboardController extends BaseController {
 
     @Autowired
     private AreaService areaService;
+
+    @Autowired
+    private UserService userService;
+
+    public DashboardController() {
+    }
 
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
@@ -71,10 +78,18 @@ public class DashboardController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/user-areas/{areaId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/user-areas/{parentAreaId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getCurrentUserAvailableAreas(@PathVariable Integer areaId) {
+    public String getAreasUnderParent(@PathVariable Integer parentAreaId) {
+        return writeAsString(DashboardJsonView.class, areaService.getAllAreasByParentAreaId(parentAreaId));
+    }
+
+    @RequestMapping(value = "/user-areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getCurrentUserAvailableAreas() {
+        Integer areaId = userService.getCurrentlyLoggedUser().getArea().getId();
         return writeAsString(DashboardJsonView.class, areaService.getAllAreasByParentAreaId(areaId));
     }
 

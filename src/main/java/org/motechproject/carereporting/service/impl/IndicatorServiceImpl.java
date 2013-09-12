@@ -172,7 +172,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         Query query = sessionFactory.getCurrentSession()
                .createQuery("SELECT i from IndicatorEntity i " +
-                           "JOIN i.roles as r " +
+                           "LEFT JOIN i.roles as r " +
                            "WHERE (i.areaLevel.id >= :accessLevel " +
                            "AND r.id IN (:roles)) " +
                            "OR (i.owner.id = :ownerId)");
@@ -445,7 +445,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional(readOnly = false)
-    public void createNewIndicatorFromDto(IndicatorDto indicatorDto) {
+    public IndicatorEntity createIndicatorEntityFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
         indicatorEntity.setReports(indicatorDto.getReports());
@@ -465,7 +465,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorEntity.setComputed(false);
         indicatorEntity.setAdditive(indicatorDto.isAdditive());
         indicatorEntity.setCategorized(indicatorDto.isCategorized());
-        createNewIndicator(indicatorEntity);
+        return indicatorEntity;
     }
 
     private Set<RoleEntity> findRoleEntitiesFromDto(IndicatorDto indicatorDto) {

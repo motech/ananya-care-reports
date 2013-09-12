@@ -26,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +41,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.UnmarshalException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @RequestMapping("api/indicator")
@@ -136,12 +139,17 @@ public class IndicatorController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     public void createNewIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
-            BindingResult bindingResult) {
+            BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
-
-        indicatorService.createNewIndicatorFromDto(indicatorDto);
+        IndicatorEntity indicatorEntity = indicatorService.createIndicatorEntityFromDto(indicatorDto);
+        if (!canUserCreateIndicator(indicatorEntity, request)) {
+            List<FieldError> errors = new ArrayList<>();
+            errors.add(new FieldError("indicator", "owners", "You don't have permission to add indicator with this report views."));
+            throw new CareApiRuntimeException(errors);
+        }
+        indicatorService.createNewIndicator(indicatorEntity);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
@@ -267,7 +275,9 @@ public class IndicatorController extends BaseController {
         try {
             for (MultipartFile file : files) {
                 IndicatorEntity indicatorEntity = xmlIndicatorParser.parse(file.getInputStream());
-                checkIndicatorOwnerPermissions(indicatorEntity, request);
+                if (!canUserCreateIndicator(indicatorEntity, request)) {
+                    throw new CareRuntimeException("You don't have permission to create indicator with this owner and/or report views.");
+                }
                 indicatorService.createNewIndicator(indicatorEntity);
             }
             return "redirect:/#/indicators";
@@ -290,12 +300,13 @@ public class IndicatorController extends BaseController {
         return "redirect:/#/indicators/upload-xml";
     }
 
-    private void checkIndicatorOwnerPermissions(IndicatorEntity indicatorEntity, HttpServletRequest request) {
+    private boolean canUserCreateIndicator(IndicatorEntity indicatorEntity, HttpServletRequest request) {
         if (!canUserCreateIndicators(request)) {
             if (!isCurrentUserOwnerOfIndicator(indicatorEntity) || (indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0)) {
-                throw new CareRuntimeException("You don't have permission to create this kind of indicator.");
+                return false;
             }
         }
+        return true;
     }
 
     private boolean isCurrentUserOwnerOfIndicator(IndicatorEntity indicatorEntity) {

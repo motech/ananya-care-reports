@@ -232,7 +232,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.fetchAreas = function(reportRow) {
-        $http.get('api/dashboards/user-areas/' + reportRow[0].indicatorAreaId)
+        $http.get('api/dashboards/user-areas')
             .success(function(areas) {
                areas.sort($scope.sortFunction);
                var arr = Array();

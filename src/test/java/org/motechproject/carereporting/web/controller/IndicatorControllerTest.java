@@ -125,7 +125,7 @@ public class IndicatorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(indicatorService, times(1)).createNewIndicatorFromDto((IndicatorDto) anyObject());
+        verify(indicatorService, times(1)).createNewIndicator((IndicatorEntity) anyObject());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class IndicatorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(indicatorService, times(0)).createNewIndicatorFromDto((IndicatorDto) anyObject());
+        verify(indicatorService, times(0)).createNewIndicator((IndicatorEntity) anyObject());
     }
 
     @Test
