@@ -115,9 +115,8 @@
                     <p class="text-center">{{msg('dashboards.charts.empty')}}</p>
                 </div>
                 <div class="indicator-columns-wrapper" ng-show="loading == false">
-                    <div class="indicator-column" ng-repeat="reportRow in reportRows">
-                        <p class="text-center indicator-title">{{reportRow[0].indicatorName}}</p>
-                        <div class="indicator-cell" ng-repeat="report in reportRow">
+                    <div class="indicator-column" ng-repeat="report in reportRows">
+                        <p class="text-center indicator-title">{{report.indicatorName}}</p>
                             <div class="indicator-cell-header">
                                 <div class="row">
                                                 <span class="input-prepend input-date">
@@ -138,6 +137,12 @@
                                     <div class="input-prepend">
                                         <span class="add-on"><i class="icon-time"></i></span>
                                         <select style="width: 110px;" ng-disabled="!report.computing" ng-model="report.frequencyId" ng-options="item.id as item.frequencyName for item in frequencies"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-prepend">
+                                        <span class="add-on"><i class="icon-time"></i></span>
+                                        <select style="width: 110px;" ng-disabled="!report.computing" ng-model="report.reportType" ng-options="item as item.name for item in report.reportTypes"/>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +174,7 @@
                                     <button type="button" ng-click="fullscreen(report)" class="btn btn-mini btn-primary chart-button">{{msg('dashboards.charts.zoomIn')}}</button>
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
                 <div class="pagination text-center">

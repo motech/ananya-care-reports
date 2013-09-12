@@ -209,22 +209,26 @@ public final class ChartFactory {
     private void createXAxis(ChartBuilder chart, ReportType type, double[] xMinAndMax, String labelX) {
         AxisBuilder axisBuilder = new AxisBuilder();
         if (type.equals(ReportType.PieChart)) {
-            axisBuilder.showLabels(false);
+            chart.xAxis(axisBuilder
+                    .showLabels(false));
+        } else {
+            chart.xAxis(axisBuilder
+                    .title(labelX)
+                    .timeformat("%m/%d/%y")
+                    .mode(AxisBuilder.Mode.TIME)
+                    .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
+                    .min(xMinAndMax[0])
+                    .max(xMinAndMax[1]));
         }
-        chart.xAxis(axisBuilder
-                .title(labelX)
-                .timeformat("%m/%d/%y")
-                .mode(AxisBuilder.Mode.TIME)
-                .minorTickFreq(CREATE_LINE_CHART_VARIABLE)
-                .min(xMinAndMax[0])
-                .max(xMinAndMax[1]));
     }
 
     private void createYAxis(ChartBuilder chart, ReportType type, double[] yMinAndMax, String labelY) {
+        AxisBuilder axisBuilder = new AxisBuilder();
         if (type.equals(ReportType.PieChart)) {
-            chart.yAxis(new AxisBuilder().showLabels(false));
+            chart.yAxis(axisBuilder
+                    .showLabels(false));
         } else {
-            chart.yAxis(new AxisBuilder()
+            chart.yAxis(axisBuilder
                     .title(labelY)
                     .min(yMinAndMax[0])
                     .max(yMinAndMax[1]));

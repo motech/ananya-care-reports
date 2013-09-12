@@ -28,9 +28,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fullscreen = function(report) {
         if($scope.fullscreenReport == null) {
             $scope.fullscreenReport = report;
-            $scope.reportRows[report.position.x][report.position.y] = null;
+            $scope.reportRows[report.position.x] = null;
         } else {
-            $scope.reportRows[report.position.x][report.position.y] = report;
+            $scope.reportRows[report.position.x] = report;
             $scope.fullscreenReport = null;
         }
     };
@@ -101,34 +101,34 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 continue;
             }
             indicator.reports.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); });
-            var reportRow = [];
-            for (var r = 0; r < indicator.reports.length; r+=1) {
-                if (!indicator.reports.hasOwnProperty(r)) {
+            var indicatorReport = indicator.reports[0];
+            if (indicatorReport != null && indicatorReport.reportType.name.toLowerCase().endsWith('chart')) {
+                var report = indicatorReport;
+                report.reportTypes = [];
+                for (var r = 0; r < indicator.reports.length; r++) {
+                    report.reportTypes.push(indicator.reports[r].reportType);
+                }
+                if (!indicator.reports.hasOwnProperty(0)) {
                     continue;
                 }
-                var indicatorReport = indicator.reports[r];
-                if (indicatorReport != null && indicatorReport.reportType.name.toLowerCase().endsWith('chart')) {
-                    var report = indicatorReport;
-                    report.indicatorId = indicator.id;
-                    report.needsRefreshing = true;
-                    report.computing = indicator.isComputed;
-                    report.indicatorAreaId = $scope.userArea.id;
-                    report.indicatorName = indicator.name;
-                    report.frequencyId = indicator.defaultFrequency.id;
-                    report.additive = indicator.isAdditive;
-                    report.rowIndex = $scope.reportRows.length;
-                    report.index = reportRow.length;
-                    report.displayType = 'chart';
-                    report.from = moment().subtract('months', 1).format("L");
-                    report.to = moment().format("L");
-                    report.canExportCaseListReport = true;
-                    report.position = {};
-                    report.position.x = i % $scope.reportsPerPage;
-                    report.position.y = r;
-                    reportRow.push(report);
-                }
+                report.indicatorId = indicator.id;
+                report.needsRefreshing = true;
+                report.computing = indicator.isComputed;
+                report.indicatorAreaId = $scope.userArea.id;
+                report.indicatorName = indicator.name;
+                report.frequencyId = indicator.defaultFrequency.id;
+                report.additive = indicator.isAdditive;
+                report.rowIndex = $scope.reportRows.length;
+                report.index = 0;
+                report.displayType = 'chart';
+                report.from = moment().subtract('months', 1).format("L");
+                report.to = moment().format("L");
+                report.canExportCaseListReport = true;
+                report.position = {};
+                report.position.x = i % $scope.reportsPerPage;
+                report.position.y = 0;
             }
-            $scope.allReportsRows.push(reportRow);
+            $scope.allReportsRows.push(report);
         }
     };
 
@@ -231,7 +231,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     $scope.areaId = areas[0].id;
     };
 
-    $scope.fetchAreas = function(reportRow) {
+    $scope.fetchAreas = function(report) {
         $http.get('api/dashboards/user-areas')
             .success(function(areas) {
                areas.sort($scope.sortFunction);
@@ -249,13 +249,10 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                    areas[index].name = padding + areas[index].name;
                    arr.push(areas[index]);
                }
-
-               for(var i = 0; i < reportRow.length; i++) {
-                    if(reportRow[i] != null) {
-                        reportRow[i].areas = arr;
-                        reportRow[i].areaId = arr[0].id;
-                    }
-               }
+                if(report != null) {
+                    report.areas = arr;
+                    report.areaId = arr[0].id;
+                }
           });
     };
 
