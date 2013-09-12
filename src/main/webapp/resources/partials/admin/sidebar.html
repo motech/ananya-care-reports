@@ -5,8 +5,8 @@
             <li ng-class="{active: getLocation() == '#/admin/forms'}"><a href="#/admin/forms"><i class="icon-list"></i> {{msg('menu.forms')}}</a></li>
             <li ng-class="{active: getLocation() == '#/admin/computed-fields'}"><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
             <li class="nav-header">Languages</li>
-            <li ng-class="{active: getLocation() == '#/admin/languages'}"><a href="#/admin/languages"><i class="icon-briefcase"></i> Manage languages</a></li>
-            <li ng-class="{active: getLocation() == '#/admin/select-language'}"><a href="#/admin/select-language"><i class="icon-flag"></i> Select language</a></li>
+            <li ng-class="{active: getLocation() == '#/admin/languages'}"><a href="#/admin/languages"><i class="icon-briefcase"></i> {{msg('menu.languages')}}</a></li>
+            <li ng-class="{active: getLocation() == '#/admin/select-language'}"><a href="#/admin/select-language"><i class="icon-flag"></i> {{msg('menu.languages.select')}} </a></li>
         </ul>
     </nav>
 </div>
