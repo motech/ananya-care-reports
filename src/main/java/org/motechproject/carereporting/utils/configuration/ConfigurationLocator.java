@@ -1,6 +1,7 @@
 package org.motechproject.carereporting.utils.configuration;
 
 import org.apache.commons.lang.SystemUtils;
+import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public final class ConfigurationLocator {
     private static final String CARE_LANGUAGES_DIRECTORY_NAME = "messages";
 
     private static final String CARE_XML_DIRECTORY_NAME = "xml";
+
+    private static final String CARE_PROPERTIES_FILE_NAME = "configuration.properties";
 
     private static final String COMMCARE_DEFAULT_PROPERTIES_FILE_NAME = "commcare.default.properties";
 
@@ -38,6 +41,21 @@ public final class ConfigurationLocator {
         return getCareConfigurationDirectory() + File.separator + CARE_XML_DIRECTORY_NAME;
     }
 
+    public static Properties getCareConfiguration() {
+        try {
+            Properties customProperties = getCareCustomConfiguration();
+            Properties defaultProperties = getCareDefaultConfiguration();
+            if (customProperties.size() == 0) {
+                return getCareCustomConfiguration();
+            } else {
+                completeCustomProperties(customProperties, defaultProperties);
+                return customProperties;
+            }
+        } catch (Exception e) {
+            throw new CareRuntimeException(e);
+        }
+    }
+
     public static Properties getCommCareConfiguration() throws IOException {
         Properties customProperties = getCommCareCustomConfiguration();
         Properties defaultProperties = getCommCareDefaultConfiguration();
@@ -47,6 +65,24 @@ public final class ConfigurationLocator {
             completeCustomProperties(customProperties, defaultProperties);
             return customProperties;
         }
+    }
+
+    private static Properties getCareCustomConfiguration() throws IOException {
+        Properties properties = new Properties();
+        File customPropertiesFile = new File(getCareCustomPropertiesFilePath());
+        if (customPropertiesFile.exists()) {
+            InputStream stream = new FileSystemResource(customPropertiesFile).getInputStream();
+            properties.load(stream);
+        }
+        return properties;
+    }
+
+    private static Properties getCareDefaultConfiguration() throws IOException {
+        Properties properties = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream defaultStream = loader.getResourceAsStream(getCareDefaultPropertiesFileName());
+        properties.load(defaultStream);
+        return properties;
     }
 
     private static Properties getCommCareCustomConfiguration() throws IOException {
@@ -75,6 +111,14 @@ public final class ConfigurationLocator {
         }
     }
 
+    private static String getCareCustomPropertiesFilePath() {
+        return getCareConfigurationDirectory() + File.separator + CARE_PROPERTIES_FILE_NAME;
+    }
+
+    private static String getCareDefaultPropertiesFileName() {
+        return CARE_PROPERTIES_FILE_NAME;
+    }
+    
     private static String getCommCareCustomPropertiesFilePath() {
         return getCareConfigurationDirectory() + File.separator + COMMCARE_CUSTOM_PROPERTIES_FILE_NAME;
     }

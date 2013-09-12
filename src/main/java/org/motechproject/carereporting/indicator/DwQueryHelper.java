@@ -40,6 +40,7 @@ import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
+import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -280,6 +281,8 @@ public class DwQueryHelper {
     }
 
     private void addAreaJoinAndCondition(DwQuery dwQuery, AreaEntity area) {
+        Boolean useTestFlwRole = Boolean.parseBoolean(ConfigurationLocator.getCareConfiguration().getProperty(
+                "care.flw.useTestFlwRole"));
         DwQueryCombination areaJoinCombination = prepareAreaJoin();
 
         if (dwQuery.getCombineWith() != null) {
@@ -303,6 +306,9 @@ public class DwQueryHelper {
             }
 
             dwQuery.getWhereConditionGroup().addCondition(prepareAreaWhereCondition(area));
+            if (!useTestFlwRole) {
+                dwQuery.getWhereConditionGroup().addCondition(prepareSkipTestFlwRole());
+            }
         }
     }
 
@@ -329,6 +335,17 @@ public class DwQueryHelper {
 
         return new WhereConditionBuilder()
                 .withValueComparison(selectColumn, ComparisonType.Equal, area.getName())
+                .build();
+    }
+
+    private WhereCondition prepareSkipTestFlwRole() {
+        SelectColumn selectColumn = new SelectColumnBuilder()
+                .withColumn("flw", "role")
+                .withValueToLowerCase(true)
+                .build();
+
+        return new WhereConditionBuilder()
+                .withValueComparison(selectColumn, ComparisonType.NotEqual, "test")
                 .build();
     }
 }
