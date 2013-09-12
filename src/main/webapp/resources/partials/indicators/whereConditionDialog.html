@@ -37,8 +37,6 @@
                             <select id="dateRangeComparisonField1" class="input-block-level" ng-model="condition.field1" ng-options="item as item.name for item in formData.computedFields1"></select>
                             <label for="dateRangeComparisonOffset1">{{msg('queries.whereConditionDialog.comparison.label.offset')}}:</label>
                             <input type="number" pattern="-?[1-9][0-9]*" id="dateRangeComparisonOffset1" class="input-block-level" ng-model="condition.offset1" />
-                            <label for="dateRangeComparisonOperator">{{msg('queries.whereConditionDialog.comparison.label.operator')}}:</label>
-                            <select id="dateRangeComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item.name for item in formData.operators"></select>
                         </div>
                         <div class="nested-well span6">
                             <label for="dateRangeComparisonDate1">{{msg('queries.whereConditionDialog.comparison.label.between')}}:</label>
