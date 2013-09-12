@@ -418,8 +418,29 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
+        updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getNumerator(), 0);
+        if (indicatorEntity.getDenominator() != null) {
+            updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getDenominator(), 0);
+        }
         indicatorDao.save(indicatorEntity);
         calculateIndicator(indicatorEntity);
+    }
+
+    private void updateNewIndicatorQueryNames(IndicatorEntity indicatorEntity,
+                                              DwQueryEntity dwQueryEntity,
+                                              Integer index) {
+        dwQueryEntity.setName(indicatorEntity.getName());
+        if (index > 0) {
+            dwQueryEntity.setName(dwQueryEntity.getName() + "_" + index);
+        }
+
+        if (dwQueryEntity.getCombination() != null) {
+            updateNewIndicatorQueryNames(indicatorEntity, dwQueryEntity.getCombination().getDwQuery(), index + 1);
+            dwQueryEntity.getCombination().getDwQuery().setParentQuery(dwQueryEntity);
+            dwQueryDao.save(dwQueryEntity.getCombination().getDwQuery());
+        }
+
+        dwQueryDao.save(dwQueryEntity);
     }
 
     @Override
@@ -491,7 +512,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
-
+        // TODO : Is this function needed? If so, fill it out.
     }
 
     private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromDto(

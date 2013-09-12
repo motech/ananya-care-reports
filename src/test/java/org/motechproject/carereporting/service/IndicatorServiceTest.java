@@ -7,8 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.motechproject.carereporting.dao.DwQueryDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
+import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.service.impl.IndicatorServiceImpl;
 
@@ -34,20 +36,27 @@ public class IndicatorServiceTest {
     private IndicatorDao indicatorDao;
 
     @Mock
+    private DwQueryDao dwQueryDao;
+
+    @Mock
     private IndicatorValueDao indicatorValueDao;
 
     @InjectMocks
     private IndicatorService indicatorService = Mockito.spy(new IndicatorServiceImpl());
 
+    private ArgumentCaptor<DwQueryEntity> dwQueryEntityArgumentCaptor = ArgumentCaptor.forClass(DwQueryEntity.class);
     private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
 
     @Test
     public void testCreateNewIndicator() throws Exception {
         doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
         IndicatorEntity indicatorEntity = new IndicatorEntity();
+        indicatorEntity.setNumerator(dwQueryEntity);
         indicatorService.createNewIndicator(indicatorEntity);
 
+        verify(dwQueryDao).save(dwQueryEntityArgumentCaptor.capture());
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
         verify(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 
@@ -78,6 +87,8 @@ public class IndicatorServiceTest {
         doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 
         IndicatorEntity indicatorEntity = new IndicatorEntity();
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
+        indicatorEntity.setNumerator(dwQueryEntity);
         indicatorService.createNewIndicator(indicatorEntity);
 
         indicatorEntity.setName(TEST_INDICATOR_1_UPDATED_NAME);
@@ -122,6 +133,8 @@ public class IndicatorServiceTest {
         doNothing().when(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 
         IndicatorEntity indicatorEntity = new IndicatorEntity();
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
+        indicatorEntity.setNumerator(dwQueryEntity);
         indicatorService.createNewIndicator(indicatorEntity);
         indicatorService.deleteIndicator(indicatorEntity);
 

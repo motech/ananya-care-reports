@@ -117,6 +117,9 @@ public class QueryBuilderTest {
             "select max(coalesce((((\"report\".\"mother_case\".\"age\" + \"report\".\"mother_case\".\"age\") * " +
                     "(\"report\".\"mother_case\".\"age\" - \"report\".\"mother_case\".\"age\")) + " +
                     "\"report\".\"mother_case\".\"age\"), '0')) as \"age_alias\" from \"report\".\"mother_case\"";
+    private static final String EXPECTED_POSTGRESQL_VALUE_TO_LOWER_CASE_SQL_STRING =
+            "select count(\"report\".\"flw\".\"state\") from \"report\".\"flw\" where " +
+                    "lower(cast(\"flw\".\"state\" as varchar)) = 'bihar'";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -614,5 +617,34 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_COMPUTED_COLUMN_WITH_FUNCTIOM_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlValueToLowerCase() {
+        SelectColumn selectCountFlw = new SelectColumnBuilder()
+                .withColumnAndFunction(FLW, FLW_STATE, SelectColumnFunctionType.Count)
+                .build();
+        SelectColumn selectFlw = new SelectColumnBuilder()
+                .withColumn(FLW, FLW_STATE)
+                .withValueToLowerCase(true)
+                .build();
+
+        DwQuery dwQuery = new DwQueryBuilder()
+                .withSelectColumn(selectCountFlw)
+                .withTableName(FLW)
+                .withWhereConditionGroup(
+                        new WhereConditionGroupBuilder()
+                                .withCondition(
+                                        new WhereConditionBuilder()
+                                                .withValueComparison(selectFlw, ComparisonType.Equal, FLW_STATE_NAME)
+                                )
+                )
+                .build();
+
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_VALUE_TO_LOWER_CASE_SQL_STRING, sqlString);
     }
 }

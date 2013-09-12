@@ -19,6 +19,8 @@ import org.jooq.Param;
 import org.jooq.SelectConditionStep;
 import org.jooq.types.DayToSecond;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.jooq.impl.DSL.dateDiff;
@@ -109,7 +111,8 @@ public final class ConditionHelper {
         if (whereCondition instanceof ValueComparison) {
 
             ValueComparison valueComparison = (ValueComparison) whereCondition;
-            condition = buildCondition(field1, valueComparison.getOperator(), valueComparison.getValue());
+            condition = buildCondition(field1, valueComparison.getOperator(), valueComparison.getValue(),
+                    whereCondition.getSelectColumn1().getValueToLowerCase());
 
         } else if (whereCondition instanceof DateRangeComparison) {
 
@@ -143,15 +146,16 @@ public final class ConditionHelper {
         } else if (whereCondition instanceof EnumRangeComparison) {
 
             EnumRangeComparison enumRangeComparison = (EnumRangeComparison) whereCondition;
-            condition = buildEnumRangeCondition(field1, enumRangeComparison.getValues());
+            condition = buildEnumRangeCondition(field1, enumRangeComparison.getValues(),
+                    whereCondition.getSelectColumn1().getValueToLowerCase());
         }
 
         return condition;
     }
 
-    public static Condition buildCondition(Field field, ComparisonType comparisonType, String value) {
+    public static Condition buildCondition(Field field, ComparisonType comparisonType, String value, Boolean useLowerCase) {
         try {
-            Param param = val(value);
+            Param param = val((useLowerCase) ? value.toLowerCase() : value);
 
             switch (comparisonType) {
                 case Less:
@@ -217,7 +221,7 @@ public final class ConditionHelper {
                                            String value,
                                            Boolean useSchemaName) {
         try {
-            Param param = val(value);
+            Param param = val((selectColumn.getValueToLowerCase()) ? value.toLowerCase() : value);
 
             if (selectColumn.getFunction() != null) {
                 Field aggregateFunction = SelectColumnHelper.resolveAggregateFunction(
@@ -241,7 +245,7 @@ public final class ConditionHelper {
                 }
             } else {
                 Field field = SelectColumnHelper.resolveSelectColumn(schemaName, selectColumn, false, false);
-                return buildCondition(field, comparisonType, value);
+                return buildCondition(field, comparisonType, value, selectColumn.getValueToLowerCase());
             }
         } catch (Exception e) {
             throw new QueryBuilderRuntimeException(e);
@@ -324,9 +328,18 @@ public final class ConditionHelper {
         }
     }
 
-    public static Condition buildEnumRangeCondition(Field field1, Set<String> values) {
+    public static Condition buildEnumRangeCondition(Field field1, Set<String> values, Boolean useLowerCase) {
         try {
-            return field1.in(values);
+            Set<String> newValues = new LinkedHashSet<>(values);
+            if (useLowerCase) {
+                newValues.clear();
+                Iterator<String> iterator = values.iterator();
+                while (iterator.hasNext()) {
+                    newValues.add(iterator.next().toLowerCase());
+                }
+            }
+
+            return field1.in(newValues);
         } catch (Exception e) {
             throw new QueryBuilderRuntimeException(e);
         }

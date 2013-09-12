@@ -44,7 +44,7 @@ public class DwQueryEntity extends AbstractEntity {
     @Column(name = "has_period_condition")
     private boolean hasPeriodCondition;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity parentQuery;
 

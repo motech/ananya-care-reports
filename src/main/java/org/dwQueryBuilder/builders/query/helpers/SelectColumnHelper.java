@@ -65,9 +65,14 @@ public final class SelectColumnHelper {
 
         }
 
+        if (selectColumn.getValueToLowerCase()) {
+            field = field.lower();
+        }
+
         if (useAlias && selectColumn.hasAlias()) {
             field = field.as(selectColumn.getAlias());
         }
+
 
         return field;
     }

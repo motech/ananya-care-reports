@@ -15,6 +15,7 @@ import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.GroupBy;
+import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.ComparisonType;
@@ -321,8 +322,13 @@ public class DwQueryHelper {
     }
 
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
+        SelectColumn selectColumn = new SelectColumnBuilder()
+                .withColumn("flw", area.getLevel().getName())
+                .withValueToLowerCase(true)
+                .build();
+
         return new WhereConditionBuilder()
-                .withValueComparison("flw", area.getLevel().getName(), ComparisonType.Equal, area.getName())
+                .withValueComparison(selectColumn, ComparisonType.Equal, area.getName())
                 .build();
     }
 }

@@ -10,6 +10,7 @@ public class SelectColumnBuilder {
     private SelectColumnFunctionType function;
     private String alias;
     private String nullValue;
+    private boolean valueToLowerCase;
 
     public SelectColumnBuilder withColumn(String fieldName) {
         this.computedColumn = new ComputedColumn(null, fieldName);
@@ -171,7 +172,12 @@ public class SelectColumnBuilder {
         return this;
     }
 
+    public SelectColumnBuilder withValueToLowerCase(boolean valueToLowerCase) {
+        this.valueToLowerCase = valueToLowerCase;
+        return this;
+    }
+
     public SelectColumn build() {
-        return new SelectColumn(computedColumn, alias, function, nullValue);
+        return new SelectColumn(computedColumn, alias, function, nullValue, valueToLowerCase);
     }
 }

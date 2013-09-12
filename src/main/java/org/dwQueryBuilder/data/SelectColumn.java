@@ -9,6 +9,7 @@ public class SelectColumn {
     private SelectColumnFunctionType function;
     private String alias;
     private String nullValue;
+    private boolean valueToLowerCase;
 
     public SelectColumn() {
 
@@ -23,9 +24,21 @@ public class SelectColumn {
         this.alias = alias;
     }
 
+    public SelectColumn(String tableName, String fieldName, String alias, boolean valueToLowerCase) {
+        this.computedColumn = new ComputedColumn(tableName, fieldName);
+        this.alias = alias;
+        this.valueToLowerCase = valueToLowerCase;
+    }
+
     public SelectColumn(ComputedColumn computedColumn, String alias) {
         this.computedColumn = computedColumn;
         this.alias = alias;
+    }
+
+    public SelectColumn(ComputedColumn computedColumn, String alias, boolean valueToLowerCase) {
+        this.computedColumn = computedColumn;
+        this.alias = alias;
+        this.valueToLowerCase = valueToLowerCase;
     }
 
     public SelectColumn(String tableName, String fieldName, String alias, SelectColumnFunctionType function) {
@@ -47,6 +60,15 @@ public class SelectColumn {
         this.function = function;
         this.nullValue = nullValue;
         this.alias = alias;
+    }
+
+    public SelectColumn(String tableName, String fieldName, String alias, SelectColumnFunctionType function,
+                        String nullValue, boolean valueToLowerCase) {
+        this.computedColumn = new ComputedColumn(tableName, fieldName);
+        this.function = function;
+        this.nullValue = nullValue;
+        this.alias = alias;
+        this.valueToLowerCase = valueToLowerCase;
     }
 
     public SelectColumn(ComputedColumn computedColumn, SelectColumnFunctionType function) {
@@ -75,6 +97,15 @@ public class SelectColumn {
         this.alias = alias;
     }
 
+    public SelectColumn(ComputedColumn computedColumn, String alias, SelectColumnFunctionType function,
+                        String nullValue, boolean valueToLowerCase) {
+        this.computedColumn = computedColumn;
+        this.function = function;
+        this.nullValue = nullValue;
+        this.alias = alias;
+        this.valueToLowerCase = valueToLowerCase;
+    }
+
     public ComputedColumn getComputedColumn() {
         return computedColumn;
     }
@@ -83,7 +114,7 @@ public class SelectColumn {
         this.computedColumn = computedColumn;
     }
 
-    public Boolean hasFunction() {
+    public boolean hasFunction() {
         return (function != null);
     }
 
@@ -95,11 +126,11 @@ public class SelectColumn {
         this.function = function;
     }
 
-    public Boolean hasNullValue() {
+    public boolean hasNullValue() {
         return (nullValue != null);
     }
 
-    public Boolean hasAlias() {
+    public boolean hasAlias() {
         return StringUtils.isNotBlank(alias);
     }
 
@@ -117,5 +148,13 @@ public class SelectColumn {
 
     public void setNullValue(String nullValue) {
         this.nullValue = nullValue;
+    }
+
+    public boolean getValueToLowerCase() {
+        return valueToLowerCase;
+    }
+
+    public void setValueToLowerCase(boolean valueToLowerCase) {
+        this.valueToLowerCase = valueToLowerCase;
     }
 }
