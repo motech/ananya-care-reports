@@ -12,6 +12,7 @@
     <trend>3</trend>
     <reports>
         <report type="Line Chart" label-x="Time" label-y="Median weight" />
+        <report type="Bar Chart" label-x="Time" label-y="Median weight" />
     </reports>
     <area level="Block"/>
     <default-frequency>Daily</default-frequency>

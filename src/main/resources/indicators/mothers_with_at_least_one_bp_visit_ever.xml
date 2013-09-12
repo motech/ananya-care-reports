@@ -9,6 +9,7 @@
     <trend>3</trend>
     <reports>
         <report type="Line Chart" />
+        <report type="Bar Chart" />
     </reports>
     <area level="District"/>
     <default-frequency>Daily</default-frequency>
