@@ -73,6 +73,7 @@ public final class ConfigurationLocator {
         if (customPropertiesFile.exists()) {
             InputStream stream = new FileSystemResource(customPropertiesFile).getInputStream();
             properties.load(stream);
+            stream.close();
         }
         return properties;
     }
@@ -82,6 +83,7 @@ public final class ConfigurationLocator {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream defaultStream = loader.getResourceAsStream(getCareDefaultPropertiesFileName());
         properties.load(defaultStream);
+        defaultStream.close();
         return properties;
     }
 
@@ -91,6 +93,7 @@ public final class ConfigurationLocator {
         if (customPropertiesFile.exists()) {
             InputStream stream = new FileSystemResource(customPropertiesFile).getInputStream();
             properties.load(stream);
+            stream.close();
         }
         return properties;
     }
@@ -100,6 +103,7 @@ public final class ConfigurationLocator {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream defaultStream = loader.getResourceAsStream(getCommCareDefaultPropertiesFileName());
         properties.load(defaultStream);
+        defaultStream.close();
         return properties;
     }
 
