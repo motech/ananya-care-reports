@@ -56,7 +56,6 @@ public class IndicatorServiceTest {
         indicatorEntity.setNumerator(dwQueryEntity);
         indicatorService.createNewIndicator(indicatorEntity);
 
-        verify(dwQueryDao).save(dwQueryEntityArgumentCaptor.capture());
         verify(indicatorDao).save(indicatorEntityArgumentCaptor.capture());
         verify(indicatorService).calculateIndicator((IndicatorEntity) anyObject());
 

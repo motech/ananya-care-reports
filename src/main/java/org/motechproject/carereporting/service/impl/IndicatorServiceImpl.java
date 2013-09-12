@@ -236,7 +236,6 @@ public class IndicatorServiceImpl implements IndicatorService {
             selectColumnEntity.setComputedField(computedFieldEntity);
             selectColumnEntity.setFunctionName(selectColumnDto.getFunction());
             selectColumnEntity.setNullValue(selectColumnDto.getNullValue());
-            selectColumnEntity.setDwQuery(dwQueryEntity);
             selectColumnEntities.add(selectColumnEntity);
         }
 
@@ -418,29 +417,20 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
-        updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getNumerator(), 0);
+        updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getNumerator(), 1);
         if (indicatorEntity.getDenominator() != null) {
-            updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getDenominator(), 0);
+            updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getDenominator(), -1);
         }
         indicatorDao.save(indicatorEntity);
         calculateIndicator(indicatorEntity);
     }
 
-    private void updateNewIndicatorQueryNames(IndicatorEntity indicatorEntity,
-                                              DwQueryEntity dwQueryEntity,
-                                              Integer index) {
-        dwQueryEntity.setName(indicatorEntity.getName());
-        if (index > 0) {
-            dwQueryEntity.setName(dwQueryEntity.getName() + "_" + index);
-        }
-
+    private void updateNewIndicatorQueryNames(IndicatorEntity indicatorEntity, DwQueryEntity dwQueryEntity, Integer index) {
+        dwQueryEntity.setName(indicatorEntity.getName() + "_" + index);
         if (dwQueryEntity.getCombination() != null) {
-            updateNewIndicatorQueryNames(indicatorEntity, dwQueryEntity.getCombination().getDwQuery(), index + 1);
             dwQueryEntity.getCombination().getDwQuery().setParentQuery(dwQueryEntity);
-            dwQueryDao.save(dwQueryEntity.getCombination().getDwQuery());
+            updateNewIndicatorQueryNames(indicatorEntity, dwQueryEntity.getCombination().getDwQuery(), index > 0 ? index + 1 : index - 1);
         }
-
-        dwQueryDao.save(dwQueryEntity);
     }
 
     @Override

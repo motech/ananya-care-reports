@@ -35,12 +35,12 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
 

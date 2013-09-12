@@ -4,7 +4,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,17 +25,12 @@ public class SelectColumnEntity extends AbstractEntity {
     @Column(name = "null_value")
     private String nullValue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dw_query_id", referencedColumnName = "dw_query_id")
-    private DwQueryEntity dwQuery;
-
     public SelectColumnEntity() {
     }
 
     public SelectColumnEntity(SelectColumnEntity selectColumnEntity) {
         functionName = selectColumnEntity.getFunctionName();
         computedField = selectColumnEntity.getComputedField();
-        dwQuery = selectColumnEntity.getDwQuery();
     }
 
     public String getFunctionName() {
@@ -63,11 +57,4 @@ public class SelectColumnEntity extends AbstractEntity {
         this.nullValue = nullValue;
     }
 
-    public DwQueryEntity getDwQuery() {
-        return dwQuery;
-    }
-
-    public void setDwQuery(DwQueryEntity dwQuery) {
-        this.dwQuery = dwQuery;
-    }
 }

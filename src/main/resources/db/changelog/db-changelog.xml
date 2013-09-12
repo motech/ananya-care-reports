@@ -11,4 +11,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #92_2" author="Łukasz Gąsior">
+        <sql>
+            CREATE TABLE dashboard_app.dw_query_select_column (
+                select_column_id integer not null,
+                dw_query_id integer not null,
+                constraint dw_query_select_column_pk primary key (select_column_id, dw_query_id),
+                constraint dw_query_select_column_select_column_id foreign key (select_column_id)
+                references dashboard_app.select_column (select_column_id) match full
+                on delete cascade on update cascade not deferrable,
+                constraint dw_query_select_column_dw_query_id foreign key (dw_query_id)
+                references dashboard_app.dw_query (dw_query_id) match full
+                on delete cascade on update cascade not deferrable);
+
+            alter table dashboard_app.select_column DROP column dw_query_id;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

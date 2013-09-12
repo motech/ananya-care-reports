@@ -10,8 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,25 +27,27 @@ public class DwQueryEntity extends AbstractEntity {
     @Column(name = "table_name", length = 100)
     private String tableName;
 
-    @OneToMany(mappedBy = "dwQuery", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
+            inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
     private Set<SelectColumnEntity> selectColumns;
 
-    @OneToOne(mappedBy = "dwQuery", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")
     private CombinationEntity combination;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
     private GroupedByEntity groupedBy;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 
     @Column(name = "has_period_condition")
     private boolean hasPeriodCondition;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity parentQuery;
 
