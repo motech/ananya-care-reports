@@ -306,9 +306,10 @@ public class DwQueryHelper {
             }
 
             dwQuery.getWhereConditionGroup().addCondition(prepareAreaWhereCondition(area));
-            if (!useTestFlwRole) {
-                dwQuery.getWhereConditionGroup().addCondition(prepareSkipTestFlwRole());
-            }
+        }
+
+        if (!useTestFlwRole && dwQuery.getWhereConditionGroup() != null) {
+            dwQuery.getWhereConditionGroup().addCondition(prepareSkipTestFlwRole());
         }
     }
 
