@@ -39,10 +39,6 @@ public class WhereConditionGroup {
     public void setConditionGroups(Set<WhereConditionGroup> conditionGroups) {
         this.conditionGroups = conditionGroups;
     }
-    
-    public void addConditionGroup() {
-        
-    }
 
     public Set<WhereCondition> getConditions() {
         return conditions;
