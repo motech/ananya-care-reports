@@ -19,8 +19,8 @@ VALUES (null, null, now(), now(), 1, 't', 'query');
 INSERT INTO dashboard_app.indicator(area_level_id, frequency_id, name, creation_date, modification_date, trend, denominator_id, numerator_id, user_id, is_computed, is_additive)
 VALUES (1, 5, 'Number of mothers who actually delivered during the period', now(), now(), 3, null, 1, 1, 't', 't');
 
-INSERT INTO dashboard_app.select_column(function, creation_date, modification_date, table_name, null_value, dw_query_id)
-VALUES ('Count', now(), now(), null, null, 1);
+INSERT INTO dashboard_app.select_column(function, creation_date, modification_date, table_name, null_value)
+VALUES ('Count', now(), now(), null, null);
 
 INSERT INTO dashboard_app.condition(field_1_id, creation_date, modification_date)
 VALUES (390, now(), now());

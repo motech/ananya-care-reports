@@ -185,7 +185,6 @@ CREATE TABLE IF NOT EXISTS dashboard_app.select_column
   modification_date timestamp without time zone,
   table_name character varying,
   null_value character varying,
-  dw_query_id integer not null,
   CONSTRAINT select_column_pk PRIMARY KEY (select_column_id),
   CONSTRAINT computed_field_fk FOREIGN KEY (computed_field_id)
       REFERENCES dashboard_app.computed_field(computed_field_id)
@@ -244,10 +243,18 @@ CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
   CONSTRAINT dw_query_uk UNIQUE (name)
 );
 
-ALTER TABLE dashboard_app.select_column
-    ADD CONSTRAINT select_column_dw_query_id FOREIGN KEY (dw_query_id)
-        REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-        ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
+CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_select_column
+(
+  select_column_id integer NOT NULL,
+  dw_query_id integer NOT NULL,
+  CONSTRAINT dw_query_select_column_pk PRIMARY KEY (select_column_id , dw_query_id ),
+  CONSTRAINT dw_query_select_column_dw_query_id FOREIGN KEY (dw_query_id)
+      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT dw_query_select_column_select_column_id FOREIGN KEY (select_column_id)
+      REFERENCES dashboard_app.select_column (select_column_id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS dashboard_app.combination
 (
