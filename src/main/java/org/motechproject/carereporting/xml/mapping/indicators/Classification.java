@@ -3,8 +3,8 @@ package org.motechproject.carereporting.xml.mapping.indicators;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "category")
-public class Category {
+@XmlRootElement(name = "classification")
+public class Classification {
 
     private String name;
 

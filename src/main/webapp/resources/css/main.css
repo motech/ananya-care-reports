@@ -143,11 +143,11 @@ form#indicatorForm div#formButtons {
     text-align: center;
 }
 
-.performance-summary-category {
+.performance-summary-classification {
     font-weight: bold;
 }
 
-.performance-summary-category td {
+.performance-summary-classification td {
     background-color: #FFFF98 !important;
 }
 

@@ -47,7 +47,7 @@ public class DashboardEntity extends AbstractEntity {
 
     @OneToOne(mappedBy = "dashboard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonView({ DashboardJsonView.class })
-    private IndicatorCategoryEntity indicatorCategory;
+    private IndicatorClassificationEntity indicatorClassification;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "report_dashboard", joinColumns = { @JoinColumn(name = "dashboard_id") },
@@ -87,11 +87,11 @@ public class DashboardEntity extends AbstractEntity {
         this.tabPosition = tabPosition;
     }
 
-    public IndicatorCategoryEntity getIndicatorCategory() {
-        return indicatorCategory;
+    public IndicatorClassificationEntity getIndicatorClassification() {
+        return indicatorClassification;
     }
 
-    public void setIndicatorCategory(IndicatorCategoryEntity indicatorCategory) {
-        this.indicatorCategory = indicatorCategory;
+    public void setIndicatorClassification(IndicatorClassificationEntity indicatorClassification) {
+        this.indicatorClassification = indicatorClassification;
     }
 }

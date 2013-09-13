@@ -491,33 +491,31 @@ CREATE TABLE IF NOT EXISTS dashboard_app.indicator
   CONSTRAINT indicator_name_uk UNIQUE (name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.indicator_category
+CREATE TABLE IF NOT EXISTS dashboard_app.indicator_classification
 (
-  indicator_category_id serial NOT NULL,
+  indicator_classification_id serial NOT NULL,
   dashboard_id integer NOT NULL,
   name character varying(100) NOT NULL,
-  short_code character varying(4) NOT NULL,
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
-  CONSTRAINT indicator_category_pk PRIMARY KEY (indicator_category_id ),
-  CONSTRAINT indicator_category_dashboard_id_fk FOREIGN KEY (dashboard_id)
+  CONSTRAINT indicator_classification_pk PRIMARY KEY (indicator_classification_id ),
+  CONSTRAINT indicator_classification_dashboard_id_fk FOREIGN KEY (dashboard_id)
       REFERENCES dashboard_app.dashboard (dashboard_id) MATCH FULL
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT indicator_category_name_uk UNIQUE (name ),
-  CONSTRAINT short_code_uk UNIQUE (short_code )
+  CONSTRAINT indicator_classification_name_uk UNIQUE (name )
 );
 
-CREATE TABLE IF NOT EXISTS dashboard_app.indicator_indicator_category
+CREATE TABLE IF NOT EXISTS dashboard_app.indicator_indicator_classification
 (
   indicator_id integer NOT NULL,
-  indicator_category_id integer NOT NULL,
-  CONSTRAINT indicator_indicator_category_indicator_category_id_fk FOREIGN KEY (indicator_category_id)
-      REFERENCES dashboard_app.indicator_category (indicator_category_id) MATCH FULL
+  indicator_classification_id integer NOT NULL,
+  CONSTRAINT indicator_indicator_classification_indicator_classification_id_fk FOREIGN KEY (indicator_classification_id)
+      REFERENCES dashboard_app.indicator_classification (indicator_classification_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT indicator_indicator_category_indicator_id_fk FOREIGN KEY (indicator_id)
+  CONSTRAINT indicator_indicator_classification_indicator_id_fk FOREIGN KEY (indicator_id)
       REFERENCES dashboard_app.indicator (indicator_id) MATCH FULL
       ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT indicator_indicator_category_uk UNIQUE (indicator_id , indicator_category_id )
+  CONSTRAINT indicator_indicator_classification_uk UNIQUE (indicator_id , indicator_classification_id )
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app.report_type

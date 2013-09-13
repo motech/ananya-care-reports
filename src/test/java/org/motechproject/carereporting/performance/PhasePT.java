@@ -27,8 +27,8 @@ import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsF
 import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDailyFrequencyScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDepthDateScenario;
-import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoriesScenario;
-import org.motechproject.carereporting.performance.scenario.simple.IndicatorCategoryGetCategoryScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorClassificationGetClassificationsScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorClassificationGetClassificationScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetCreationFormScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetQueriesScenario;
@@ -78,7 +78,7 @@ public abstract class PhasePT {
     private static final int PEEK_COEFFICIENT = 4;
     private static final int PARTS = 5;
     private static final int MILLISECONDS_PER_SECOND = 1000;
-    private static final String[] MOCK_AUTHORITIES = {"CAN_CREATE_COMPUTED_FIELDS", "CAN_EDIT_CATEGORIES"};
+    private static final String[] MOCK_AUTHORITIES = {"CAN_CREATE_COMPUTED_FIELDS", "CAN_EDIT_CLASSIFICATIONS"};
 
     private long elapsedTime;
     private int reportLookersCount;
@@ -293,13 +293,13 @@ public abstract class PhasePT {
     }
 
     @Test
-    public void testGetCategories() throws Exception {
-        runTest(IndicatorCategoryGetCategoriesScenario.class);
+    public void testGetClassifications() throws Exception {
+        runTest(IndicatorClassificationGetClassificationsScenario.class);
     }
 
     @Test
-    public void testGetCategory() throws Exception {
-        runTest(IndicatorCategoryGetCategoryScenario.class);
+    public void testGetClassification() throws Exception {
+        runTest(IndicatorClassificationGetClassificationScenario.class);
     }
 
     @Test

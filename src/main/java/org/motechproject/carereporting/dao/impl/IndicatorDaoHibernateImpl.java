@@ -16,11 +16,11 @@ public class IndicatorDaoHibernateImpl extends GenericDaoHibernateImpl<Indicator
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
+    public Set<IndicatorEntity> getIndicatorsByClassificationId(Integer classificationId) {
         Criteria criteria = getCurrentSession()
                 .createCriteria(IndicatorEntity.class)
-                .createAlias("categories", "category")
-                .add(Restrictions.eq("category.id", categoryId));
+                .createAlias("classifications", "classification")
+                .add(Restrictions.eq("classification.id", classificationId));
         return new LinkedHashSet<IndicatorEntity>(criteria.list());
     }
 

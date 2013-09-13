@@ -1,8 +1,8 @@
 <indicator additive="false">
     <name>Number of pregnant women nearing delivery in a period (15 day offset)</name>
-    <categories>
-        <category name="Birth preparedness plan"/>
-    </categories>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
     <owners>
         <reportviews>
             <reportview name="ALL"/>

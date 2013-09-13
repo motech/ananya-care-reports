@@ -46,10 +46,10 @@ public class IndicatorEntity extends AbstractEntity {
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "indicator_indicator_category", joinColumns = { @JoinColumn(name = "indicator_id") },
-            inverseJoinColumns = { @JoinColumn(name = "indicator_category_id") })
+    @JoinTable(name = "indicator_indicator_classification", joinColumns = { @JoinColumn(name = "indicator_id") },
+            inverseJoinColumns = { @JoinColumn(name = "indicator_classification_id") })
     @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
-    private Set<IndicatorCategoryEntity> categories;
+    private Set<IndicatorClassificationEntity> classifications;
 
     @NotNull
     @JoinColumn(name = "area_level_id", referencedColumnName = "level_id", nullable = false)
@@ -131,12 +131,12 @@ public class IndicatorEntity extends AbstractEntity {
         this.numerator = numerator;
     }
 
-    public Set<IndicatorCategoryEntity> getCategories() {
-        return categories;
+    public Set<IndicatorClassificationEntity> getClassifications() {
+        return classifications;
     }
 
-    public void setCategories(Set<IndicatorCategoryEntity> categories) {
-        this.categories = categories;
+    public void setClassifications(Set<IndicatorClassificationEntity> classifications) {
+        this.classifications = classifications;
     }
 
     public LevelEntity getAreaLevel() {

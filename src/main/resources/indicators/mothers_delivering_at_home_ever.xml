@@ -1,8 +1,8 @@
 <indicator additive="false">
     <name>Number of women who have delivered at home, ever</name>
-    <categories>
-        <category name="Birth preparedness plan"/>
-    </categories>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
     <owners>
         <user login="mrcaretest@gmail.com"/>
         <reportviews>

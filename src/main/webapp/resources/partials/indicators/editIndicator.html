@@ -12,24 +12,24 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th colspan="2">{{msg('indicators.form.categories.label')}}:</th>
+                                <th colspan="2">{{msg('indicators.form.classifications.label')}}:</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="item in selectedCategories">
+                            <tr ng-repeat="item in selectedClassifications">
                                 <td class="span9">
                                     <span>{{item.name}}</span>
                                 </td>
                                 <td class="span3">
-                                    <button class="span12 btn" ng-click="removeCategory($index)">{{msg('common.remove')}}</button>
+                                    <button class="span12 btn" ng-click="removeClassification($index)">{{msg('common.remove')}}</button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <label for="category">{{msg('indicators.form.classifiedAs')}}: </label>
-                        <select id="category" ng-model="selectedCategory" ng-options="item as item.name for item in listCategories" class="input-block-level"></select>
+                        <label for="classification">{{msg('indicators.form.classifiedAs')}}: </label>
+                        <select id="classification" ng-model="selectedClassification" ng-options="item as item.name for item in listClassifications" class="input-block-level"></select>
                         <div class="text-right">
-                            <button class="btn" ng-click="addCategory()" ng-disabled="listCategories.length <= 0">{{msg('indicators.form.addCategory')}}</button>
+                            <button class="btn" ng-click="addClassification()" ng-disabled="listClassifications.length <= 0">{{msg('indicators.form.addClassification')}}</button>
                         </div>
                         <label>{{msg('indicators.form.level.label')}}: </label>
                         <select ng-model="indicator.level" ng-options="item.id as item.name for item in formData.levels" class="input-block-level" required></select>
@@ -121,7 +121,7 @@
                     </div>
                     <div class="row-fluid" id="formButtons">
                         <div class="btn-group">
-                            <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || selectedCategories.length <= 0">{{msg('common.save')}}</button>
+                            <button class="btn btn-primary" ng-click="submit()" ng-disabled="form.$invalid || selectedClassifications.length <= 0">{{msg('common.save')}}</button>
                         </div>
                     </div>
                 </div>
@@ -130,8 +130,8 @@
                         <div class="nested-well">
                             <legend>{{msg('indicators.form.indicatorsList')}}:</legend>
                             <div>
-                                <label for="categoryName">{{msg('indicators.list.chooseCategory')}}</label>
-                                <select id="categoryName" class="input-block-level" ng-model="selectedCategory" ng-options="cat.id as cat.name for cat in category"></select>
+                                <label for="classificationName">{{msg('indicators.list.chooseClassification')}}</label>
+                                <select id="classificationName" class="input-block-level" ng-model="selectedClassification" ng-options="cat.id as cat.name for cat in classification"></select>
                             </div>
                             <table class="table table-hover" ng-show="indicators.length > 0">
                                 <thead>

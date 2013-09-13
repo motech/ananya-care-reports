@@ -4,7 +4,7 @@ import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
 import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.dao.FrequencyDao;
-import org.motechproject.carereporting.dao.IndicatorCategoryDao;
+import org.motechproject.carereporting.dao.IndicatorClassificationDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.LevelDao;
 import org.motechproject.carereporting.dao.ReportTypeDao;
@@ -25,7 +25,7 @@ import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
@@ -36,7 +36,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
-import org.motechproject.carereporting.xml.mapping.indicators.Category;
+import org.motechproject.carereporting.xml.mapping.indicators.Classification;
 import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
 import org.motechproject.carereporting.xml.mapping.indicators.GroupBy;
@@ -84,7 +84,7 @@ public class XmlIndicatorParser {
     private LevelDao levelDao;
 
     @Autowired
-    private IndicatorCategoryDao indicatorCategoryDao;
+    private IndicatorClassificationDao indicatorClassificationDao;
 
     @Autowired
     private ComparisonSymbolDao comparisonSymbolDao;
@@ -139,7 +139,7 @@ public class XmlIndicatorParser {
             indicatorEntity.setRoles(prepareRoles(indicator.getOwners().getRoles()));
         }
         indicatorEntity.setAreaLevel(findAreaLevelByLevelName(indicator.getArea().getLevel().toString()));
-        indicatorEntity.setCategories(prepareIndicatorCategories(indicator.getCategories()));
+        indicatorEntity.setClassifications(prepareIndicatorClassifications(indicator.getClassifications()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
         indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
         indicatorEntity.setTrend(indicator.getTrend());
@@ -179,13 +179,13 @@ public class XmlIndicatorParser {
         return roleEntities;
     }
 
-    private Set<IndicatorCategoryEntity> prepareIndicatorCategories(List<Category> categories) {
-        Set<IndicatorCategoryEntity> indicatorCategories = new HashSet<>();
-        for (Category category: categories) {
-            IndicatorCategoryEntity indicatorCategory = indicatorCategoryDao.getByField("name", category.getName());
-            indicatorCategories.add(indicatorCategory);
+    private Set<IndicatorClassificationEntity> prepareIndicatorClassifications(List<Classification> classifications) {
+        Set<IndicatorClassificationEntity> indicatorClassifications = new HashSet<>();
+        for (Classification classification: classifications) {
+            IndicatorClassificationEntity indicatorClassification = indicatorClassificationDao.getByField("name", classification.getName());
+            indicatorClassifications.add(indicatorClassification);
         }
-        return indicatorCategories;
+        return indicatorClassifications;
     }
 
     private Set<ReportEntity> prepareReports(List<Report> reports) {

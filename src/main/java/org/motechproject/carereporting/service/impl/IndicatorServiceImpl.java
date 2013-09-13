@@ -7,7 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
 import org.motechproject.carereporting.dao.DwQueryDao;
-import org.motechproject.carereporting.dao.IndicatorCategoryDao;
+import org.motechproject.carereporting.dao.IndicatorClassificationDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
@@ -27,7 +27,7 @@ import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
@@ -47,7 +47,7 @@ import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.dto.IndicatorWithTrendDto;
 import org.motechproject.carereporting.domain.dto.QueryCreationFormDto;
 import org.motechproject.carereporting.domain.dto.SelectColumnDto;
-import org.motechproject.carereporting.domain.dto.TrendIndicatorCategoryDto;
+import org.motechproject.carereporting.domain.dto.TrendIndicatorClassificationDto;
 import org.motechproject.carereporting.domain.dto.WhereConditionDto;
 import org.motechproject.carereporting.domain.dto.WhereGroupDto;
 import org.motechproject.carereporting.exception.CareNoValuesException;
@@ -116,7 +116,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private IndicatorTypeDao indicatorTypeDao;
 
     @Autowired
-    private IndicatorCategoryDao indicatorCategoryDao;
+    private IndicatorClassificationDao indicatorClassificationDao;
 
     @Autowired
     private IndicatorValueDao indicatorValueDao;
@@ -404,8 +404,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional
     @Override
-    public Set<IndicatorEntity> getIndicatorsByCategoryId(Integer categoryId) {
-        return indicatorDao.getIndicatorsByCategoryId(categoryId);
+    public Set<IndicatorEntity> getIndicatorsByClassificationId(Integer classificationId) {
+        return indicatorDao.getIndicatorsByClassificationId(classificationId);
     }
 
     @Transactional
@@ -437,7 +437,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     public IndicatorEntity createIndicatorEntityFromDto(IndicatorDto indicatorDto) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorEntity.setCategories(findIndicatorCategoryEntitiesFromDto(indicatorDto));
+        indicatorEntity.setClassifications(findIndicatorClassificationEntitiesFromDto(indicatorDto));
         indicatorEntity.setReports(indicatorDto.getReports());
         for (ReportEntity reportEntity : indicatorEntity.getReports()) {
             reportEntity.setIndicator(indicatorEntity);
@@ -505,17 +505,17 @@ public class IndicatorServiceImpl implements IndicatorService {
         // TODO : Is this function needed? If so, fill it out.
     }
 
-    private Set<IndicatorCategoryEntity> findIndicatorCategoryEntitiesFromDto(
+    private Set<IndicatorClassificationEntity> findIndicatorClassificationEntitiesFromDto(
             IndicatorDto indicatorDto) {
-        Set<IndicatorCategoryEntity> indicatorCategoryEntities = new LinkedHashSet<>();
+        Set<IndicatorClassificationEntity> indicatorClassificationEntities = new LinkedHashSet<>();
 
-        for (Integer indicatorCategoryId : indicatorDto.getCategories()) {
-            IndicatorCategoryEntity indicatorCategoryEntity = this.getIndicatorCategoryById(indicatorCategoryId);
+        for (Integer indicatorClassificationId : indicatorDto.getClassifications()) {
+            IndicatorClassificationEntity indicatorClassificationEntity = this.getIndicatorClassificationById(indicatorClassificationId);
 
-            indicatorCategoryEntities.add(indicatorCategoryEntity);
+            indicatorClassificationEntities.add(indicatorClassificationEntity);
         }
 
-        return indicatorCategoryEntities;
+        return indicatorClassificationEntities;
     }
 
     @Transactional(readOnly = false)
@@ -543,48 +543,48 @@ public class IndicatorServiceImpl implements IndicatorService {
         return indicatorTypeDao.getById(id);
     }
 
-    // IndicatorCategoryEntity
+    // IndicatorClassificationEntity
 
     @Transactional
     @Override
-    public Set<IndicatorCategoryEntity> getAllIndicatorCategories() {
-        return indicatorCategoryDao.getAll();
+    public Set<IndicatorClassificationEntity> getAllIndicatorClassifications() {
+        return indicatorClassificationDao.getAll();
     }
 
     @Transactional
     @Override
-    public IndicatorCategoryEntity getIndicatorCategoryById(Integer id) {
-        return indicatorCategoryDao.getById(id);
+    public IndicatorClassificationEntity getIndicatorClassificationById(Integer id) {
+        return indicatorClassificationDao.getById(id);
     }
 
     @Transactional(readOnly = false)
     @Override
-    public void createNewIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
-        DashboardEntity dashboardForCategory = createDashboardForNewIndicatorCategory(indicatorCategoryEntity.getName());
-        indicatorCategoryEntity.setDashboard(dashboardForCategory);
-        indicatorCategoryDao.save(indicatorCategoryEntity);
+    public void createNewIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
+        DashboardEntity dashboardForClassification = createDashboardForNewIndicatorClassification(indicatorClassificationEntity.getName());
+        indicatorClassificationEntity.setDashboard(dashboardForClassification);
+        indicatorClassificationDao.save(indicatorClassificationEntity);
     }
 
-    private DashboardEntity createDashboardForNewIndicatorCategory(String name) {
+    private DashboardEntity createDashboardForNewIndicatorClassification(String name) {
         Short newDashboardTabPosition = dashboardService.getTabPositionForNewDashboard();
         return new DashboardEntity(name, newDashboardTabPosition);
     }
 
     @Transactional(readOnly = false)
     @Override
-    public void updateIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
-        indicatorCategoryEntity.getDashboard().setName(indicatorCategoryEntity.getName());
-        indicatorCategoryDao.update(indicatorCategoryEntity);
+    public void updateIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
+        indicatorClassificationEntity.getDashboard().setName(indicatorClassificationEntity.getName());
+        indicatorClassificationDao.update(indicatorClassificationEntity);
     }
 
     @Transactional(readOnly = false)
     @Override
-    public void deleteIndicatorCategory(IndicatorCategoryEntity indicatorCategoryEntity) {
-        for (IndicatorEntity indicatorEntity : indicatorCategoryEntity.getIndicators()) {
-            indicatorEntity.getCategories().remove(indicatorCategoryEntity);
+    public void deleteIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
+        for (IndicatorEntity indicatorEntity : indicatorClassificationEntity.getIndicators()) {
+            indicatorEntity.getClassifications().remove(indicatorClassificationEntity);
         }
 
-        indicatorCategoryDao.remove(indicatorCategoryEntity);
+        indicatorClassificationDao.remove(indicatorClassificationEntity);
     }
 
     @Transactional
@@ -633,24 +633,24 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional
-    public Set<TrendIndicatorCategoryDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId, Integer frequencyId) {
-        Set<TrendIndicatorCategoryDto> categories = new LinkedHashSet<>();
-        Set<IndicatorCategoryEntity> indicatorCategories = getAllIndicatorCategories();
+    public Set<TrendIndicatorClassificationDto> getIndicatorsWithTrendsUnderUser(UserEntity user, Date startDate, Date endDate, Integer areaId, Integer frequencyId) {
+        Set<TrendIndicatorClassificationDto> classifications = new LinkedHashSet<>();
+        Set<IndicatorClassificationEntity> indicatorClassifications = getAllIndicatorClassifications();
         AreaEntity area = areaService.getAreaById(areaId);
 
-        for (IndicatorCategoryEntity indicatorCategory: indicatorCategories) {
-            TrendIndicatorCategoryDto trendCategory = new TrendIndicatorCategoryDto(indicatorCategory.getName());
-            categories.add(trendCategory);
-            for (IndicatorEntity indicator: indicatorCategory.getIndicators()) {
+        for (IndicatorClassificationEntity indicatorClassification: indicatorClassifications) {
+            TrendIndicatorClassificationDto trendClassification = new TrendIndicatorClassificationDto(indicatorClassification.getName());
+            classifications.add(trendClassification);
+            for (IndicatorEntity indicator: indicatorClassification.getIndicators()) {
 
                 if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
                             getTrendForIndicator(area, indicator, frequencyId, startDate, endDate));
-                    trendCategory.getIndicators().add(trendIndicator);
+                    trendClassification.getIndicators().add(trendIndicator);
                 }
             }
         }
-        return categories;
+        return classifications;
     }
 
     private boolean isIndicatorAccessibleForUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
@@ -744,11 +744,11 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     @Transactional(readOnly = false)
-    public void calculateAllIndicators(Integer categoryId) {
+    public void calculateAllIndicators(Integer classificationId) {
         Set<IndicatorEntity> indicatorEntities;
 
-        if (categoryId != 0) {
-            indicatorEntities = indicatorCategoryDao.getById(categoryId).getIndicators();
+        if (classificationId != 0) {
+            indicatorEntities = indicatorClassificationDao.getById(classificationId).getIndicators();
         } else {
             indicatorEntities = indicatorDao.getAll();
         }
@@ -763,7 +763,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public IndicatorCreationFormDto getIndicatorCreationFormDto() {
-        Set<IndicatorCategoryEntity> categoryEntities = this.getAllIndicatorCategories();
+        Set<IndicatorClassificationEntity> classificationEntities = this.getAllIndicatorClassifications();
         Set<RoleEntity> roleEntities = userService.getAllRoles();
         Set<ReportTypeEntity> reportTypes = reportService.getAllReportTypes();
         Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
@@ -771,7 +771,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<DwQueryEntity> dwQueries = this.getAllTopLevelDwQueries();
 
         return new IndicatorCreationFormDto(
-                categoryEntities,
+                classificationEntities,
                 roleEntities,
                 levelEntities,
                 frequencyEntities,

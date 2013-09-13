@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.carereporting.domain.CronTaskEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
@@ -36,11 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorControllerTest {
 
-    private static final String CREATE_INDICATOR_JSON = "{\"level\":1,\"frequency\":\"1\",\"name\":\"name\",\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
-    private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":2,\"owners\":[1],\"categories\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
-    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":3,\"owners\":[1],\"categories\":[2]}";
-    private static final String CREATE_CATEGORY_JSON = "{\"name\":\"Name\",\"shortCode\":\"Code\"}";
-    private static final String UPDATE_CATEGORY_JSON = "{\"name\":\"New name\",\"shortCode\":\"Code\"}";
+    private static final String CREATE_INDICATOR_JSON = "{\"level\":1,\"frequency\":\"1\",\"name\":\"name\",\"owners\":[1],\"classifications\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String CREATE_INDICATOR_JSON_NO_NAME = "{\"values\":[],\"area\":1,\"frequency\":\"30\",\"indicatorType\":3,\"complexCondition\":1,\"computedField\":399,\"trend\":2,\"owners\":[1],\"classifications\":[1],\"reports\":[{\"reportType\":{\"id\":1,\"name\":\"Bar Chart\"}}]}";
+    private static final String UPDATE_INDICATOR_JSON = "{\"values\":[],\"area\":1,\"frequency\":30,\"indicatorType\":3,\"complexCondition\":1,\"id\":1,\"name\":\"new name\",\"computedField\":453,\"reports\":[{\"reportType\":{\"id\":3,\"name\":\"Pie Chart\"},\"id\":1}],\"trend\":3,\"owners\":[1],\"classifications\":[2]}";
+    private static final String CREATE_CLASSIFICATION_JSON = "{\"name\":\"Name\"}";
+    private static final String UPDATE_CLASSIFICATION_JSON = "{\"name\":\"New name\"}";
 
     @Mock
     private IndicatorService indicatorService;
@@ -79,24 +79,24 @@ public class IndicatorControllerTest {
     }
 
     @Test
-    public void testGetIndicatorsByCategoryId() throws Exception {
+    public void testGetIndicatorsByClassificationId() throws Exception {
         String indicatorName = "test indicator";
         Integer indicatorId = 1;
-        Integer categoryId = 1;
+        Integer classificationId = 1;
 
         Set<IndicatorEntity> indicators = new LinkedHashSet<IndicatorEntity>();
         IndicatorEntity indicator = new IndicatorEntity();
         indicator.setName(indicatorName);
         indicator.setId(indicatorId);
         indicators.add(indicator);
-        Mockito.when(indicatorService.getIndicatorsByCategoryId(categoryId)).thenReturn(indicators);
+        Mockito.when(indicatorService.getIndicatorsByClassificationId(classificationId)).thenReturn(indicators);
 
-        mockMvc.perform(get("/api/indicator/filter/" + categoryId))
+        mockMvc.perform(get("/api/indicator/filter/" + classificationId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(indicatorName))
                 .andExpect(jsonPath("$[0].id").value(indicatorId));
 
-        verify(indicatorService, times(1)).getIndicatorsByCategoryId(categoryId);
+        verify(indicatorService, times(1)).getIndicatorsByClassificationId(classificationId);
     }
 
     @Test
@@ -184,47 +184,47 @@ public class IndicatorControllerTest {
     }
 
     @Test
-    public void testGetIndicatorCategories() throws Exception {
-        String categoryName = "indicator category";
-        Integer categoryId = 1;
+    public void testGetIndicatorClassifications() throws Exception {
+        String classificationName = "indicator classification";
+        Integer classificationId = 1;
 
-        Set<IndicatorCategoryEntity> categories = new LinkedHashSet<>();
-        IndicatorCategoryEntity category = new IndicatorCategoryEntity(categoryName);
-        category.setId(categoryId);
-        categories.add(category);
-        Mockito.when(indicatorService.getAllIndicatorCategories()).thenReturn(categories);
+        Set<IndicatorClassificationEntity> classifications = new LinkedHashSet<>();
+        IndicatorClassificationEntity classification = new IndicatorClassificationEntity(classificationName);
+        classification.setId(classificationId);
+        classifications.add(classification);
+        Mockito.when(indicatorService.getAllIndicatorClassifications()).thenReturn(classifications);
 
-        mockMvc.perform(get("/api/indicator/category"))
+        mockMvc.perform(get("/api/indicator/classification"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value(categoryName))
-                .andExpect(jsonPath("$[0].id").value(categoryId));
+                .andExpect(jsonPath("$[0].name").value(classificationName))
+                .andExpect(jsonPath("$[0].id").value(classificationId));
 
-        verify(indicatorService, times(1)).getAllIndicatorCategories();
+        verify(indicatorService, times(1)).getAllIndicatorClassifications();
     }
 
     @Test
-    public void testGetIndicatorCategoryById() throws Exception {
-        String categoryName = "indicator category";
-        Integer categoryId = 1;
+    public void testGetIndicatorClassificationById() throws Exception {
+        String classificationName = "indicator classification";
+        Integer classificationId = 1;
 
-        IndicatorCategoryEntity category = new IndicatorCategoryEntity(categoryName);
-        category.setId(categoryId);
-        Mockito.when(indicatorService.getIndicatorCategoryById(categoryId)).thenReturn(category);
+        IndicatorClassificationEntity classification = new IndicatorClassificationEntity(classificationName);
+        classification.setId(classificationId);
+        Mockito.when(indicatorService.getIndicatorClassificationById(classificationId)).thenReturn(classification);
 
-        mockMvc.perform(get("/api/indicator/category/" + categoryId))
+        mockMvc.perform(get("/api/indicator/classification/" + classificationId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(categoryName))
-                .andExpect(jsonPath("$.id").value(categoryId));
+                .andExpect(jsonPath("$.name").value(classificationName))
+                .andExpect(jsonPath("$.id").value(classificationId));
 
-        verify(indicatorService, times(1)).getIndicatorCategoryById(categoryId);
+        verify(indicatorService, times(1)).getIndicatorClassificationById(classificationId);
     }
 
     @Test
-    public void testDeleteIndicatorCategory() throws Exception {
-        Integer categoryId = 1;
-        mockMvc.perform(delete("/api/indicator/category/" + categoryId))
+    public void testDeleteIndicatorClassification() throws Exception {
+        Integer classificationId = 1;
+        mockMvc.perform(delete("/api/indicator/classification/" + classificationId))
                 .andExpect(status().isOk());
-        verify(indicatorService, times(1)).deleteIndicatorCategory((IndicatorCategoryEntity) anyObject());
+        verify(indicatorService, times(1)).deleteIndicatorClassification((IndicatorClassificationEntity) anyObject());
     }
 
     @Test
@@ -240,27 +240,27 @@ public class IndicatorControllerTest {
     }
 
     @Test
-    public void testCreateIndicatorCategory() throws Exception {
-        mockMvc.perform(put("/api/indicator/category")
-                .content(CREATE_CATEGORY_JSON)
+    public void testCreateIndicatorClassification() throws Exception {
+        mockMvc.perform(put("/api/indicator/classification")
+                .content(CREATE_CLASSIFICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(indicatorService, times(1)).createNewIndicatorCategory((IndicatorCategoryEntity) anyObject());
+        verify(indicatorService, times(1)).createNewIndicatorClassification((IndicatorClassificationEntity) anyObject());
     }
 
     @Test
-    public void testUpdateIndicatorCategory() throws Exception {
-        Integer categoryId = 1;
-        String categoryName = "name";
-        IndicatorCategoryEntity indicatorCategory = new IndicatorCategoryEntity(categoryName);
-        Mockito.when(indicatorService.getIndicatorCategoryById(categoryId)).thenReturn(indicatorCategory);
-        mockMvc.perform(put("/api/indicator/category/" + categoryId)
-                .content(UPDATE_CATEGORY_JSON)
+    public void testUpdateIndicatorClassification() throws Exception {
+        Integer classificationId = 1;
+        String classificationName = "name";
+        IndicatorClassificationEntity indicatorClassification = new IndicatorClassificationEntity(classificationName);
+        Mockito.when(indicatorService.getIndicatorClassificationById(classificationId)).thenReturn(indicatorClassification);
+        mockMvc.perform(put("/api/indicator/classification/" + classificationId)
+                .content(UPDATE_CLASSIFICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(indicatorService, times(1)).updateIndicatorCategory(indicatorCategory);
+        verify(indicatorService, times(1)).updateIndicatorClassification(indicatorClassification);
     }
 
     @Test

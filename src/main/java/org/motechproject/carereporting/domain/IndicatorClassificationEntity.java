@@ -20,35 +20,30 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-@Table(name = "indicator_category")
+@Table(name = "indicator_classification")
 @AttributeOverrides({
-        @AttributeOverride(name = "id", column = @Column(name = "indicator_category_id"))
+        @AttributeOverride(name = "id", column = @Column(name = "indicator_classification_id"))
 })
-public class IndicatorCategoryEntity extends AbstractEntity {
+public class IndicatorClassificationEntity extends AbstractEntity {
 
     @NotNull
     @Column (name = "name")
     @JsonView({ BaseView.class })
     private String name;
 
-    @NotNull
-    @Column (name = "short_code", unique = true)
-    @JsonView({ BaseView.class })
-    private String shortCode;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "dashboard_id")
     private DashboardEntity dashboard;
 
-    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "classifications", fetch = FetchType.LAZY)
     @JsonView({ TrendJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
     private Set<IndicatorEntity> indicators;
 
-    public IndicatorCategoryEntity() {
+    public IndicatorClassificationEntity() {
 
     }
 
-    public IndicatorCategoryEntity(String name) {
+    public IndicatorClassificationEntity(String name) {
         this.name = name;
     }
 
@@ -58,14 +53,6 @@ public class IndicatorCategoryEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getShortCode() {
-        return shortCode;
-    }
-
-    public void setShortCode(String shortName) {
-        this.shortCode = shortName;
     }
 
     @JsonIgnore

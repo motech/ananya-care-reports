@@ -34,5 +34,5 @@ VALUES (1, 3);
 INSERT INTO dashboard_app.report(indicator_id, report_type_id, label_x, label_y, creation_date, modification_date)
 VALUES (1, 2, 'Time', 'Value', now(), now());
 
-INSERT INTO dashboard_app.indicator_indicator_category(indicator_id, indicator_category_id)
+INSERT INTO dashboard_app.indicator_indicator_classification(indicator_id, indicator_classification_id)
 VALUES (1, 1);

@@ -1,8 +1,8 @@
 <indicator additive="false">
     <name>Mothers receiving at least 2 visits in last trimester</name>
-    <categories>
-        <category name="Birth preparedness plan"/>
-    </categories>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
     <owners>
         <reportviews>
             <reportview name="Program Manager"/>

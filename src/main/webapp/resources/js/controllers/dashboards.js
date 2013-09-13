@@ -15,7 +15,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.startDate = moment().subtract('months', 1);
     $scope.endDate = moment();
 
-    $scope.indicatorCategories = [];
+    $scope.indicatorClassifications = [];
     $scope.charts = {};
     $scope.frequencies = [];
 
@@ -76,11 +76,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchIndicators();
 
-    $scope.getIndicatorsForCategory = function(indicatorCategory){
+    $scope.getIndicatorsForClassification = function(indicatorClassification){
     var indicators = [];
         for (var i = 0; i < $scope.indicators.length ; i++){
-            for (var j = 0; j < $scope.indicators[i].categories.length ; j++){
-                if($scope.indicators[i].categories[j].name == indicatorCategory.name){
+            for (var j = 0; j < $scope.indicators[i].classifications.length ; j++){
+                if($scope.indicators[i].classifications[j].name == indicatorClassification.name){
                     indicators.push($scope.indicators[i]);
                 }
             }
@@ -90,10 +90,10 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.prepareAllReportRows = function() {
         $scope.allReportsRows = [];
-        if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
+        if ($scope.dashboard == undefined || $scope.dashboard.indicatorClassification == undefined) {
             return;
         }
-        var indicators = $scope.getIndicatorsForCategory($scope.dashboard.indicatorCategory);
+        var indicators = $scope.getIndicatorsForClassification($scope.dashboard.indicatorClassification);
         $scope.currentTabIndicators = indicators;
         for (var i = 0; i < indicators.length; i++) {
             var indicator = indicators[i];
@@ -143,7 +143,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     };
 
     $scope.getPageCount = function() {
-        if ($scope.dashboard == undefined || $scope.dashboard.indicatorCategory == undefined) {
+        if ($scope.dashboard == undefined || $scope.dashboard.indicatorClassification == undefined) {
             return 0;
         }
         return Math.ceil($scope.currentTabIndicators.length/$scope.reportsPerPage);
@@ -310,7 +310,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchDashboards();
 
-    $scope.trendPerCategory = {};
+    $scope.trendPerClassification = {};
 
     $scope.fetchTrends = function() {
     if($scope.areaId != undefined) {
@@ -322,21 +322,21 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 '&areaId=' + $scope.areaId +
                 '&frequencyId=' + $scope.frequencyId;
         $http.get(url)
-                .success(function(indicatorCategories) {
-            $scope.indicatorCategories = indicatorCategories;
-            $scope.trendPerCategory = {};
+                .success(function(indicatorClassifications) {
+            $scope.indicatorClassifications = indicatorClassifications;
+            $scope.trendPerClassification = {};
 
-            for (var c = 0; c < $scope.indicatorCategories.length; c++) {
-                if (!$scope.indicatorCategories.hasOwnProperty(c)) {
+            for (var c = 0; c < $scope.indicatorClassifications.length; c++) {
+                if (!$scope.indicatorClassifications.hasOwnProperty(c)) {
                     continue;
                 }
 
-                var category = $scope.indicatorCategories[c];
-                var key = 'category_' + category.name;
-                var indicators = $scope.getIndicatorsForCategory(category);
+                var classification = $scope.indicatorClassifications[c];
+                var key = 'classification_' + classification.name;
+                var indicators = $scope.getIndicatorsForClassification(classification);
                 for (var i = 0; i < indicators.length; i++) {
-                    if ($scope.trendPerCategory[key] === undefined) {
-                        $scope.trendPerCategory[key] = {
+                    if ($scope.trendPerClassification[key] === undefined) {
+                        $scope.trendPerClassification[key] = {
                             negative: 0,
                             positive: 0
                         };
@@ -344,9 +344,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
                     var trend = indicators[i].trend;
                     if (trend < 0) {
-                        $scope.trendPerCategory[key].negative++;
+                        $scope.trendPerClassification[key].negative++;
                     } else if (trend > 0) {
-                        $scope.trendPerCategory[key].positive++;
+                        $scope.trendPerClassification[key].positive++;
                     }
                 }
             }
@@ -360,8 +360,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $scope.maps[i] = {
             startDate: moment().subtract('months', 1),
             endDate: moment(),
-            selectedIndicatorCategoryId: null,
-            selectedCategoryIndicators: [],
+            selectedIndicatorClassificationId: null,
+            selectedClassificationIndicators: [],
             selectedIndicatorId: null,
             containerId: "mapReport" + i,
             frequencyId: 1,
@@ -387,29 +387,29 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         });
     }
 
-    $scope.fetchCategoryIndicators = function(map) {
-        if(map.selectedCategory != null) {
-             map.selectedCategoryIndicators = map.selectedCategory.indicators;
-            if(map.selectedCategoryIndicators.length > 0) {
-                map.selectedIndicatorId = map.selectedCategory.indicators[0].id;
+    $scope.fetchClassificationIndicators = function(map) {
+        if(map.selectedClassification != null) {
+             map.selectedClassificationIndicators = map.selectedClassification.indicators;
+            if(map.selectedClassificationIndicators.length > 0) {
+                map.selectedIndicatorId = map.selectedClassification.indicators[0].id;
              }
         }
     };
 
-    $scope.fetchCategories = function() {
-        $http.get('api/indicator/category').success(function(indicatorCategories) {
-            $scope.mapCategories = indicatorCategories;
-            $scope.maps[0].selectedCategory = $scope.maps[1].selectedCategory = indicatorCategories[0];
-            $scope.$watch('maps[0].selectedCategory', function(newValue, oldValue) {
-                $scope.fetchCategoryIndicators($scope.maps[0]);
+    $scope.fetchClassifications = function() {
+        $http.get('api/indicator/classification').success(function(indicatorClassifications) {
+            $scope.mapClassifications = indicatorClassifications;
+            $scope.maps[0].selectedClassification = $scope.maps[1].selectedClassification = indicatorClassifications[0];
+            $scope.$watch('maps[0].selectedClassification', function(newValue, oldValue) {
+                $scope.fetchClassificationIndicators($scope.maps[0]);
             }, true);
-            $scope.$watch('maps[1].selectedCategory', function(newValue, oldValue) {
-                $scope.fetchCategoryIndicators($scope.maps[1]);
+            $scope.$watch('maps[1].selectedClassification', function(newValue, oldValue) {
+                $scope.fetchClassificationIndicators($scope.maps[1]);
             }, true);
         });
     };
 
-    $scope.fetchCategories();
+    $scope.fetchClassifications();
 
     $scope.fetchMapReport = function(map, stateCode) {
         if(map.selectedIndicatorId != null) {

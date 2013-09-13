@@ -3,7 +3,7 @@ package org.motechproject.carereporting.domain.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -14,7 +14,7 @@ import java.util.Set;
 public class IndicatorCreationFormDto {
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
-    private Set<IndicatorCategoryEntity> categories;
+    private Set<IndicatorClassificationEntity> classifications;
 
     @JsonView({ IndicatorJsonView.CreationForm.class })
     private Set<RoleEntity> roles;
@@ -35,10 +35,10 @@ public class IndicatorCreationFormDto {
 
     }
 
-    public IndicatorCreationFormDto(Set<IndicatorCategoryEntity> categories, Set<RoleEntity> roles,
+    public IndicatorCreationFormDto(Set<IndicatorClassificationEntity> classifications, Set<RoleEntity> roles,
                                     Set<LevelEntity> levels, Set<FrequencyEntity> frequencies, Set<ReportTypeEntity> reportTypes,
                                     Set<DwQueryEntity> dwQueries) {
-        this.categories = categories;
+        this.classifications = classifications;
         this.roles = roles;
         this.levels = levels;
         this.frequencies = frequencies;
@@ -62,12 +62,12 @@ public class IndicatorCreationFormDto {
         this.frequencies = frequencies;
     }
 
-    public Set<IndicatorCategoryEntity> getCategories() {
-        return categories;
+    public Set<IndicatorClassificationEntity> getClassifications() {
+        return classifications;
     }
 
-    public void setCategories(Set<IndicatorCategoryEntity> categories) {
-        this.categories = categories;
+    public void setClassifications(Set<IndicatorClassificationEntity> classifications) {
+        this.classifications = classifications;
     }
 
     public Set<RoleEntity> getRoles() {

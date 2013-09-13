@@ -1,8 +1,8 @@
 <indicator additive="true">
     <name>Number of children delivered in the period</name>
-    <categories>
-        <category name="Birth preparedness plan"/>
-    </categories>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
     <owners>
         <user login="mrcaretest@gmail.com"/>
         <reportviews>

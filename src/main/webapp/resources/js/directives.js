@@ -62,13 +62,13 @@
                    restrict: 'A',
                    link: function (scope, element, attrs) {
                         var updateTrends = function() {
-                            var indicatorCategory, tr, spanTrend, indicator,
+                            var indicatorClassification, tr, spanTrend, indicator,
                                 trend, labelClass, calc;
                             element.html('');
-                            if (scope.indicatorCategories == undefined) {
+                            if (scope.indicatorClassifications == undefined) {
                                 return;
                             }
-                            scope.indicatorCategories.sort(function(a, b) {
+                            scope.indicatorClassifications.sort(function(a, b) {
                                 if (a.name > b.name) {
                                     return 1;
                                 } else if (a.name < b.name) {
@@ -77,15 +77,15 @@
                                     return 0;
                                 }
                             });
-                            for (var c in scope.indicatorCategories) {
-                                if (!scope.indicatorCategories.hasOwnProperty(c)) {
+                            for (var c in scope.indicatorClassifications) {
+                                if (!scope.indicatorClassifications.hasOwnProperty(c)) {
                                     continue;
                                 }
-                                indicatorCategory = scope.indicatorCategories[c];
-                                tr = angular.element("<tr/>").addClass("performance-summary-category").append(
-                                    angular.element("<td/>").attr("colspan", "2").html(indicatorCategory.name));
+                                indicatorClassification = scope.indicatorClassifications[c];
+                                tr = angular.element("<tr/>").addClass("performance-summary-classification").append(
+                                    angular.element("<td/>").attr("colspan", "2").html(indicatorClassification.name));
                                 element.append(tr);
-                                indicatorCategory.indicators.sort(function(a, b) {
+                                indicatorClassification.indicators.sort(function(a, b) {
                                     if (a.indicator.name > b.indicator.name) {
                                         return 1;
                                     } else if (a.indicator.name < b.indicator.name) {
@@ -94,11 +94,11 @@
                                         return 0;
                                     }
                                 });
-                                for (var i in indicatorCategory.indicators) {
-                                    if (!indicatorCategory.indicators.hasOwnProperty(i)) {
+                                for (var i in indicatorClassification.indicators) {
+                                    if (!indicatorClassification.indicators.hasOwnProperty(i)) {
                                         continue;
                                     }
-                                    indicator = indicatorCategory.indicators[i];
+                                    indicator = indicatorClassification.indicators[i];
                                     switch (indicator.trend) {
                                     case 0:
                                         trend = scope.msg('dashboards.trends.trend.neutral');
@@ -129,7 +129,7 @@
                             }
                         }
 
-                        scope.$watch('indicatorCategories', function(oldVal, newVal) {
+                        scope.$watch('indicatorClassifications', function(oldVal, newVal) {
                             updateTrends();
                        });
                    }

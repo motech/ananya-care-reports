@@ -49,7 +49,7 @@
         <script src="resources/js/services.js" type="text/javascript"></script>
         <script src="resources/js/filters.js" type="text/javascript"></script>
         <script src="resources/js/controllers/languages.js" type="text/javascript"></script>
-        <script src="resources/js/controllers/categories.js" type="text/javascript"></script>
+        <script src="resources/js/controllers/classifications.js" type="text/javascript"></script>
         <script src="resources/js/controllers/dashboards.js" type="text/javascript"></script>
         <script src="resources/js/controllers/forms.js" type="text/javascript"></script>
         <script src="resources/js/controllers/queries.js" type="text/javascript"></script>

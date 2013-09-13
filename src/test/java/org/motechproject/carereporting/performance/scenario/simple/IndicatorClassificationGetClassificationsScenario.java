@@ -4,11 +4,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class IndicatorCategoryGetCategoriesScenario extends AbstractScenario {
+public class IndicatorClassificationGetClassificationsScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/indicator/category")
+                get("/api/indicator/classification")
         );
     }
 

@@ -3,7 +3,7 @@ package org.motechproject.carereporting.web.controller;
 import org.apache.log4j.Logger;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.dto.DwQueryDto;
@@ -120,12 +120,12 @@ public class IndicatorController extends BaseController {
         indicatorService.createNewDwQuery(dwQueryDto);
     }
 
-    @RequestMapping(value = "/filter/{categoryId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/filter/{classificationId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String getIndicatorListByCategoryId(@PathVariable Integer categoryId) {
+    public String getIndicatorListByClassificationId(@PathVariable Integer classificationId) {
         return this.writeAsString(BaseView.class,
-                indicatorService.getIndicatorsByCategoryId(categoryId));
+                indicatorService.getIndicatorsByClassificationId(classificationId));
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -186,64 +186,63 @@ public class IndicatorController extends BaseController {
     public IndicatorTypeEntity getIndicatorType(@PathVariable Integer indicatorTypeId) {
         return indicatorService.getIndicatorTypeById(indicatorTypeId);
     }
-    // IndicatorCategoryEntity
+    // IndicatorClassificationEntity
 
-    @RequestMapping(value = "/category", method = RequestMethod.GET,
+    @RequestMapping(value = "/classification", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @Transactional
-    public String getIndicatorCategoryList() {
+    public String getIndicatorClassificationList() {
         return this.writeAsString(IndicatorJsonView.ListIndicatorNames.class,
-                indicatorService.getAllIndicatorCategories());
+                indicatorService.getAllIndicatorClassifications());
     }
 
-    @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.GET,
+    @RequestMapping(value = "/classification/{indicatorClassificationId}", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
-    public String getIndicatoryCategory(@PathVariable Integer indicatorCategoryId) {
-        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class, indicatorService.getIndicatorCategoryById(indicatorCategoryId));
+    @PreAuthorize("hasRole('CAN_EDIT_CLASSIFICATIONS')")
+    public String getIndicatoryClassification(@PathVariable Integer indicatorClassificationId) {
+        return this.writeAsString(IndicatorJsonView.IndicatorDetails.class, indicatorService.getIndicatorClassificationById(indicatorClassificationId));
     }
 
-    @RequestMapping(value = "/category", method = RequestMethod.PUT,
+    @RequestMapping(value = "/classification", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
-    public void createNewIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
+    @PreAuthorize("hasRole('CAN_EDIT_CLASSIFICATIONS')")
+    public void createNewIndicatorClassification(@RequestBody @Valid IndicatorClassificationEntity indicatorClassificationEntity,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
-        indicatorService.createNewIndicatorCategory(indicatorCategoryEntity);
+        indicatorService.createNewIndicatorClassification(indicatorClassificationEntity);
     }
 
-    @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.PUT,
+    @RequestMapping(value = "/classification/{indicatorClassificationId}", method = RequestMethod.PUT,
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = false)
-    @PreAuthorize("hasRole('CAN_EDIT_CATEGORIES')")
-    public void updateIndicatorCategory(@RequestBody @Valid IndicatorCategoryEntity indicatorCategoryEntity,
-            BindingResult bindingResult, @PathVariable Integer indicatorCategoryId) {
+    @PreAuthorize("hasRole('CAN_EDIT_CLASSIFICATIONS')")
+    public void updateIndicatorClassification(@RequestBody @Valid IndicatorClassificationEntity indicatorClassificationEntity,
+            BindingResult bindingResult, @PathVariable Integer indicatorClassificationId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        IndicatorCategoryEntity foundIndicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
+        IndicatorClassificationEntity foundIndicatorClassificationEntity = indicatorService.getIndicatorClassificationById(indicatorClassificationId);
 
-        foundIndicatorCategoryEntity.setName(indicatorCategoryEntity.getName());
-        foundIndicatorCategoryEntity.setShortCode(indicatorCategoryEntity.getShortCode());
-        indicatorService.updateIndicatorCategory(foundIndicatorCategoryEntity);
+        foundIndicatorClassificationEntity.setName(indicatorClassificationEntity.getName());
+        indicatorService.updateIndicatorClassification(foundIndicatorClassificationEntity);
     }
 
-    @RequestMapping(value = "/category/{indicatorCategoryId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/classification/{indicatorClassificationId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = false)
-    public void deleteIndicatorCategory(@PathVariable Integer indicatorCategoryId) {
-        IndicatorCategoryEntity indicatorCategoryEntity = indicatorService.getIndicatorCategoryById(indicatorCategoryId);
+    public void deleteIndicatorClassification(@PathVariable Integer indicatorClassificationId) {
+        IndicatorClassificationEntity indicatorClassificationEntity = indicatorService.getIndicatorClassificationById(indicatorClassificationId);
 
-        indicatorService.deleteIndicatorCategory(indicatorCategoryEntity);
+        indicatorService.deleteIndicatorClassification(indicatorClassificationEntity);
     }
 
     @RequestMapping(value = "/calculator/frequencies", method = RequestMethod.GET)
@@ -357,9 +356,9 @@ public class IndicatorController extends BaseController {
         cronService.updateDateDepth(newDateDepth);
     }
 
-    @RequestMapping(value = "calculator/recalculate/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "calculator/recalculate/{classificationId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void recalculateIndicators(@PathVariable Integer categoryId) {
-        indicatorService.calculateAllIndicators(categoryId);
+    public void recalculateIndicators(@PathVariable Integer classificationId) {
+        indicatorService.calculateAllIndicators(classificationId);
     }
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrendIndicatorCategoryDto implements Serializable {
+public class TrendIndicatorClassificationDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
@@ -17,7 +17,7 @@ public class TrendIndicatorCategoryDto implements Serializable {
     @JsonView(TrendJsonView.class)
     private final String name;
 
-    public TrendIndicatorCategoryDto(String name) {
+    public TrendIndicatorClassificationDto(String name) {
         this.name = name;
     }
 

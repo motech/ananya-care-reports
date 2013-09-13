@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.carereporting.domain.FrequencyEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
@@ -33,8 +33,8 @@ import static org.junit.Assert.assertNotNull;
 public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     private static final int EXPECTED_INDICATORS_COUNT = 1;
-    private static final int CATEGORY_ID = 1;
-    private static final int EXPECTED_CATEGORY_INDICATORS_COUNT = 1;
+    private static final int CLASSIFICATION_ID = 1;
+    private static final int EXPECTED_CLASSIFICATION_INDICATORS_COUNT = 1;
     private static final int USER_ID = 1;
     private static final int INDICATOR_ID = 1;
     private static final int PARENT_AREA_ID = 1;
@@ -56,7 +56,7 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     public void setupAuthentication() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         String[] permissions = {"CAN_CREATE_INDICATORS", "CAN_EDIT_INDICATORS", "CAN_REMOVE_INDICATORS",
-            "CAN_CREATE_CATEGORIES", "CAN_EDIT_CATEGORIES", "CAN_REMOVE_CATEGORIES"};
+            "CAN_CREATE_CLASSIFICATIONS", "CAN_EDIT_CLASSIFICATIONS", "CAN_REMOVE_CLASSIFICATIONS"};
         for (String permission: permissions) {
             authorities.add(new SimpleGrantedAuthority(permission));
         }
@@ -70,8 +70,8 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     @Test
-    public void testGetIndicatorsByCategoryId() {
-        assertEquals(EXPECTED_CATEGORY_INDICATORS_COUNT, indicatorService.getIndicatorsByCategoryId(CATEGORY_ID).size());
+    public void testGetIndicatorsByClassificationId() {
+        assertEquals(EXPECTED_CLASSIFICATION_INDICATORS_COUNT, indicatorService.getIndicatorsByClassificationId(CLASSIFICATION_ID).size());
     }
 
     @Test
@@ -108,38 +108,37 @@ public class IndicatorServiceIT extends AbstractTransactionalJUnit4SpringContext
     }
 
     @Test
-    public void testGetAllIndicatorCategories() {
-        assertNotNull(indicatorService.getAllIndicatorCategories());
+    public void testGetAllIndicatorClassifications() {
+        assertNotNull(indicatorService.getAllIndicatorClassifications());
     }
 
     @Test
-    public void testCreateNewIndicatorCategory() {
-        int indicatorCategoriesCount = indicatorService.getAllIndicatorCategories().size();
-        createIndicatorCategory();
-        assertEquals(indicatorCategoriesCount + 1, indicatorService.getAllIndicatorCategories().size());
+    public void testCreateNewIndicatorClassification() {
+        int indicatorClassificationsCount = indicatorService.getAllIndicatorClassifications().size();
+        createIndicatorClassification();
+        assertEquals(indicatorClassificationsCount + 1, indicatorService.getAllIndicatorClassifications().size());
     }
 
-    private void createIndicatorCategory() {
-        IndicatorCategoryEntity indicatorCategory = new IndicatorCategoryEntity("name");
-        indicatorCategory.setShortCode("code");
-        indicatorService.createNewIndicatorCategory(indicatorCategory);
+    private void createIndicatorClassification() {
+        IndicatorClassificationEntity indicatorClassification = new IndicatorClassificationEntity("name");
+        indicatorService.createNewIndicatorClassification(indicatorClassification);
     }
 
     @Test
-    public void testUpdateIndicatorCategory() {
+    public void testUpdateIndicatorClassification() {
         String newName = "new name";
-        IndicatorCategoryEntity indicatorCategory = indicatorService.getAllIndicatorCategories().iterator().next();
-        indicatorCategory.setName(newName);
-        indicatorService.updateIndicatorCategory(indicatorCategory);
-        indicatorCategory = indicatorService.getIndicatorCategoryById(indicatorCategory.getId());
-        assertEquals(newName, indicatorCategory.getName());
+        IndicatorClassificationEntity indicatorClassification = indicatorService.getAllIndicatorClassifications().iterator().next();
+        indicatorClassification.setName(newName);
+        indicatorService.updateIndicatorClassification(indicatorClassification);
+        indicatorClassification = indicatorService.getIndicatorClassificationById(indicatorClassification.getId());
+        assertEquals(newName, indicatorClassification.getName());
     }
 
     @Test
-    public void testDeleteIndicatorCategory() {
-        int indicatorCategoriesCount = indicatorService.getAllIndicatorCategories().size();
-        indicatorService.deleteIndicatorCategory(indicatorService.getIndicatorCategoryById(CATEGORY_ID));
-        assertEquals(indicatorCategoriesCount - 1, indicatorService.getAllIndicatorCategories().size());
+    public void testDeleteIndicatorClassification() {
+        int indicatorClassificationsCount = indicatorService.getAllIndicatorClassifications().size();
+        indicatorService.deleteIndicatorClassification(indicatorService.getIndicatorClassificationById(CLASSIFICATION_ID));
+        assertEquals(indicatorClassificationsCount - 1, indicatorService.getAllIndicatorClassifications().size());
     }
 
     @Test

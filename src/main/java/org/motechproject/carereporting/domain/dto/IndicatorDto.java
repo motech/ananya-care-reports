@@ -16,7 +16,7 @@ public class IndicatorDto implements Serializable {
     private String name;
 
     @NotNull
-    private Set<Integer> categories;
+    private Set<Integer> classifications;
 
     @NotNull
     private Integer level;
@@ -47,11 +47,11 @@ public class IndicatorDto implements Serializable {
 
     }
 
-    public IndicatorDto(String name, Set<Integer> categories, Integer level, Set<Integer> owners, Integer frequency,
+    public IndicatorDto(String name, Set<Integer> classifications, Integer level, Set<Integer> owners, Integer frequency,
                         Set<ReportEntity> reports, BigDecimal trend, Integer numerator, Integer denominator,
                         Boolean additive, Boolean categorized) {
         this.name = name;
-        this.categories = categories;
+        this.classifications = classifications;
         this.level = level;
         this.owners = owners;
         this.frequency = frequency;
@@ -71,12 +71,12 @@ public class IndicatorDto implements Serializable {
         this.name = name;
     }
 
-    public Set<Integer> getCategories() {
-        return categories;
+    public Set<Integer> getClassifications() {
+        return classifications;
     }
 
-    public void setCategories(Set<Integer> categories) {
-        this.categories = categories;
+    public void setClassifications(Set<Integer> classifications) {
+        this.classifications = classifications;
     }
 
     public Integer getLevel() {

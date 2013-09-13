@@ -9,9 +9,9 @@ insert into permission(name, creation_date, modification_date) values ('CAN_VIEW
 insert into permission(name, creation_date, modification_date) values ('CAN_CREATE_INDICATORS', now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_EDIT_INDICATORS', now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_REMOVE_INDICATORS', now(), now());
-insert into permission(name, creation_date, modification_date) values ('CAN_CREATE_CATEGORIES', now(), now());
-insert into permission(name, creation_date, modification_date) values ('CAN_EDIT_CATEGORIES', now(), now());
-insert into permission(name, creation_date, modification_date) values ('CAN_REMOVE_CATEGORIES', now(), now());
+insert into permission(name, creation_date, modification_date) values ('CAN_CREATE_CLASSIFICATIONS', now(), now());
+insert into permission(name, creation_date, modification_date) values ('CAN_EDIT_CLASSIFICATIONS', now(), now());
+insert into permission(name, creation_date, modification_date) values ('CAN_REMOVE_CLASSIFICATIONS', now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_CREATE_COMPUTED_FIELDS',  now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_EDIT_FORMS', now(), now());
 insert into permission(name, creation_date, modification_date) values ('CAN_CREATE_LANGUAGES', now(), now());
@@ -57,10 +57,10 @@ insert into dashboard (name, tab_position, creation_date, modification_date) val
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Mortality', 4, now(), now());
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Essential Newborn Care', 5, now(), now());
 
-insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Birth preparedness plan', 'BP', 3, now(), now());
-insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('IFA Tablets', 'IFA', 4, now(), now());
-insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Mortality', 'MRT', 5, now(), now());
-insert into indicator_category (name, short_code, dashboard_id, creation_date, modification_date) values ('Essential Newborn Care', 'ENC', 6, now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Birth preparedness plan', 3, now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('IFA Tablets', 4, now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Mortality', 5, now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Essential Newborn Care', 6, now(), now());
 
 insert into comparison_symbol (name, creation_date, modification_date) values ('=', now(), now());
 insert into comparison_symbol (name, creation_date, modification_date) values ('>', now(), now());

@@ -16,7 +16,7 @@ public class Indicator {
 
     private String name;
 
-    private List<Category> categories;
+    private List<Classification> classifications;
 
     private Owners owners;
 
@@ -62,14 +62,14 @@ public class Indicator {
         this.name = name;
     }
 
-    @XmlElementWrapper(name = "categories")
-    @XmlElement(name = "category")
-    public List<Category> getCategories() {
-        return categories;
+    @XmlElementWrapper(name = "classifications")
+    @XmlElement(name = "classification")
+    public List<Classification> getClassifications() {
+        return classifications;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setClassifications(List<Classification> classifications) {
+        this.classifications = classifications;
     }
 
     public Area getArea() {

@@ -24,14 +24,14 @@ care.controller('uploadIndicatorController', function($scope) {
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
     $scope.title = $scope.msg('indicators.title');
 
-    $scope.category = [];
+    $scope.classification = [];
     $scope.indicators = [];
 
-    $scope.$watch('selectedCategory', function() {
-        if ($scope.selectedCategory != null) {
-            for (var i = 0; i < $scope.category.length; i++) {
-                if ($scope.category[i].id == $scope.selectedCategory) {
-                    $scope.indicators = $scope.category[i].indicators;
+    $scope.$watch('selectedClassification', function() {
+        if ($scope.selectedClassification != null) {
+            for (var i = 0; i < $scope.classification.length; i++) {
+                if ($scope.classification[i].id == $scope.selectedClassification) {
+                    $scope.indicators = $scope.classification[i].indicators;
                     break;
                 }
             }
@@ -49,7 +49,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                         url: 'api/indicator/' + indicator.id
                     })
                     .success(function(data, status, headers, config) {
-                        $scope.fetchCategories();
+                        $scope.fetchClassifications();
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
@@ -57,30 +57,30 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             });
     };
 
-    $scope.fetchCategories = function() {
-        $http.get('api/indicator/category').success(function(category) {
-            $scope.category = new Array();
+    $scope.fetchClassifications = function() {
+        $http.get('api/indicator/classification').success(function(classification) {
+            $scope.classification = new Array();
             var ind = new Array();
-            for(var i = 0; i < category.length; i++) {
-                ind = ind.concat(category[i].indicators);
+            for(var i = 0; i < classification.length; i++) {
+                ind = ind.concat(classification[i].indicators);
             }
-            var name = $scope.msg('indicators.list.allCategories');
-            $scope.category = [{
+            var name = $scope.msg('indicators.list.allClassifications');
+            $scope.classification = [{
                 id: 0,
                 indicators: ind,
-                name: $scope.msg('indicators.list.allCategories')
-            }].concat(category);
+                name: $scope.msg('indicators.list.allClassifications')
+            }].concat(classification);
             $scope.indicators = [];
-            $scope.selectedCategory = 0;
+            $scope.selectedClassification = 0;
         }).error(function(response) {
-            $dialog.messageBox($scope.msg('common.error'), $scope.msg('categories.error.cannotLoadCategories'), [{label: 'Ok', cssClass: 'btn'}]).open();
+            $dialog.messageBox($scope.msg('common.error'), $scope.msg('classifications.error.cannotLoadClassifications'), [{label: 'Ok', cssClass: 'btn'}]).open();
         });
     };
 
-    $scope.fetchCategories();
+    $scope.fetchClassifications();
 
     $scope.recalculate = function() {
-        $http.get('api/indicator/calculator/recalculate/' + $scope.selectedCategory)
+        $http.get('api/indicator/calculator/recalculate/' + $scope.selectedClassification)
             .success(function() {
                 $location.path( "/" );
             })
@@ -109,11 +109,11 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
                                                       $dialog, $location, $errorService, $route) {
     $scope.title = $scope.msg('indicators.title');
-    $scope.selectedCategories = [];
+    $scope.selectedClassifications = [];
     $scope.selectedOwners = [];
     $scope.selectedChart = {};
     $scope.indicator = {
-        categories: [],
+        classifications: [],
         owners: [],
         reports: [],
         numerator: null,
@@ -124,21 +124,21 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.sortFormDataArrays = function() {
-        $scope.formData.categories.sortByField('name');
+        $scope.formData.classifications.sortByField('name');
         $scope.formData.roles.sortByField('name');
         $scope.formData.reportTypes.sortByField('name');
         $scope.formData.dwQueries.sortByField('name');
     };
 
     $scope.initializeInputFields = function() {
-        $scope.listCategories = $scope.formData.categories;
+        $scope.listClassifications = $scope.formData.classifications;
         $scope.listCharts = $scope.formData.reportTypes;
         $scope.formData.denominatorDwQueries = [{ id: -1, name: '---' }].concat($scope.formData.dwQueries);
 
         $scope.indicator.level = $scope.formData.levels[0].id;
         $scope.indicator.frequency = $scope.formData.frequencies[0].id;
         $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
-        $scope.selectedCategory = $scope.listCategories[0];
+        $scope.selectedClassification = $scope.listClassifications[0];
         $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
 
         for(var i = 0; i < $scope.formData.roles.length; i++) {
@@ -155,14 +155,14 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
 
-    $scope.addCategory = function() {
-        $scope.selectedCategories.push($scope.selectedCategory);
-        $scope.selectedCategories.sortByField('name');
+    $scope.addClassification = function() {
+        $scope.selectedClassifications.push($scope.selectedClassification);
+        $scope.selectedClassifications.sortByField('name');
 
-        for (var i = $scope.listCategories.length - 1; i >= 0; i--) {
-            if ($scope.listCategories[i].id === $scope.selectedCategory.id) {
-                $scope.listCategories.splice(i, 1);
-                $scope.selectedCategory = $scope.listCategories[0];
+        for (var i = $scope.listClassifications.length - 1; i >= 0; i--) {
+            if ($scope.listClassifications[i].id === $scope.selectedClassification.id) {
+                $scope.listClassifications.splice(i, 1);
+                $scope.selectedClassification = $scope.listClassifications[0];
                 break;
             }
         }
@@ -181,11 +181,11 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     }
 
-    $scope.removeCategory = function(index) {
-        $scope.listCategories.push($scope.selectedCategories[index]);
-        $scope.listCategories.sortByField('name');
-        $scope.selectedCategories.splice(index, 1);
-        $scope.selectedCategory = $scope.listCategories[0];
+    $scope.removeClassification = function(index) {
+        $scope.listClassifications.push($scope.selectedClassifications[index]);
+        $scope.listClassifications.sortByField('name');
+        $scope.selectedClassifications.splice(index, 1);
+        $scope.selectedClassification = $scope.listClassifications[0];
     };
 
     $scope.removeChart = function(index) {
@@ -239,8 +239,8 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             $scope.indicator.denominator = null;
         }
 
-        for (var i = 0; i < $scope.selectedCategories.length; i++) {
-            $scope.indicator.categories.push($scope.selectedCategories[i].id);
+        for (var i = 0; i < $scope.selectedClassifications.length; i++) {
+            $scope.indicator.classifications.push($scope.selectedClassifications[i].id);
         }
         if ($scope.selectedOwners[0] === true) {
             $scope.indicator.owners.push(0);

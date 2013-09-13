@@ -8,7 +8,7 @@ import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
-import org.motechproject.carereporting.domain.IndicatorCategoryEntity;
+import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LanguageEntity;
@@ -54,7 +54,7 @@ public class PerformanceTestHelper {
     private int indicatorsCount;
     private int areasCount;
     private int computedFieldsCount;
-    private int categoriesCount;
+    private int classificationsCount;
     private int languagesCount;
     private int usersCount;
 
@@ -91,11 +91,11 @@ public class PerformanceTestHelper {
 
     }
 
-    public PerformanceTestHelper(int indicatorsCount, int areasCount, int computedFieldsCount, int categoriesCount, int languagesCount, int usersCount) {
+    public PerformanceTestHelper(int indicatorsCount, int areasCount, int computedFieldsCount, int classificationsCount, int languagesCount, int usersCount) {
         this.indicatorsCount = indicatorsCount;
         this.areasCount = areasCount;
         this.computedFieldsCount = computedFieldsCount;
-        this.categoriesCount = categoriesCount;
+        this.classificationsCount = classificationsCount;
         this.languagesCount = languagesCount;
         this.usersCount = usersCount;
     }
@@ -104,7 +104,7 @@ public class PerformanceTestHelper {
 
         setupAuthentication();
         populateDatabaseWithRandomIndicators();
-        populateDatabaseWithRandomCategories();
+        populateDatabaseWithRandomClassifications();
         populateDatabaseWithRandomAreas();
         populateDatabaseWithRandomLanguages();
         populateDatabaseWithRandomComputedFields();
@@ -114,7 +114,7 @@ public class PerformanceTestHelper {
     private void setupAuthentication() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("CAN_CREATE_INDICATORS"));
-        authorities.add(new SimpleGrantedAuthority("CAN_CREATE_CATEGORIES"));
+        authorities.add(new SimpleGrantedAuthority("CAN_CREATE_CLASSIFICATIONS"));
         authorities.add(new SimpleGrantedAuthority("CAN_CREATE_COMPUTED_FIELDS"));
         authorities.add(new SimpleGrantedAuthority("CAN_MANAGE_SYSTEM_USERS"));
         SecurityContextHolder.getContext().setAuthentication(
@@ -145,16 +145,15 @@ public class PerformanceTestHelper {
         }
     }
 
-    private void populateDatabaseWithRandomCategories() {
-        for (int i = 0; i < categoriesCount; i++) {
+    private void populateDatabaseWithRandomClassifications() {
+        for (int i = 0; i < classificationsCount; i++) {
             String name = UUID.randomUUID().toString();
-            IndicatorCategoryEntity indicatorCategoryEntity = new IndicatorCategoryEntity();
-            indicatorCategoryEntity.setName(name);
-            indicatorCategoryEntity.setShortCode(name.substring(0, 3));
+            IndicatorClassificationEntity indicatorClassificationEntity = new IndicatorClassificationEntity();
+            indicatorClassificationEntity.setName(name);
             try {
-                indicatorService.createNewIndicatorCategory(indicatorCategoryEntity);
+                indicatorService.createNewIndicatorClassification(indicatorClassificationEntity);
             } catch (CareRuntimeException e) {
-                LOG.warning("Indicator category with the same name or code already exists");
+                LOG.warning("Indicator classification with the same name or code already exists");
                 i--;
             }
         }
