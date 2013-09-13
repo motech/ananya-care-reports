@@ -446,8 +446,8 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
                 groupBy: null,
                 whereGroup: queryForm.whereGroup,
                 addCombineWith: function(joinType, key1, key2, dwQuery) {
-                    this.key1 = key1.name;
-                    this.key2 = key2.name;
+                    this.key1 = key1;
+                    this.key2 = key2;
                     this.joinType = joinType.code;
                     this.combineWith = dwQuery;
                 },

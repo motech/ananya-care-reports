@@ -18,11 +18,11 @@
                         <div class="pull-right">
                             <div class="span6">
                                 <label for="selectKey1">{{msg('queries.new.label.key1')}}:</label>
-                                <select id="selectKey1" class="input-block-level" ng-model="form.key1" ng-options="item.id as item.name for item in queryForms[$index - 1].listAllComputedFields"></select>
+                                <select id="selectKey1" class="input-block-level" ng-model="form.key1" ng-options="item.name as item.name for item in queryForms[$index - 1].listAllComputedFields"></select>
                             </div>
                             <div class="span6">
                                 <label for="selectKey2">{{msg('queries.new.label.key2')}}:</label>
-                                <select id="selectKey2" class="input-block-level" ng-model="form.key2" ng-options="item.id as item.name for item in form.listAllComputedFields"></select>
+                                <select id="selectKey2" class="input-block-level" ng-model="form.key2" ng-options="item.name as item.name for item in form.listAllComputedFields"></select>
                             </div>
                         </div>
                     </div>

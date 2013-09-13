@@ -282,8 +282,8 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         CombinationEntity combinationEntity = new CombinationEntity();
         combinationEntity.setType(dwQueryDto.getJoinType());
-        combinationEntity.setForeignKey(dwQueryDto.getKey1());
-        combinationEntity.setReferencedKey(dwQueryDto.getKey2());
+        combinationEntity.setReferencedKey(dwQueryDto.getKey1());
+        combinationEntity.setForeignKey(dwQueryDto.getKey2());
         combinationEntity.setDwQuery(getDwQueryEntityFromDto(dwQueryDto.getCombineWith()));
         combinationEntity.getDwQuery().setParentQuery(dwQueryEntity);
 
