@@ -41,7 +41,7 @@
                                     <table-name>bp_form</table-name>
                                     <field>counsel_preparation</field>
                                     <operator>=</operator>
-                                    <value>false</value>
+                                    <value>no</value>
                                 </where-condition>
                             </where-group>
                         </dw-query>

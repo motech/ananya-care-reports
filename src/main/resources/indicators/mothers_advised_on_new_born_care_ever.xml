@@ -42,7 +42,7 @@
                                 <table-name>bp_form</table-name>
                                 <field>cord_care</field>
                                 <operator>=</operator>
-                                <value>true</value>
+                                <value>yes</value>
                             </where-condition>
                         </where-group>
                         <where-group join="OR">
@@ -50,7 +50,7 @@
                                 <table-name>bp_form</table-name>
                                 <field>has_danger_signs</field>
                                 <operator>=</operator>
-                                <value>true</value>
+                                <value>yes</value>
                             </where-condition>
                         </where-group>
                         <where-group join="OR">
@@ -58,7 +58,7 @@
                                 <table-name>bp_form</table-name>
                                 <field>wrapping</field>
                                 <operator>=</operator>
-                                <value>true</value>
+                                <value>yes</value>
                             </where-condition>
                         </where-group>
                         <where-group join="OR">
@@ -66,7 +66,7 @@
                                 <table-name>bp_form</table-name>
                                 <field>immediate_breastfeeding</field>
                                 <operator>=</operator>
-                                <value>true</value>
+                                <value>yes</value>
                             </where-condition>
                         </where-group>
                     </where-group>
