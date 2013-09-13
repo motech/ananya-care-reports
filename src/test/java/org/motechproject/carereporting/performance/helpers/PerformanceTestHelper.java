@@ -68,9 +68,6 @@ public class PerformanceTestHelper {
     private IndicatorDao indicatorDao;
 
     @Autowired
-    private XmlIndicatorParser xmlIndicatorParser;
-
-    @Autowired
     private AreaService areaService;
 
     @Autowired
@@ -84,6 +81,9 @@ public class PerformanceTestHelper {
 
     @Autowired
     private DwQueryDao dwQueryDao;
+
+    @Autowired
+    private XmlIndicatorTestParser xmlIndicatorParser;
 
     private Random random = new Random();
 

@@ -6,7 +6,9 @@
 
     <import resource="classpath:/testContext.xml"/>
 
-    <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabase" depends-on="formEntityInitializer, liquibase">
+    <bean id="xmlIndicatorTestParser" class="org.motechproject.carereporting.performance.helpers.XmlIndicatorTestParser" />
+
+    <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabase" depends-on="formEntityInitializer, liquibase, xmlIndicatorTestParser">
         <constructor-arg index="0" value="20"/>
         <constructor-arg index="1" value="780"/>
         <constructor-arg index="2" value="100"/>

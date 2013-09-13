@@ -98,8 +98,6 @@ care.controller('computedFieldsController', function($scope, $http, $routeParams
     };
 
     $scope.removeField = function(key) {
-        //$scope.fields.push($scope.selectedFields[key].field);
-        //$scope.fields.sortByField('name');
         $scope.selectedField = $scope.fields[0].id;
 
         $scope.selectedFields.splice(key, 1);

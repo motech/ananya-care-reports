@@ -129,7 +129,7 @@ public class XmlIndicatorParser {
         }
     }
 
-    private IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
+    protected IndicatorEntity createIndicatorEntityFromXmlIndicator(Indicator indicator) {
         IndicatorEntity indicatorEntity = new IndicatorEntity();
         indicatorEntity.setName(indicator.getName());
         if (indicator.getOwners().getUser() != null) {
@@ -164,7 +164,7 @@ public class XmlIndicatorParser {
         if (dwQueryEntity.getCombination() != null) {
             DwQueryEntity query = dwQueryEntity.getCombination().getDwQuery();
             query.setParentQuery(dwQueryEntity);
-            updateIndicatorQueryNamesAndParents(indicatorEntity, query, prefix, index+1);
+            updateIndicatorQueryNamesAndParents(indicatorEntity, query, prefix, index + 1);
         }
     }
 
