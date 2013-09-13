@@ -14,6 +14,11 @@ import java.util.Set;
 @Component
 public class IndicatorDaoHibernateImpl extends GenericDaoHibernateImpl<IndicatorEntity> implements IndicatorDao {
 
+    private static final String[] DELETE_INDICATOR_QUERIES = {
+            "delete from dashboard_app.indicator_value where indicator_id = :indicatorId",
+            "delete from dashboard_app.report where indicator_id = :indicatorId",
+            "delete from dashboard_app.indicator where indicator_id = :indicatorId"};
+
     @Override
     @SuppressWarnings("unchecked")
     public Set<IndicatorEntity> getIndicatorsByClassificationId(Integer classificationId) {
@@ -31,4 +36,14 @@ public class IndicatorDaoHibernateImpl extends GenericDaoHibernateImpl<Indicator
                 .add(Restrictions.eq("name", name));
         return (IndicatorEntity) criteria.uniqueResult();
     }
+
+    @Override
+    public void remove(IndicatorEntity indicatorEntity) {
+        for (String query: DELETE_INDICATOR_QUERIES) {
+            getCurrentSession().createSQLQuery(query)
+                    .setParameter("indicatorId", indicatorEntity.getId())
+                    .executeUpdate();
+        }
+    }
+
 }
