@@ -2,7 +2,7 @@
 
 <div class="row-fluid">
     <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
-    <div class="span10 hq-content">
+    <div class="span10 hq-content" ng-show="hasRole('CAN_CREATE_INDICATORS')">
         <h1 class="text-center">{{msg('queries.new.header')}}</h1>
         <div class="container-fluid">
             <form name="createForm" novalidate>

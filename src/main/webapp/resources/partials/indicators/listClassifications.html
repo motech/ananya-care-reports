@@ -11,10 +11,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="cat in classification">
-                    <td><a href="#/indicators/classifications/{{cat.id}}">{{cat.name}}</a></td>
-                    <td><span class="btn btn-link"
-                        ng-click="deleteClassification(cat);"><i
-                            class="icon-remove"></i></span></td>
+                    <td ng-show="hasRole('CAN_EDIT_CLASSIFICATIONS')"><a href="#/indicators/classifications/{{cat.id}}">{{cat.name}}</a></td>
+                    <td ng-hide="hasRole('CAN_EDIT_CLASSIFICATIONS')">{{cat.name}}</td>
+                    <td><span ng-show="hasRole('CAN_REMOVE_CLASSIFICATIONS')" class="btn btn-link" ng-click="deleteClassification(cat);"><i class="icon-remove"></i></span></td>
                 </tr>
             </tbody>
         </table>

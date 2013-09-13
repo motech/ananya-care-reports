@@ -51,5 +51,6 @@ public interface UserService {
 
     void removeRoleById(Integer id);
 
+    Set<String> getUserPermissions(UserEntity userEntity);
 }
 

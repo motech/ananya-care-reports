@@ -43,6 +43,7 @@ import org.motechproject.carereporting.performance.scenario.simple.ReportGetChar
 import org.motechproject.carereporting.performance.scenario.simple.ReportGetDataScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ReportGetTrendScenario;
 import org.motechproject.carereporting.performance.scenario.simple.UserGetLoggedUserLanguageScenario;
+import org.motechproject.carereporting.performance.scenario.simple.UserGetLoggedUserPermissionsScenario;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -370,6 +371,11 @@ public abstract class PhasePT {
     @Test
     public void testGetLoggedUserLanguage() throws Exception {
         runTest(UserGetLoggedUserLanguageScenario.class);
+    }
+
+    @Test
+    public void testGetLoggedUserPermissions() throws Exception {
+        runTest(UserGetLoggedUserPermissionsScenario.class);
     }
 
     @Test

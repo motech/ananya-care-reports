@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -183,6 +184,20 @@ public class UserServiceImpl implements UserService {
     public void removeRoleById(Integer id) {
         RoleEntity roleEntity = this.getRoleById(id);
         roleDao.remove(roleEntity);
+    }
+
+    @Override
+    public Set<String> getUserPermissions(UserEntity userEntity) {
+        Set<String> permissions = new HashSet<>();
+        Set<RoleEntity> roleEntities = userEntity.getRoles();
+
+        for (RoleEntity roleEntity : roleEntities) {
+            for (PermissionEntity permissionEntity : roleEntity.getPermissions()) {
+                permissions.add(permissionEntity.getName());
+            }
+        }
+
+        return permissions;
     }
 
 }

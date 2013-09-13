@@ -12,7 +12,7 @@
             <tbody>
             <tr ng-repeat="item in queries">
                 <td>{{item.name}}</td>
-                <td><span class="btn btn-link" ng-click="deleteQuery($index)"><i class="icon-remove"></i></span></td>
+                <td><span class="btn btn-link"  ng-show="hasRole('CAN_CREATE_INDICATORS')" ng-click="deleteQuery($index)"><i class="icon-remove"></i></span></td>
             </tr>
             </tbody>
         </table>

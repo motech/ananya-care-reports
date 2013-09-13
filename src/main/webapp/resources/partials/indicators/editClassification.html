@@ -1,7 +1,7 @@
 <div ng:init="$root.pageTitle = title"></div>
 <div class="row-fluid">
     <div ng-include src='"resources/partials/indicators/sidebar.html"'></div>
-    <div class="span10 hq-content">
+    <div class="span10 hq-content"  ng-show="hasRole('CAN_CREATE_CLASSIFICATIONS')">
         <form class="form-horizontal" name="classificationForm">
             <div class="control-group">
                 <label class="control-label">{{msg('classifications.list.name')}}:</label>

@@ -16,7 +16,7 @@
             <tbody>
                 <tr ng-repeat="item in indicators | orderBy:'+name'">
                     <td>{{item.name}}</td>
-                    <td><span class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
+                    <td><span ng-show="hasRole('CAN_REMOVE_INDICATORS')" class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
                 </tr>
             </tbody>
         </table>
@@ -24,7 +24,7 @@
         <h4><p class="text-info text-center " ng-show="indicators.length == 0">{{msg('indicators.list.empty')}}<br/><br/></p></h4>
         <p class="text-center">
             <button class="btn btn-primary" ng-click="recalculate()" ng-disabled="isAnyComputed()">{{msg('indicators.list.recalculate')}}</button>
-            <a class="btn btn-primary" href="#/indicators/upload-xml">{{msg('indicators.list.addNew')}}</a>
+            <a ng-show="hasRole('CAN_CREATE_INDICATORS')" class="btn btn-primary" href="#/indicators/upload-xml">{{msg('indicators.list.addNew')}}</a>
         </p>
     </div>
 </div>

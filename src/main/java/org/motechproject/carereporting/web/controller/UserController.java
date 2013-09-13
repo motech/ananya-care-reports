@@ -92,6 +92,14 @@ public class UserController extends BaseController {
         userService.updateUser(userEntity);
     }
 
+    @RequestMapping(value = "/logged_in/permissions", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Set<String> getUserPermissions() {
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+        return userService.getUserPermissions(userEntity);
+    }
+
     @RequestMapping(value = "/areas", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

@@ -13,13 +13,14 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="computedField in computedFields">
-                        <td><a href="" ng-click="loadComputedField(computedField)">{{computedField.name}}</a></td>
-                        <td><span class="btn btn-link" ng-click="deleteComputedField(computedField)"><i class="icon-remove"></i></span></td>
+                        <td ng-show="hasRole('CAN_CREATE_COMPUTED_FIELDS')"><a href="" ng-click="loadComputedField(computedField)">{{computedField.name}}</a></td>
+                        <td ng-hide="hasRole('CAN_CREATE_COMPUTED_FIELDS')">{{computedField.name}}</td>
+                        <td><span class="btn btn-link" ng-show="hasRole('CAN_CREATE_COMPUTED_FIELDS')" ng-click="deleteComputedField(computedField)"><i class="icon-remove"></i></span></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="span6">
+            <div class="span6" ng-show="hasRole('CAN_CREATE_COMPUTED_FIELDS')">
                 <div class="well">
                     <form class="form-horizontal">
                         <div class="control-group">

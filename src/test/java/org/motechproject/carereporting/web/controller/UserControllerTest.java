@@ -16,7 +16,7 @@ import org.motechproject.carereporting.exception.EntityException;
 import org.motechproject.carereporting.service.AreaService;
 import org.motechproject.carereporting.service.DashboardService;
 import org.motechproject.carereporting.service.IndicatorService;
-import org.motechproject.carereporting.service.UserService;
+import org.motechproject.carereporting.service.impl.UserServiceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,14 +42,14 @@ public class UserControllerTest {
 
     private static final String REGISTER_JSON = "{\"username\":\"username\", \"area\":{\"id\":\"1\"}}";
     private static final String REGISTER_JSON_NO_USERNAME = "{\"area\":{\"id\":\"1\"}}";
-    private static final String REGISTER_JSON_NO_PASSWORD = "{\"username\":\"username\", \"area\":{\"id\":\"1\"}}";
     private static final String REGISTER_JSON_INVALID_EMAIL = "{\"username\":\"username\", \"email\":\"this is not a valid email\", \"area\":{\"id\":\"1\"}}";
     private static final String CREATE_ROLE_JSON = "{\"id\":\"1\", \"name\":\"name\"}";
     private static final String UPDATE_ROLE_JSON = "{\"name\":\"new name\"}";
     private static final String UPDATE_USER_JSON = "{\"username\":\"new username\", \"area\":{\"id\":\"1\"}}";
 
     @Mock
-    private UserService userService;
+    // Must be UserServiceImpl for calling real methods
+    private UserServiceImpl userService;
 
     @Mock
     private AreaService areaService;
@@ -70,35 +70,39 @@ public class UserControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
-    /*@Test
-    public void testGetIndicatorsInUserArea() throws Exception {
-        Integer id = 1;
-        String username = "username";
-        UsernamePasswordAuthenticationToken authenticationToken = mock(UsernamePasswordAuthenticationToken.class);
-        UserEntity userEntity = new UserEntity(username);
-        AreaEntity areaEntity = new AreaEntity();
-        areaEntity.setId(id);
-        userEntity.setArea(areaEntity);
-        String indicatorName = "indicatorName";
-        FrequencyEntity frequencyEntity = new FrequencyEntity();
-        frequencyEntity.setId(id);
-        IndicatorEntity indicatorEntity = new IndicatorEntity();
-        indicatorEntity.setId(id);
-        indicatorEntity.setName(indicatorName);
-        indicatorEntity.setDefaultFrequency(frequencyEntity);
-        Set<IndicatorEntity> indicatorEntities = new LinkedHashSet<>();
-        indicatorEntities.add(indicatorEntity);
+    @Test
+    public void testGetUserPermissions() throws Exception {
+        String canCreateIndicators = "CAN_CREATE_INDICATORS";
+        String canEditCalculation = "CAN_EDIT_CALCULATION";
 
-        when(indicatorService.getAllIndicatorsUnderUserArea(id)).thenReturn(indicatorEntities);
+        PermissionEntity permissionEntity = new PermissionEntity();
+        permissionEntity.setName(canCreateIndicators);
+        PermissionEntity permissionEntity1 = new PermissionEntity();
+        permissionEntity1.setName(canEditCalculation);
+
+        Set<PermissionEntity> permissionEntities = new LinkedHashSet<>();
+        permissionEntities.add(permissionEntity);
+        permissionEntities.add(permissionEntity1);
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setPermissions(permissionEntities);
+
+        Set<RoleEntity> roleEntities = new LinkedHashSet<>();
+        roleEntities.add(roleEntity);
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setRoles(roleEntities);
+
         when(userService.getCurrentlyLoggedUser()).thenReturn(userEntity);
+        when(userService.getUserPermissions(userEntity)).thenCallRealMethod();
 
-        mockMvc.perform(get("/api/users/indicators"))
+        mockMvc.perform(get("/api/users/logged_in/permissions"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(id))
-                .andExpect(jsonPath("$[0].name").value(indicatorName));
+                .andExpect(jsonPath("$[0]").value(canCreateIndicators))
+                .andExpect(jsonPath("$[1]").value(canEditCalculation));
 
-        verify(indicatorService).getAllIndicatorsUnderUserArea(id);
-    }*/
+        verify(userService).getCurrentlyLoggedUser();
+    }
 
     @Test
     public void testGetAllAreas() throws Exception {

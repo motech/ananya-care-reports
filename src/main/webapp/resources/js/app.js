@@ -11,7 +11,7 @@
             .when('/indicators/calculation-time', { templateUrl: 'resources/partials/indicators/frequency.html', controller: 'frequencyController'})
             .when('/indicators/date-depth', { templateUrl: 'resources/partials/indicators/dateDepth.html', controller: 'dateDepthController'})
             .when('/indicators/queries', { templateUrl: 'resources/partials/indicators/listQueries.html', controller: 'queryListController' })
-            .when('/indicators/queries/new', { templateUrl: 'resources/partials/indicators/createDwQuery.html', controller: 'createDwQueryController' })
+            .when('/indicators/queries/new', { templateUrl: 'resources/partials/indicators/editQuery.html', controller: 'createDwQueryController' })
             .when('/admin/forms', { templateUrl: 'resources/partials/admin/forms/listForms.html', controller: 'formListController' })
             .when('/admin/forms/:formId', { templateUrl: 'resources/partials/admin/forms/editForm.html', controller: 'formController' })
             .when('/indicators/classifications', { templateUrl: 'resources/partials/indicators/listClassifications.html', controller: 'classificationsListController'})
@@ -22,7 +22,7 @@
             .when('/reports', {templateUrl: 'resources/partials/reports/listReports.html', controller: 'reportListController'})
             .when('/admin/computed-fields', { templateUrl: 'resources/partials/admin/computed-fields/computedField.html', controller: 'computedFieldsController' })
             .when('/admin/languages', {templateUrl: 'resources/partials/admin/messages/listLanguages.html', controller: 'languageListController'})
-            .when('/admin/languages/:languageCode', {templateUrl: 'resources/partials/admin/messages/editMessages.html', controller: 'messageController'})
+            .when('/admin/languages/:languageCode', {templateUrl: 'resources/partials/admin/messages/editLanguages.html', controller: 'messageController'})
             .when('/admin/select-language', {templateUrl: 'resources/partials/admin/messages/selectLanguage.html', controller: 'messageController'})
             .otherwise({ redirectTo: '/' });
 
@@ -56,7 +56,7 @@
 
         $httpProvider.responseInterceptors.push(interceptor);
 
-    }]).run(function($rootScope, i18nService) {
+    }]).run(function($rootScope, i18nService, $roleService) {
 
         $rootScope.msg = function(key, params) {
             return i18nService.getMessage(key, params);
@@ -64,6 +64,10 @@
 
         $rootScope.getLocation = function() {
             return location.hash;
+        };
+
+        $rootScope.hasRole = function(role) {
+            return $roleService.hasRole(role);
         };
 
         $('.multiselect').multiselect({

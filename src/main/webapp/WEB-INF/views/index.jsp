@@ -81,8 +81,10 @@
                         </hgroup>
                         <ul class="nav">
                             <li ng-class="{active: getLocation() == '#/'}"><a href="#">{{msg('menu.dashboards')}}</a></li>
+                            <sec:authorize access="hasRole('CAN_CREATE_CLASSIFICATIONS') || hasRole('CAN_CREATE_INDICATORS') || hasRole('CAN_EDIT_CALCULATION')">
                                 <li ng-class="{active: getLocation().startsWith('#/indicators')}"><a href="#/indicators">{{msg('menu.indicators')}}</a></li>
-                            <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS') || hasRole('CAN_CREATE_LANGUAGES') || hasRole('CAN_MANAGE_FORMS')">
+                            </sec:authorize>
+                            <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS') || hasRole('CAN_CREATE_LANGUAGES') || hasRole('CAN_EDIT_FORMS')">
                                 <li ng-class="{active: getLocation().startsWith('#/admin')}"><a href="#/admin/forms">{{msg('menu.admin')}}</a></li>
                             </sec:authorize>
                         </ul>

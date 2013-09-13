@@ -49,3 +49,26 @@ care.factory('$simplifiedHttpService', function($http, $errorService) {
         }
     }
 });
+
+care.service('$roleService', function($http, $errorService, $rootScope) {
+    var permissions = [];
+
+    var fetchUserPermissions = function() {
+        $http.get('api/users/logged_in/permissions')
+            .success(function(data) {
+                 permissions = data;
+            }).error(function() {
+                 $errorService.genericError($rootScope, 'menu.error.cannotGetRoles');
+            });
+        };
+
+    if(permissions.length == 0) {
+         fetchUserPermissions();
+    }
+
+    return {
+        hasRole: function(role) {
+            return permissions.indexOf(role) != -1;
+        }
+    }
+});
