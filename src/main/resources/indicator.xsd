@@ -7,7 +7,7 @@
                 <xs:element name="classifications">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="classifications" minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="classification" minOccurs="1" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:attribute name="name" use="required" type="xs:string" />
                                 </xs:complexType>
