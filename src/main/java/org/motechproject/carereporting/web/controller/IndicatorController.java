@@ -6,6 +6,7 @@ import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
+import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.dto.DwQueryDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
 import org.motechproject.carereporting.domain.views.BaseView;
@@ -301,15 +302,20 @@ public class IndicatorController extends BaseController {
 
     private boolean canUserCreateIndicator(IndicatorEntity indicatorEntity, HttpServletRequest request) {
         if (!canUserCreateIndicators(request)) {
-            if (!isCurrentUserOwnerOfIndicator(indicatorEntity) || (indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0)) {
+            if (isUserReadOnly() || !isCurrentUserOwnerOfIndicator(indicatorEntity) || (indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0)) {
                 return false;
             }
         }
         return true;
     }
 
+    private boolean isUserReadOnly() {
+        return userService.getCurrentlyLoggedUser()
+                .getRoles().contains(new RoleEntity("Read Only"));
+    }
+
     private boolean isCurrentUserOwnerOfIndicator(IndicatorEntity indicatorEntity) {
-        return indicatorEntity.getOwner().equals(userService.getCurrentlyLoggedUser());
+        return indicatorEntity.getOwner() != null && indicatorEntity.getOwner().equals(userService.getCurrentlyLoggedUser());
     }
 
     private boolean canUserCreateIndicators(HttpServletRequest request) {
