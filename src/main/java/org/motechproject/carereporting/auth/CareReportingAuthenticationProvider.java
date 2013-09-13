@@ -194,14 +194,14 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
     }
 
     private String getUserLevel(Map<String, String> userData) {
-        if (userData.get("block") != null) {
+        if (userData.get("block") != null && !userData.get("block").isEmpty()) {
             return "block";
-        } else if (userData.get("district") != null) {
+        } else if (userData.get("district") != null && !userData.get("district").isEmpty()) {
             return "district";
-        } else if (userData.get("state") != null) {
+        } else if (userData.get("state") != null && !userData.get("state").isEmpty()) {
             return "state";
         }
-        return "country";
+        return "national";
     }
 
     protected ClientHttpRequestFactory createSecureTransport(String username, String password) {
