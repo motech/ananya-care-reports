@@ -214,7 +214,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
-        this.dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
+        dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
     }
 
     @Override
@@ -417,20 +417,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
-        updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getNumerator(), 1);
-        if (indicatorEntity.getDenominator() != null) {
-            updateNewIndicatorQueryNames(indicatorEntity, indicatorEntity.getDenominator(), -1);
-        }
         indicatorDao.save(indicatorEntity);
         calculateIndicator(indicatorEntity);
-    }
-
-    private void updateNewIndicatorQueryNames(IndicatorEntity indicatorEntity, DwQueryEntity dwQueryEntity, Integer index) {
-        dwQueryEntity.setName(indicatorEntity.getName() + "_" + index);
-        if (dwQueryEntity.getCombination() != null) {
-            dwQueryEntity.getCombination().getDwQuery().setParentQuery(dwQueryEntity);
-            updateNewIndicatorQueryNames(indicatorEntity, dwQueryEntity.getCombination().getDwQuery(), index > 0 ? index + 1 : index - 1);
-        }
     }
 
     @Override

@@ -152,7 +152,20 @@ public class XmlIndicatorParser {
         if (indicator.getDenominator() != null) {
             indicatorEntity.setDenominator(prepareQuery(indicator.getDenominator()));
         }
+        updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getNumerator(), "num", 0);
+        if (indicatorEntity.getDenominator() != null) {
+            updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getDenominator(), "denom", 0);
+        }
         return indicatorEntity;
+    }
+
+    private void updateIndicatorQueryNamesAndParents(IndicatorEntity indicatorEntity, DwQueryEntity dwQueryEntity, String prefix, Integer index) {
+        dwQueryEntity.setName(indicatorEntity.getName() + "_" + prefix + (index != 0 ? index : ""));
+        if (dwQueryEntity.getCombination() != null) {
+            DwQueryEntity query = dwQueryEntity.getCombination().getDwQuery();
+            query.setParentQuery(dwQueryEntity);
+            updateIndicatorQueryNamesAndParents(indicatorEntity, query, prefix, index+1);
+        }
     }
 
     private LevelEntity findAreaLevelByLevelName(String levelName) {

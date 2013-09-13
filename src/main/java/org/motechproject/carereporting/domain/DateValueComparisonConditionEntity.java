@@ -64,9 +64,6 @@ public class DateValueComparisonConditionEntity extends ConditionEntity {
         return value;
     }
 
-    /**
-     * @param value A date in the yyyy-[m]m-[d]d format.
-     */
     public void setValue(Date value) {
         this.value = value;
     }
