@@ -71,8 +71,8 @@ insert into operator_type (name, creation_date, modification_date) values ('SUB'
 insert into operator_type (name, creation_date, modification_date) values ('MUL', now(), now());
 insert into operator_type (name, creation_date, modification_date) values ('DIV', now(), now());
 
-insert into report_type (name, creation_date, modification_date) values ('Bar Chart', now(), now());
 insert into report_type (name, creation_date, modification_date) values ('Line Chart', now(), now());
+insert into report_type (name, creation_date, modification_date) values ('Bar Chart', now(), now());
 insert into report_type (name, creation_date, modification_date) values ('Pie Chart', now(), now());
 
 insert into condition(field_1_id, creation_date, modification_date) values (471, now(), now());

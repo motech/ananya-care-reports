@@ -100,7 +100,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             if (indicator.reports == undefined) {
                 continue;
             }
-            indicator.reports.sort(function(a, b) { return parseInt(a.id) - parseInt(b.id); });
+            indicator.reports.sort(function(a, b) { return parseInt(a.reportType.id) - parseInt(b.reportType.id); });
             var indicatorReport = indicator.reports[0];
             if (indicatorReport != null && indicatorReport.reportType.name.toLowerCase().endsWith('chart')) {
                 var report = indicatorReport;
