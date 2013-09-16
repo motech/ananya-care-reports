@@ -107,7 +107,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
-                                                      $dialog, $location, $errorService, $route, $routeParams) {
+                                                      $dialog, $location, $errorService, $route) {
     $scope.title = $scope.msg('indicators.title');
     $scope.selectedClassifications = [];
     $scope.selectedOwners = [];
@@ -140,6 +140,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
         $scope.selectedClassification = $scope.listClassifications[0];
         $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
+
         for(var i = 0; i < $scope.formData.roles.length; i++) {
             var id = $scope.formData.roles[i].id;
             $scope.selectedOwners[id] = false;
@@ -149,9 +150,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     $http.get("api/indicator/creationform").success(function(indicatorCreationFormDto) {
         $scope.formData = indicatorCreationFormDto;
         $scope.sortFormDataArrays();
-        if ($scope.indicator.id == undefined) {
-            $scope.initializeInputFields();
-        }
+        $scope.initializeInputFields();
     }).error(function() {
         $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
@@ -257,56 +256,17 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                  }
             }
         }
-        var indicatorId = $scope.indicator.id;
         $http({
-            url: "api/indicator" + (indicatorId != undefined ? ("/" + indicatorId) : ""),
-            method: indicatorId != undefined ? "PUT" : "POST",
+            url: "api/indicator",
+            method: "POST",
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
+            $location.path( "/indicators" );
         }).error(function(response, status, headers, config) {
             $errorService.apiError($scope, response);
         });
     };
-
-    $scope.fetchIndicator = function(indicatorId) {
-        $http({
-            url: "api/indicator/" + indicatorId,
-            method: "GET",
-        }).success(function(indicator) {
-            console.log(indicator);
-            $scope.selectedClassifications = indicator.classifications;
-            indicator.classifications = [];
-            $scope.indicator = indicator;
-            $scope.indicator.categorized = $scope.indicator.isCategorized;
-            $scope.indicator.additive = $scope.indicator.isAdditive;
-            $scope.selectedOwners = [];
-            for (var i in indicator.roles) {
-                if (indicator.roles.hasOwnProperty(i)) {
-                    $scope.selectedOwners[indicator.roles[i].id] = true;
-                }
-            }
-            delete indicator.roles;
-            $scope.indicator.owners = [];
-            delete indicator.isCategorized;
-            delete indicator.isAdditive;
-            $scope.indicator.frequency = indicator.defaultFrequency.id;
-            delete indicator.defaultFrequency;
-            delete indicator.isComputed;
-            $scope.indicator.numerator = $scope.indicator.numerator.id;
-            if ($scope.indicator.denominator != undefined) {
-                $scope.indicator.denominator = $scope.indicator.denominator.id;
-            }
-            $scope.indicator.level = indicator.areaLevel.id;
-            delete indicator.areaLevel;
-        }).error(function(response, status, headers, config) {
-            $errorService.apiError($scope, response);
-        });
-    };
-
-    if ($routeParams.indicatorId != undefined) {
-        $scope.fetchIndicator($routeParams.indicatorId);
-    }
 
 });
 

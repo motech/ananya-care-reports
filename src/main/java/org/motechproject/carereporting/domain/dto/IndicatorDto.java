@@ -12,8 +12,6 @@ public class IndicatorDto implements Serializable {
 
     protected static final long serialVersionUID = 0L;
 
-    private Integer id;
-
     @NotEmpty
     private String name;
 
@@ -63,14 +61,6 @@ public class IndicatorDto implements Serializable {
         this.denominator = denominator;
         this.additive = additive;
         this.categorized = categorized;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
