@@ -323,3 +323,8 @@ hr {
 div.alert-tall .alert-tall-label {
     margin-top: 20px;
 }
+
+.pre-tall {
+    height: 500px;
+    background-color: #FFFFFF !important;
+}

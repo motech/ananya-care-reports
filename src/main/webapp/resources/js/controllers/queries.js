@@ -51,7 +51,7 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
     };
 
     $scope.fetchFormData = function() {
-        $http.get('api/indicator/query/creationform').success(function(formData) {
+        $http.get('api/indicator/queries/creationform').success(function(formData) {
             $scope.sortFormData(formData);
             $scope.formData.forms = formData.forms;
             $scope.condition.form1 = formData.forms[0];
@@ -188,7 +188,10 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             { name: $scope.msg('queries.new.function.Count'), code: 'Count' },
             { name: $scope.msg('queries.new.function.Max'), code: 'Max' },
             { name: $scope.msg('queries.new.function.Min'), code: 'Min' },
-            { name: $scope.msg('queries.new.function.Sum'), code: 'Sum' }
+            { name: $scope.msg('queries.new.function.Sum'), code: 'Sum' },
+            { name: $scope.msg('queries.new.function.Median'), code: 'Median' },
+            { name: $scope.msg('queries.new.function.Mode'), code: 'Mode' },
+            { name: $scope.msg('queries.new.function.StandardDeviation'), code: 'StandardDeviation' }
         ],
         operators: [
             { name: '---' },
@@ -219,7 +222,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
     };
 
     $scope.fetchFormData = function() {
-        $http.get('api/indicator/query/creationform').success(function(formData) {
+        $http.get('api/indicator/queries/creationform').success(function(formData) {
             $scope.sortFormData(formData);
             $scope.formData.dimensionForms = [].concat(formData.forms);
             $scope.formData.forms = [{ tableName: null, displayName: '---' }].concat(formData.forms);
@@ -505,7 +508,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
     };
 });
 
-care.controller('queryListController', function($scope, $http, $location, $dialog, $errorService) {
+care.controller('queryListController', function($rootScope, $scope, $http, $location, $dialog, $errorService) {
     $scope.queries = [];
 
     $scope.fetchQueries = function() {
@@ -517,6 +520,24 @@ care.controller('queryListController', function($scope, $http, $location, $dialo
         });
     };
     $scope.fetchQueries();
+
+    $scope.viewQuerySql = function(index) {
+        var query = $scope.queries[index];
+        $http.get('api/indicator/queries/' + query.id + '/getsql').success(function(sql) {
+            $rootScope.sql = sql;
+
+            $dialog.dialog({
+                backdrop: true,
+                keyboard: true,
+                backdropClick: false,
+                templateUrl: 'resources/partials/indicators/querySqlDialog.html',
+                controller: 'querySqlDialogController',
+                dialogClass: 'modal modal-huge'
+            }).open();
+        }).error(function() {
+            $errorService.genericError($scope, 'queries.error.cannotLoadQuerySql');
+        });
+    };
 
     $scope.deleteQuery = function(index) {
         var query = $scope.queries[index];
@@ -536,5 +557,14 @@ care.controller('queryListController', function($scope, $http, $location, $dialo
                     });
                 }
             });
+    };
+});
+
+care.controller('querySqlDialogController', function($rootScope, $scope, dialog) {
+    $scope.sql = $rootScope.sql;
+    delete $rootScope.sql;
+
+    $scope.close = function(result) {
+        dialog.close(result);
     };
 });

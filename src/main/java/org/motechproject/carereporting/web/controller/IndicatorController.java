@@ -1,11 +1,16 @@
 package org.motechproject.carereporting.web.controller;
 
 import org.apache.log4j.Logger;
+import org.dwQueryBuilder.builders.QueryBuilder;
+import org.dwQueryBuilder.data.DwQuery;
+import org.jooq.SQLDialect;
+import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.CronTaskEntity;
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
+import org.motechproject.carereporting.domain.LevelEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
 import org.motechproject.carereporting.domain.dto.DwQueryDto;
 import org.motechproject.carereporting.domain.dto.IndicatorDto;
@@ -14,11 +19,13 @@ import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.QueryJsonView;
 import org.motechproject.carereporting.exception.CareApiRuntimeException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
 import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.xml.XmlIndicatorParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +58,8 @@ import java.util.Set;
 @Controller
 public class IndicatorController extends BaseController {
 
+    private static final String AREA_NAME = "<area_name>";
+    private static final String AREA_LEVEL_NAME = "<area_level_name>";
     @Autowired
     private IndicatorService indicatorService;
 
@@ -62,6 +71,9 @@ public class IndicatorController extends BaseController {
 
     @Autowired
     private XmlIndicatorParser xmlIndicatorParser;
+
+    @Value("${care.jdbc.schema}")
+    private String careSchemaName;
 
     // IndicatorEntity
 
@@ -82,7 +94,7 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorCreationFormDto());
     }
 
-    @RequestMapping(value = "/query/creationform", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = "/queries/creationform", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @Transactional
@@ -106,6 +118,24 @@ public class IndicatorController extends BaseController {
     public void deleteDwQueryById(@PathVariable Integer dwQueryId) {
         DwQueryEntity dwQueryEntity = indicatorService.getDwQueryById(dwQueryId);
         indicatorService.deleteDwQuery(dwQueryEntity);
+    }
+
+    @RequestMapping(value = "/queries/{dwQueryId}/getsql", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getQuerySqlById(@PathVariable Integer dwQueryId) {
+        DwQueryEntity dwQueryEntity = indicatorService.getDwQueryById(dwQueryId);
+        DwQueryHelper dwQueryHelper = new DwQueryHelper();
+        DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, prepareMockArea());
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                careSchemaName, dwQuery, true);
+
+        return sqlString;
+    }
+
+    private AreaEntity prepareMockArea() {
+        return new AreaEntity(AREA_NAME, new LevelEntity(AREA_LEVEL_NAME, null));
     }
 
     @RequestMapping(value = "/queries/new", method = RequestMethod.POST,

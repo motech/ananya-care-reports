@@ -8,7 +8,7 @@ public class IndicatorGetQueryCreationFormScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/indicator/query/creationform")
+                get("/api/indicator/queries/creationform")
         );
     }
 
