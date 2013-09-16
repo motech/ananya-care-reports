@@ -346,16 +346,18 @@ public class IndicatorController extends BaseController {
 
     private boolean canUserCreateIndicator(IndicatorEntity indicatorEntity, HttpServletRequest request) {
         if (!canUserCreateIndicators(request)) {
-            if (isUserReadOnly() || !isCurrentUserOwnerOfIndicator(indicatorEntity) || (indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0)) {
-                return false;
-            }
+            return false;
         }
-        return true;
+        boolean indicatorHasRoles = indicatorEntity.getRoles() != null && indicatorEntity.getRoles().size() > 0;
+        if (indicatorHasRoles) {
+            return isUserAdmin();
+        }
+        return isCurrentUserOwnerOfIndicator(indicatorEntity);
     }
 
-    private boolean isUserReadOnly() {
+    private boolean isUserAdmin() {
         return userService.getCurrentlyLoggedUser()
-                .getRoles().contains(new RoleEntity("Read Only"));
+                .getRoles().contains(new RoleEntity("Admin"));
     }
 
     private boolean isCurrentUserOwnerOfIndicator(IndicatorEntity indicatorEntity) {
