@@ -34,17 +34,32 @@
                 </dw-query>
             </combineWith>
             <where-group>
-                <where-condition type="valueComparison">
-                    <table-name>mother_case</table-name>
-                    <field>ifa_tablets</field>
-                    <operator>&gt;=</operator>
-                    <value>90</value>
-                </where-condition>
-                <where-condition type="period">
-                    <!--ADD falls in period -->
-                    <table-name>mother_case</table-name>
-                    <field>add</field>
-                </where-condition>
+                <where-group>
+                    <where-condition type="valueComparison">
+                        <table-name>mother_case</table-name>
+                        <field>ifa_tablets</field>
+                        <operator>&gt;=</operator>
+                        <value>90</value>
+                    </where-condition>
+                    <where-condition type="period">
+                        <!--ADD falls in period -->
+                        <table-name>mother_case</table-name>
+                        <field>add</field>
+                    </where-condition>
+                </where-group>
+                <where-group join="OR">
+                    <where-condition type="valueComparison">
+                        <table-name>mother_case</table-name>
+                        <field>ifa_tablets</field>
+                        <operator>&gt;=</operator>
+                        <value>90</value>
+                    </where-condition>
+                    <where-condition type="period">
+                        <!--EDD falls in period -->
+                        <table-name>mother_case</table-name>
+                        <field>edd</field>
+                    </where-condition>
+                </where-group>
             </where-group>
         </dw-query>
     </numerator>
