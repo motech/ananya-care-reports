@@ -43,7 +43,7 @@
                                         <input id="indicatorOwner_all" ng-disabled="selectedOwners[0]" type="checkbox" ng-click="selectAllRoles()" ng-checked="isAllSelected()" />
                                         <label class="inline" for="indicatorOwner_all">{{msg('common.all')}}</label>
                                     </li>
-                                    <li ng-repeat="item in formData.roles">
+                                    <li ng-repeat="item in formData.roles | filter:filterReportViews">
                                         <input id="indicatorOwner_{{item.id}}" ng-disabled="selectedOwners[0]" type="checkbox" ng-model="selectedOwners[item.id]" value="{{item.id}}" />
                                         <label class="inline" for="indicatorOwner_{{item.id}}">{{item.name}}</label>
                                     </li>

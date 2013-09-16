@@ -181,6 +181,10 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         }
     }
 
+    $scope.filterReportViews = function(reportView) {
+        return reportView.name != "Admin" && reportView.name != "Read Only";
+    };
+
     $scope.removeClassification = function(index) {
         $scope.listClassifications.push($scope.selectedClassifications[index]);
         $scope.listClassifications.sortByField('name');
