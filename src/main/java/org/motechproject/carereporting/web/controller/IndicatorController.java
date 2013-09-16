@@ -176,6 +176,7 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
         IndicatorEntity indicatorEntity = indicatorService.createIndicatorEntityFromDto(indicatorDto);
+        indicatorEntity.setOwner(userService.getCurrentlyLoggedUser());
         if (!canUserCreateIndicator(indicatorEntity, request)) {
             List<FieldError> errors = new ArrayList<>();
             errors.add(new FieldError("indicator", "owners", "You don't have permission to add indicator with this report views."));
