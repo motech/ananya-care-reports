@@ -35,12 +35,14 @@ import java.util.Set;
 })
 public class IndicatorEntity extends AbstractEntity {
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity denominator;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity numerator;
 
@@ -52,6 +54,7 @@ public class IndicatorEntity extends AbstractEntity {
     private Set<IndicatorClassificationEntity> classifications;
 
     @NotNull
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
     @JoinColumn(name = "area_level_id", referencedColumnName = "level_id", nullable = false)
     @ManyToOne
     private LevelEntity areaLevel;
@@ -61,6 +64,7 @@ public class IndicatorEntity extends AbstractEntity {
     private UserEntity owner;
 
     @ManyToMany
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class})
     @JoinTable(name = "indicator_role", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
     private Set<RoleEntity> roles;
@@ -93,9 +97,10 @@ public class IndicatorEntity extends AbstractEntity {
     private Boolean isComputed;
 
     @Column(name = "is_additive", nullable = false)
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ BaseView.class })
     private Boolean isAdditive;
 
+    @JsonView({ BaseView.class })
     @Column(name = "is_categorized", nullable = true)
     private Boolean isCategorized;
 

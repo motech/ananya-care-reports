@@ -192,7 +192,7 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorService.updateIndicatorFromDto(indicatorDto);
+        indicatorService.updateIndicatorFromDto(indicatorId, indicatorDto);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE)

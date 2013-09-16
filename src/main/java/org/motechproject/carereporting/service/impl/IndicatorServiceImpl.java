@@ -411,7 +411,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional
     @Override
     public IndicatorEntity getIndicatorById(Integer id) {
-        return indicatorDao.getById(id);
+        return indicatorDao.getByIdWithFields(id, "roles");
     }
 
     @Transactional(readOnly = false)
@@ -489,8 +489,10 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
-        // TODO : Is this function needed? If so, fill it out.
+    public void updateIndicatorFromDto(Integer indicatorId, IndicatorDto indicatorDto) {
+        IndicatorEntity indicatorEntity = createIndicatorEntityFromDto(indicatorDto);
+        indicatorEntity.setId(indicatorId);
+        indicatorDao.update(indicatorEntity);
     }
 
     private Set<IndicatorClassificationEntity> findIndicatorClassificationEntitiesFromDto(
