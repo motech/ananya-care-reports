@@ -51,6 +51,7 @@ import javax.xml.bind.UnmarshalException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -272,6 +273,19 @@ public class IndicatorController extends BaseController {
     @Transactional(readOnly = false)
     public void deleteIndicatorClassification(@PathVariable Integer indicatorClassificationId) {
         IndicatorClassificationEntity indicatorClassificationEntity = indicatorService.getIndicatorClassificationById(indicatorClassificationId);
+        Set<IndicatorEntity> indicatorEntities = indicatorService.getIndicatorsByClassificationId(indicatorClassificationId);
+        Iterator<IndicatorEntity> iterator = indicatorEntities.iterator();
+
+        while (iterator.hasNext()) {
+            IndicatorEntity indicatorEntity = iterator.next();
+            indicatorEntity.getClassifications().remove(indicatorClassificationEntity);
+
+            if (indicatorEntity.getClassifications().size() > 0) {
+                indicatorService.updateIndicator(indicatorEntity);
+            } else {
+                indicatorService.deleteIndicator(indicatorEntity);
+            }
+        }
 
         indicatorService.deleteIndicatorClassification(indicatorClassificationEntity);
     }

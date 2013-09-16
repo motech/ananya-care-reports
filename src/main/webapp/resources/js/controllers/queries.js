@@ -553,7 +553,7 @@ care.controller('queryListController', function($rootScope, $scope, $http, $loca
                     .success(function(data, status, headers, config) {
                         $scope.queries.splice(index, 1);
                     }).error(function(response) {
-                        $errorService.genericError($scope, 'queries.list.error.cannotDeleteQuery', query.name);
+                        $errorService.genericError($scope, 'queries.error.cannotDeleteQuery', query.name);
                     });
                 }
             });
