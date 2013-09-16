@@ -23,22 +23,20 @@
             <combineWith type="Join" dimension-key="id" foreign-key="case_id">
                 <dw-query>
                     <select-columns>
-                        <select-column fieldName="case_id" />
-                        <select-column fieldName="test-computed-field" />
+                        <select-column tableName="bp_form" fieldName="case_id" />
                     </select-columns>
                     <dimension tableName="bp_form" />
-                    <group-by tableName="bp_form" fieldName="case_id">
-                        <having function="Count" tableName="bp_form" fieldName="case_id" operator=">=" value="0" />
-                    </group-by>
+                    <where-group>
+                        <where-condition type="valueComparison">
+                            <table-name>bp_form</table-name>
+                            <field>test-computed-field</field>
+                            <operator>&gt;=</operator>
+                            <value>90</value>
+                        </where-condition>
+                    </where-group>
                 </dw-query>
             </combineWith>
             <where-group>
-                <where-condition type="valueComparison">
-                    <table-name>bp_form</table-name>
-                    <field>test-computed-field</field>
-                    <operator>&gt;=</operator>
-                    <value>90</value>
-                </where-condition>
                 <where-condition type="period">
                     <table-name>mother_case</table-name>
                     <field>add</field>
