@@ -14,6 +14,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.text.ParseException;
 import java.util.Set;
 
@@ -48,6 +49,15 @@ public class CronScheduler {
         }
 
         scheduler.start();
+    }
+
+    @PreDestroy
+    public void stopScheduler() {
+        try {
+            scheduler.shutdown(false);
+        } catch (SchedulerException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     public void updateJob(CronTaskEntity cronTaskEntity) {
