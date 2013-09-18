@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ananya-care-reports</groupId>
     <artifactId>ananya-care-reports</artifactId>
     <packaging>war</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>Ananya CARE Reports</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -259,7 +258,7 @@
     </dependencies>
     <scm>
         <developerConnection>scm:git:git@github.com:motech/ananya-care-reports.git</developerConnection>
-        <tag>1.0.1</tag>
+        <tag>ananya-care-reports-1.0.1</tag>
     </scm>
     <build>
         <finalName>ananya-care-reports</finalName>
