@@ -1,7 +1,7 @@
 package org.motechproject.carereporting.domain.types;
 
 public enum ReportType {
-    BarChart(1), LineChart(2), PieChart(3);
+    LineChart(1), BarChart(2), PieChart(3);
 
     private Integer value;
 
