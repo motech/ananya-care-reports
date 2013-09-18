@@ -37,7 +37,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     private static final String DEFAULT_LANGUAGE_CODE = "df";
     private static final String INVALID_CODE = "Invalid language code specified.";
-    private static final String CARE_MESSAGE_DIRECTORY = ConfigurationLocator.getCareLanguagesDirectory();
+    private static final String CARE_MESSAGE_DIRECTORY
+            = ConfigurationLocator.getCareLanguagesDirectory() + File.separator;
     private static final String FILE_NAME = "messages_%s.properties";
 
     @Autowired
@@ -175,7 +176,7 @@ public class LanguageServiceImpl implements LanguageService {
     private String getMessagesFromFilePlain(String languageCode) {
         try {
             String code = extractLanguageCode(languageCode);
-            String fileName = String.format(CARE_MESSAGE_DIRECTORY + "/" + FILE_NAME, code);
+            String fileName = String.format(CARE_MESSAGE_DIRECTORY + FILE_NAME, code);
 
             Set<String> defaultMessages = getDefaultMessageFileContents();
             if (StringUtils.isBlank(code) || code.equals(DEFAULT_LANGUAGE_CODE)) {

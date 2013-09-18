@@ -67,7 +67,7 @@ care.controller('languageListController', function($scope, $rootScope, $simplifi
 });
 
 care.controller('messageController', function($scope, $rootScope, $simplifiedHttpService,
-        $http, $dialog, $routeParams, $errorService, $location, $timeout) {
+        $http, $dialog, $routeParams, $errorService, $location, $timeout, i18nService) {
 
  $scope.fetchActiveUserDefaultLanguage = function() {
         $simplifiedHttpService.get($scope, 'api/users/logged_in/language',

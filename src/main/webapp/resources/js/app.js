@@ -56,7 +56,7 @@
 
         $httpProvider.responseInterceptors.push(interceptor);
 
-    }]).run(function($rootScope, i18nService, $roleService) {
+    }]).run(function($rootScope, i18nService, $roleService, $timeout, $simplifiedHttpService) {
 
         $rootScope.msg = function(key, params) {
             return i18nService.getMessage(key, params);
@@ -73,6 +73,15 @@
         $('.multiselect').multiselect({
             buttonClass: 'btn btn-small'
         });
+
+        $rootScope.fetchActiveUserDefaultLanguage = function() {
+            $simplifiedHttpService.get($rootScope, 'api/users/logged_in/language',
+                    'languages.error.cannotLoadLanguage', function(language) {
+                $rootScope.defaultLanguage = language;
+                i18nService.init(language.code);
+            });
+        };
+        $timeout($rootScope.fetchActiveUserDefaultLanguage, 0);
     });
 
 }());
