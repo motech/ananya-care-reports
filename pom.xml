@@ -257,9 +257,18 @@
             <version>${joda-time.version}</version>
         </dependency>
     </dependencies>
+    <scm>
+        <developerConnection>scm:git:git@github.com:motech/ananya-care-reports.git</developerConnection>
+        <tag>1.0.1</tag>
+    </scm>
     <build>
         <finalName>ananya-care-reports</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
