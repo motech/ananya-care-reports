@@ -175,7 +175,7 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
 
 care.controller('createDwQueryController', function($rootScope, $scope, $http, $modal,
                                                     $dialog, $location, $errorService, $route, $timeout) {
-    $scope.title = $scope.msg('queries.new.title');
+    $scope.title = 'queries.new.title';
     $scope.formData = {
         queryName: null,
         dimension: null,

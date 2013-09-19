@@ -2,7 +2,7 @@ var care = angular.module('care');
 
 
 care.controller('reportController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('reports.title');
+    $scope.title = 'reports.title';
 
     $scope.reportId = $routeParams.reportId;
 
@@ -38,7 +38,7 @@ care.controller('reportController', function($scope, $http, $routeParams, $locat
 });
 
 care.controller('reportListController', function($scope, $http, $routeParams, $location, $dialog) {
-    $scope.title = $scope.msg('reports.title');
+    $scope.title = 'reports.title';
 
     $scope.fetchReports = function() {
         $http.get('api/report').success(function(reports) {

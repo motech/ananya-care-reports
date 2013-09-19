@@ -15,7 +15,7 @@
             </script>
         </c:if>
         <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
-        <title ng:bind-template="{{pageTitle}} - CARE Reporting"></title>
+        <title ng:bind-template="{{msg(pageTitle)}} - CARE Reporting"></title>
 
         <link rel="shortcut icon" href="resources/images/favicon.png" />
         <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css"/>
@@ -108,7 +108,7 @@
                 <h1 class="page-header">
                     <ul class="breadcrumb">
                         <li><a href="/"><strong>{{msg('menu.careReporting')}}</strong></a> <span class="divider">&gt;</span></li>
-                        <li class="active"><a href="">{{pageTitle}}</a></li>
+                        <li class="active"><a href="">{{msg(pageTitle)}}</a></li>
                     </ul>
                 </h1>
             </div>

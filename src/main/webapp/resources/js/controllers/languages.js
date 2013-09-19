@@ -2,7 +2,7 @@ var care = angular.module('care');
 
 care.controller('languageListController', function($scope, $rootScope, $simplifiedHttpService,
         $http, $dialog, $location, $errorService) {
-    $scope.title = $scope.msg('languages.list.title');
+    $scope.title = 'languages.list.title';
 
     Array.prototype.sortByField = function(fieldName) {
         this.sort(function(a, b) {
@@ -110,7 +110,7 @@ care.controller('messageController', function($scope, $rootScope, $simplifiedHtt
     $timeout($scope.fetchLanguages, 0);
 
 
-    $scope.title = $scope.msg('languages.edit.title');
+    $scope.title = 'languages.edit.title';
 
     $scope.isEdit = ($routeParams['edit'] == 'true');
     $scope.newCode = $routeParams['languageCode'];

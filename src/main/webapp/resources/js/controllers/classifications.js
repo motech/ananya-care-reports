@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 care.controller('classificationsController', function($scope, $http, $dialog, $routeParams, $location, $errorService) {
-    $scope.title = $scope.msg('classifications.title');
+    $scope.title = 'classifications.title';
 
     $scope.classificationId = $routeParams.classificationId;
     $scope.classification = {};
@@ -33,7 +33,7 @@ care.controller('classificationsController', function($scope, $http, $dialog, $r
 });
 
 care.controller('classificationsListController', function($scope, $http, $dialog, $route) {
-    $scope.title = $scope.msg('classifications.title');
+    $scope.title = 'classifications.title';
 
     $scope.classification = {};
     $scope.fetchClassifications = function() {

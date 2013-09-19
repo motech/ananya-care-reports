@@ -10,7 +10,7 @@ function sortByDateComparisonFunction(a, b) {
 
 care.controller('dashboardController', function($rootScope, $scope, $http, $location, $dialog, $simplifiedHttpService, $compile, $errorService) {
 
-    $scope.title = $scope.msg('dashboards.title');
+    $scope.title = 'dashboards.title';
 
     $scope.startDate = moment().subtract('months', 1);
     $scope.endDate = moment();

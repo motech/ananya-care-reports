@@ -17,12 +17,12 @@ Array.prototype.notEmpty = function() {
 };
 
 care.controller('uploadIndicatorController', function($scope) {
-    $scope.title = $scope.msg('indicators.uploadXml.title');
+    $scope.title = 'indicators.uploadXml.title';
     $scope.error = typeof springError != 'undefined' ? springError : undefined;
 });
 
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
-    $scope.title = $scope.msg('indicators.title');
+    $scope.title = 'indicators.title';
 
     $scope.classification = [];
     $scope.indicators = [];
@@ -108,7 +108,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
                                                       $dialog, $location, $errorService, $route) {
-    $scope.title = $scope.msg('indicators.title');
+    $scope.title = 'indicators.title';
     $scope.selectedClassifications = [];
     $scope.selectedOwners = [];
     $scope.selectedChart = {};
@@ -271,7 +271,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
 });
 
 care.controller('dateDepthController', function($scope, $http, $dialog, $location, $errorService) {
-    $scope.title = $scope.msg('indicatorCalculator.dateDepth.header');
+    $scope.title = 'indicatorCalculator.dateDepth.header';
 
     $scope.dateDepth = [];
 
@@ -304,7 +304,7 @@ care.controller('dateDepthController', function($scope, $http, $dialog, $locatio
 });
 
 care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService) {
-    $scope.title = $scope.msg('menu.calculator.frequency');
+    $scope.title = 'menu.calculator.frequency';
 
     $scope.time = null;
 

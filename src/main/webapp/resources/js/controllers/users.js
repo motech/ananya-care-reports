@@ -7,7 +7,7 @@ care.controller('errorsDialogController', function($scope, dialog) {
 });
 
 care.controller('userListController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.title');
+    $scope.title = 'users.title';
 
     $scope.fetchUsers = function() {
         $http.get('api/users').success(function(users) {
@@ -36,7 +36,7 @@ care.controller('userListController', function($scope, $http, $routeParams, $loc
 });
 
 care.controller('userController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('users.title');
+    $scope.title = 'users.title';
 
     $scope.userId = $routeParams.userId;
 

@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 care.controller('formController', function($scope, $http, $routeParams, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('forms.title');
+    $scope.title = 'forms.title';
 
     $scope.formId = $routeParams.formId;
     $scope.careForm = {};
@@ -30,7 +30,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
 });
 
 care.controller('formListController', function($scope, $http, $dialog, $errorService, $simplifiedHttpService) {
-    $scope.title = $scope.msg('forms.title');
+    $scope.title = 'forms.title';
 
     var reloadMsg = $scope.msg('forms.list.reloadForms');
     var loadingMsg = $scope.msg('forms.list.reloadForms.loading');

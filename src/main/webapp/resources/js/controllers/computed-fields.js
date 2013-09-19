@@ -1,7 +1,7 @@
 var care = angular.module('care');
 
 care.controller('computedFieldsController', function($scope, $http, $routeParams, $rootScope, $location, $dialog, $errorService) {
-    $scope.title = $scope.msg('computedField.title');
+    $scope.title = 'computedField.title';
 
     $scope.listOperators = [];
     $scope.computedField = {};
