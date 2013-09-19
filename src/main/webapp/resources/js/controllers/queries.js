@@ -510,6 +510,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
 
 care.controller('queryListController', function($rootScope, $scope, $http, $location, $dialog, $errorService) {
     $scope.queries = [];
+    $scope.title = 'queries.title';
 
     $scope.fetchQueries = function() {
         $http.get('api/indicator/queries').success(function(queries) {
