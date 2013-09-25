@@ -23,7 +23,7 @@
             .when('/admin/computed-fields', { templateUrl: 'resources/partials/admin/computed-fields/computedField.html', controller: 'computedFieldsController' })
             .when('/admin/languages', {templateUrl: 'resources/partials/admin/messages/listLanguages.html', controller: 'languageListController'})
             .when('/admin/languages/:languageCode', {templateUrl: 'resources/partials/admin/messages/editLanguages.html', controller: 'messageController'})
-            .when('/admin/select-language', {templateUrl: 'resources/partials/admin/messages/selectLanguage.html', controller: 'messageController'})
+            .when('/account/settings', { templateUrl: 'resources/partials/account/accountSettings.html', controller: 'accountSettingsController' })
             .otherwise({ redirectTo: '/' });
 
         var interceptor = ['$rootScope', '$q', 'i18nService', function (scope, $q, i18nService) {

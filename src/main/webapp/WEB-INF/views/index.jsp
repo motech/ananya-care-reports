@@ -48,6 +48,7 @@
         <script src="resources/js/app.js" type="text/javascript"></script>
         <script src="resources/js/services.js" type="text/javascript"></script>
         <script src="resources/js/filters.js" type="text/javascript"></script>
+        <script src="resources/js/controllers/account.js" type="text/javascript"></script>
         <script src="resources/js/controllers/languages.js" type="text/javascript"></script>
         <script src="resources/js/controllers/classifications.js" type="text/javascript"></script>
         <script src="resources/js/controllers/dashboards.js" type="text/javascript"></script>
@@ -94,10 +95,10 @@
                                     <i class="icon-white icon-user"></i> <sec:authentication property="principal.username" /> <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu nav-list dropdown-blue right-align">
-                                    <li class="nav-header">{{msg('menu.signedInAs')}}:</li>
-                                    <li><sec:authentication property="principal.username" /></li>
+                                    <li class="nav-header"><sec:authentication property="principal.username" /></li>
+                                    <li><a href="#/account/settings/"><i class="icon-user"></i> My Account Settings</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="logout">{{msg('menu.logout')}}</a></li>
+                                    <li><a href="logout"><i class="icon-off"></i>{{msg('menu.logout')}}</a></li>
                                 </ul>
                             </div>
                         </div>

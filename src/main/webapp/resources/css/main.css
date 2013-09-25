@@ -328,3 +328,7 @@ div.alert-tall .alert-tall-label {
     height: 500px;
     background-color: #FFFFFF !important;
 }
+
+.hq-content {
+    padding-right: 40px !important;
+}
