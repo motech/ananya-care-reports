@@ -8,11 +8,12 @@ import org.motechproject.carereporting.performance.scenario.simple.UserGetLogged
 public class LoadPageScenario extends AbstractScenario {
 
     {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             addRequests(new LanguageGetPlainMessagesScenario());
         }
         addRequests(
                 new UserGetLoggedUserPermissionsScenario(),
+                new UserGetLoggedUserLanguageScenario(),
                 new PerformanceSummaryScenario()
         );
     }

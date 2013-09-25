@@ -1,20 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+ 		http://www.springframework.org/schema/mvc
+ 		http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+ 		http://www.springframework.org/schema/context
+ 		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+ 		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 
-    <import resource="classpath:/testContext.xml"/>
+    <context:property-placeholder location="classpath:configuration.properties" />
+
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property ref="dataSource" name="dataSource" />
+        <property name="changeLog" value="classpath:db/changelog/db-changelog.xml" />
+        <property name="contexts" value="test, production" />
+        <property name="defaultSchema" value="${test.jdbc.schema}" />
+    </bean>
+
+    <bean id="careDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${care.jdbc.driverName}" />
+        <property name="url" value="${care.jdbc.url}" />
+        <property name="username" value="${care.jdbc.user}" />
+        <property name="password" value="${care.jdbc.password}" />
+    </bean>
+
+    <bean id="applicationContextProvider" class="org.motechproject.carereporting.context.ApplicationContextProvider" />
+
+    <context:component-scan base-package="org.motechproject.carereporting" />
+
+    <mvc:annotation-driven />
+
+    <bean id="authenticationProvider"
+          class="org.motechproject.carereporting.auth.CareReportingAuthenticationProvider" />
+
+    <bean id="servletContextProvider" class="org.motechproject.carereporting.context.ServletContextProvider" />
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${test.jdbc.driverName}" />
+        <property name="url" value="${test.performance.jdbc.url}" />
+        <property name="username" value="${test.jdbc.user}" />
+        <property name="password" value="${test.jdbc.password}" />
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="org.motechproject.carereporting.domain" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.showSql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.default_schema">${test.jdbc.schema}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <security:global-method-security pre-post-annotations="enabled" />
+
+    <security:authentication-manager>
+        <security:authentication-provider ref="authenticationProvider" />
+    </security:authentication-manager>
+
+    <bean id="formEntityInitializer" class="org.motechproject.carereporting.initializers.ComputedFieldEntityInitializer" init-method="loadFormsFromDB" />
+
+    <bean id="cronScheduler" class="org.motechproject.carereporting.scheduler.CronScheduler" depends-on="liquibase, formEntityInitializer" />
 
     <bean id="xmlIndicatorTestParser" class="org.motechproject.carereporting.performance.helpers.XmlIndicatorTestParser" />
 
     <bean id="performanceTestHelper" class="org.motechproject.carereporting.performance.helpers.PerformanceTestHelper" init-method="populateDatabase" depends-on="formEntityInitializer, liquibase, xmlIndicatorTestParser">
         <constructor-arg index="0" value="20"/>
-        <constructor-arg index="1" value="780"/>
+        <constructor-arg index="1" value="6"/>
         <constructor-arg index="2" value="100"/>
         <constructor-arg index="3" value="50"/>
         <constructor-arg index="4" value="90"/>
         <constructor-arg index="5" value="2000"/>
+        <constructor-arg index="6" value="700"/>
     </bean>
 
 </beans>

@@ -11,7 +11,7 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ChartsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineIndicatorScenario;
-import org.motechproject.carereporting.performance.scenario.complex.DefineLanguageScenario;
+import org.motechproject.carereporting.performance.scenario.complex.SelectOrDefineLanguageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineQueryScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
@@ -400,7 +400,7 @@ public abstract class PhasePT {
 
     @Test
     public void testDefineLanguage() throws Exception {
-        runTest(DefineLanguageScenario.class);
+        runTest(SelectOrDefineLanguageScenario.class);
     }
 
     @Test
