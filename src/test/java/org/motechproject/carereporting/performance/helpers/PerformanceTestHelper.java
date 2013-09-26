@@ -189,7 +189,7 @@ public class PerformanceTestHelper {
             String name = UUID.randomUUID().toString();
             LanguageEntity languageEntity = new LanguageEntity();
             languageEntity.setName(name);
-            languageEntity.setCode(name.substring(0, 2));
+            languageEntity.setCode(String.valueOf(i));
             try {
                 languageDao.save(languageEntity);
             } catch (CareRuntimeException e) {
