@@ -36,7 +36,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                 }
             }
         }
-    });
+    }, true);
 
     $scope.deleteIndicator = function(indicator) {
         var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
@@ -50,6 +50,11 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     })
                     .success(function(data, status, headers, config) {
                         $scope.fetchClassifications();
+                        for(var i = 0; i < $scope.indicators.length; i++) {
+                            if($scope.indicators[i] == indicator) {
+                                $scope.indicators.splice(i, 1);
+                            }
+                        }
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
@@ -64,13 +69,11 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             for(var i = 0; i < classification.length; i++) {
                 ind = ind.concat(classification[i].indicators);
             }
-            var name = $scope.msg('indicators.list.allClassifications');
             $scope.classification = [{
                 id: 0,
                 indicators: ind,
                 name: $scope.msg('indicators.list.allClassifications')
             }].concat(classification);
-            $scope.indicators = [];
             $scope.selectedClassification = 0;
         }).error(function(response) {
             $dialog.messageBox($scope.msg('common.error'), $scope.msg('classifications.error.cannotLoadClassifications'), [{label: 'Ok', cssClass: 'btn'}]).open();

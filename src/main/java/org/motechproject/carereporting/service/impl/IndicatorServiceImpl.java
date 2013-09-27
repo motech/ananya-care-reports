@@ -208,7 +208,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public DwQueryEntity getDwQueryById(Integer dwQueryId) {
-        return dwQueryDao.getById(dwQueryId);
+        DwQueryEntity dwQueryEntity = dwQueryDao.getById(dwQueryId);
+        initializeDwQuery(dwQueryEntity);
+        return dwQueryEntity;
     }
 
     @Override
