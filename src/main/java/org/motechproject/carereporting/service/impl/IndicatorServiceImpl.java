@@ -724,8 +724,23 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
     }
 
+    private void initializeDwQuery(DwQueryEntity dwQueryEntity) {
+        Hibernate.initialize(dwQueryEntity.getSelectColumns());
+        Hibernate.initialize(dwQueryEntity.getGroupedBy());
+        Hibernate.initialize(dwQueryEntity.getWhereGroup());
+        Hibernate.initialize(dwQueryEntity.getCombination());
+        if (dwQueryEntity.getCombination() != null) {
+            initializeDwQuery(dwQueryEntity.getCombination().getDwQuery());
+        }
+    }
+
     @Override
     public void calculateIndicator(IndicatorEntity indicatorEntity) {
+        initializeDwQuery(indicatorEntity.getNumerator());
+
+        if(indicatorEntity.getDenominator() != null) {
+            initializeDwQuery(indicatorEntity.getDenominator());
+        }
         Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
         thread.start();
     }

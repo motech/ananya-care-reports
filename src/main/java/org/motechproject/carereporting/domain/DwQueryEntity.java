@@ -27,20 +27,20 @@ public class DwQueryEntity extends AbstractEntity {
     @Column(name = "table_name", length = 100)
     private String tableName;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
     private Set<SelectColumnEntity> selectColumns;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")
     private CombinationEntity combination;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
     private GroupedByEntity groupedBy;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 
