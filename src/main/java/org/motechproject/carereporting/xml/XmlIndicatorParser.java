@@ -146,7 +146,7 @@ public class XmlIndicatorParser {
         indicatorEntity.setClassifications(prepareIndicatorClassifications(indicator.getClassifications()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
         DwQueryEntity num = dwQueryDao.getByField("name", getNameWithPrefix(indicatorEntity, "num", 0));
-        if(num != null) {
+        if (num != null) {
             indicatorEntity.setNumerator(num);
         } else {
             indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));

@@ -740,7 +740,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     public void calculateIndicator(IndicatorEntity indicatorEntity) {
         initializeDwQuery(indicatorEntity.getNumerator());
 
-        if(indicatorEntity.getDenominator() != null) {
+        if (indicatorEntity.getDenominator() != null) {
             initializeDwQuery(indicatorEntity.getDenominator());
         }
         Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));

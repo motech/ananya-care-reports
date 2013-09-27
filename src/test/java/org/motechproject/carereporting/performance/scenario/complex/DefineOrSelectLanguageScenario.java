@@ -5,7 +5,7 @@ import org.motechproject.carereporting.performance.scenario.simple.LanguageGetLa
 import org.motechproject.carereporting.performance.scenario.simple.LanguageGetMessagesScenario;
 import org.motechproject.carereporting.performance.scenario.simple.UserGetLoggedUserLanguageScenario;
 
-public class SelectOrDefineLanguageScenario extends AbstractScenario {
+public class DefineOrSelectLanguageScenario extends AbstractScenario {
 
     {
         addRequests(

@@ -13,11 +13,11 @@ import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ChartsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineIndicatorScenario;
+import org.motechproject.carereporting.performance.scenario.complex.DefineOrSelectLanguageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineQueryScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
 import org.motechproject.carereporting.performance.scenario.complex.PerformanceSummaryScenario;
-import org.motechproject.carereporting.performance.scenario.complex.SelectOrDefineLanguageScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetComputedFieldsWithoutOriginScenario;
 import org.motechproject.carereporting.performance.scenario.simple.ComputedFieldGetOperatorTypeScenario;
@@ -277,132 +277,132 @@ public abstract class PhasePT {
     }
 
     @Test
-    public void _02_testGetOperatorTypes() throws Exception {
+    public void _010_testGetOperatorTypes() throws Exception {
         runTest(ComputedFieldGetOperatorTypeScenario.class);
     }
 
     @Test
-    public void _03_testGetDashboardDto() throws Exception {
+    public void _011_testGetDashboardDto() throws Exception {
         runTest(DashboardGetDashboardDtoScenario.class);
     }
 
     @Test
-    public void _04_testGetUserAreas() throws Exception {
+    public void _012_testGetUserAreas() throws Exception {
         runTest(DashboardGetUserAreasScenario.class);
     }
 
     @Test
-    public void _05_testGetFormComputedFields() throws Exception {
+    public void _013_testGetFormComputedFields() throws Exception {
         runTest(FormGetComputedFieldScenario.class);
     }
 
     @Test
-    public void _06_testGetForm() throws Exception {
+    public void _014_testGetForm() throws Exception {
         runTest(FormGetFormScenario.class);
     }
 
     @Test
-    public void _07_testGetFormsFromDto() throws Exception {
+    public void _015_testGetFormsFromDto() throws Exception {
         runTest(FormGetFormsFromDtoScenario.class);
     }
 
     @Test
-    public void _08_testGetForms() throws Exception {
+    public void _016_testGetForms() throws Exception {
         runTest(FormGetFormsScenario.class);
     }
 
     @Test
-    public void _09_testGetDailyFrequency() throws Exception {
+    public void _017_testGetDailyFrequency() throws Exception {
         runTest(IndicatorCalculatorGetDailyFrequencyScenario.class);
     }
 
     @Test
-    public void _010_testGetDepthDate() throws Exception {
+    public void _018_testGetDepthDate() throws Exception {
         runTest(IndicatorCalculatorGetDepthDateScenario.class);
     }
 
     @Test
-    public void _011_testGetClassifications() throws Exception {
+    public void _019_testGetClassifications() throws Exception {
         runTest(IndicatorClassificationGetClassificationsScenario.class);
     }
 
     @Test
-    public void _012_testGetClassification() throws Exception {
+    public void _02_testGetClassification() throws Exception {
         runTest(IndicatorClassificationGetClassificationScenario.class);
     }
 
     @Test
-    public void _013_testGetCreationForm() throws Exception {
+    public void _020_testGetCreationForm() throws Exception {
         runTest(IndicatorGetCreationFormScenario.class);
     }
 
     @Test
-    public void _014_testGetIndicators() throws Exception {
+    public void _021_testGetIndicators() throws Exception {
         runTest(IndicatorGetIndicatorsScenario.class);
     }
 
     @Test
-    public void _015_testGetQueries() throws Exception {
+    public void _022_testGetQueries() throws Exception {
         runTest(IndicatorGetQueriesScenario.class);
     }
 
     @Test
-    public void _016_testGetQueryCreationForm() throws Exception {
+    public void _023_testGetQueryCreationForm() throws Exception {
         runTest(IndicatorGetQueryCreationFormScenario.class);
     }
 
     @Test
-    public void _017_testGetLanguages() throws Exception {
+    public void _024_testGetLanguages() throws Exception {
         runTest(LanguageGetLanguagesScenario.class);
     }
 
     @Test
-    public void _018_testGetMessages() throws Exception {
+    public void _025_testGetMessages() throws Exception {
         runTest(LanguageGetMessagesScenario.class);
     }
 
     @Test
-    public void _019_testGetPlainMessages() throws Exception {
+    public void _026_testGetPlainMessages() throws Exception {
         runTest(LanguageGetPlainMessagesScenario.class);
     }
 
     @Test
-    public void _020_testGetMap() throws Exception {
+    public void _027_testGetMap() throws Exception {
         runTest(MapReportGetMapScenario.class);
     }
 
     @Test
-    public void _021_testExportCaseListReport() throws Exception {
+    public void _028_testExportCaseListReport() throws Exception {
         runTest(ReportExportCaseListReportScenario.class);
     }
 
     @Test
-    public void _022_testExportToCsv() throws Exception {
+    public void _029_testExportToCsv() throws Exception {
         runTest(ReportExportToCsvScenario.class);
     }
 
     @Test
-    public void _023_testGetChart() throws Exception {
+    public void _03_testGetChart() throws Exception {
         runTest(ReportGetChartScenario.class);
     }
 
     @Test
-    public void _024_testGetData() throws Exception {
+    public void _031_testGetData() throws Exception {
         runTest(ReportGetDataScenario.class);
     }
 
     @Test
-    public void _025_testGetTrend() throws Exception {
+    public void _032_testGetTrend() throws Exception {
         runTest(ReportGetTrendScenario.class);
     }
 
     @Test
-    public void _026_testGetLoggedUserLanguage() throws Exception {
+    public void _033_testGetLoggedUserLanguage() throws Exception {
         runTest(UserGetLoggedUserLanguageScenario.class);
     }
 
     @Test
-    public void _027_testGetLoggedUserPermissions() throws Exception {
+    public void _034_testGetLoggedUserPermissions() throws Exception {
         runTest(UserGetLoggedUserPermissionsScenario.class);
     }
 
@@ -428,7 +428,7 @@ public abstract class PhasePT {
 
     @Test
     public void _14_testDefineLanguage() throws Exception {
-        runTest(SelectOrDefineLanguageScenario.class);
+        runTest(DefineOrSelectLanguageScenario.class);
     }
 
     @Test
