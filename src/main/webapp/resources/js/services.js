@@ -1,5 +1,10 @@
 var care = angular.module('care');
 
+String.prototype.addSlashes = function()
+{
+   return this.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
 care.factory('$errorService', function($dialog) {
     return {
         apiError: function(scope, response) {
@@ -34,6 +39,30 @@ care.factory('$errorService', function($dialog) {
         },
         genericError: function(scope, message, param) {
             $dialog.messageBox("Error", scope.msg(message, param), [{label: scope.msg('ok'), cssClass: 'btn'}]).open();
+        },
+        stackTraceDialog: function(scope, response) {
+            var t = '<div class="modal-header">'+
+                    '<h3>' + response.header + '</h3>'+
+                    '</div>'+
+                    '<div class="modal-body">' +
+                    '<pre class="pre-no-bg">' +
+                    response.message +
+                    '</pre>' +
+                    '</div>' +
+                    '<div class="modal-footer">'+
+                    '<button ng-click="close()" class="btn btn-primary" >' + scope.msg('common.close') + '</button>'+
+                    '</div>';
+
+            scope.opts = {
+                backdrop: true,
+                keyboard: true,
+                backdropClick: true,
+                template: t,
+                controller: 'errorsDialogController',
+                dialogClass: 'modal modal-wide'
+            };
+
+            $dialog.dialog(scope.opts).open();
         }
     }
 });

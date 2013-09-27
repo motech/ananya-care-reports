@@ -142,7 +142,7 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="item in indicators | orderBy:'+name'">
-                                    <td>{{item.name}}</td>
+                                    <td><a href="#/indicators/edit/{{item.id}}">{{item.name}}</a></td>
                                     <td><span class="btn btn-link" ng-click="deleteIndicator(item);"><i class="icon-remove"></i></span></td>
                                 </tr>
                                 </tbody>

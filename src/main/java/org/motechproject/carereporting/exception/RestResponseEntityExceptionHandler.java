@@ -47,6 +47,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return responseErrors;
     }
 
+    @ExceptionHandler(value = { CareQueryCreationException.class })
+    protected ResponseEntity<Object> handleQueryCreationError(CareQueryCreationException ex) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<Object>(ex, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(value = { CareResourceNotFoundRuntimeException.class })
     protected ResponseEntity<Object> handleResourceNotFoundError(CareResourceNotFoundRuntimeException ex, WebRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();

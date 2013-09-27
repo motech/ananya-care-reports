@@ -112,7 +112,7 @@
                                 <tr ng-repeat="item in condition.values">
                                     <td>{{item}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-mini btn-danger">{{msg('common.remove')}}</button>
+                                        <button type="button" class="btn btn-mini btn-danger" ng-click="removeValue($index)">{{msg('common.remove')}}</button>
                                     </td>
                                 </tr>
                                 </tbody>

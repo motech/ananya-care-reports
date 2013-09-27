@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
+import org.dwQueryBuilder.data.DwQuery;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -51,7 +53,9 @@ import org.motechproject.carereporting.domain.dto.TrendIndicatorClassificationDt
 import org.motechproject.carereporting.domain.dto.WhereConditionDto;
 import org.motechproject.carereporting.domain.dto.WhereGroupDto;
 import org.motechproject.carereporting.exception.CareNoValuesException;
+import org.motechproject.carereporting.exception.CareQueryCreationException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.exception.ExceptionHelper;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
@@ -75,6 +79,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
@@ -94,6 +99,7 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl implements IndicatorService {
 
+    private static final Logger LOGGER = Logger.getLogger(IndicatorServiceImpl.class);
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
@@ -102,6 +108,11 @@ public class IndicatorServiceImpl implements IndicatorService {
             "select (.*?) from \\\"(.*?)\\\"\\.\\\"(\\w*?_case)\\\"(.*)?";
     private static final String CASE_LIST_REPORT_XML_DIRECTORY = ConfigurationLocator.getCareXmlDirectory()
             + File.separatorChar + "caseListReport";
+    private static final Integer ADMIN_ROLE_ID = 1;
+    private static final Integer READ_ONLY_ROLE_ID = 4;
+    private static final String MOCK_AREA_LEVEL_NAME = "<area_level_name>";
+    private static final String AREA_LEVEL_NAME_STATE = "state";
+    private static final Integer QUERY_VALIDATION_ROW_LIMIT = 0;
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -154,8 +165,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private static final Integer ADMIN_ROLE_ID = 1;
-    private static final Integer READ_ONLY_ROLE_ID = 4;
+    private JdbcTemplate jdbcTemplate;
+
+    @PostConstruct
+    public void initialize() {
+        jdbcTemplate = new JdbcTemplate(careDataSource);
+    }
 
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
@@ -216,13 +231,52 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
-        dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
+        DwQueryEntity dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
+        validateDwQuery(dwQueryEntity);
+
+        try {
+            dwQueryDao.save(dwQueryEntity);
+        } catch (Exception e) {
+            throw new CareRuntimeException(e);
+        }
+    }
+
+    public void validateDwQuery(DwQueryEntity dwQueryEntity) {
+        LOGGER.debug("Validating query: " + dwQueryEntity.getName());
+
+        try {
+            DwQueryHelper dwQueryHelper = new DwQueryHelper();
+            DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
+            dwQuery.setLimit(QUERY_VALIDATION_ROW_LIMIT);
+
+            String dwQuerySqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES, schemaName, dwQuery, true);
+            dwQuerySqlString = dwQuerySqlString.replaceAll(MOCK_AREA_LEVEL_NAME, AREA_LEVEL_NAME_STATE);
+            dwQuerySqlString = dwQueryHelper.formatFromDateAndToDate(dwQuerySqlString, new Date(), new Date());
+
+            LOGGER.debug("Querying the database using the following SQL: " + dwQuerySqlString);
+
+            jdbcTemplate.queryForRowSet(dwQuerySqlString);
+        } catch (Exception e) {
+            String header = ExceptionHelper.getExceptionRealCause(e).getMessage();
+            String message = e.getMessage();
+
+            throw new CareQueryCreationException(header, message, e);
+        }
+
+        LOGGER.debug("Query is valid");
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteDwQuery(DwQueryEntity dwQueryEntity) {
         this.dwQueryDao.remove(dwQueryEntity);
+    }
+
+    @Override
+    public String getDwQuerySqlString(DwQueryEntity dwQueryEntity) {
+        DwQueryHelper dwQueryHelper = new DwQueryHelper();
+        DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
+        return QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES, schemaName, dwQuery, true);
     }
 
     @Transactional(readOnly = false)
@@ -703,7 +757,6 @@ public class IndicatorServiceImpl implements IndicatorService {
                     String.format("select %s from ", StringUtils.join(fields, ", "))
                             + "\"$2\".\"$3\"$4");
 
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
             return csvExportService.convertRowMapToBytes(headers, jdbcTemplate.queryForList(sqlString));
         } catch (Exception e) {
             throw new CareRuntimeException(e);

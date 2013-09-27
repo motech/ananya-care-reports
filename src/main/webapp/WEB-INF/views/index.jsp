@@ -14,6 +14,16 @@
                 springError = "${error}";
             </script>
         </c:if>
+        <c:if test="${errorHeader != null}">
+            <script>
+                springErrorHeader = "${errorHeader}";
+            </script>
+        </c:if>
+        <c:if test="${errorType != null}">
+            <script>
+                springErrorType = "${errorType}";
+            </script>
+        </c:if>
         <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
         <title ng:bind-template="{{msg(pageTitle)}} - CARE Reporting"></title>
 

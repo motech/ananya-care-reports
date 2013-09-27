@@ -11,6 +11,7 @@ public class DwQuery {
     private GroupBy groupBy;
     private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
+    private Integer limit;
 
     public DwQuery() {
         this.combineWith = new LinkedHashSet<>();
@@ -73,6 +74,20 @@ public class DwQuery {
         this.whereConditionGroup = whereConditionGroup;
     }
 
+    public DwQuery(Set<SelectColumn> selectColumns,
+                   String tableName,
+                   GroupBy groupBy,
+                   Set<DwQueryCombination> combineWith,
+                   WhereConditionGroup whereConditionGroup,
+                   Integer limit) {
+        this.selectColumns = selectColumns;
+        this.tableName = tableName;
+        this.groupBy = groupBy;
+        this.combineWith = combineWith;
+        this.whereConditionGroup = whereConditionGroup;
+        this.limit = limit;
+    }
+
     public Set<SelectColumn> getSelectColumns() {
         return selectColumns;
     }
@@ -111,5 +126,13 @@ public class DwQuery {
 
     public void setWhereConditionGroup(WhereConditionGroup whereConditionGroup) {
         this.whereConditionGroup = whereConditionGroup;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

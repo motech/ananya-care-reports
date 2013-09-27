@@ -144,24 +144,28 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
 
     $scope.addValue = function() {
         if ($scope.formData.newEnumRangeValue === undefined || $scope.formData.newEnumRangeValue == null
-                || $scope.formData.newEnumRangeValue.length <= 0) {
-            return;
+            || $scope.formData.newEnumRangeValue.length <= 0) {
+        return;
         }
 
-       var constructValue = function(value) {
-           function isNumber(n) {
+        var constructValue = function(value) {
+            function isNumber(n) {
                return !isNaN(parseFloat(value)) && isFinite(value);
-           };
+            };
 
-           var date = moment(value);
-           if (!isNumber(value) && date.isValid()) {
+            var date = moment(value);
+            if (!isNumber(value) && date.isValid()) {
                return date.format('YYYY-MM-DD');
-           } else {
+            } else {
                return value;
-           }
-       };
+            }
+        };
 
         $scope.condition.values.push(constructValue($scope.formData.newEnumRangeValue));
+    };
+
+    $scope.removeValue = function(index) {
+        $scope.condition.values.splice(index, 1);
     };
 
     $scope.save = function() {
@@ -502,8 +506,9 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             headers: { 'Content-Type': 'application/json' }
         }).success(function(response) {
             $location.path('/indicators/new');
-        }).error(function(data, status, headers, config) {
-            $dialog.messageBox($scope.msg('common.error'), data, [{label: $scope.msg('common.ok'), cssClass: 'btn'}]).open();
+        }).error(function(response) {
+            $errorService.stackTraceDialog($scope, response);
+            $route.reload();
         });
     };
 });

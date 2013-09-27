@@ -108,6 +108,10 @@ public interface IndicatorService {
 
     void createNewDwQuery(DwQueryDto dwQueryDto);
 
+    void validateDwQuery(DwQueryEntity dwQueryEntity);
+
     void deleteDwQuery(DwQueryEntity dwQueryEntity);
+
+    String getDwQuerySqlString(DwQueryEntity dwQueryEntity);
 
 }

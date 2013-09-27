@@ -15,6 +15,7 @@ public class DwQueryBuilder {
     private GroupBy groupBy;
     private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
+    private Integer limit;
 
     public DwQueryBuilder withSelectColumn(SelectColumn selectColumn) {
         if (this.selectColumns == null) {
@@ -87,7 +88,12 @@ public class DwQueryBuilder {
         return this;
     }
 
+    public DwQueryBuilder withLimit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
     public DwQuery build() {
-        return new DwQuery(selectColumns, tableName, groupBy, combineWith, whereConditionGroup);
+        return new DwQuery(selectColumns, tableName, groupBy, combineWith, whereConditionGroup, limit);
     }
 }

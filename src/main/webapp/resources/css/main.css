@@ -316,12 +316,21 @@ hr {
     margin-left: -350px;
 }
 
+.modal-wide {
+    width: 900px;
+    margin-left: -450px;
+}
+
 .alert-tall {
     min-height: 60px !important;
 }
 
 div.alert-tall .alert-tall-label {
     margin-top: 20px;
+}
+
+.pre-no-bg {
+    background-color: #FFFFFF !important;
 }
 
 .pre-tall {
@@ -331,4 +340,17 @@ div.alert-tall .alert-tall-label {
 
 .hq-content {
     padding-right: 40px !important;
+}
+
+.stacktrace-info {
+    color: rgb(255, 0, 0);
+}
+
+.stacktrace-container {
+    margin-top: 25px;
+}
+
+.stacktrace-container pre {
+    background-color: rgb(255, 255, 255) !important;
+    font-size: 110%;
 }

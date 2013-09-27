@@ -19,6 +19,17 @@ Array.prototype.notEmpty = function() {
 care.controller('uploadIndicatorController', function($scope) {
     $scope.title = 'indicators.uploadXml.title';
     $scope.error = typeof springError != 'undefined' ? springError : undefined;
+    $scope.errorHeader = typeof springErrorHeader != 'undefined' ? springErrorHeader : undefined;
+    $scope.errorType = typeof springErrorType != 'undefined' ? springErrorType : undefined;
+    $scope.showStackTrace = false;
+    $scope.showHideButtonLabel = $scope.msg('common.show');
+    console.log($scope.error);
+    console.log($scope.errorType);
+
+    $scope.toggleStackTraceDisplay = function() {
+        $scope.showStackTrace = !$scope.showStackTrace;
+        $scope.showHideButtonLabel = ($scope.showStackTrace) ? $scope.msg('common.hide') : $scope.msg('common.show');
+    }
 });
 
 care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
@@ -110,8 +121,13 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
-                                                      $dialog, $location, $errorService, $route) {
+                                                      $dialog, $location, $errorService, $route,
+                                                      $routeParams) {
     $scope.title = 'indicators.title';
+
+    $scope.editIndicatorId = $routeParams['indicatorId'];
+    $scope.isEdit = ($scope.editIndicatorId !== undefined && $scope.editIndicatorId != null);
+
     $scope.selectedClassifications = [];
     $scope.selectedOwners = [];
     $scope.selectedChart = {};
@@ -125,6 +141,17 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         trend: null,
         additive: false
     };
+
+    if ($scope.isEdit === true) {
+        $scope.fetchIndicatorData = function(indicatorId) {
+            $http.get('api/indicator/indicatorId').success(function() {
+
+            }).errors(function() {
+                $errorService.genericError($scope, '');
+            });
+        };
+        $scope.fetchIndicatorData($scope.indicatorId);
+    }
 
     $scope.sortFormDataArrays = function() {
         $scope.formData.classifications.sortByField('name');
@@ -306,9 +333,10 @@ care.controller('dateDepthController', function($scope, $http, $dialog, $locatio
         };
 });
 
-care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService) {
+care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService, $routeParams) {
     $scope.title = 'menu.calculator.frequency';
 
+    $scope.isEdit = ($routeParams['indicatorId'] !== undefined && $routeParams['indicatorId'] != null);
     $scope.time = null;
 
     $scope.fetchDailyTaskTime = function() {

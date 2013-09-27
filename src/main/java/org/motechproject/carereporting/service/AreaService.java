@@ -34,4 +34,6 @@ public interface AreaService {
     void deleteArea(AreaEntity areaEntity);
 
     void createNewLevel(LevelEntity level);
+
+    AreaEntity prepareMockArea();
 }

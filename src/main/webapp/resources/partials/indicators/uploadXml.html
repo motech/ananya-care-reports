@@ -6,6 +6,13 @@
             <input type="file" name="file" multiple />
             <input type="submit" value="{{msg('indicators.uploadXml.submit')}}" />
         </form>
-        <p ng-show="error != undefined">{{error}}</p>
+        <p class="stacktrace-info" ng-show="error != undefined && errorType == 'SAXParseException'">{{error}}</p>
+        <div class="row-fluid" ng-show="error != undefined && errorType != 'SAXParseException'">
+            <p class="stacktrace-info">{{errorHeader}}</p>
+            <button type="button" ng-click="toggleStackTraceDisplay()" class="btn btn-primary">{{showHideButtonLabel}}</button>
+            <div ng-show="showStackTrace" class="stacktrace-container">
+                <pre>{{error}}</pre>
+            </div>
+        </div>
     </div>
 </div>
