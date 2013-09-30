@@ -37,23 +37,27 @@ public class IndicatorEntity extends AbstractEntity {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "denominator_id", referencedColumnName = "dw_query_id")
+    @JsonView({ IndicatorJsonView.EditForm.class })
     private DwQueryEntity denominator;
 
     @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "numerator_id", referencedColumnName = "dw_query_id")
+    @JsonView({ IndicatorJsonView.EditForm.class })
     private DwQueryEntity numerator;
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "indicator_indicator_classification", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "indicator_classification_id") })
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class,
+            IndicatorJsonView.EditForm.class })
     private Set<IndicatorClassificationEntity> classifications;
 
     @NotNull
     @JoinColumn(name = "area_level_id", referencedColumnName = "level_id", nullable = false)
     @ManyToOne
+    @JsonView({ IndicatorJsonView.EditForm.class })
     private LevelEntity areaLevel;
 
     @ManyToOne
@@ -63,19 +67,21 @@ public class IndicatorEntity extends AbstractEntity {
     @ManyToMany
     @JoinTable(name = "indicator_role", joinColumns = { @JoinColumn(name = "indicator_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    @JsonView({ IndicatorJsonView.EditForm.class })
     private Set<RoleEntity> roles;
 
     @OneToMany(mappedBy = "indicator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class,
+            IndicatorJsonView.EditForm.class })
     private Set<ReportEntity> reports;
 
-    @OneToMany(mappedBy = "indicator", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "indicator", cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH })
     private Set<IndicatorValueEntity> indicatorValues;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "frequency_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class })
+    @JsonView({ IndicatorJsonView.IndicatorModificationDetails.class, DashboardJsonView.class, IndicatorJsonView.EditForm.class })
     private FrequencyEntity defaultFrequency;
 
     @NotNull
@@ -89,14 +95,15 @@ public class IndicatorEntity extends AbstractEntity {
     private BigDecimal trend;
 
     @Column(name = "is_computed", nullable = false)
-    @JsonView({ BaseView.class, DashboardJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
+    @JsonView({ BaseView.class })
     private Boolean isComputed;
 
     @Column(name = "is_additive", nullable = false)
-    @JsonView({ DashboardJsonView.class })
+    @JsonView({ BaseView.class })
     private Boolean isAdditive;
 
     @Column(name = "is_categorized", nullable = true)
+    @JsonView({ BaseView.class })
     private Boolean isCategorized;
 
     public Boolean getAdditive() {

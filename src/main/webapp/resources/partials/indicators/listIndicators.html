@@ -16,7 +16,11 @@
             <tbody>
                 <tr ng-repeat="item in indicators | orderBy:'+name'">
                     <td>{{item.name}}</td>
-                    <td><span ng-show="hasRole('CAN_REMOVE_INDICATORS')" class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove"></i></span></td>
+                    <td>
+                        <span ng-show="hasRole('CAN_EDIT_INDICATORS')" class="btn btn-link" ng-click="recalculateSingleIndicator(item)"><i class="icon-refresh" ng-show="item.isComputed == true"></i></span>
+                        <span ng-show="hasRole('CAN_REMOVE_INDICATORS')" class="btn btn-link" ng-click="deleteIndicator(item)"><i class="icon-remove" ng-show="item.isComputed == true"></i></span>
+                        <span ng-show="item.isComputed == false" class="text-error">{{msg('dashboards.trends.progress')}}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>

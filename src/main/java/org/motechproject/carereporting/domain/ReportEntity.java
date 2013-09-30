@@ -3,6 +3,7 @@ package org.motechproject.carereporting.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.ReportJsonView;
 
 import javax.persistence.AttributeOverride;
@@ -38,11 +39,11 @@ public class ReportEntity extends AbstractEntity {
     private Set<DashboardEntity> dashboards;
 
     @Column(name = "label_x")
-    @JsonView({ ReportJsonView.ReportDetails.class })
+    @JsonView({ IndicatorJsonView.EditForm.class, ReportJsonView.ReportDetails.class })
     private String labelX;
 
     @Column(name = "label_y")
-    @JsonView({ ReportJsonView.ReportDetails.class })
+    @JsonView({ IndicatorJsonView.EditForm.class, ReportJsonView.ReportDetails.class })
     private String labelY;
 
     public ReportEntity() {

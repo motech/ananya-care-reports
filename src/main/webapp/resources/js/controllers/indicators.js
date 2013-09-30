@@ -16,6 +16,20 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
+Array.prototype.removeFilter = function(array, filter) {
+    var temp = [].concat(this);
+
+    for (var i = this.length - 1; i >= 0; i--) {
+        for (var a = 0; a < array.length; a++) {
+            if (filter(this[i], array[a]) === true) {
+                temp.splice(i, 1);
+            }
+        }
+    }
+
+    return temp;
+};
+
 care.controller('uploadIndicatorController', function($scope) {
     $scope.title = 'indicators.uploadXml.title';
     $scope.error = typeof springError != 'undefined' ? springError : undefined;
@@ -23,8 +37,6 @@ care.controller('uploadIndicatorController', function($scope) {
     $scope.errorType = typeof springErrorType != 'undefined' ? springErrorType : undefined;
     $scope.showStackTrace = false;
     $scope.showHideButtonLabel = $scope.msg('common.show');
-    console.log($scope.error);
-    console.log($scope.errorType);
 
     $scope.toggleStackTraceDisplay = function() {
         $scope.showStackTrace = !$scope.showStackTrace;
@@ -32,7 +44,7 @@ care.controller('uploadIndicatorController', function($scope) {
     }
 });
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $route) {
     $scope.title = 'indicators.title';
 
     $scope.classification = [];
@@ -96,12 +108,21 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.recalculate = function() {
         $http.get('api/indicator/calculator/recalculate/' + $scope.selectedClassification)
             .success(function() {
-                $location.path( "/" );
+                $route.reload();
             })
             .error(function() {
-                 $dialog.messageBox("Error", $scope.msg('indicator.list.cannotRecalculate'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                 $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotRecalculate'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
+    };
 
+    $scope.recalculateSingleIndicator = function(indicator) {
+        $http.get('api/indicator/calculator/recalculate/single/' + indicator.id)
+            .success(function() {
+                $route.reload();
+            })
+            .error(function() {
+                 $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotRecalculateSingle'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
     };
 
     $scope.isAnyComputed = function() {
@@ -142,16 +163,14 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         additive: false
     };
 
-    if ($scope.isEdit === true) {
-        $scope.fetchIndicatorData = function(indicatorId) {
-            $http.get('api/indicator/indicatorId').success(function() {
-
-            }).errors(function() {
-                $errorService.genericError($scope, '');
-            });
-        };
-        $scope.fetchIndicatorData($scope.indicatorId);
-    }
+    $scope.fetchIndicatorData = function(indicatorId) {
+        $http.get('api/indicator/edit/' + indicatorId).success(function(indicator) {
+            $scope.editIndicator = indicator;
+            $scope.initializeInputFields();
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.form.error.cannotLoadIndicator');
+        });
+    };
 
     $scope.sortFormDataArrays = function() {
         $scope.formData.classifications.sortByField('name');
@@ -165,22 +184,57 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $scope.listCharts = $scope.formData.reportTypes;
         $scope.formData.denominatorDwQueries = [{ id: -1, name: '---' }].concat($scope.formData.dwQueries);
 
-        $scope.indicator.level = $scope.formData.levels[0].id;
-        $scope.indicator.frequency = $scope.formData.frequencies[0].id;
-        $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
-        $scope.selectedClassification = $scope.listClassifications[0];
-        $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
+        if ($scope.isEdit === true) {
+            $scope.indicator.name = $scope.editIndicator.name;
+            $scope.indicator.level = $scope.editIndicator.areaLevel.id;
+            $scope.indicator.frequency = $scope.editIndicator.defaultFrequency.id;
+            for (var i = 0; i < $scope.editIndicator.classifications.length; i++) {
+                $scope.selectedClassifications.push($scope.editIndicator.classifications[i]);
+            }
+            $scope.listClassifications = $scope.listClassifications.removeFilter($scope.selectedClassifications, function(a, b) {
+                return a.id === b.id;
+            });
+            $scope.selectedClassification = $scope.listClassifications[0];
+            for (var i = 0; i < $scope.editIndicator.reports.length; i++) {
+                $scope.indicator.reports.push($scope.editIndicator.reports[i]);
+            }
+            $scope.listCharts = $scope.listCharts.removeFilter($scope.editIndicator.reports, function(a, b) {
+                return a.id == b.reportType.id;
+            });
+            $scope.selectedChart.reportType = $scope.listCharts[0];
+            for(var i = 0; i < $scope.editIndicator.roles.length; i++) {
+                var id = $scope.editIndicator.roles[i].id;
+                $scope.selectedOwners[id] = true;
+            }
+            $scope.indicator.additive = $scope.editIndicator.isAdditive;
+            $scope.indicator.categorized = ($scope.editIndicator.isCategorized == null) ? false : $scope.editIndicator.isCategorized;
+            $scope.indicator.trend = $scope.editIndicator.trend;
+            $scope.indicator.numerator = $scope.editIndicator.numerator.id;
+            $scope.indicator.denominator = ($scope.editIndicator.denominator == null)
+                ? $scope.formData.denominatorDwQueries[0].id : $scope.editIndicator.denominator.id;
+        } else {
+            $scope.indicator.level = $scope.formData.levels[0].id;
+            $scope.indicator.frequency = $scope.formData.frequencies[0].id;
+            $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
+            $scope.selectedClassification = $scope.listClassifications[0];
+            $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
 
-        for(var i = 0; i < $scope.formData.roles.length; i++) {
-            var id = $scope.formData.roles[i].id;
-            $scope.selectedOwners[id] = false;
+            for(var i = 0; i < $scope.formData.roles.length; i++) {
+                var id = $scope.formData.roles[i].id;
+                $scope.selectedOwners[id] = false;
+            }
         }
     };
 
     $http.get("api/indicator/creationform").success(function(indicatorCreationFormDto) {
         $scope.formData = indicatorCreationFormDto;
         $scope.sortFormDataArrays();
-        $scope.initializeInputFields();
+
+        if ($scope.isEdit === true) {
+            $scope.fetchIndicatorData($scope.editIndicatorId);
+        } else {
+            $scope.initializeInputFields();
+        }
     }).error(function() {
         $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
@@ -230,7 +284,11 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.addNewIndicator = function() {
-        $route.reload();
+        if ($scope.isEdit === true) {
+            $location.path('/indicators/new');
+        } else {
+            $route.reload();
+        }
     };
 
     $scope.selectAllRoles = function() {
@@ -286,9 +344,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                  }
             }
         }
+
+        var apiUrl = ($scope.isEdit === true) ? 'api/indicator/' + $scope.editIndicatorId : 'api/indicator';
+        var httpMethod = ($scope.isEdit === true) ? 'PUT' : 'POST';
+
         $http({
-            url: "api/indicator",
-            method: "POST",
+            url: apiUrl,
+            method: httpMethod,
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {

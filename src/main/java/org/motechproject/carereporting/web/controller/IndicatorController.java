@@ -148,6 +148,14 @@ public class IndicatorController extends BaseController {
                 indicatorService.getIndicatorById(indicatorId));
     }
 
+    @RequestMapping(value = "/edit/{indicatorId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getIndicatorEditFormDto(@PathVariable Integer indicatorId) {
+        return this.writeAsString(IndicatorJsonView.EditForm.class,
+                indicatorService.getIndicatorWithAllFields(indicatorId));
+    }
+
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     public void createNewIndicator(@RequestBody @Valid IndicatorDto indicatorDto,
@@ -173,7 +181,7 @@ public class IndicatorController extends BaseController {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorService.updateIndicatorFromDto(indicatorDto);
+        indicatorService.updateIndicatorFromDto(indicatorId, indicatorDto);
     }
 
     @RequestMapping(value = "/{indicatorId}", method = RequestMethod.DELETE)
@@ -410,5 +418,12 @@ public class IndicatorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public void recalculateIndicators(@PathVariable Integer classificationId) {
         indicatorService.calculateAllIndicators(classificationId);
+    }
+
+    @RequestMapping(value = "calculator/recalculate/single/{indicatorId}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @Transactional
+    public void recalculateSingleIndicator(@PathVariable Integer indicatorId) {
+        indicatorService.calculateIndicator(indicatorService.getIndicatorById(indicatorId));
     }
 }

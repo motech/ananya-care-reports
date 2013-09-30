@@ -34,6 +34,8 @@ public interface IndicatorService {
 
     IndicatorEntity getIndicatorById(Integer id);
 
+    IndicatorEntity getIndicatorWithAllFields(Integer id);
+
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
     IndicatorEntity createIndicatorEntityFromDto(IndicatorDto indicatorDto);
@@ -44,7 +46,7 @@ public interface IndicatorService {
     void setComputedForIndicator(IndicatorEntity indicatorEntity, Boolean value);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
-    void updateIndicatorFromDto(IndicatorDto indicatorDto);
+    void updateIndicatorFromDto(Integer id, IndicatorDto indicatorDto);
 
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);

@@ -470,6 +470,21 @@ public class IndicatorServiceImpl implements IndicatorService {
         return indicatorDao.getById(id);
     }
 
+    @Override
+    public IndicatorEntity getIndicatorWithAllFields(Integer id) {
+        IndicatorEntity indicatorEntity = this.getIndicatorById(id);
+
+        Hibernate.initialize(indicatorEntity.getRoles());
+        Hibernate.initialize(indicatorEntity.getDefaultFrequency());
+        Hibernate.initialize(indicatorEntity.getAdditive());
+        Hibernate.initialize(indicatorEntity.isCategorized());
+        Hibernate.initialize(indicatorEntity.getTrend());
+        Hibernate.initialize(indicatorEntity.getNumerator());
+        Hibernate.initialize(indicatorEntity.getDenominator());
+
+        return indicatorEntity;
+    }
+
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
@@ -545,8 +560,45 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
-        // TODO : Is this function needed? If so, fill it out.
+    public void updateIndicatorFromDto(Integer id, IndicatorDto indicatorDto) {
+        IndicatorEntity indicatorEntity = this.getIndicatorById(id);
+
+        indicatorEntity.setName(indicatorDto.getName());
+        indicatorEntity.setNumerator(dwQueryDao.getById(indicatorDto.getNumerator()));
+        indicatorEntity.setDenominator((indicatorDto.getDenominator() == null)
+                ? null : dwQueryDao.getById(indicatorDto.getDenominator()));
+        indicatorEntity.setAdditive(indicatorDto.isAdditive());
+        indicatorEntity.setCategorized(indicatorDto.isCategorized());
+        indicatorEntity.setAreaLevel(areaService.getLevelById(indicatorDto.getLevel()));
+        indicatorEntity.setClassifications(findIndicatorClassificationEntitiesFromDto(indicatorDto));
+        indicatorEntity.setComputed(true);
+        indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
+        indicatorEntity.setIndicatorValues(new LinkedHashSet<IndicatorValueEntity>());
+        indicatorValueDao.removeByIndicator(indicatorEntity);
+
+        indicatorEntity.setRoles(findRoleEntitiesFromDto(indicatorDto));
+        indicatorEntity.setTrend(indicatorDto.getTrend());
+
+        updateIndicatorReportsFromDto(indicatorEntity, indicatorDto);
+        indicatorDao.update(indicatorEntity);
+    }
+
+    private void updateIndicatorReportsFromDto(IndicatorEntity indicatorEntity, IndicatorDto indicatorDto) {
+        for (ReportEntity reportEntity : indicatorEntity.getReports()) {
+            reportService.deleteReport(reportEntity);
+        }
+        indicatorEntity.setReports(new LinkedHashSet<ReportEntity>());
+
+        for (ReportEntity reportEntity : indicatorDto.getReports()) {
+            ReportEntity newReportEntity = new ReportEntity();
+            newReportEntity.setIndicator(indicatorEntity);
+            newReportEntity.setReportType(reportEntity.getReportType());
+            newReportEntity.setDashboards(reportEntity.getDashboards());
+            newReportEntity.setLabelX(reportEntity.getLabelX());
+            newReportEntity.setLabelY(reportEntity.getLabelY());
+
+            indicatorEntity.getReports().add(newReportEntity);
+        }
     }
 
     private Set<IndicatorClassificationEntity> findIndicatorClassificationEntitiesFromDto(
@@ -790,10 +842,14 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    @Transactional
     public void calculateIndicator(IndicatorEntity indicatorEntity) {
+        setComputedForIndicator(indicatorEntity, false);
+        Hibernate.initialize(indicatorEntity.getNumerator());
         initializeDwQuery(indicatorEntity.getNumerator());
 
         if (indicatorEntity.getDenominator() != null) {
+            Hibernate.initialize(indicatorEntity.getDenominator());
             initializeDwQuery(indicatorEntity.getDenominator());
         }
         Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
