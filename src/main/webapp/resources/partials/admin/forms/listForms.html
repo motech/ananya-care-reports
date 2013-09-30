@@ -39,7 +39,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="form in child_forms | orderBy:'+displayName'">
-                            <td><a href="#/admin/forms/{{form.id}}">{{form.displayName}}</a></td>
+                            <td><a ng-show="hasRole('CAN_EDIT_FORMS')" href="#/admin/forms/{{form.id}}">{{form.displayName}}</a></td>
+                            <td ng-hide="hasRole('CAN_EDIT_FORMS')">{{form.displayName}}</td>
                             <td>{{form.tableName}}</td>
                         </tr>
                         </tbody>
@@ -61,7 +62,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="form in other_forms | orderBy:'+displayName'">
-                            <td><a href="#/admin/forms/{{form.id}}">{{form.displayName}}</a></td>
+                            <td><a ng-show="hasRole('CAN_EDIT_FORMS')" href="#/admin/forms/{{form.id}}">{{form.displayName}}</a></td>
+                            <td ng-hide="hasRole('CAN_EDIT_FORMS')">{{form.displayName}}</td>
                             <td>{{form.tableName}}</td>
                         </tr>
                         </tbody>
