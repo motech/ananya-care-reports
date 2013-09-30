@@ -35,6 +35,7 @@
         <opencsv.version>2.0</opencsv.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <joda-time.version>2.3</joda-time.version>
+        <ehcache.version>2.6.5</ehcache.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
 
@@ -86,6 +87,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -256,6 +267,12 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <scm>

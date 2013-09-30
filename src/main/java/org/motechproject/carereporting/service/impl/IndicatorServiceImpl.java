@@ -74,6 +74,8 @@ import org.motechproject.carereporting.xml.mapping.reports.CaseListReport;
 import org.motechproject.carereporting.xml.mapping.reports.ReportField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -113,6 +115,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private static final String MOCK_AREA_LEVEL_NAME = "<area_level_name>";
     private static final String AREA_LEVEL_NAME_STATE = "state";
     private static final Integer QUERY_VALIDATION_ROW_LIMIT = 0;
+    private static final String CLASSIFICATIONS_CACHE = "classifications";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -601,6 +604,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
     }
 
+    @Cacheable(CLASSIFICATIONS_CACHE)
     private Set<IndicatorClassificationEntity> findIndicatorClassificationEntitiesFromDto(
             IndicatorDto indicatorDto) {
         Set<IndicatorClassificationEntity> indicatorClassificationEntities = new LinkedHashSet<>();
@@ -655,6 +659,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void createNewIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         DashboardEntity dashboardForClassification = createDashboardForNewIndicatorClassification(indicatorClassificationEntity.getName());
         indicatorClassificationEntity.setDashboard(dashboardForClassification);
@@ -668,6 +673,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void updateIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         indicatorClassificationEntity.getDashboard().setName(indicatorClassificationEntity.getName());
         indicatorClassificationDao.update(indicatorClassificationEntity);
@@ -675,6 +681,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void deleteIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         for (IndicatorEntity indicatorEntity : indicatorClassificationEntity.getIndicators()) {
             indicatorEntity.getClassifications().remove(indicatorClassificationEntity);
