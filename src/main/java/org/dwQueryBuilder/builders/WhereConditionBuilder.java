@@ -66,64 +66,11 @@ public class WhereConditionBuilder {
 
     public WhereConditionBuilder withDateValueComparison(String table1Name, String column1Name,
                                                          ComparisonType operator,
-                                                         String value) {
-        this.reset();
-
-        this.selectColumn1 = new SelectColumn(table1Name, column1Name);
-        this.operator = operator;
-        this.value = value;
-        this.column1Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateValueComparison(SelectColumn selectColumn1,
-                                                         ComparisonType operator,
-                                                         String value) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.operator = operator;
-        this.value = value;
-        this.column1Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateValueComparison(SelectColumnBuilder selectColumn1Builder,
-                                                         ComparisonType operator,
-                                                         String value) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1Builder.build();
-        this.operator = operator;
-        this.value = value;
-        this.column1Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateValueComparison(String table1Name, String column1Name,
-                                                         ComparisonType operator,
                                                          String value,
                                                          Integer offset) {
         this.reset();
 
         this.selectColumn1 = new SelectColumn(table1Name, column1Name);
-        this.operator = operator;
-        this.value = value;
-        this.column1Offset = offset.toString();
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateValueComparison(SelectColumn selectColumn1,
-                                                         ComparisonType operator,
-                                                         String value,
-                                                         Integer offset) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
         this.operator = operator;
         this.value = value;
         this.column1Offset = offset.toString();
@@ -141,54 +88,6 @@ public class WhereConditionBuilder {
         this.operator = operator;
         this.value = value;
         this.column1Offset = offset.toString();
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateDiffComparison(String table1Name, String field1Name,
-                                                        ComparisonType operator,
-                                                        String table2Name, String field2Name,
-                                                        Integer seconds) {
-        this.reset();
-
-        this.selectColumn1 = new SelectColumn(table1Name, field1Name);
-        this.operator = operator;
-        this.selectColumn2 = new SelectColumn(table2Name, field2Name);
-        this.value = seconds.toString();
-        this.column1Offset = "0";
-        this.column2Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateDiffComparison(SelectColumn selectColumn1,
-                                                        ComparisonType operator,
-                                                        SelectColumn selectColumn2,
-            Integer seconds) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2;
-        this.value = seconds.toString();
-        this.column1Offset = "0";
-        this.column2Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateDiffComparison(SelectColumnBuilder selectColumn1Builder,
-                                                        ComparisonType operator,
-                                                        SelectColumnBuilder selectColumn2Builder,
-                                                        Integer seconds) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1Builder.build();
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2Builder.build();
-        this.value = seconds.toString();
-        this.column1Offset = "0";
-        this.column2Offset = "0";
 
         return this;
     }
@@ -211,24 +110,6 @@ public class WhereConditionBuilder {
         return this;
     }
 
-    public WhereConditionBuilder withDateDiffComparison(SelectColumn selectColumn1,
-                                                        ComparisonType operator,
-                                                        SelectColumn selectColumn2,
-                                                        Integer seconds,
-                                                        Integer column1Offset,
-                                                        Integer column2Offset) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2;
-        this.value = seconds.toString();
-        this.column1Offset = column1Offset.toString();
-        this.column2Offset = column2Offset.toString();
-
-        return this;
-    }
-
     public WhereConditionBuilder withDateDiffComparison(SelectColumnBuilder selectColumn1Builder,
                                                         ComparisonType operator,
                                                         SelectColumnBuilder selectColumn2Builder,
@@ -247,32 +128,6 @@ public class WhereConditionBuilder {
         return this;
     }
 
-    public WhereConditionBuilder withDateRangeComparison(String table1Name, String column1Name,
-                                                         String date1,
-                                                         String date2) {
-        this.reset();
-
-        this.selectColumn1 = new SelectColumn(table1Name, column1Name);
-        this.date1 = date1;
-        this.date2 = date2;
-        this.column1Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withDateRangeComparison(SelectColumn selectColumn1,
-                                                         String date1,
-                                                         String date2) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.date1 = date1;
-        this.date2 = date2;
-        this.column1Offset = "0";
-
-        return this;
-    }
-
     public WhereConditionBuilder withDateRangeComparison(SelectColumnBuilder selectColumn1Builder,
                                                          String date1,
                                                          String date2) {
@@ -300,20 +155,6 @@ public class WhereConditionBuilder {
         return this;
     }
 
-    public WhereConditionBuilder withDateRangeComparison(SelectColumn selectColumn1,
-                                                         String date1,
-                                                         String date2,
-                                                         Integer column1Offset) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.date1 = date1;
-        this.date2 = date2;
-        this.column1Offset = column1Offset.toString();
-
-        return this;
-    }
-
     public WhereConditionBuilder withDateRangeComparison(SelectColumnBuilder selectColumn1Builder,
                                                          String date1,
                                                          String date2,
@@ -324,20 +165,6 @@ public class WhereConditionBuilder {
         this.date1 = date1;
         this.date2 = date2;
         this.column1Offset = column1Offset.toString();
-
-        return this;
-    }
-
-    public WhereConditionBuilder withFieldComparison(String table1Name, String column1Name,
-                                                     ComparisonType operator,
-                                                     String table2Name, String column2Name) {
-        this.reset();
-
-        this.selectColumn1 = new SelectColumn(table1Name, column1Name);
-        this.operator = operator;
-        this.selectColumn2 = new SelectColumn(table2Name, column2Name);
-        this.column1Offset = "0";
-        this.column2Offset = "0";
 
         return this;
     }
@@ -358,79 +185,11 @@ public class WhereConditionBuilder {
         return this;
     }
 
-    public WhereConditionBuilder withFieldComparison(SelectColumn selectColumn1,
-                                                     ComparisonType operator,
-                                                     SelectColumn selectColumn2) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2;
-        this.column1Offset = "0";
-        this.column2Offset = "0";
-
-        return this;
-    }
-
-    public WhereConditionBuilder withFieldComparison(SelectColumn selectColumn1,
-                                                     String column1Offset,
-                                                     ComparisonType operator,
-                                                     SelectColumn selectColumn2,
-                                                     String column2Offset) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2;
-        this.column1Offset = column1Offset;
-        this.column2Offset = column2Offset;
-
-        return this;
-    }
-
-    public WhereConditionBuilder withFieldComparison(SelectColumnBuilder selectColumn1Builder,
-                                                     ComparisonType operator,
-                                                     SelectColumnBuilder selectColumn2Builder) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1Builder.build();
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2Builder.build();
-
-        return this;
-    }
-
-    public WhereConditionBuilder withFieldComparison(SelectColumnBuilder selectColumn1Builder,
-                                                     String column1Offset,
-                                                     ComparisonType operator,
-                                                     SelectColumnBuilder selectColumn2Builder,
-                                                     String column2Offset) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1Builder.build();
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2Builder.build();
-        this.column1Offset = column1Offset;
-        this.column2Offset = column2Offset;
-
-        return this;
-    }
-
     public WhereConditionBuilder withEnumRangeComparison(String table1Name, String column1Name,
                                                          Collection<String> values) {
         this.reset();
 
         this.selectColumn1 = new SelectColumn(table1Name, column1Name);
-        this.values = new LinkedHashSet<>(values);
-
-        return this;
-    }
-
-    public WhereConditionBuilder withEnumRangeComparison(SelectColumn selectColumn1,
-                                                         Collection<String> values) {
-        this.reset();
-
-        this.selectColumn1 = selectColumn1;
         this.values = new LinkedHashSet<>(values);
 
         return this;

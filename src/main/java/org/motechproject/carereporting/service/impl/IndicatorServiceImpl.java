@@ -220,11 +220,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public Set<DwQueryEntity> getAllDwQueries() {
-        return dwQueryDao.getAll();
-    }
-
-    @Override
     public DwQueryEntity getDwQueryById(Integer dwQueryId) {
         DwQueryEntity dwQueryEntity = dwQueryDao.getById(dwQueryId);
         initializeDwQuery(dwQueryEntity);
@@ -624,11 +619,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         indicatorDao.remove(indicatorEntity);
     }
 
-    @Override
-    public void deleteAllIndicators() {
-        indicatorDao.removeAll();
-    }
-
     // IndicatorTypeEntity
 
     @Transactional
@@ -698,12 +688,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     // IndicatorValueEntity
 
-    @Transactional
-    @Override
-    public IndicatorValueEntity getIndicatorValueById(Integer id) {
-        return indicatorValueDao.getById(id);
-    }
-
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
@@ -714,12 +698,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
         indicatorValueDao.update(indicatorValueEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        indicatorValueDao.remove(indicatorValueEntity);
     }
 
     @Override

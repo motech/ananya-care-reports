@@ -40,7 +40,7 @@ public class CsvExportServiceImpl implements ExportService {
         return bytes;
     }
 
-    private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) throws ParseException {
+    private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) {
         List<String[]> csvLines = new ArrayList<String[]>();
 
         List<String> header = new ArrayList<String>();
@@ -70,7 +70,7 @@ public class CsvExportServiceImpl implements ExportService {
                 return null;
             }
 
-            csvLines.add(headers.toArray(new String[] {}));
+            csvLines.add(headers.toArray(new String[headers.size()]));
             for (Map<String, Object> row : rowMap) {
                 csvLines.add(constructCsvRow(row));
             }
@@ -95,7 +95,7 @@ public class CsvExportServiceImpl implements ExportService {
                     : entry.getValue().toString());
         }
 
-        return values.toArray(new String[] {});
+        return values.toArray(new String[values.size()]);
     }
 
 }

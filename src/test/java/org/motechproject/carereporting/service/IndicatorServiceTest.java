@@ -44,7 +44,6 @@ public class IndicatorServiceTest {
     @InjectMocks
     private IndicatorService indicatorService = Mockito.spy(new IndicatorServiceImpl());
 
-    private ArgumentCaptor<DwQueryEntity> dwQueryEntityArgumentCaptor = ArgumentCaptor.forClass(DwQueryEntity.class);
     private ArgumentCaptor<IndicatorEntity> indicatorEntityArgumentCaptor = ArgumentCaptor.forClass(IndicatorEntity.class);
 
     @Test

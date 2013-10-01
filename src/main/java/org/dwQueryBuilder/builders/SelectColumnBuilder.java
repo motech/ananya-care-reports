@@ -32,46 +32,6 @@ public class SelectColumnBuilder {
         return this;
     }
 
-    public SelectColumnBuilder withColumn(String tableName, String fieldName, String alias) {
-        this.computedColumn = new ComputedColumn(tableName, fieldName);
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumn(ComputedColumn computedColumn, String alias) {
-        this.computedColumn = computedColumn;
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumn(ComputedColumnBuilderOperationStep computedColumnBuilder, String alias) {
-        this.computedColumn = computedColumnBuilder.build();
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumn(String tableName, String fieldName, String alias, String nullValue) {
-        this.computedColumn = new ComputedColumn(tableName, fieldName);
-        this.alias = alias;
-        this.nullValue = nullValue;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumn(ComputedColumn computedColumn, String alias, String nullValue) {
-        this.computedColumn = computedColumn;
-        this.alias = alias;
-        this.nullValue = nullValue;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumn(ComputedColumnBuilderOperationStep computedColumnBuilder,
-                                          String alias, String nullValue) {
-        this.computedColumn = computedColumnBuilder.build();
-        this.alias = alias;
-        this.nullValue = nullValue;
-        return this;
-    }
-
     public SelectColumnBuilder withFunction(SelectColumnFunctionType function) {
         this.function = function;
         return this;
@@ -88,77 +48,6 @@ public class SelectColumnBuilder {
                                                      SelectColumnFunctionType function) {
         this.computedColumn = new ComputedColumn(tableName, fieldName);
         this.function = function;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumn computedColumn,
-                                                     SelectColumnFunctionType function) {
-        this.computedColumn = computedColumn;
-        this.function = function;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumnBuilderOperationStep computedColumnBuilder,
-                                                     SelectColumnFunctionType function) {
-        this.computedColumn = computedColumnBuilder.build();
-        this.function = function;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(String tableName, String fieldName,
-                                                     SelectColumnFunctionType function,
-                                                     String alias) {
-        this.computedColumn = new ComputedColumn(tableName, fieldName);
-        this.function = function;
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumn computedColumn,
-                                                     SelectColumnFunctionType function,
-                                                     String alias) {
-        this.computedColumn = computedColumn;
-        this.function = function;
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumnBuilderOperationStep computedColumnBuilder,
-                                                     SelectColumnFunctionType function,
-                                                     String alias) {
-        this.computedColumn = computedColumnBuilder.build();
-        this.function = function;
-        this.alias = alias;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(String tableName, String fieldName,
-                                                     SelectColumnFunctionType function,
-                                                     String alias, String nullValue) {
-        this.computedColumn = new ComputedColumn(tableName, fieldName);
-        this.function = function;
-        this.alias = alias;
-        this.nullValue = nullValue;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumn computedColumn,
-                                                     SelectColumnFunctionType function,
-                                                     String alias, String nullValue) {
-        this.computedColumn = computedColumn;
-        this.function = function;
-        this.alias = alias;
-        this.nullValue = nullValue;
-        return this;
-    }
-
-    public SelectColumnBuilder withColumnAndFunction(ComputedColumnBuilderOperationStep computedColumnBuilder,
-                                                     SelectColumnFunctionType function,
-                                                     String alias, String nullValue) {
-        this.computedColumn = computedColumnBuilder.build();
-        this.function = function;
-        this.alias = alias;
-        this.nullValue = nullValue;
         return this;
     }
 

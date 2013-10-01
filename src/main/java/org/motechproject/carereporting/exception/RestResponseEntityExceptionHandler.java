@@ -36,7 +36,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     private List<RestFormErrorResponse> getErrorsResponse(List<FieldError> errors, Locale locale) {
         List<RestFormErrorResponse> responseErrors = new ArrayList<>();
         for (FieldError error: errors) {
-            String message = null;
+            String message;
             try {
                 message = messageSource.getMessage(error, locale);
             } catch (NoSuchMessageException e) {

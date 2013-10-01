@@ -15,25 +15,6 @@ public class EnumRangeComparison extends WhereCondition {
         this.values = new LinkedHashSet<>();
     }
 
-    public EnumRangeComparison(String table1Name, String field1Name) {
-        super(table1Name, field1Name);
-
-        this.values = new LinkedHashSet<>();
-    }
-
-    public EnumRangeComparison(SelectColumn selectColumn1) {
-        super(selectColumn1);
-
-        this.values = new LinkedHashSet<>();
-    }
-
-    public EnumRangeComparison(String table1Name, String field1Name,
-                               Set<String> values) {
-        super(table1Name, field1Name);
-
-        this.values = values;
-    }
-
     public EnumRangeComparison(SelectColumn selectColumn1,
                                Set<String> values) {
         super(selectColumn1);

@@ -18,7 +18,6 @@
             .when('/indicators/classifications', { templateUrl: 'resources/partials/indicators/listClassifications.html', controller: 'classificationsListController'})
             .when('/indicators/classifications/new', { templateUrl: 'resources/partials/indicators/editClassification.html', controller: 'classificationsController'})
             .when('/indicators/classifications/:classificationId', { templateUrl: 'resources/partials/indicators/editClassification.html', controller: 'classificationsController'})
-            .when('/indicators/:indicatorId', { templateUrl: 'resources/partials/indicators/editIndicator.html', controller: 'createIndicatorController' })
             .when('/reports/:reportId', {templateUrl: 'resources/partials/reports/editReport.html', controller: 'reportController'})
             .when('/reports', {templateUrl: 'resources/partials/reports/listReports.html', controller: 'reportListController'})
             .when('/admin/computed-fields', { templateUrl: 'resources/partials/admin/computed-fields/computedField.html', controller: 'computedFieldsController' })

@@ -51,9 +51,6 @@ public interface IndicatorService {
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);
 
-    @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
-    void deleteAllIndicators();
-
     Set<IndicatorTypeEntity> getAllIndicatorTypes();
 
     IndicatorTypeEntity getIndicatorTypeById(Integer id);
@@ -73,13 +70,9 @@ public interface IndicatorService {
 
     Set<IndicatorValueEntity> getAllIndicatorValues();
 
-    IndicatorValueEntity getIndicatorValueById(Integer id);
-
     void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity);
-
-    void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
                                                          Date startDate, Date endDate, String category);
@@ -103,8 +96,6 @@ public interface IndicatorService {
     List<IndicatorValueEntity> getIndicatorValuesForCsv(Integer indicatorId, Integer areaId, Integer frequencyId, Date startDate, Date endDate);
 
     Set<DwQueryEntity> getAllTopLevelDwQueries();
-
-    Set<DwQueryEntity> getAllDwQueries();
 
     DwQueryEntity getDwQueryById(Integer dwQueryId);
 

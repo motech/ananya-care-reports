@@ -11,14 +11,6 @@ public class ValueComparison extends WhereCondition {
         super();
     }
 
-    public ValueComparison(String tableName, String fieldName,
-                           ComparisonType operator, String value) {
-        super(tableName, fieldName);
-
-        this.operator = operator;
-        this.value = value;
-    }
-
     public ValueComparison(SelectColumn selectColumn1,
                            ComparisonType operator, String value) {
         super(selectColumn1);

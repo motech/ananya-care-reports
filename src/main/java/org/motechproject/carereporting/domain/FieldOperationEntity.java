@@ -84,11 +84,8 @@ public class FieldOperationEntity extends AbstractEntity {
         if (!field2.equals(that.field2)) {
             return false;
         }
-        if (!operatorType.equals(that.operatorType)) {
-            return false;
-        }
+        return operatorType.equals(that.operatorType);
 
-        return true;
     }
 
     @Override

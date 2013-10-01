@@ -12,32 +12,6 @@ public class DateRangeComparison extends WhereCondition {
         super();
     }
 
-    public DateRangeComparison(String table1Name, String field1Name,
-                               String date1, String date2) {
-        super(table1Name, field1Name);
-
-        this.date1 = date1;
-        this.date2 = date2;
-    }
-
-    public DateRangeComparison(SelectColumn selectColumn1,
-                               String date1, String date2) {
-        super(selectColumn1);
-
-        this.date1 = date1;
-        this.date2 = date2;
-    }
-
-    public DateRangeComparison(String table1Name, String field1Name,
-                               String date1, String date2,
-                               Integer column1Offset) {
-        super(table1Name, field1Name);
-
-        this.date1 = date1;
-        this.date2 = date2;
-        this.column1Offset = column1Offset;
-    }
-
     public DateRangeComparison(SelectColumn selectColumn1,
                                String date1, String date2,
                                Integer column1Offset) {

@@ -35,11 +35,6 @@ public class DwQueryBuilder {
         return this;
     }
 
-    public DwQueryBuilder withSelectColumns(Set<SelectColumn> selectColumns) {
-        this.selectColumns = new LinkedHashSet<>(selectColumns);
-        return this;
-    }
-
     public DwQueryBuilder withTableName(String tableName) {
         this.tableName = tableName;
         return this;
@@ -70,11 +65,6 @@ public class DwQueryBuilder {
         }
 
         this.combineWith.add(combinationBuilder.build());
-        return this;
-    }
-
-    public DwQueryBuilder withCombinations(Set<DwQueryCombination> combinations) {
-        this.combineWith = combinations;
         return this;
     }
 
