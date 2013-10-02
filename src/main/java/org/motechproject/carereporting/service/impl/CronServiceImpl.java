@@ -59,11 +59,6 @@ public class CronServiceImpl implements CronService {
     }
 
     @Override
-    public FrequencyEntity getFrequencyByName(String name) {
-        return frequencyDao.getByFrequencyName(name);
-    }
-
-    @Override
     public Set<FrequencyEntity> getAllFrequencies() {
         return frequencyDao.getAllSortBy("id");
     }

@@ -9,6 +9,7 @@ import org.jooq.Select;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectLimitStep;
 import org.jooq.SelectSelectStep;
 
 import static org.jooq.impl.DSL.tableByName;
@@ -38,6 +39,11 @@ public final class DwQueryHelper {
             SelectConditionStep selectConditionStep = buildFromQuery(schemaName, selectSelectStep, dwQuery);
             select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
             select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, dwQuery.getTableName());
+
+            if (dwQuery.getLimit() != null) {
+                SelectLimitStep selectLimitStep = (SelectLimitStep) select;
+                select = selectLimitStep.limit(dwQuery.getLimit());
+            }
 
             return select;
         } catch (Exception e) {

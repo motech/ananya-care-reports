@@ -4,14 +4,16 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.performance.scenario.AbstractScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ChartsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.ComputedFieldsScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineIndicatorScenario;
-import org.motechproject.carereporting.performance.scenario.complex.DefineLanguageScenario;
+import org.motechproject.carereporting.performance.scenario.complex.DefineOrSelectLanguageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.DefineQueryScenario;
 import org.motechproject.carereporting.performance.scenario.complex.LoadPageScenario;
 import org.motechproject.carereporting.performance.scenario.complex.MapReportScenario;
@@ -27,8 +29,8 @@ import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsF
 import org.motechproject.carereporting.performance.scenario.simple.FormGetFormsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDailyFrequencyScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorCalculatorGetDepthDateScenario;
-import org.motechproject.carereporting.performance.scenario.simple.IndicatorClassificationGetClassificationsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorClassificationGetClassificationScenario;
+import org.motechproject.carereporting.performance.scenario.simple.IndicatorClassificationGetClassificationsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetCreationFormScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetIndicatorsScenario;
 import org.motechproject.carereporting.performance.scenario.simple.IndicatorGetQueriesScenario;
@@ -64,14 +66,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = "classpath:performanceTestContext.xml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class PhasePT {
 
     private static final Logger LOGGER = Logger.getLogger(PhasePT.class);
@@ -88,7 +91,7 @@ public abstract class PhasePT {
     private double peekWaitTime;
     private MockMvc mockMvc;
     private MockHttpSession session;
-    private static TreeMap<Long, String> times = new TreeMap<>();
+    private static List<ValueComparator> times = new LinkedList<ValueComparator>();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -116,9 +119,10 @@ public abstract class PhasePT {
 
     @AfterClass
     public static void printStatistics() {
+        Collections.sort(times);
         LOGGER.info("Average scenario time: ");
-        for (Map.Entry<Long, String> entry : times.entrySet()) {
-            LOGGER.info(entry.getValue() + ": " + entry.getKey() + "ms");
+        for (ValueComparator valueComparator: times) {
+            LOGGER.info(valueComparator.getName() + ": " + valueComparator.getTime() + "ms");
         }
     }
 
@@ -182,7 +186,7 @@ public abstract class PhasePT {
             thread.join();
         }
         stopWatch.stop();
-        times.put(elapsedTime / reportLookersCount, scenario.getSimpleName());
+        times.add(new ValueComparator(scenario.getSimpleName(), elapsedTime / reportLookersCount));
         LOGGER.info("Scenario: " + scenario.getSimpleName() + " finished.\n" +
                 "Total time: " + stopWatch.getTime() + "ms\n" +
                 "Average time: " + elapsedTime / reportLookersCount + "ms");
@@ -190,6 +194,30 @@ public abstract class PhasePT {
 
     private synchronized void addElapsedTime(long time) {
         elapsedTime += time;
+    }
+
+    private class ValueComparator implements Comparable<ValueComparator> {
+
+        private String name;
+        private Long time;
+
+        private ValueComparator(String name, Long time) {
+            this.name = name;
+            this.time = time;
+        }
+
+        private String getName() {
+            return name;
+        }
+
+        private Long getTime() {
+            return time;
+        }
+
+        @Override
+        public int compareTo(ValueComparator o) {
+            return time.compareTo(o.time);
+        }
     }
 
     private class UserThread extends Thread {
@@ -240,181 +268,181 @@ public abstract class PhasePT {
 
 
     @Test
-    public void testGetComputedFields() throws Exception {
+    public void _0_testGetComputedFields() throws Exception {
         runTest(ComputedFieldGetComputedFieldsScenario.class);
     }
     @Test
-    public void testGetComputedFieldsWithoutOrigin() throws Exception {
+    public void _01_testGetComputedFieldsWithoutOrigin() throws Exception {
         runTest(ComputedFieldGetComputedFieldsWithoutOriginScenario.class);
     }
 
     @Test
-    public void testGetOperatorTypes() throws Exception {
+    public void _010_testGetOperatorTypes() throws Exception {
         runTest(ComputedFieldGetOperatorTypeScenario.class);
     }
 
     @Test
-    public void testGetDashboardDto() throws Exception {
+    public void _011_testGetDashboardDto() throws Exception {
         runTest(DashboardGetDashboardDtoScenario.class);
     }
 
     @Test
-    public void testGetUserAreas() throws Exception {
+    public void _012_testGetUserAreas() throws Exception {
         runTest(DashboardGetUserAreasScenario.class);
     }
 
     @Test
-    public void testGetFormComputedFields() throws Exception {
+    public void _013_testGetFormComputedFields() throws Exception {
         runTest(FormGetComputedFieldScenario.class);
     }
 
     @Test
-    public void testGetForm() throws Exception {
+    public void _014_testGetForm() throws Exception {
         runTest(FormGetFormScenario.class);
     }
 
     @Test
-    public void testGetFormsFromDto() throws Exception {
+    public void _015_testGetFormsFromDto() throws Exception {
         runTest(FormGetFormsFromDtoScenario.class);
     }
 
     @Test
-    public void testGetForms() throws Exception {
+    public void _016_testGetForms() throws Exception {
         runTest(FormGetFormsScenario.class);
     }
 
     @Test
-    public void testGetDailyFrequency() throws Exception {
+    public void _017_testGetDailyFrequency() throws Exception {
         runTest(IndicatorCalculatorGetDailyFrequencyScenario.class);
     }
 
     @Test
-    public void testGetDepthDate() throws Exception {
+    public void _018_testGetDepthDate() throws Exception {
         runTest(IndicatorCalculatorGetDepthDateScenario.class);
     }
 
     @Test
-    public void testGetClassifications() throws Exception {
+    public void _019_testGetClassifications() throws Exception {
         runTest(IndicatorClassificationGetClassificationsScenario.class);
     }
 
     @Test
-    public void testGetClassification() throws Exception {
+    public void _02_testGetClassification() throws Exception {
         runTest(IndicatorClassificationGetClassificationScenario.class);
     }
 
     @Test
-    public void testGetCreationForm() throws Exception {
+    public void _020_testGetCreationForm() throws Exception {
         runTest(IndicatorGetCreationFormScenario.class);
     }
 
     @Test
-    public void testGetIndicators() throws Exception {
+    public void _021_testGetIndicators() throws Exception {
         runTest(IndicatorGetIndicatorsScenario.class);
     }
 
     @Test
-    public void testGetQueries() throws Exception {
+    public void _022_testGetQueries() throws Exception {
         runTest(IndicatorGetQueriesScenario.class);
     }
 
     @Test
-    public void testGetQueryCreationForm() throws Exception {
+    public void _023_testGetQueryCreationForm() throws Exception {
         runTest(IndicatorGetQueryCreationFormScenario.class);
     }
 
     @Test
-    public void testGetLanguages() throws Exception {
+    public void _024_testGetLanguages() throws Exception {
         runTest(LanguageGetLanguagesScenario.class);
     }
 
     @Test
-    public void testGetMessages() throws Exception {
+    public void _025_testGetMessages() throws Exception {
         runTest(LanguageGetMessagesScenario.class);
     }
 
     @Test
-    public void testGetPlainMessages() throws Exception {
+    public void _026_testGetPlainMessages() throws Exception {
         runTest(LanguageGetPlainMessagesScenario.class);
     }
 
     @Test
-    public void testGetMap() throws Exception {
+    public void _027_testGetMap() throws Exception {
         runTest(MapReportGetMapScenario.class);
     }
 
     @Test
-    public void testExportCaseListReport() throws Exception {
+    public void _028_testExportCaseListReport() throws Exception {
         runTest(ReportExportCaseListReportScenario.class);
     }
 
     @Test
-    public void testExportToCsv() throws Exception {
+    public void _029_testExportToCsv() throws Exception {
         runTest(ReportExportToCsvScenario.class);
     }
 
     @Test
-    public void testGetChart() throws Exception {
+    public void _03_testGetChart() throws Exception {
         runTest(ReportGetChartScenario.class);
     }
 
     @Test
-    public void testGetData() throws Exception {
+    public void _031_testGetData() throws Exception {
         runTest(ReportGetDataScenario.class);
     }
 
     @Test
-    public void testGetTrend() throws Exception {
+    public void _032_testGetTrend() throws Exception {
         runTest(ReportGetTrendScenario.class);
     }
 
     @Test
-    public void testGetLoggedUserLanguage() throws Exception {
+    public void _033_testGetLoggedUserLanguage() throws Exception {
         runTest(UserGetLoggedUserLanguageScenario.class);
     }
 
     @Test
-    public void testGetLoggedUserPermissions() throws Exception {
+    public void _034_testGetLoggedUserPermissions() throws Exception {
         runTest(UserGetLoggedUserPermissionsScenario.class);
     }
 
     @Test
-    public void testCharts() throws Exception {
+    public void _10_testCharts() throws Exception {
         runTest(ChartsScenario.class);
     }
 
     @Test
-    public void testComputedFields() throws Exception {
+    public void _11_testComputedFields() throws Exception {
         runTest(ComputedFieldsScenario.class);
     }
 
     @Test
-    public void testDefineIndicator() throws Exception {
+    public void _12_testDefineIndicator() throws Exception {
         runTest(DefineIndicatorScenario.class);
     }
 
     @Test
-    public void testDefineQuery() throws Exception {
+    public void _13_testDefineQuery() throws Exception {
         runTest(DefineQueryScenario.class);
     }
 
     @Test
-    public void testDefineLanguage() throws Exception {
-        runTest(DefineLanguageScenario.class);
+    public void _14_testDefineLanguage() throws Exception {
+        runTest(DefineOrSelectLanguageScenario.class);
     }
 
     @Test
-    public void testLoadPage() throws Exception {
+    public void _15_testLoadPage() throws Exception {
         runTest(LoadPageScenario.class);
     }
 
     @Test
-    public void testMapReport() throws Exception {
+    public void _16_testMapReport() throws Exception {
         runTest(MapReportScenario.class);
     }
 
     @Test
-    public void testPerformanceDashboard() throws Exception {
+    public void _17_testPerformanceDashboard() throws Exception {
         runTest(PerformanceSummaryScenario.class);
     }
 

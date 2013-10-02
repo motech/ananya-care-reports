@@ -1,7 +1,9 @@
 package org.motechproject.carereporting.service.impl;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.dwQueryBuilder.builders.QueryBuilder;
+import org.dwQueryBuilder.data.DwQuery;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -51,7 +53,9 @@ import org.motechproject.carereporting.domain.dto.TrendIndicatorClassificationDt
 import org.motechproject.carereporting.domain.dto.WhereConditionDto;
 import org.motechproject.carereporting.domain.dto.WhereGroupDto;
 import org.motechproject.carereporting.exception.CareNoValuesException;
+import org.motechproject.carereporting.exception.CareQueryCreationException;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.exception.ExceptionHelper;
 import org.motechproject.carereporting.indicator.DwQueryHelper;
 import org.motechproject.carereporting.initializers.IndicatorValuesInitializer;
 import org.motechproject.carereporting.service.AreaService;
@@ -70,11 +74,14 @@ import org.motechproject.carereporting.xml.mapping.reports.CaseListReport;
 import org.motechproject.carereporting.xml.mapping.reports.ReportField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
@@ -94,6 +101,7 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class IndicatorServiceImpl implements IndicatorService {
 
+    private static final Logger LOGGER = Logger.getLogger(IndicatorServiceImpl.class);
     private static final int TREND_NEUTRAL = 0;
     private static final int TREND_NEGATIVE = -1;
     private static final int TREND_POSITIVE = 1;
@@ -102,6 +110,12 @@ public class IndicatorServiceImpl implements IndicatorService {
             "select (.*?) from \\\"(.*?)\\\"\\.\\\"(\\w*?_case)\\\"(.*)?";
     private static final String CASE_LIST_REPORT_XML_DIRECTORY = ConfigurationLocator.getCareXmlDirectory()
             + File.separatorChar + "caseListReport";
+    private static final Integer ADMIN_ROLE_ID = 1;
+    private static final Integer READ_ONLY_ROLE_ID = 4;
+    private static final String MOCK_AREA_LEVEL_NAME = "<area_level_name>";
+    private static final String AREA_LEVEL_NAME_STATE = "state";
+    private static final Integer QUERY_VALIDATION_ROW_LIMIT = 0;
+    private static final String CLASSIFICATIONS_CACHE = "classifications";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -154,8 +168,12 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private static final Integer ADMIN_ROLE_ID = 1;
-    private static final Integer READ_ONLY_ROLE_ID = 4;
+    private JdbcTemplate jdbcTemplate;
+
+    @PostConstruct
+    public void initialize() {
+        jdbcTemplate = new JdbcTemplate(careDataSource);
+    }
 
     @Transactional
     public Set<IndicatorEntity> getAllIndicators() {
@@ -202,25 +220,61 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public Set<DwQueryEntity> getAllDwQueries() {
-        return dwQueryDao.getAll();
-    }
-
-    @Override
     public DwQueryEntity getDwQueryById(Integer dwQueryId) {
-        return dwQueryDao.getById(dwQueryId);
+        DwQueryEntity dwQueryEntity = dwQueryDao.getById(dwQueryId);
+        initializeDwQuery(dwQueryEntity);
+        return dwQueryEntity;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
-        dwQueryDao.save(getDwQueryEntityFromDto(dwQueryDto));
+        DwQueryEntity dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
+        validateDwQuery(dwQueryEntity);
+
+        try {
+            dwQueryDao.save(dwQueryEntity);
+        } catch (Exception e) {
+            throw new CareRuntimeException(e);
+        }
+    }
+
+    public void validateDwQuery(DwQueryEntity dwQueryEntity) {
+        LOGGER.debug("Validating query: " + dwQueryEntity.getName());
+
+        try {
+            DwQueryHelper dwQueryHelper = new DwQueryHelper();
+            DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
+            dwQuery.setLimit(QUERY_VALIDATION_ROW_LIMIT);
+
+            String dwQuerySqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES, schemaName, dwQuery, true);
+            dwQuerySqlString = dwQuerySqlString.replaceAll(MOCK_AREA_LEVEL_NAME, AREA_LEVEL_NAME_STATE);
+            dwQuerySqlString = dwQueryHelper.formatFromDateAndToDate(dwQuerySqlString, new Date(), new Date());
+
+            LOGGER.debug("Querying the database using the following SQL: " + dwQuerySqlString);
+
+            jdbcTemplate.queryForRowSet(dwQuerySqlString);
+        } catch (Exception e) {
+            String header = ExceptionHelper.getExceptionRealCause(e).getMessage();
+            String message = e.getMessage();
+
+            throw new CareQueryCreationException(header, message, e);
+        }
+
+        LOGGER.debug("Query is valid");
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteDwQuery(DwQueryEntity dwQueryEntity) {
         this.dwQueryDao.remove(dwQueryEntity);
+    }
+
+    @Override
+    public String getDwQuerySqlString(DwQueryEntity dwQueryEntity) {
+        DwQueryHelper dwQueryHelper = new DwQueryHelper();
+        DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
+        return QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES, schemaName, dwQuery, true);
     }
 
     @Transactional(readOnly = false)
@@ -414,6 +468,21 @@ public class IndicatorServiceImpl implements IndicatorService {
         return indicatorDao.getById(id);
     }
 
+    @Override
+    public IndicatorEntity getIndicatorWithAllFields(Integer id) {
+        IndicatorEntity indicatorEntity = this.getIndicatorById(id);
+
+        Hibernate.initialize(indicatorEntity.getRoles());
+        Hibernate.initialize(indicatorEntity.getDefaultFrequency());
+        Hibernate.initialize(indicatorEntity.getAdditive());
+        Hibernate.initialize(indicatorEntity.isCategorized());
+        Hibernate.initialize(indicatorEntity.getTrend());
+        Hibernate.initialize(indicatorEntity.getNumerator());
+        Hibernate.initialize(indicatorEntity.getDenominator());
+
+        return indicatorEntity;
+    }
+
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicator(IndicatorEntity indicatorEntity) {
@@ -489,10 +558,48 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
-    public void updateIndicatorFromDto(IndicatorDto indicatorDto) {
-        // TODO : Is this function needed? If so, fill it out.
+    public void updateIndicatorFromDto(Integer id, IndicatorDto indicatorDto) {
+        IndicatorEntity indicatorEntity = this.getIndicatorById(id);
+
+        indicatorEntity.setName(indicatorDto.getName());
+        indicatorEntity.setNumerator(dwQueryDao.getById(indicatorDto.getNumerator()));
+        indicatorEntity.setDenominator((indicatorDto.getDenominator() == null)
+                ? null : dwQueryDao.getById(indicatorDto.getDenominator()));
+        indicatorEntity.setAdditive(indicatorDto.isAdditive());
+        indicatorEntity.setCategorized(indicatorDto.isCategorized());
+        indicatorEntity.setAreaLevel(areaService.getLevelById(indicatorDto.getLevel()));
+        indicatorEntity.setClassifications(findIndicatorClassificationEntitiesFromDto(indicatorDto));
+        indicatorEntity.setComputed(true);
+        indicatorEntity.setDefaultFrequency(findFrequencyEntityFromDto(indicatorDto));
+        indicatorEntity.setIndicatorValues(new LinkedHashSet<IndicatorValueEntity>());
+        indicatorValueDao.removeByIndicator(indicatorEntity);
+
+        indicatorEntity.setRoles(findRoleEntitiesFromDto(indicatorDto));
+        indicatorEntity.setTrend(indicatorDto.getTrend());
+
+        updateIndicatorReportsFromDto(indicatorEntity, indicatorDto);
+        indicatorDao.update(indicatorEntity);
     }
 
+    private void updateIndicatorReportsFromDto(IndicatorEntity indicatorEntity, IndicatorDto indicatorDto) {
+        for (ReportEntity reportEntity : indicatorEntity.getReports()) {
+            reportService.deleteReport(reportEntity);
+        }
+        indicatorEntity.setReports(new LinkedHashSet<ReportEntity>());
+
+        for (ReportEntity reportEntity : indicatorDto.getReports()) {
+            ReportEntity newReportEntity = new ReportEntity();
+            newReportEntity.setIndicator(indicatorEntity);
+            newReportEntity.setReportType(reportEntity.getReportType());
+            newReportEntity.setDashboards(reportEntity.getDashboards());
+            newReportEntity.setLabelX(reportEntity.getLabelX());
+            newReportEntity.setLabelY(reportEntity.getLabelY());
+
+            indicatorEntity.getReports().add(newReportEntity);
+        }
+    }
+
+    @Cacheable(CLASSIFICATIONS_CACHE)
     private Set<IndicatorClassificationEntity> findIndicatorClassificationEntitiesFromDto(
             IndicatorDto indicatorDto) {
         Set<IndicatorClassificationEntity> indicatorClassificationEntities = new LinkedHashSet<>();
@@ -510,11 +617,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void deleteIndicator(IndicatorEntity indicatorEntity) {
         indicatorDao.remove(indicatorEntity);
-    }
-
-    @Override
-    public void deleteAllIndicators() {
-        indicatorDao.removeAll();
     }
 
     // IndicatorTypeEntity
@@ -547,6 +649,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void createNewIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         DashboardEntity dashboardForClassification = createDashboardForNewIndicatorClassification(indicatorClassificationEntity.getName());
         indicatorClassificationEntity.setDashboard(dashboardForClassification);
@@ -560,6 +663,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void updateIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         indicatorClassificationEntity.getDashboard().setName(indicatorClassificationEntity.getName());
         indicatorClassificationDao.update(indicatorClassificationEntity);
@@ -567,6 +671,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Transactional(readOnly = false)
     @Override
+    @CacheEvict(value = CLASSIFICATIONS_CACHE, allEntries = true)
     public void deleteIndicatorClassification(IndicatorClassificationEntity indicatorClassificationEntity) {
         for (IndicatorEntity indicatorEntity : indicatorClassificationEntity.getIndicators()) {
             indicatorEntity.getClassifications().remove(indicatorClassificationEntity);
@@ -583,12 +688,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     // IndicatorValueEntity
 
-    @Transactional
-    @Override
-    public IndicatorValueEntity getIndicatorValueById(Integer id) {
-        return indicatorValueDao.getById(id);
-    }
-
     @Transactional(readOnly = false)
     @Override
     public void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
@@ -599,12 +698,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Override
     public void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
         indicatorValueDao.update(indicatorValueEntity);
-    }
-
-    @Transactional(readOnly = false)
-    @Override
-    public void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity) {
-        indicatorValueDao.remove(indicatorValueEntity);
     }
 
     @Override
@@ -701,7 +794,6 @@ public class IndicatorServiceImpl implements IndicatorService {
                     String.format("select %s from ", StringUtils.join(fields, ", "))
                             + "\"$2\".\"$3\"$4");
 
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(careDataSource);
             return csvExportService.convertRowMapToBytes(headers, jdbcTemplate.queryForList(sqlString));
         } catch (Exception e) {
             throw new CareRuntimeException(e);
@@ -724,8 +816,27 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
     }
 
+    private void initializeDwQuery(DwQueryEntity dwQueryEntity) {
+        Hibernate.initialize(dwQueryEntity.getSelectColumns());
+        Hibernate.initialize(dwQueryEntity.getGroupedBy());
+        Hibernate.initialize(dwQueryEntity.getWhereGroup());
+        Hibernate.initialize(dwQueryEntity.getCombination());
+        if (dwQueryEntity.getCombination() != null) {
+            initializeDwQuery(dwQueryEntity.getCombination().getDwQuery());
+        }
+    }
+
     @Override
+    @Transactional
     public void calculateIndicator(IndicatorEntity indicatorEntity) {
+        setComputedForIndicator(indicatorEntity, false);
+        Hibernate.initialize(indicatorEntity.getNumerator());
+        initializeDwQuery(indicatorEntity.getNumerator());
+
+        if (indicatorEntity.getDenominator() != null) {
+            Hibernate.initialize(indicatorEntity.getDenominator());
+            initializeDwQuery(indicatorEntity.getDenominator());
+        }
         Thread thread = new Thread(new IndicatorValuesInitializer(indicatorEntity));
         thread.start();
     }

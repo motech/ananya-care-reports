@@ -15,6 +15,7 @@ public class DwQueryBuilder {
     private GroupBy groupBy;
     private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
+    private Integer limit;
 
     public DwQueryBuilder withSelectColumn(SelectColumn selectColumn) {
         if (this.selectColumns == null) {
@@ -31,11 +32,6 @@ public class DwQueryBuilder {
         }
 
         this.selectColumns.add(selectColumnBuilder.build());
-        return this;
-    }
-
-    public DwQueryBuilder withSelectColumns(Set<SelectColumn> selectColumns) {
-        this.selectColumns = new LinkedHashSet<>(selectColumns);
         return this;
     }
 
@@ -72,11 +68,6 @@ public class DwQueryBuilder {
         return this;
     }
 
-    public DwQueryBuilder withCombinations(Set<DwQueryCombination> combinations) {
-        this.combineWith = combinations;
-        return this;
-    }
-
     public DwQueryBuilder withWhereConditionGroup(WhereConditionGroup whereConditionGroup) {
         this.whereConditionGroup = whereConditionGroup;
         return this;
@@ -87,7 +78,12 @@ public class DwQueryBuilder {
         return this;
     }
 
+    public DwQueryBuilder withLimit(Integer limit) {
+        this.limit = limit;
+        return this;
+    }
+
     public DwQuery build() {
-        return new DwQuery(selectColumns, tableName, groupBy, combineWith, whereConditionGroup);
+        return new DwQuery(selectColumns, tableName, groupBy, combineWith, whereConditionGroup, limit);
     }
 }

@@ -32,7 +32,10 @@
                         <div class="control-group">
                             <label class="control-label" for="form">Form:</label>
                             <div class="controls">
-                                <select id="form" ng-model="computedField.form" ng-click="changeForm()" ng-options="item.id as item.displayName for (key, item) in forms"></select>
+                                <div class="input-append ">
+                                    <select id="form" ng-model="computedField.form" ng-click="changeForm()" ng-options="item.id as item.displayName for (key, item) in forms" />
+                                    <tip msg="computedField.tip.table" />
+                                </div>
                             </div>
                         </div>
                         <div class="nested-well">

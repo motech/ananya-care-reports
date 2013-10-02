@@ -32,7 +32,10 @@
                             <button class="btn" ng-click="addClassification()" ng-disabled="listClassifications.length <= 0">{{msg('indicators.form.addClassification')}}</button>
                         </div>
                         <label>{{msg('indicators.form.level.label')}}: </label>
-                        <select ng-model="indicator.level" ng-options="item.id as item.name for item in formData.levels" class="input-block-level" required></select>
+                        <div class="input-append">
+                            <select ng-model="indicator.level" ng-options="item.id as item.name for item in formData.levels" required></select>
+                            <tip msg="indicators.form.tip.level" />
+                        </div>
                     </div>
                     <div class="nested-well">
                         <fieldset>
@@ -53,7 +56,10 @@
                     </div>
                     <div class="nested-well">
                         <legend>{{msg('indicators.form.frequency.label')}}: </legend>
-                        <select ng-model="indicator.frequency" ng-options="item.id as item.frequencyName for item in formData.frequencies" class="input-block-level" required></select>
+                        <div class="input-append">
+                            <select ng-model="indicator.frequency" ng-options="item.id as item.frequencyName for item in formData.frequencies" required></select>
+                            <tip msg="indicators.form.tip.frequency" />
+                        </div>
                     </div>
                 </div>
                 <div class="span4 well">
@@ -62,10 +68,12 @@
                             <legend>{{msg('indicators.form.label.properties.header')}}: </legend>
                             <ul class="unstyled">
                                 <li>
+                                    <tip msg="indicators.form.tip.additive" />
                                     <input id="additive" type="checkbox" ng-model="indicator.additive" />
                                     <label for="additive" class="inline">{{msg('indicators.form.label.properties.additive')}}</label>
                                 </li>
                                 <li>
+                                    <tip msg="indicators.form.tip.categorized" />
                                     <input id="categorized" type="checkbox" ng-model="indicator.categorized" />
                                     <label for="categorized" class="inline">{{msg('indicators.form.label.properties.categorized')}}</label>
                                 </li>
@@ -110,14 +118,23 @@
                         <fieldset>
                             <legend>{{msg('indicators.form.trend')}} <small>({{msg('common.optional')}})</small>:</legend>
                             <label for="trend">{{msg('indicators.form.trend.label')}}: </label>
-                            <input id="trend" type="number" ng-model="indicator.trend" class="input-block-level" placeholder="{{msg('indicators.form.trend.placeholder')}}" />
+                            <div class="input-append">
+                                <input id="trend" type="number" ng-model="indicator.trend" placeholder="{{msg('indicators.form.trend.placeholder')}}" />
+                                <tip msg="indicators.form.tip.trend" />
+                            </div>
                         </fieldset>
                     </div>
                     <div class="nested-well">
                         <label for="numerator">{{msg('indicators.form.label.numerator')}}:</label>
-                        <select id="numerator" class="input-block-level" ng-model="indicator.numerator" ng-options="item.id as item.name for item in formData.dwQueries" required></select>
+                        <div class="input-append">
+                            <select id="numerator" ng-model="indicator.numerator" ng-options="item.id as item.name for item in formData.dwQueries" required></select>
+                            <tip msg="indicators.form.tip.numerator" />
+                        </div>
                         <label for="denominator">{{msg('indicators.form.label.denominator')}}:</label>
-                        <select id="denominator" class="input-block-level" ng-model="indicator.denominator" ng-options="item.id as item.name for item in formData.denominatorDwQueries"></select>
+                        <div class="input-append">
+                            <select id="denominator" ng-model="indicator.denominator" ng-options="item.id as item.name for item in formData.denominatorDwQueries"></select>
+                            <tip msg="indicators.form.tip.denominator" />
+                        </div>
                     </div>
                     <div class="row-fluid" id="formButtons">
                         <div class="btn-group">
@@ -142,7 +159,7 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="item in indicators | orderBy:'+name'">
-                                    <td>{{item.name}}</td>
+                                    <td><a href="#/indicators/edit/{{item.id}}">{{item.name}}</a></td>
                                     <td><span class="btn btn-link" ng-click="deleteIndicator(item);"><i class="icon-remove"></i></span></td>
                                 </tr>
                                 </tbody>

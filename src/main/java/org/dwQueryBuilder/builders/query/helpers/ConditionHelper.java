@@ -284,7 +284,7 @@ public final class ConditionHelper {
     public static Condition buildDateValueCondition(Field field, DateValueComparison comparison) {
         try {
             DayToSecond dayToSecond = new DayToSecond(Math.abs(comparison.getOffset()));
-            Field newField = field;
+            Field newField;
             String value = comparison.getValue();
 
             if (comparison.getOffset() >= 0) {

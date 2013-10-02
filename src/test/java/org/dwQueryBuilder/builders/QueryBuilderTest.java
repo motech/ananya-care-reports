@@ -120,6 +120,10 @@ public class QueryBuilderTest {
     private static final String EXPECTED_POSTGRESQL_VALUE_TO_LOWER_CASE_SQL_STRING =
             "select count(\"report\".\"flw\".\"state\") from \"report\".\"flw\" where " +
                     "lower(cast(\"flw\".\"state\" as varchar)) = 'bihar'";
+    private static final String EXPECTED_POSTGRESQL_LIMIT_SQL_STRING =
+            "select * from \"report\".\"mother_case\" limit 1 offset 0";
+    private static final String EXPECTED_POSTGRESQL_LIMIT_ZERO_SQL_STRING =
+            "select * from \"report\".\"mother_case\" limit 0 offset 0";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -646,5 +650,41 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_VALUE_TO_LOWER_CASE_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlLimit() {
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withColumn(WILDCARD)
+                .build();
+
+        DwQuery dwQuery = new DwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(MOTHER_CASE)
+                .withLimit(Integer.parseInt(ONE))
+                .build();
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_LIMIT_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlLimitZero() {
+        SelectColumn selectAll = new SelectColumnBuilder()
+                .withColumn(WILDCARD)
+                .build();
+
+        DwQuery dwQuery = new DwQueryBuilder()
+                .withSelectColumn(selectAll)
+                .withTableName(MOTHER_CASE)
+                .withLimit(Integer.parseInt(ZERO))
+                .build();
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_LIMIT_ZERO_SQL_STRING, sqlString);
     }
 }

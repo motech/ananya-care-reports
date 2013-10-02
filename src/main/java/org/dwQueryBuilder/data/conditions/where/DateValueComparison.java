@@ -12,24 +12,6 @@ public class DateValueComparison extends WhereCondition {
         super();
     }
 
-    public DateValueComparison(String tableName, String fieldName,
-                               ComparisonType operator, String value) {
-        super(tableName, fieldName);
-
-        this.operator = operator;
-        this.value = value;
-        this.offset = 0;
-    }
-
-    public DateValueComparison(SelectColumn selectColumn1,
-                               ComparisonType operator, String value) {
-        super(selectColumn1);
-
-        this.operator = operator;
-        this.value = value;
-        this.offset = 0;
-    }
-
     /**
      * @param offset Field offset (in days).
      */

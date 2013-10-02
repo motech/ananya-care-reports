@@ -28,7 +28,7 @@ public abstract class BaseController {
     }
 
     public String writeAsString(Class<? extends BaseView> viewClass, Object value) {
-        String str = null;
+        String str;
 
         try {
             str = objectMapper.writerWithView(viewClass).writeValueAsString(value);

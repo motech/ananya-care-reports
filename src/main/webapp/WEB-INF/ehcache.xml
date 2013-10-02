@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+    <diskStore path="java.io.tmpdir" />
+
+    <cache name="trend"
+            maxElementsInMemory="1000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            overflowToDisk="true"
+            maxElementsOnDisk="100"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="0"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="chart"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           overflowToDisk="true"
+           maxElementsOnDisk="100"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="map"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           overflowToDisk="true"
+           maxElementsOnDisk="100"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="indicatorValues"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           overflowToDisk="true"
+           maxElementsOnDisk="100"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="classifications"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           overflowToDisk="true"
+           maxElementsOnDisk="100"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>

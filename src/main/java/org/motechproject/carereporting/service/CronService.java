@@ -20,8 +20,6 @@ public interface CronService {
     @PreAuthorize(HAS_ROLE_CAN_EDIT_CALCULATION)
     void updateCronTask(CronTaskEntity cronTaskEntity);
 
-    FrequencyEntity getFrequencyByName(String name);
-
     Set<FrequencyEntity> getAllFrequencies();
 
     FrequencyEntity getFrequencyById(Integer frequencyId);

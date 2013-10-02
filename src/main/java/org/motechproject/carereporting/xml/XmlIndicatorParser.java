@@ -2,6 +2,7 @@ package org.motechproject.carereporting.xml;
 
 import org.motechproject.carereporting.dao.ComparisonSymbolDao;
 import org.motechproject.carereporting.dao.ComputedFieldDao;
+import org.motechproject.carereporting.dao.DwQueryDao;
 import org.motechproject.carereporting.dao.FormDao;
 import org.motechproject.carereporting.dao.FrequencyDao;
 import org.motechproject.carereporting.dao.IndicatorClassificationDao;
@@ -107,6 +108,9 @@ public class XmlIndicatorParser {
     @Autowired
     private FormDao formDao;
 
+    @Autowired
+    private DwQueryDao dwQueryDao;
+
     private static final String ALL_ROLES_STRING = "ALL";
 
     @Transactional
@@ -141,7 +145,13 @@ public class XmlIndicatorParser {
         indicatorEntity.setAreaLevel(findAreaLevelByLevelName(indicator.getArea().getLevel().toString()));
         indicatorEntity.setClassifications(prepareIndicatorClassifications(indicator.getClassifications()));
         indicatorEntity.setDefaultFrequency(findFrequencyById(indicator.getDefaultFrequency().getValue()));
-        indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
+        DwQueryEntity num = dwQueryDao.getByField("name", getNameWithPrefix(indicatorEntity, "num", 0));
+        if (num != null) {
+            indicatorEntity.setNumerator(num);
+        } else {
+            indicatorEntity.setNumerator(prepareQuery(indicator.getNumerator()));
+            updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getNumerator(), "num", 0);
+        }
         indicatorEntity.setTrend(indicator.getTrend());
         indicatorEntity.setReports(prepareReports(indicator.getReports()));
         indicatorEntity.setAdditive(indicator.getAdditive());
@@ -150,17 +160,24 @@ public class XmlIndicatorParser {
             report.setIndicator(indicatorEntity);
         }
         if (indicator.getDenominator() != null) {
-            indicatorEntity.setDenominator(prepareQuery(indicator.getDenominator()));
+            DwQueryEntity denom = dwQueryDao.getByField("name", getNameWithPrefix(indicatorEntity, "denom", 0));
+            if (denom != null) {
+                indicatorEntity.setDenominator(denom);
+            } else {
+                indicatorEntity.setDenominator(prepareQuery(indicator.getDenominator()));
+                updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getDenominator(), "denom", 0);
+            }
         }
-        updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getNumerator(), "num", 0);
-        if (indicatorEntity.getDenominator() != null) {
-            updateIndicatorQueryNamesAndParents(indicatorEntity, indicatorEntity.getDenominator(), "denom", 0);
-        }
+
         return indicatorEntity;
     }
 
+    private String getNameWithPrefix(IndicatorEntity indicatorEntity, String prefix, Integer index) {
+        return indicatorEntity.getName() + "_" + prefix + (index != 0 ? index : "");
+    }
+
     private void updateIndicatorQueryNamesAndParents(IndicatorEntity indicatorEntity, DwQueryEntity dwQueryEntity, String prefix, Integer index) {
-        dwQueryEntity.setName(indicatorEntity.getName() + "_" + prefix + (index != 0 ? index : ""));
+        dwQueryEntity.setName(getNameWithPrefix(indicatorEntity, prefix, index));
         if (dwQueryEntity.getCombination() != null) {
             DwQueryEntity query = dwQueryEntity.getCombination().getDwQuery();
             query.setParentQuery(dwQueryEntity);

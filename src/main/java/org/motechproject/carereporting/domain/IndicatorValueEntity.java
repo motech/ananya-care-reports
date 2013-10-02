@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -138,7 +137,7 @@ public class IndicatorValueEntity extends AbstractEntity {
         return date;
     }
 
-    public String getDateString() throws ParseException {
+    public String getDateString() {
         return new SimpleDateFormat("yyyy-MM-dd").format(getDate());
     }
 

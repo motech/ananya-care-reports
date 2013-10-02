@@ -35,6 +35,7 @@
         <opencsv.version>2.0</opencsv.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <joda-time.version>2.3</joda-time.version>
+        <ehcache.version>2.6.5</ehcache.version>
 
         <modules.root.dir>${basedir}</modules.root.dir>
 
@@ -44,6 +45,7 @@
         <pmd.skip>${check.code.skip}</pmd.skip>
         <checkstyle.skip>${check.code.skip}</checkstyle.skip>
         <test.phase>Default</test.phase>
+        <test.create.skip>true</test.create.skip>
         <include.tests>false</include.tests>
 
         <test.jdbc.driverClassName>org.postgresql.Driver</test.jdbc.driverClassName>
@@ -51,6 +53,7 @@
         <test.jdbc.username>postgres</test.jdbc.username>
         <test.jdbc.password>postgres</test.jdbc.password>
         <test.database>carereportingtest</test.database>
+        <test.performance.database>performancecarereporting</test.performance.database>
 
         <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
         <jdbc.url>jdbc:postgresql://127.0.0.1:5432</jdbc.url>
@@ -84,6 +87,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -254,6 +267,12 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <scm>
@@ -457,6 +476,61 @@
                                 <exclude>**/*IT.java</exclude>
                             </excludes>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgres-driver.version}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <configuration>
+                            <driver>${test.jdbc.driverClassName}</driver>
+                            <url>${test.jdbc.url}</url>
+                            <username>${test.jdbc.username}</username>
+                            <password>${test.jdbc.password}</password>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>create-performance-database</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${test.create.skip}</skip>
+                                    <url>${test.jdbc.url}/${test.performance.database}</url>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>
+                                        DROP SCHEMA IF EXISTS ${care.reporting.schema} CASCADE;
+                                    </sqlCommand>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-tables-and-insert-initial-data</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${test.create.skip}</skip>
+                                    <url>${test.jdbc.url}/${test.performance.database}</url>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>src/main/resources/db/create_tables.sql</srcFile>
+                                        <srcFile>src/main/resources/db/insert_level_data.sql</srcFile>
+                                        <srcFile>src/main/resources/db/insert_initial_data.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

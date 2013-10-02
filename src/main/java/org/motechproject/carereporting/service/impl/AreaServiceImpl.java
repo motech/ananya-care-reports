@@ -24,6 +24,8 @@ public class AreaServiceImpl implements AreaService {
     private LevelDao levelDao;
 
     private static final Integer SUPER_USER_AREA_ID = 1;
+    private static final String MOCK_AREA_NAME = "<area_name>";
+    private static final String MOCK_AREA_LEVEL_NAME = "<area_level_name>";
 
     @Override
     @Transactional
@@ -110,5 +112,10 @@ public class AreaServiceImpl implements AreaService {
     @Transactional(readOnly = false)
     public void createNewLevel(LevelEntity level) {
         levelDao.save(level);
+    }
+
+    @Override
+    public AreaEntity prepareMockArea() {
+        return new AreaEntity(MOCK_AREA_NAME, new LevelEntity(MOCK_AREA_LEVEL_NAME, null));
     }
 }

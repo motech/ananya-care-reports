@@ -2,7 +2,6 @@ package org.dwQueryBuilder.data;
 
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class DwQuery {
@@ -11,66 +10,20 @@ public class DwQuery {
     private GroupBy groupBy;
     private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
-
-    public DwQuery() {
-        this.combineWith = new LinkedHashSet<>();
-    }
-
-    public DwQuery(Set<SelectColumn> selectColumns,
-                   String tableName) {
-        this.selectColumns = selectColumns;
-        this.tableName = tableName;
-        this.combineWith = new LinkedHashSet<>();
-    }
-
-    public DwQuery(Set<SelectColumn> selectColumns,
-                   String tableName,
-                   GroupBy groupBy) {
-        this.selectColumns = selectColumns;
-        this.tableName = tableName;
-        this.groupBy = groupBy;
-        this.combineWith = new LinkedHashSet<>();
-    }
-
-    public DwQuery(Set<SelectColumn> selectColumns,
-                   String tableName,
-                   Set<DwQueryCombination> combineWith) {
-        this.selectColumns = selectColumns;
-        this.tableName = tableName;
-        this.combineWith = combineWith;
-    }
-
-    public DwQuery(Set<SelectColumn> selectColumns,
-                   String tableName,
-                   GroupBy groupBy,
-                   WhereConditionGroup whereConditionGroup) {
-        this.selectColumns = selectColumns;
-        this.tableName = tableName;
-        this.groupBy = groupBy;
-        this.combineWith = new LinkedHashSet<>();
-        this.whereConditionGroup = whereConditionGroup;
-    }
-
-    public DwQuery(Set<SelectColumn> selectColumns,
-                   String tableName,
-                   GroupBy groupBy,
-                   Set<DwQueryCombination> combineWith) {
-        this.selectColumns = selectColumns;
-        this.tableName = tableName;
-        this.groupBy = groupBy;
-        this.combineWith = combineWith;
-    }
+    private Integer limit;
 
     public DwQuery(Set<SelectColumn> selectColumns,
                    String tableName,
                    GroupBy groupBy,
                    Set<DwQueryCombination> combineWith,
-                   WhereConditionGroup whereConditionGroup) {
+                   WhereConditionGroup whereConditionGroup,
+                   Integer limit) {
         this.selectColumns = selectColumns;
         this.tableName = tableName;
         this.groupBy = groupBy;
         this.combineWith = combineWith;
         this.whereConditionGroup = whereConditionGroup;
+        this.limit = limit;
     }
 
     public Set<SelectColumn> getSelectColumns() {
@@ -111,5 +64,13 @@ public class DwQuery {
 
     public void setWhereConditionGroup(WhereConditionGroup whereConditionGroup) {
         this.whereConditionGroup = whereConditionGroup;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

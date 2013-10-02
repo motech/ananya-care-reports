@@ -103,9 +103,9 @@
             <div class="row" ng-show="dashboard.name != 'Performance summary' && dashboard.name != 'Map report'">
                 <div class="pagination text-center">
                     <ul>
-                        <li><a ng-click="setPreviousPage()">Prev</a></li>
-                        <li ng-repeat="i in getPages()" ng:class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
-                        <li><a ng-click="setNextPage()">Next</a></li>
+                        <li><a ng-click="setPreviousPage()" ng-hide="getPageCount() < 1">Prev</a></li>
+                        <li ng-repeat="i in getPages()" ng-class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
+                        <li><a ng-click="setNextPage()" ng-hide="getPageCount() < 1">Next</a></li>
                     </ul>
                 </div>
                 <div style="margin: auto; width: 256px;" ng-show="loading == true">
@@ -179,9 +179,9 @@
                 </div>
                 <div class="pagination text-center">
                     <ul>
-                        <li><a ng-click="setPreviousPage()">Prev</a></li>
-                        <li ng-repeat="i in getPages()" ng:class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
-                        <li><a ng-click="setNextPage()">Next</a></li>
+                        <li><a ng-click="setPreviousPage()" ng-hide="getPageCount() < 1">Prev</a></li>
+                        <li ng-repeat="i in getPages()" ng-class="{true:'active', false:''}[$index==currentReportsPage]"><a ng-click="setCurrentPage($index)">{{$index+1}}</a></li>
+                        <li><a ng-click="setNextPage()" ng-hide="getPageCount() < 1">Next</a></li>
                     </ul>
                 </div>
             </div>

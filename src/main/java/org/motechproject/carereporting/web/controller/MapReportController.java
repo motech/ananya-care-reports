@@ -38,7 +38,7 @@ public class MapReportController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    @Cacheable(value = "map")
+    @Cacheable("map")
     public Map<AreaEntity, Integer> getMapReportData(@RequestParam Integer indicatorId, @RequestParam Integer frequencyId,
                                                  @RequestParam Date startDate, @RequestParam Date endDate, @RequestParam String level,
                                                  @RequestParam(required = false) String state) {

@@ -34,6 +34,8 @@ public interface IndicatorService {
 
     IndicatorEntity getIndicatorById(Integer id);
 
+    IndicatorEntity getIndicatorWithAllFields(Integer id);
+
     void createNewIndicator(IndicatorEntity indicatorEntity);
 
     IndicatorEntity createIndicatorEntityFromDto(IndicatorDto indicatorDto);
@@ -44,13 +46,10 @@ public interface IndicatorService {
     void setComputedForIndicator(IndicatorEntity indicatorEntity, Boolean value);
 
     @PreAuthorize(HAS_ROLE_CAN_EDIT_INDICATORS)
-    void updateIndicatorFromDto(IndicatorDto indicatorDto);
+    void updateIndicatorFromDto(Integer id, IndicatorDto indicatorDto);
 
     @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
     void deleteIndicator(IndicatorEntity indicatorEntity);
-
-    @PreAuthorize(HAS_ROLE_CAN_REMOVE_INDICATORS)
-    void deleteAllIndicators();
 
     Set<IndicatorTypeEntity> getAllIndicatorTypes();
 
@@ -71,13 +70,9 @@ public interface IndicatorService {
 
     Set<IndicatorValueEntity> getAllIndicatorValues();
 
-    IndicatorValueEntity getIndicatorValueById(Integer id);
-
     void createNewIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     void updateIndicatorValue(IndicatorValueEntity indicatorValueEntity);
-
-    void deleteIndicatorValue(IndicatorValueEntity indicatorValueEntity);
 
     List<IndicatorValueEntity> getIndicatorValuesForArea(Integer indicatorId, Integer areaId, Integer frequencyId,
                                                          Date startDate, Date endDate, String category);
@@ -102,12 +97,14 @@ public interface IndicatorService {
 
     Set<DwQueryEntity> getAllTopLevelDwQueries();
 
-    Set<DwQueryEntity> getAllDwQueries();
-
     DwQueryEntity getDwQueryById(Integer dwQueryId);
 
     void createNewDwQuery(DwQueryDto dwQueryDto);
 
+    void validateDwQuery(DwQueryEntity dwQueryEntity);
+
     void deleteDwQuery(DwQueryEntity dwQueryEntity);
+
+    String getDwQuerySqlString(DwQueryEntity dwQueryEntity);
 
 }

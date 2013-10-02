@@ -17,59 +17,6 @@ public class DateDiffComparison extends WhereCondition {
     /**
      * Compares two dates with the possibility to specify an offset.
      * @param value The date with which to compare the first date (in seconds).
-     */
-    public DateDiffComparison(String table1Name, String field1Name,
-                              ComparisonType operator,
-                              String table2Name, String field2Name,
-                              String value) {
-        super(table1Name, field1Name);
-
-        this.operator = operator;
-        this.selectColumn2 = new SelectColumn(table2Name, field2Name);
-        this.value = value;
-        this.column1Offset = "0";
-        this.column2Offset = "0";
-    }
-
-    /**
-     * Compares two dates with the possibility to specify an offset.
-     * @param value The date with which to compare the first date (in seconds).
-     */
-    public DateDiffComparison(SelectColumn selectColumn1,
-                              ComparisonType operator,
-                              SelectColumn selectColumn2,
-                              String value) {
-        super(selectColumn1);
-
-        this.operator = operator;
-        this.selectColumn2 = selectColumn2;
-        this.value = value;
-        this.column1Offset = "0";
-        this.column2Offset = "0";
-    }
-
-    /**
-     * Compares two dates with the possibility to specify an offset.
-     * @param value The date with which to compare the first date (in seconds).
-     * @param column1Offset First date offset (in seconds).
-     */
-    public DateDiffComparison(String table1Name, String field1Name,
-                              ComparisonType operator,
-                              String table2Name, String field2Name,
-                              String value, String column1Offset,
-                              String column2Offset) {
-        super(table1Name, field1Name);
-
-        this.operator = operator;
-        this.selectColumn2 = new SelectColumn(table2Name, field2Name);
-        this.value = value;
-        this.column1Offset = column1Offset;
-        this.column2Offset = column2Offset;
-    }
-
-    /**
-     * Compares two dates with the possibility to specify an offset.
-     * @param value The date with which to compare the first date (in seconds).
      * @param column1Offset First date offset (in seconds).
      */
     public DateDiffComparison(SelectColumn selectColumn1,

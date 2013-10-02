@@ -50,7 +50,7 @@ public class PerformanceTestHelper {
     private static final Logger LOG = Logger.getLogger("PerformanceTestHelper");
 
     private static final String INDICATORS_DIRECTORY = "indicators/";
-    private static final int CALCULATE_VALUES_FOR_PERIOD_DAYS = 30;
+    private int days;
     private int indicatorsCount;
     private int areasCount;
     private int computedFieldsCount;
@@ -91,24 +91,26 @@ public class PerformanceTestHelper {
 
     }
 
-    public PerformanceTestHelper(int indicatorsCount, int areasCount, int computedFieldsCount, int classificationsCount, int languagesCount, int usersCount) {
+    public PerformanceTestHelper(int indicatorsCount, int areasCount, int computedFieldsCount, int classificationsCount, int languagesCount, int usersCount, int days) {
         this.indicatorsCount = indicatorsCount;
         this.areasCount = areasCount;
         this.computedFieldsCount = computedFieldsCount;
         this.classificationsCount = classificationsCount;
         this.languagesCount = languagesCount;
         this.usersCount = usersCount;
+        this.days = days;
     }
 
     public void populateDatabase() throws Exception {
-
-        setupAuthentication();
-        populateDatabaseWithRandomIndicators();
-        populateDatabaseWithRandomClassifications();
-        populateDatabaseWithRandomAreas();
-        populateDatabaseWithRandomLanguages();
-        populateDatabaseWithRandomComputedFields();
-        populateDatabaseWithRandomUsers();
+        if(indicatorService.getAllIndicators().size() == 0) {
+            setupAuthentication();
+            populateDatabaseWithRandomClassifications();
+            populateDatabaseWithRandomAreas();
+            populateDatabaseWithRandomLanguages();
+            populateDatabaseWithRandomComputedFields();
+            populateDatabaseWithRandomUsers();
+            populateDatabaseWithRandomIndicators();
+        }
     }
 
     private void setupAuthentication() {
@@ -187,7 +189,7 @@ public class PerformanceTestHelper {
             String name = UUID.randomUUID().toString();
             LanguageEntity languageEntity = new LanguageEntity();
             languageEntity.setName(name);
-            languageEntity.setCode(name.substring(0, 2));
+            languageEntity.setCode(String.valueOf(i));
             try {
                 languageDao.save(languageEntity);
             } catch (CareRuntimeException e) {
@@ -235,7 +237,7 @@ public class PerformanceTestHelper {
         indicatorDao.save(indicatorEntity);
         for (AreaEntity area: areaService.getAllAreas()) {
             DateTime dateTime = new DateTime();
-            for (int i = 0; i < CALCULATE_VALUES_FOR_PERIOD_DAYS; i++) {
+            for (int i = 0; i < days; i++) {
                 addCalculatedValueForDate(indicatorEntity, area, dateTime.toDate());
                 dateTime = dateTime.plusDays(1);
             }

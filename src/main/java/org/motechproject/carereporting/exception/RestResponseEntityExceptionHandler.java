@@ -36,7 +36,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     private List<RestFormErrorResponse> getErrorsResponse(List<FieldError> errors, Locale locale) {
         List<RestFormErrorResponse> responseErrors = new ArrayList<>();
         for (FieldError error: errors) {
-            String message = null;
+            String message;
             try {
                 message = messageSource.getMessage(error, locale);
             } catch (NoSuchMessageException e) {
@@ -45,6 +45,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             responseErrors.add(new RestFormErrorResponse(error.getField(), message));
         }
         return responseErrors;
+    }
+
+    @ExceptionHandler(value = { CareQueryCreationException.class })
+    protected ResponseEntity<Object> handleQueryCreationError(CareQueryCreationException ex) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<Object>(ex, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = { CareResourceNotFoundRuntimeException.class })

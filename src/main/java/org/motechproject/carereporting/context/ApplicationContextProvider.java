@@ -13,6 +13,6 @@ public class ApplicationContextProvider implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext ctx) {
-        this.ctx = ctx;
+        ApplicationContextProvider.ctx = ctx;
     }
 }

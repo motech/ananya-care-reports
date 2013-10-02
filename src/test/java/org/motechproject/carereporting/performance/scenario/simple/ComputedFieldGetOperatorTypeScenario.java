@@ -8,7 +8,7 @@ public class ComputedFieldGetOperatorTypeScenario extends AbstractScenario {
 
     {
         addRequest(
-                get("/api/computedfield/operatortype")
+                get("/api/computedfields/operatortype")
         );
     }
 

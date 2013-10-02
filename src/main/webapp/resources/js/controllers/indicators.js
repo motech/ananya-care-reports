@@ -16,12 +16,35 @@ Array.prototype.notEmpty = function() {
     return (Object.keys(this).length > 0);
 };
 
+Array.prototype.removeFilter = function(array, filter) {
+    var temp = [].concat(this);
+
+    for (var i = this.length - 1; i >= 0; i--) {
+        for (var a = 0; a < array.length; a++) {
+            if (filter(this[i], array[a]) === true) {
+                temp.splice(i, 1);
+            }
+        }
+    }
+
+    return temp;
+};
+
 care.controller('uploadIndicatorController', function($scope) {
     $scope.title = 'indicators.uploadXml.title';
     $scope.error = typeof springError != 'undefined' ? springError : undefined;
+    $scope.errorHeader = typeof springErrorHeader != 'undefined' ? springErrorHeader : undefined;
+    $scope.errorType = typeof springErrorType != 'undefined' ? springErrorType : undefined;
+    $scope.showStackTrace = false;
+    $scope.showHideButtonLabel = $scope.msg('common.show');
+
+    $scope.toggleStackTraceDisplay = function() {
+        $scope.showStackTrace = !$scope.showStackTrace;
+        $scope.showHideButtonLabel = ($scope.showStackTrace) ? $scope.msg('common.hide') : $scope.msg('common.show');
+    }
 });
 
-care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $location) {
+care.controller('indicatorListController', function($scope, $http, $dialog, $filter, $errorService, $route) {
     $scope.title = 'indicators.title';
 
     $scope.classification = [];
@@ -36,7 +59,7 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                 }
             }
         }
-    });
+    }, true);
 
     $scope.deleteIndicator = function(indicator) {
         var btns = [{result:'yes', label: $scope.msg('common.yes'), cssClass: 'btn-primary btn'}, {result:'no', label: $scope.msg('common.no'), cssClass: 'btn-danger btn'}];
@@ -50,6 +73,11 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
                     })
                     .success(function(data, status, headers, config) {
                         $scope.fetchClassifications();
+                        for(var i = 0; i < $scope.indicators.length; i++) {
+                            if($scope.indicators[i] == indicator) {
+                                $scope.indicators.splice(i, 1);
+                            }
+                        }
                     }).error(function(response) {
                         $errorService.genericError($scope, 'indicators.list.error.delete');
                     });
@@ -64,13 +92,11 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             for(var i = 0; i < classification.length; i++) {
                 ind = ind.concat(classification[i].indicators);
             }
-            var name = $scope.msg('indicators.list.allClassifications');
             $scope.classification = [{
                 id: 0,
                 indicators: ind,
                 name: $scope.msg('indicators.list.allClassifications')
             }].concat(classification);
-            $scope.indicators = [];
             $scope.selectedClassification = 0;
         }).error(function(response) {
             $dialog.messageBox($scope.msg('common.error'), $scope.msg('classifications.error.cannotLoadClassifications'), [{label: 'Ok', cssClass: 'btn'}]).open();
@@ -82,12 +108,21 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
     $scope.recalculate = function() {
         $http.get('api/indicator/calculator/recalculate/' + $scope.selectedClassification)
             .success(function() {
-                $location.path( "/" );
+                $route.reload();
             })
             .error(function() {
-                 $dialog.messageBox("Error", $scope.msg('indicator.list.cannotRecalculate'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+                 $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotRecalculate'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
             });
+    };
 
+    $scope.recalculateSingleIndicator = function(indicator) {
+        $http.get('api/indicator/calculator/recalculate/single/' + indicator.id)
+            .success(function() {
+                $route.reload();
+            })
+            .error(function() {
+                 $dialog.messageBox("Error", $scope.msg('indicators.list.error.cannotRecalculateSingle'), [{label: $scope.msg('ok'), cssClass: 'btn'}]).open();
+            });
     };
 
     $scope.isAnyComputed = function() {
@@ -107,8 +142,13 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
 });
 
 care.controller('createIndicatorController', function($rootScope, $scope, $http, $modal,
-                                                      $dialog, $location, $errorService, $route) {
+                                                      $dialog, $location, $errorService, $route,
+                                                      $routeParams) {
     $scope.title = 'indicators.title';
+
+    $scope.editIndicatorId = $routeParams['indicatorId'];
+    $scope.isEdit = ($scope.editIndicatorId !== undefined && $scope.editIndicatorId != null);
+
     $scope.selectedClassifications = [];
     $scope.selectedOwners = [];
     $scope.selectedChart = {};
@@ -123,6 +163,15 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         additive: false
     };
 
+    $scope.fetchIndicatorData = function(indicatorId) {
+        $http.get('api/indicator/edit/' + indicatorId).success(function(indicator) {
+            $scope.editIndicator = indicator;
+            $scope.initializeInputFields();
+        }).error(function() {
+            $errorService.genericError($scope, 'indicators.form.error.cannotLoadIndicator');
+        });
+    };
+
     $scope.sortFormDataArrays = function() {
         $scope.formData.classifications.sortByField('name');
         $scope.formData.roles.sortByField('name');
@@ -135,22 +184,57 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
         $scope.listCharts = $scope.formData.reportTypes;
         $scope.formData.denominatorDwQueries = [{ id: -1, name: '---' }].concat($scope.formData.dwQueries);
 
-        $scope.indicator.level = $scope.formData.levels[0].id;
-        $scope.indicator.frequency = $scope.formData.frequencies[0].id;
-        $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
-        $scope.selectedClassification = $scope.listClassifications[0];
-        $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
+        if ($scope.isEdit === true) {
+            $scope.indicator.name = $scope.editIndicator.name;
+            $scope.indicator.level = $scope.editIndicator.areaLevel.id;
+            $scope.indicator.frequency = $scope.editIndicator.defaultFrequency.id;
+            for (var i = 0; i < $scope.editIndicator.classifications.length; i++) {
+                $scope.selectedClassifications.push($scope.editIndicator.classifications[i]);
+            }
+            $scope.listClassifications = $scope.listClassifications.removeFilter($scope.selectedClassifications, function(a, b) {
+                return a.id === b.id;
+            });
+            $scope.selectedClassification = $scope.listClassifications[0];
+            for (var i = 0; i < $scope.editIndicator.reports.length; i++) {
+                $scope.indicator.reports.push($scope.editIndicator.reports[i]);
+            }
+            $scope.listCharts = $scope.listCharts.removeFilter($scope.editIndicator.reports, function(a, b) {
+                return a.id == b.reportType.id;
+            });
+            $scope.selectedChart.reportType = $scope.listCharts[0];
+            for(var i = 0; i < $scope.editIndicator.roles.length; i++) {
+                var id = $scope.editIndicator.roles[i].id;
+                $scope.selectedOwners[id] = true;
+            }
+            $scope.indicator.additive = $scope.editIndicator.isAdditive;
+            $scope.indicator.categorized = ($scope.editIndicator.isCategorized == null) ? false : $scope.editIndicator.isCategorized;
+            $scope.indicator.trend = $scope.editIndicator.trend;
+            $scope.indicator.numerator = $scope.editIndicator.numerator.id;
+            $scope.indicator.denominator = ($scope.editIndicator.denominator == null)
+                ? $scope.formData.denominatorDwQueries[0].id : $scope.editIndicator.denominator.id;
+        } else {
+            $scope.indicator.level = $scope.formData.levels[0].id;
+            $scope.indicator.frequency = $scope.formData.frequencies[0].id;
+            $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
+            $scope.selectedClassification = $scope.listClassifications[0];
+            $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
 
-        for(var i = 0; i < $scope.formData.roles.length; i++) {
-            var id = $scope.formData.roles[i].id;
-            $scope.selectedOwners[id] = false;
+            for(var i = 0; i < $scope.formData.roles.length; i++) {
+                var id = $scope.formData.roles[i].id;
+                $scope.selectedOwners[id] = false;
+            }
         }
     };
 
     $http.get("api/indicator/creationform").success(function(indicatorCreationFormDto) {
         $scope.formData = indicatorCreationFormDto;
         $scope.sortFormDataArrays();
-        $scope.initializeInputFields();
+
+        if ($scope.isEdit === true) {
+            $scope.fetchIndicatorData($scope.editIndicatorId);
+        } else {
+            $scope.initializeInputFields();
+        }
     }).error(function() {
         $errorService.genericError($scope, 'indicators.form.error.cannotLoadFormDetails');
     });
@@ -200,7 +284,11 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
     };
 
     $scope.addNewIndicator = function() {
-        $route.reload();
+        if ($scope.isEdit === true) {
+            $location.path('/indicators/new');
+        } else {
+            $route.reload();
+        }
     };
 
     $scope.selectAllRoles = function() {
@@ -256,9 +344,13 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
                  }
             }
         }
+
+        var apiUrl = ($scope.isEdit === true) ? 'api/indicator/' + $scope.editIndicatorId : 'api/indicator';
+        var httpMethod = ($scope.isEdit === true) ? 'PUT' : 'POST';
+
         $http({
-            url: "api/indicator",
-            method: "POST",
+            url: apiUrl,
+            method: httpMethod,
             data: $scope.indicator,
             headers: { 'Content-Type': 'application/json' }
         }).success(function() {
@@ -303,9 +395,10 @@ care.controller('dateDepthController', function($scope, $http, $dialog, $locatio
         };
 });
 
-care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService) {
+care.controller('frequencyController', function($scope, $http, $dialog, $location, $errorService, $routeParams) {
     $scope.title = 'menu.calculator.frequency';
 
+    $scope.isEdit = ($routeParams['indicatorId'] !== undefined && $routeParams['indicatorId'] != null);
     $scope.time = null;
 
     $scope.fetchDailyTaskTime = function() {

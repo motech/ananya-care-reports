@@ -22,4 +22,7 @@ public class IndicatorJsonView {
     public static class CreationForm extends BaseView {
 
     }
+    public static class EditForm extends BaseView {
+
+    }
 }

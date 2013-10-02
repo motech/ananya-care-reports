@@ -154,8 +154,6 @@ public class DashboardServiceIT extends AbstractTransactionalJUnit4SpringContext
 
         DashboardEntity dashboardEntity = new DashboardEntity(
                 DASHBOARD_NAME, DASHBOARD_TAB_POSITION);
-        Set<DashboardEntity> dashboardEntities = new LinkedHashSet<>();
-        dashboardEntities.add(dashboardEntity);
 
         dashboardEntity.setReports(reportEntities);
         dashboardService.createNewDashboard(dashboardEntity);

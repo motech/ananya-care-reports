@@ -110,7 +110,7 @@ public class ComputedFieldServiceIT extends AbstractTransactionalJUnit4SpringCon
         ComputedFieldEntity computedFieldEntity = null;
         Set<ComputedFieldEntity> computedFieldEntities = computedFieldService.getAllComputedFields();
         for (ComputedFieldEntity computedField : computedFieldEntities) {
-            if (COMPUTED_FIELD_NAME == computedField.getName()) {
+            if (COMPUTED_FIELD_NAME.equals(computedField.getName())) {
                 computedFieldEntity = computedField;
                 break;
             }
