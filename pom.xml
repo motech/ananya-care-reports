@@ -280,7 +280,7 @@
       <tag>HEAD</tag>
   </scm>
     <build>
-        <finalName>ananya-care-reports</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
