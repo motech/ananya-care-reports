@@ -106,7 +106,10 @@ public abstract class IndicatorValueCalculator {
             }
         }
         for (WhereGroupEntity whereGroupChild : whereGroup.getWhereGroups()) {
-            return getEnumCategoriesForWhereGroup(whereGroupChild);
+            EnumRangeComparisonConditionEntity enumCondition = getEnumCategoriesForWhereGroup(whereGroupChild);
+            if (enumCondition != null) {
+                return enumCondition;
+            }
         }
         return null;
     }
