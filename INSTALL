@@ -1,0 +1,77 @@
+Installing CARE Reporting application
+
+This file describes how to install CARE Reporting application for use in a production environment.
+
+
+1. Software Requirements
+
+    Before you can run CARE Reporting application, you will need to download and install
+    the software packages below. Please see their respective web
+    sites for details on how to install each package.
+
+        * Java SE Runtime Environment (JRE) 7 
+            http://java.com/en/download/index.jsp 
+
+        * Apache Tomcat 7.0
+            http://tomcat.apache.org/download-70.cgi
+ 
+        * PostgreSQL 9
+            http://www.postgresql.org/download/
+
+        * Appropriate WAR file and SQL scripts for application db schema
+            https://www.assembla.com/spaces/care_reporting/wiki/Releases
+
+        * Reporting database dump made by ThoughtWorks
+            https://www.assembla.com/spaces/care_reporting/wiki/Steps_to_restore_db_dump_file
+
+2. Initializing CARE Reporting database
+    
+    2.1. Create a database called "carereporting", in Postgres Server.
+
+        create database carereporting with template=template0 encoding='UTF8';
+
+    2.2. Restore the dump file from TW reporting database. 
+
+        psql -U postgres carereporting < care_reports.sql
+
+    2.3. Create Care Reporting Dashboard schema. Execute following commands:
+
+        (create schema)
+        psql -U postgres carereporting < create_tables.sql
+
+        (fill up with data)
+        psql -U postgres carereporting < insert_level_data.sql
+        psql -U postgres carereporting < insert_initial_data.sql
+
+3. Application deployment
+
+    3.1. Setting Java and Jetty properties
+
+        Set the following environment variables:
+
+        JAVA_HOME     ... directory where the JDK or JRE is installed
+        JAVA          ... points directly to java binary
+        JAVA_OPTIONS  ... -Xms1024M -Xmx1024M -XX:MaxPermSize=256m (can be adjusted in case of memory problems)
+        CATALINA_HOME ... directory where Tomcat server is installed
+        CATALINA_OPTS ... $JAVA_OPTIONS
+
+    3.2. Installing CARE Reporting WAR
+
+        Copy WAR file you downloaded to %tomcat_root_directory%/webapps
+
+    3.3. Running CARE Reporting application
+
+        Depending on your OS, execute one of the following commands: 
+        %tomcat_root_directory%/bin/startup.sh (Linux)
+	    %tomcat_root_directory%/bin/startup.bat (Windows)
+
+        Next, visit the base URL in a browser:
+        http://localhost:8080/ananya-care-reports-{version_number}
+
+        User authentication rules are described here:
+        https://www.assembla.com/spaces/care_reporting/wiki/User_authentication_based_on_CommCare_API
+
+4. CARE Reporting documentation
+
+    Use the following link for more information about CARE Reporting application.
+    https://www.assembla.com/spaces/care_reporting/wiki
