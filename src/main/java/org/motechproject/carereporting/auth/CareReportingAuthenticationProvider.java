@@ -34,8 +34,6 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class CareReportingAuthenticationProvider implements AuthenticationProvider {
 
-    private static final Integer SUPER_USER_AREA_ID = 1;
-    private static final String SUPER_USER_NAME = "Super user";
     private static final String SUPER_USER_ROLE = "Admin";
     private static final String SUPER_USER_READ_ONLY_ROLE = "Read Only";
 
@@ -61,10 +59,6 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
         final String password = ((String) authentication.getCredentials()).trim();
         String commCareDomain = getCommcareProperty("commcare.authentication.domain");
         String commCareUrl = getCommcareProperty("commcare.authentication.url", commCareDomain);
-
-        if (isSuperUserEnabled() && isSuperUser(login, password)) {
-            return createSuperUserAuthentication();
-        }
 
         try {
             RestTemplate restTemplate = new RestTemplate(createSecureTransport(login, password));
@@ -96,30 +90,6 @@ public class CareReportingAuthenticationProvider implements AuthenticationProvid
                 getCommcareProperty("commcare.authentication.domain") +
                 "." +
                 getCommcareProperty("commcare.authentication.host");
-    }
-
-    private boolean isSuperUserEnabled() {
-        return Boolean.valueOf(getCommcareProperty("commcare.superuser.enabled"));
-    }
-
-    private boolean isSuperUser(String login, String password) {
-        String superUserLogin = getCommcareProperty("commcare.superuser.login");
-        String superUserPassword = getCommcareProperty("commcare.superuser.password");
-        return login.equals(superUserLogin) && password.equals(superUserPassword);
-    }
-
-    private Authentication createSuperUserAuthentication() {
-        UserEntity mockSuperUser = prepareMockSuperUser();
-        return new UsernamePasswordAuthenticationToken(mockSuperUser, null, mockSuperUser.getAuthorities());
-    }
-
-    private UserEntity prepareMockSuperUser() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(Integer.MAX_VALUE);
-        userEntity.setRoles(userService.getAllRoles());
-        userEntity.setArea(areaService.getAreaById(SUPER_USER_AREA_ID));
-        userEntity.setUsername(SUPER_USER_NAME);
-        return userEntity;
     }
 
     private UserEntity prepareCommCareUser(Map<String, Object> apiResult) {

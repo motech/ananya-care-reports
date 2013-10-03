@@ -37,11 +37,12 @@ This file describes how to install CARE Reporting application for use in a produ
     2.3. Create Care Reporting Dashboard schema. Execute following commands:
 
         (create schema)
-        psql -U postgres carereporting < create_tables.sql
+        psql -U postgres carereporting < db/create_tables.sql
 
         (fill up with data)
-        psql -U postgres carereporting < insert_level_data.sql
-        psql -U postgres carereporting < insert_initial_data.sql
+        psql -U postgres carereporting < db/insert_level_data.sql
+        psql -U postgres carereporting < db/insert_area_data.sql
+        psql -U postgres carereporting < db/insert_initial_data.sql
 
 3. Application deployment
 
@@ -70,6 +71,19 @@ This file describes how to install CARE Reporting application for use in a produ
 
         User authentication rules are described here:
         https://www.assembla.com/spaces/care_reporting/wiki/User_authentication_based_on_CommCare_API
+
+    3.4. Configuring CARE Reporting application
+
+         3.4.1. Using the Default Configuration
+                A default configuration is provided. If you want to quickly get
+                CARE Reporting up and running to try it out, then no configuration is
+                needed.
+
+         3.4.2. Using a Custom Configuration
+                To make changes to the default configuration, copy the files:
+                    * config/commcare.custom.properties
+                    * config/configuration.properties
+                to $HOME/.care directory.
 
 4. CARE Reporting documentation
 
