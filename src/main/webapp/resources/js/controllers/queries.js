@@ -1,5 +1,21 @@
 var care = angular.module('care');
 
+Array.prototype.getByField = function(name, value) {
+    var tempArray = [];
+
+    for (var i = 0; i < this.length; i++) {
+        if (!this.hasOwnProperty(i)) {
+            continue;
+        }
+
+        if (this[i][name] == value) {
+            tempArray.push(this[i]);
+        }
+    }
+
+    return tempArray;
+};
+
 care.controller('whereConditionDialogController', function($rootScope, $scope, $http, $errorService, dialog) {
     $scope.mainScope = $rootScope.mainScope;
     delete $rootScope.mainScope;
@@ -11,7 +27,8 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
         { name: 'enumRange', code: 'queries.whereConditionDialog.conditionType.enumRange' },
         { name: 'value', code: 'queries.whereConditionDialog.conditionType.value' },
         { name: 'field', code: 'queries.whereConditionDialog.conditionType.field' },
-        { name: 'period', code: 'queries.whereConditionDialog.conditionType.period' }
+        { name: 'period', code: 'queries.whereConditionDialog.conditionType.period' },
+        { name: 'calculationEndDate', code: 'queries.whereConditionDialog.conditionType.calculationEndDate' }
     ];
 
     $scope.formData = {
@@ -22,12 +39,12 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
         allComputedFields2: [],
         operators: [],
         allOperators: [
-            { name: '<' },
-            { name: '<=' },
-            { name: '=' },
-            { name: '<>' },
-            { name: '>' },
-            { name: '>=' }
+            '<',
+            '<=',
+            '=',
+            '<>',
+            '>',
+            '>='
         ],
         newEnumRangeValue: null
     };
@@ -94,7 +111,7 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
 
     $scope.filterComputedFieldsByComparisonType = function(index, computedFields) {
         if ($scope.condition.type == 'dateDiff' || $scope.condition.type == 'dateRange' || $scope.condition.type == 'dateValue'
-            || $scope.condition.type == 'period') {
+            || $scope.condition.type == 'period' || $scope.condition.type == 'calculationEndDate') {
             return $scope.filterComputedFieldsByTypes(index, [ 'Date' ]);
         } else {
             return computedFields;
@@ -104,6 +121,14 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
     $scope.fetchComputedFields = function(form, index) {
         $http.get('api/forms/' + form.id + '/computedfields/all').success(function(computedFields) {
             computedFields.sortByField('name');
+
+            for (var i = 0; i < computedFields.length; i++) {
+                if (computedFields[i].name == '*') {
+                    computedFields.splice(i, 1);
+                    break;
+                }
+            }
+
             $scope.formData['allComputedFields' + index] = [].concat(computedFields);
             $scope.formData['computedFields' + index] = $scope.filterComputedFieldsByComparisonType(index, computedFields);
             var computedField = $scope.formData['computedFields' + index][0];
@@ -169,6 +194,11 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
     };
 
     $scope.save = function() {
+        $scope.condition.field1.form = $scope.condition.form1;
+        if ($scope.condition.field2 != null) {
+            $scope.condition.field2.form = $scope.condition.form2;
+        }
+
         $scope.close($scope.condition);
     };
 
@@ -177,9 +207,13 @@ care.controller('whereConditionDialogController', function($rootScope, $scope, $
     };
 });
 
-care.controller('createDwQueryController', function($rootScope, $scope, $http, $modal,
-                                                    $dialog, $location, $errorService, $route, $timeout) {
+care.controller('createDwQueryController', function($rootScope, $scope, $http, $modal, $dialog, $location,
+                                                    $errorService, $route, $timeout, $routeParams) {
     $scope.title = 'queries.new.title';
+
+    $scope.editQueryId = $routeParams['queryId'];
+    $scope.isEdit = ($scope.editQueryId !== undefined && $scope.editQueryId !== null);
+
     $scope.formData = {
         queryName: null,
         dimension: null,
@@ -198,41 +232,98 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             { name: $scope.msg('queries.new.function.StandardDeviation'), code: 'StandardDeviation' }
         ],
         operators: [
-            { name: '---' },
-            { name: '<' },
-            { name: '<=' },
-            { name: '=' },
-            { name: '<>' },
-            { name: '>' },
-            { name: '>=' }
-        ],
-    }
+            '---',
+            '<',
+            '<=',
+            '<>',
+            '>',
+            '>='
+        ]
+    };
+    $scope.listQueryJoinTypes = [
+        { code: 'Union', name: $scope.msg('queries.new.joinType.union') },
+        { code: 'UnionAll', name: $scope.msg('queries.new.joinType.unionAll') },
+        { code: 'Intersect', name: $scope.msg('queries.new.joinType.intersect') },
+        { code: 'Join', name: $scope.msg('queries.new.joinType.join') },
+        { code: 'Except', name: $scope.msg('queries.new.joinType.except') }
+    ];
+    $scope.queryForms = [];
 
     $scope.sortFormData = function(formData) {
         formData.forms.sortByField('displayName');
     };
 
-    $scope.initQueryForms = function() {
-        $scope.listQueryJoinTypes = [
-            { code: 'Union', name: $scope.msg('queries.new.joinType.union') },
-            { code: 'UnionAll', name: $scope.msg('queries.new.joinType.unionAll') },
-            { code: 'Intersect', name: $scope.msg('queries.new.joinType.intersect') },
-            { code: 'Join', name: $scope.msg('queries.new.joinType.join') },
-            { code: 'Except', name: $scope.msg('queries.new.joinType.except') }
-        ];
-        $scope.queryForms = [];
-        $scope.addQueryForm();
-        $scope.selectedJoinType = $scope.listQueryJoinTypes[0];
-    };
+    if ($scope.isEdit === true) {
+        $scope.copyQueryEntityToQueryForm = function(queryForm, query) {
+            queryForm.dimension = $scope.formData.dimensionForms.getByField('tableName', query.dimension)[0];
+            queryForm.whereGroup = query.whereGroup;
+
+            if (query.joinType != null) {
+                queryForm.joinType = $scope.listQueryJoinTypes.getByField('code', query.joinType)[0];
+                queryForm.key1 = query.key1;
+                queryForm.key2 = query.key2;
+            }
+
+            for (var i = 0; i < query.selectColumns.length; i++) {
+                var column = query.selectColumns[i];
+                var selectColumn = {
+                    form: (column.field == null) ? null
+                        : $scope.formData.forms.getByField('id', column.field.form.id)[0],
+                    field: (column.field == null) ? { name: '*' } : column.field,
+                    function: (column.function == null) ? null : $scope.formData.functions.getByField('code', column.function)[0],
+                    nullValue: column.nullValue,
+                    nullValueText: (column.nullValue == null || column.nullValue == '')
+                        ? null : ', if null then ' + column.nullValue
+                };
+                console.log(selectColumn);
+                queryForm.selectColumns.push(selectColumn);
+            }
+
+            if (query.groupBy != null) {
+                queryForm.editGroupBy = {
+                    field: query.groupBy.computedField,
+                    having: (query.groupBy.having == null) ? null : {
+                        function: query.groupBy.having.function,
+                        operator: query.groupBy.having.operator,
+                        value: parseInt(query.groupBy.having.value)
+                    }
+                };
+            }
+        };
+
+        $scope.extractQueriesIntoArray = function(array, query) {
+            var queryForm = $scope.addQueryForm();
+            $scope.copyQueryEntityToQueryForm(queryForm, query);
+
+            if (query.combineWith != null) {
+                $scope.extractQueriesIntoArray(array, query.combineWith);
+            }
+        };
+
+        $scope.fetchQuery = function() {
+            $http.get('api/indicator/queries/' + $scope.editQueryId).success(function(query) {
+                $scope.formData.queryName = query.name;
+                $scope.formData.originalQueryName = query.name;
+                $scope.extractQueriesIntoArray($scope.formData.queryForms, query);
+            }).error(function() {
+                $errorService.genericError($scope, 'queries.edit.error.cannotLoadQuery');
+            });
+        };
+
+        $scope.fetchQuery();
+    }
 
     $scope.fetchFormData = function() {
         $http.get('api/indicator/queries/creationform').success(function(formData) {
             $scope.sortFormData(formData);
             $scope.formData.dimensionForms = [].concat(formData.forms);
-            $scope.formData.forms = [{ tableName: null, displayName: '---' }].concat(formData.forms);
+            $scope.formData.forms = $scope.formData.forms.concat(formData.forms);
+            $scope.selectedJoinType = $scope.listQueryJoinTypes[0];
 
-            $scope.initQueryForms();
-            $scope.queryForms[0].form = $scope.formData.forms[0];
+            if ($scope.isEdit === false) {
+                $scope.addQueryForm();
+                $scope.queryForms[0].form = $scope.formData.forms[0];
+            }
         }).error(function() {
             $errorService.genericError($scope, 'queries.error.cannotLoadFormList');
         });
@@ -240,14 +331,16 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
     $scope.fetchFormData();
 
     $scope.assignComputedFieldList = function(queryForm, computedFields) {
-        queryForm.listComputedFields = [{ name: '*' }];
-
-        if (computedFields === undefined || computedFields == null) {
+        if (computedFields === undefined) {
+            return;
+        }
+        if (computedFields == null) {
+            queryForm.listComputedFields = [{ name: '*' }];
             return;
         }
 
         computedFields.sortByField('name');
-        queryForm.listComputedFields = queryForm.listComputedFields.concat(computedFields);
+        queryForm.listComputedFields = computedFields;
         queryForm.selectColumn.field = queryForm.listComputedFields[0];
     };
 
@@ -256,9 +349,33 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             computedFields.sortByField('name');
             queryForm.listAllComputedFields = computedFields;
             queryForm.listGroupByComputedFields = [{ name: '---' }].concat(computedFields);
-            queryForm.groupBy.field = queryForm.listGroupByComputedFields[0];
-            queryForm.groupBy.having.function = queryForm.groupByFunctions[0];
-            queryForm.groupBy.having.operator = $scope.formData.operators[0].name;
+
+            for (var i = 0; i < queryForm.listGroupByComputedFields.length; i++) {
+                if (queryForm.listGroupByComputedFields[i].name == '*') {
+                    queryForm.listGroupByComputedFields.splice(i, 1);
+                    break;
+                }
+            }
+
+            if (queryForm.editGroupBy === undefined) {
+                queryForm.groupBy.field = queryForm.listGroupByComputedFields[0];
+                queryForm.groupBy.having.function = queryForm.groupByFunctions[0];
+                queryForm.groupBy.having.operator = $scope.formData.operators[0];
+            } else {
+                queryForm.groupBy.field = queryForm.listGroupByComputedFields.getByField('id', queryForm.editGroupBy.field.id)[0];
+
+                if (queryForm.editGroupBy.having == null) {
+                    delete queryForm.editGroupBy;
+                } else {
+                    queryForm.groupBy.having.function = queryForm.groupByFunctions.getByField('code', queryForm.editGroupBy.having.function)[0];
+                    queryForm.groupBy.having.operator = queryForm.editGroupBy.having.operator;
+                    queryForm.groupBy.having.value = queryForm.editGroupBy.having.value;
+                }
+
+                $timeout(function() {
+                    delete queryForm.editGroupBy;
+                });
+            }
         }).error(function() {
             $errorService.genericError($scope, 'queries.error.cannotLoadComputedFieldList');
         });
@@ -300,7 +417,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
     $scope.addQueryForm = function() {
         var queryForm = {
             dimension: $scope.formData.dimensionForms[0],
-            joinType: $scope.selectedJoinType,
+            joinType: ($scope.queryForms.length > 0) ? $scope.selectedJoinType : null,
             key1: null,
             key2: null,
             whereGroup: null,
@@ -363,27 +480,49 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         });
 
         $scope.$watch('queryForms[' + ($scope.queryForms.length - 1) + '].selectColumn.field', function(newValue, oldValue) {
+            var queryForm = $scope.queryForms[$scope.queryForms.length - 1];
+
             if (newValue !== undefined && newValue != null) {
-                var functions = $scope.filterFunctionsByType(newValue.type);
-                $scope.queryForms[$scope.queryForms.length - 1].functions = functions;
-                $scope.queryForms[$scope.queryForms.length - 1].selectColumn.function = functions[0];
+                if (newValue.name == '*') {
+                    queryForm.functions = [ $scope.formData.functions[0], $scope.formData.functions[2] ];
+                    queryForm.selectColumn.function = $scope.formData.functions[0];
+                } else {
+                    var functions = $scope.filterFunctionsByType(newValue.type);
+                    queryForm.functions = functions;
+                    queryForm.selectColumn.function = functions[0];
+                }
+
             }
         });
 
         $scope.$watch('queryForms[' + ($scope.queryForms.length - 1) + '].groupBy.having.function', function(newValue, oldValue) {
-            $scope.queryForms[$scope.queryForms.length - 1].groupBy.having.value = null;
+            var queryForm = $scope.queryForms[$scope.queryForms.length - 1];
+
+            if (queryForm.editGroupBy !== undefined && queryForm.editGroupBy.having != null) {
+                queryForm.groupBy.having.operator = queryForm.editGroupBy.having.operator;
+                return;
+            }
+
             if (newValue == null || newValue.code == 'none') {
-                $scope.queryForms[$scope.queryForms.length - 1].groupBy.having.operator = '---';
+                queryForm.groupBy.having.operator = '---';
             }
         });
 
         $scope.$watch('queryForms[' + ($scope.queryForms.length - 1) + '].groupBy.having.operator', function(newValue, oldValue) {
+            var queryForm = $scope.queryForms[$scope.queryForms.length - 1];
+
+            if (queryForm.editGroupBy !== undefined && queryForm.editGroupBy.having != null) {
+                queryForm.groupBy.having.value = queryForm.editGroupBy.having.value;
+                return;
+            }
+
             if (newValue == undefined || newValue == null || newValue == '---') {
-                $scope.queryForms[$scope.queryForms.length - 1].groupBy.having.value = null;
+                queryForm.groupBy.having.value = null;
             }
         });
 
         queryForm.selectColumn.form = $scope.formData.forms[0];
+        return queryForm;
     };
 
     $scope.removeQuery = function(index) {
@@ -394,11 +533,14 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         if ($scope.formData.queryName == null || $scope.formData.queryName.length <= 0) {
             return false;
         }
+
         for (var i = 0; i < $scope.queryForms.length; i++) {
             if ($scope.queryForms[i].selectColumns == null || $scope.queryForms[i].selectColumns.length <= 0) {
                 return false;
             }
-            if (i > 0 && ($scope.queryForms[i].key1 == null || $scope.queryForms[i].key2 == null)) {
+
+            if (i > 0 && ($scope.queryForms[i].joinType.code == 'Join'
+                    && ($scope.queryForms[i].key1 == null || $scope.queryForms[i].key2 == null))) {
                 return false;
             }
         }
@@ -406,52 +548,77 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         return true;
     };
 
-    $scope.save = function() {
-        var cleanSelectColumns = function(selectColumns) {
+    $scope.save = function(update, copy) {
+        var convertSelectColumnsToDto = function(selectColumns) {
+            var newColumns = [];
+
             for (var i = 0; i < selectColumns.length; i++) {
-                selectColumns[i].field = (selectColumns[i].field.id === undefined) ? null : selectColumns[i].field.id;
-                delete selectColumns[i].form;
-                selectColumns[i].function = (selectColumns[i].function == null) ? null : selectColumns[i].function.code;
-                delete selectColumns[i].nullValueText;
+                var column = selectColumns[i];
+                newColumns.push({
+                    field: column.field,
+                    function: (column.function == null) ? null : column.function.code,
+                    nullValue: column.nullValue
+                });
             }
+
+            return newColumns;
         };
-        var cleanWhereGroup = function(whereGroup) {
-            delete whereGroup.uniqueId;
-            delete whereGroup.hierarchyLevel;
-            delete whereGroup.parentGroup;
 
-            for (var i = 0; i < whereGroup.groups.length; i++) {
-                cleanWhereGroup(whereGroup.groups[i]);
+        var convertConditionsToDto = function(conditions) {
+            var newConditions = [];
+
+            for (var i = 0; i < conditions.length; i++) {
+                var condition = conditions[i];
+                if (condition == null) {
+                    continue;
+                }
+
+                newConditions.push({
+                    field1: condition.field1,
+                    field2: condition.field2,
+                    offset1: condition.offset1,
+                    offset2: condition.offset2,
+                    date1: condition.date1,
+                    date2: condition.date2,
+                    type: condition.type,
+                    operator: condition.operator,
+                    value: condition.value,
+                    values: condition.values
+                });
             }
 
-            for (var i = 0; i < whereGroup.conditions.length; i++) {
-                if (whereGroup.conditions[i].field1 != null) {
-                    whereGroup.conditions[i].field1 = whereGroup.conditions[i].field1.id;
+            return newConditions;
+        };
+
+        var convertWhereGroupToDto = function(whereGroup) {
+            var group = {
+                conditions: (whereGroup.conditions == null) ? null : convertConditionsToDto(whereGroup.conditions),
+                groups: [],
+                operator: whereGroup.operator
+            };
+
+            if (whereGroup.groups != null) {
+                for (var i = 0; i < whereGroup.groups.length; i++) {
+                    group.groups.push(convertWhereGroupToDto(whereGroup.groups[i]));
                 }
-                if (whereGroup.conditions[i].field2 != null) {
-                    whereGroup.conditions[i].field2 = whereGroup.conditions[i].field2.id;
-                }
-            
-                delete whereGroup.conditions[i].displayName;
-                delete whereGroup.conditions[i].parentGroup;
-                delete whereGroup.conditions[i].uniqueId;
             }
+
+            return group;
         };
 
         var constructDwQuery = function(queryForm) {
-            cleanSelectColumns(queryForm.selectColumns);
-            cleanWhereGroup(queryForm.whereGroup);
+            console.log(queryForm);
 
             return {
                 name: $scope.formData.queryName,
                 dimension: queryForm.dimension.tableName,
-                selectColumns: queryForm.selectColumns,
+                selectColumns: convertSelectColumnsToDto(queryForm.selectColumns),
                 joinType: null,
                 key1: null,
                 key2: null,
                 combineWith: null,
                 groupBy: null,
-                whereGroup: queryForm.whereGroup,
+                whereGroup: (queryForm.whereGroup == null) ? null : convertWhereGroupToDto(queryForm.whereGroup),
                 addCombineWith: function(joinType, key1, key2, dwQuery) {
                     this.key1 = key1;
                     this.key2 = key2;
@@ -464,9 +631,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
                     }
 
                     this.groupBy = {
-                        tableName: this.dimension,
-                        fieldName: groupBy.field.name,
-                        fieldId: groupBy.field.id,
+                        computedField: groupBy.field,
                         having: null
                     };
 
@@ -484,6 +649,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         var lastDwQuery = null;
         for (var i = $scope.queryForms.length - 1; i >= 0; i--) {
             var dwQuery = constructDwQuery($scope.queryForms[i]);
+
             if (i > 0) {
                 dwQuery.name += '_' + i;
             }
@@ -499,16 +665,21 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             lastDwQuery = dwQuery;
         }
 
+        console.log(lastDwQuery);
+
+        var url = (update === true) ? 'api/indicator/queries/' + $scope.editQueryId : 'api/indicator/queries/new';
+        url = (copy === true) ? url + '?clonedQueryId=' + $scope.editQueryId : url;
+        var httpMethod = (update === true) ? 'PUT' : 'POST';
+
         $http({
-            url: 'api/indicator/queries/new',
-            method: "POST",
+            url: url,
+            method: httpMethod,
             data: lastDwQuery,
             headers: { 'Content-Type': 'application/json' }
         }).success(function(response) {
             $location.path('/indicators/new');
         }).error(function(response) {
             $errorService.stackTraceDialog($scope, response);
-            $route.reload();
         });
     };
 });
@@ -543,6 +714,10 @@ care.controller('queryListController', function($rootScope, $scope, $http, $loca
         }).error(function() {
             $errorService.genericError($scope, 'queries.error.cannotLoadQuerySql');
         });
+    };
+
+    $scope.editQuery = function(index) {
+        $location.path('/indicators/queries/edit/' + $scope.queries[index].id);
     };
 
     $scope.deleteQuery = function(index) {

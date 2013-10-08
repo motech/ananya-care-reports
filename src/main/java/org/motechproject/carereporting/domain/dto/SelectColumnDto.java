@@ -1,28 +1,35 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 public class SelectColumnDto {
 
-    private Integer field;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private ComputedFieldEntity field;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String function;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String nullValue;
 
     public SelectColumnDto() {
 
     }
 
-    public SelectColumnDto(Integer computedFieldId, String function, String nullValue) {
-        this.field = computedFieldId;
+    public SelectColumnDto(ComputedFieldEntity field, String function, String nullValue) {
+        this.field = field;
         this.function = function;
         this.nullValue = nullValue;
     }
 
-    public Integer getField() {
+    public ComputedFieldEntity getField() {
         return field;
     }
 
-    public void setField(Integer field) {
+    public void setField(ComputedFieldEntity field) {
         this.field = field;
     }
 

@@ -15,19 +15,19 @@
                 <div class="row" ng-repeat="form in queryForms">
                     <div class="alert alert-info alert-tall" ng-show="form.joinType != null">
                         <div class="pull-left alert-tall-label">{{form.joinType.name}}</div>
-                        <div class="pull-right">
+                        <div class="pull-right" ng-show="form.joinType.code == 'Join'">
                             <div class="span6">
                                 <label for="selectKey1">{{msg('queries.new.label.key1')}}:</label>
                                 <div class="input-append">
                                     <select id="selectKey1" ng-model="form.key1" ng-options="item.name as item.name for item in queryForms[$index - 1].listAllComputedFields"></select>
-                                    <tip msg="queries.new.tip.key1" />
+                                    <tip msg="queries.new.tip.key1" placement="top" />
                                 </div>
                             </div>
                             <div class="span6">
                                 <label for="selectKey2">{{msg('queries.new.label.key2')}}:</label>
                                 <div class="input-append">
                                     <select id="selectKey2" ng-model="form.key2" ng-options="item.name as item.name for item in form.listAllComputedFields"></select>
-                                    <tip msg="queries.new.tip.key2" />
+                                    <tip msg="queries.new.tip.key2" placement="top" />
                                 </div>
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                                     <label for="groupByOperator_{{$index}}" class="control-label">{{msg('queries.new.label.operator')}}:</label>
                                     <div class="control-group">
                                         <div class="input-append">
-                                            <select id="groupByOperator_{{$index}}" ng-model="form.groupBy.having.operator" ng-options="item.name as item.name for item in formData.operators" ng-disabled="form.groupBy.field == null || form.groupBy.field.name == '---' || form.groupBy.having.function == null || form.groupBy.having.function.code == 'none'"></select>
+                                            <select id="groupByOperator_{{$index}}" ng-model="form.groupBy.having.operator" ng-options="item as item for item in formData.operators" ng-disabled="form.groupBy.field == null || form.groupBy.field.name == '---' || form.groupBy.having.function == null || form.groupBy.having.function.code == 'none'"></select>
                                             <tip msg="queries.new.tip.operatorG" />
                                         </div>
                                     </div>
@@ -182,9 +182,18 @@
                             <select id="selectJoinType" class="input-block-level" ng-model="selectedJoinType" ng-options="item as item.name for item in listQueryJoinTypes"></select>
                         </div>
                     </div>
-                    <div class="row-fluid">
-                        <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
-                        <button type="button" class="btn btn-primary pull-right" ng-click="save()" ng-disabled="!isFormValid()">{{msg('common.save')}}</button>
+                    <div class="row-fluid" ng-switch="isEdit">
+                        <div ng-switch-when="true">
+                            <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
+                            <div class="pull-right btn-group">
+                                <button type="button" class="btn" ng-click="save(false, true)" ng-disabled="!isFormValid() || formData.queryName == formData.originalQueryName">{{msg('queries.edit.label.duplicate')}}</button>
+                                <button type="button" class="btn btn-primary" ng-click="save(true, false)" ng-disabled="!isFormValid()">{{msg('common.update')}}</button>
+                            </div>
+                        </div>
+                        <div ng-switch-when="false">
+                            <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-click="save(false, false)" ng-disabled="!isFormValid()">{{msg('common.save')}}</button>
+                        </div>
                     </div>
                 </div>
             </form>

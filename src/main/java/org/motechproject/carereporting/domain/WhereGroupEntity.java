@@ -1,5 +1,8 @@
 package org.motechproject.carereporting.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -19,20 +22,23 @@ import java.util.Set;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "where_group_id"))
 })
-public class WhereGroupEntity extends AbstractEntity {
+public class WhereGroupEntity extends AbstractEntity implements Cloneable {
 
     @Column(name = "operator")
+    @JsonView({ QueryJsonView.EditForm.class })
     private String operator;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "where_group_where_group", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "where_group2_id") })
     @OrderBy
+    @JsonView({ QueryJsonView.EditForm.class })
     private Set<WhereGroupEntity> whereGroups;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "where_group_condition", joinColumns = { @JoinColumn(name = "where_group_id") },
             inverseJoinColumns = { @JoinColumn(name = "condition_id") })
+    @JsonView({ QueryJsonView.EditForm.class })
     private Set<ConditionEntity> conditions;
 
     // don't change
@@ -84,5 +90,27 @@ public class WhereGroupEntity extends AbstractEntity {
 
     public void setConditions(Set<ConditionEntity> conditions) {
         this.conditions = conditions;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        WhereGroupEntity whereGroupEntity = new WhereGroupEntity();
+
+        whereGroupEntity.setOperator(this.getOperator());
+        if (this.getWhereGroups() != null) {
+            whereGroupEntity.setWhereGroups(new LinkedHashSet<WhereGroupEntity>());
+            for (WhereGroupEntity group : this.getWhereGroups()) {
+                whereGroupEntity.getWhereGroups().add((WhereGroupEntity) group.clone());
+            }
+        }
+
+        if (this.getConditions() != null) {
+            whereGroupEntity.setConditions(new LinkedHashSet<ConditionEntity>());
+            for (ConditionEntity condition : this.getConditions()) {
+                whereGroupEntity.getConditions().add((ConditionEntity) condition.clone());
+            }
+        }
+
+        return whereGroupEntity;
     }
 }

@@ -99,9 +99,19 @@ public interface IndicatorService {
 
     DwQueryEntity getDwQueryById(Integer dwQueryId);
 
+    DwQueryEntity getDwQueryByName(String dwQueryName);
+
+    DwQueryDto getDwQueryDtoForQuery(Integer dwQueryId);
+
     void createNewDwQuery(DwQueryDto dwQueryDto);
 
+    void deepCopyDwQueryAndSave(String dwQueryName, DwQueryEntity clonedEntity);
+
     void validateDwQuery(DwQueryEntity dwQueryEntity);
+
+    void updateDwQuery(DwQueryEntity dwQueryEntity);
+
+    void updateDwQueryFromDto(DwQueryDto dwQueryDto, Integer queryId);
 
     void deleteDwQuery(DwQueryEntity dwQueryEntity);
 

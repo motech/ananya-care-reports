@@ -102,6 +102,14 @@ public class IndicatorController extends BaseController {
         return this.writeAsString(BaseView.class, indicatorService.getAllTopLevelDwQueries());
     }
 
+    @RequestMapping(value = "/queries/{dwQueryId}", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String getDwQueryDetails(@PathVariable Integer dwQueryId) {
+        return this.writeAsString(QueryJsonView.EditForm.class, indicatorService.getDwQueryDtoForQuery(dwQueryId));
+    }
+
     @RequestMapping(value = "/queries/{dwQueryId}", method = RequestMethod.DELETE,
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
@@ -124,12 +132,31 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewDwQuery(@RequestBody @Valid DwQueryDto dwQueryDto, BindingResult bindingResult) {
+    public void createNewDwQuery(@RequestBody @Valid DwQueryDto dwQueryDto, BindingResult bindingResult,
+                                 @RequestParam(value = "clonedQueryId", required = false) Integer clonedQueryId) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        indicatorService.createNewDwQuery(dwQueryDto);
+        if (clonedQueryId == null || clonedQueryId <= 0) {
+            indicatorService.createNewDwQuery(dwQueryDto);
+        } else {
+            indicatorService.deepCopyDwQueryAndSave(dwQueryDto.getName(), indicatorService.getDwQueryById(clonedQueryId));
+        }
+    }
+
+    @RequestMapping(value = "/queries/{queryId}", method = RequestMethod.PUT,
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateDwQuery(@PathVariable Integer queryId, @RequestBody @Valid DwQueryDto dwQueryDto,
+                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CareApiRuntimeException(bindingResult.getFieldErrors());
+        }
+
+        indicatorService.updateDwQueryFromDto(dwQueryDto, queryId);
     }
 
     @RequestMapping(value = "/filter/{classificationId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })

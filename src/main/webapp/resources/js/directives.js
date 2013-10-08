@@ -6,19 +6,22 @@
     var widgetModule = angular.module('care');
 
     widgetModule.directive('tip', function ($timeout) {
-       return {
-           restrict: 'E',
-           link: function (scope, element, attrs) {
-           $timeout(function() {
+        return {
+            restrict: 'E',
+            link: function (scope, element, attrs) {
+            $timeout(function() {
+                    var placement = (attrs['placement'] === undefined || attrs['placement'] === null)
+                        ? 'right' : attrs['placement'];
+
                     element.append(angular.element('<span class="add-on btn"><i class="icon-question-sign"></i></span>'))
                     .popover({
-                        placement: 'right',
+                        placement: placement,
                         trigger: 'click',
                         content:  scope.msg(attrs.msg)
                     });
                 });
-           }
-       };
+            }
+        };
     });
 
         widgetModule.directive('indicatorsTrend', function () {
@@ -213,91 +216,85 @@
                                 uniqueId: new Date().getTime(),
                                 parentGroup: parentGroup,
                                 type: null,
-                                tableName1: null,
                                 field1: null,
-                                tableName2: null,
                                 field2: null,
                                 operator: null,
                                 value: null,
                                 values: [],
-                                fieldOffset1: null,
-                                fieldOffset2: null,
+                                offset1: null,
+                                offset2: null,
                                 date1: null,
                                 date2: null,
-                                createValueComparison: function(tableName, field, operator, value) {
+                                createValueComparison: function(field1, operator, value) {
                                     this.type = 'value';
-                                    this.tableName1 = tableName;
-                                    this.field1 = field;
-                                    this.operator = operator.name;
+                                    this.field1 = field1;
+                                    this.operator = operator;
                                     this.value = value;
-                                    this.displayName = constructFieldName(tableName, field.name) + ' ' + operator.name
+                                    this.displayName = constructFieldName(field1.form.tableName, field1.name) + ' ' + operator
                                                        + ' ' + constructValue(value);
                                 },
-                                createDateDiffComparison: function(tableName1, field1, fieldOffset1, tableName2,
-                                                                    field2, fieldOffset2, operator, value) {
+                                createDateDiffComparison: function(field1, offset1, field2, offset2, operator, value) {
                                     this.type = 'dateDiff';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
-                                    this.fieldOffset1 = fieldOffset1;
-                                    this.tableName2 = tableName2;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
                                     this.field2 = field2;
-                                    this.fieldOffset2 = fieldOffset2;
-                                    this.operator = operator.name;
+                                    this.offset2 = (offset2 == null) ? 0 : offset2;
+                                    this.operator = operator;
                                     this.value = value;
-                                    this.displayName = constructFieldNameWithOffset(tableName1, field1.name, fieldOffset1)
-                                                       + ' - ' + constructFieldNameWithOffset(tableName2, field2.name, fieldOffset2)
-                                                       + ' ' + operator.name + ' ' + constructValue(value);
+                                    this.displayName = constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1)
+                                                       + ' - ' + constructFieldNameWithOffset(field2.form.tableName, field2.name, offset2)
+                                                       + ' ' + operator + ' ' + constructValue(value);
                                 },
-                                createDateRangeComparison: function(tableName1, field1, fieldOffset1, date1, date2) {
+                                createDateRangeComparison: function(field1, offset1, date1, date2) {
                                     this.type = 'dateRange';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
-                                    this.fieldOffset1 = fieldOffset1;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
                                     this.date1 = date1;
                                     this.date2 = date2;
-                                    this.displayName = constructFieldNameWithOffset(tableName1, field1.name, fieldOffset1)
+                                    this.displayName = constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1)
                                                        + ' between ' + constructValue(date1) + ' and ' + constructValue(date2);
                                 },
-                                createDateValueComparison: function(tableName1, field1, fieldOffset1, operator, value) {
+                                createDateValueComparison: function(field1, offset1, operator, value) {
                                     this.type = 'dateValue';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
-                                    this.fieldOffset1 = fieldOffset1;
-                                    this.operator = operator.name;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
+                                    this.operator = operator;
                                     this.value = value;
-                                    this.displayName = constructFieldNameWithOffset(tableName1, field1.name, fieldOffset1)
-                                                       + ' ' + operator.name + ' ' + constructValue(value);
+                                    this.displayName = constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1)
+                                                       + ' ' + operator + ' ' + constructValue(value);
                                 },
-                                createEnumRangeComparison: function(tableName1, field1, values) {
+                                createEnumRangeComparison: function(field1, values) {
                                     this.type = 'enumRange';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
                                     this.values = values;
 
-                                    this.displayName = constructFieldName(tableName1, field1.name)
+                                    this.displayName = constructFieldName(field1.form.tableName, field1.name)
                                                        + ' in (' + values.join(', ') + ')';
                                 },
-                                createFieldComparison: function(tableName1, field1, fieldOffset1, tableName2,
-                                                                 field2, fieldOffset2, operator) {
+                                createFieldComparison: function(field1, offset1, field2, offset2, operator) {
                                     this.type = 'field';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
-                                    this.fieldOffset1 = fieldOffset1;
-                                    this.operator = operator.name;
-                                    this.tableName2 = tableName2;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
+                                    this.operator = operator;
                                     this.field2 = field2;
-                                    this.fieldOffset2 = fieldOffset2;
-                                    this.displayName = constructFieldNameWithOffset(tableName1, field1.name, fieldOffset1)
-                                                       + ' ' + operator.name + ' '
-                                                       + constructFieldNameWithOffset(tableName2, field2.name, fieldOffset2)
+                                    this.offset2 = (offset2 == null) ? 0 : offset2;
+                                    this.displayName = constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1)
+                                                       + ' ' + operator + ' '
+                                                       + constructFieldNameWithOffset(field2.form.tableName, field2.name, offset2)
                                 },
-                                createPeriodCondition: function(tableName1, field1, fieldOffset1) {
+                                createPeriodCondition: function(field1, offset1) {
                                     this.type = 'period';
-                                    this.tableName1 = tableName1;
                                     this.field1 = field1;
-                                    this.fieldOffset1 = fieldOffset1;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
                                     this.displayName = scope.msg('queries.new.label.periodCondition') + ': '
-                                                       + constructFieldNameWithOffset(tableName1, field1.name, fieldOffset1);
+                                                       + constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1);
+                                },
+                                createCalculationEndDateCondition: function(field1, offset1) {
+                                    this.type = 'calculationEndDate';
+                                    this.field1 = field1;
+                                    this.offset1 = (offset1 == null) ? 0 : offset1;
+                                    this.displayName = scope.msg('queries.new.label.calculationEndDateCondition') + ': '
+                                                       + constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1);
                                 },
                                 constructElement: function() {
                                     var conditionElement = angular.element('<div />');
@@ -316,14 +313,77 @@
                             };
                         };
 
-                        var constructWhereGroup = function(parentGroup) {
+                        var resolveConditionType = function(condition, result) {
+                            if (result == null) {
+                                return;
+                            }
+
+                            switch (result.type) {
+                                case 'dateDiff':
+                                    condition.createDateDiffComparison(result.field1, result.offset1,
+                                        result.field2, result.offset2, result.operator, result.value);
+                                    break;
+                                case 'dateRange':
+                                    condition.createDateRangeComparison(result.field1, result.offset1,
+                                        result.date1, result.date2);
+                                    break;
+                                case 'dateValue':
+                                    condition.createDateValueComparison(result.field1, result.offset1,
+                                        result.operator, result.value);
+                                    break;
+                                case 'enumRange':
+                                    condition.createEnumRangeComparison(result.field1, result.values);
+                                    break;
+                                case 'field':
+                                    condition.createFieldComparison(result.field1, result.offset1,
+                                        result.field2, result.offset2, result.operator);
+                                    break;
+                                case 'value':
+                                    condition.createValueComparison(result.field1, result.operator,
+                                        result.value);
+                                    break;
+                                case 'period':
+                                    condition.createPeriodCondition(result.field1, result.offset1);
+                                    break;
+                                case 'calculationEndDate':
+                                    condition.createCalculationEndDateCondition(result.field1, result.offset1);
+                                    break;
+                                default:
+                                    return;
+                            }
+                        };
+
+                        var constructAndOrSelect = function(div, group, index) {
+                            if (group == null || index === null || index <= 0) {
+                                return;
+                            }
+
+                            var andOption = angular.element('<option />').val('and')
+                                .text(scope.msg('queries.new.option.and'));
+                            var orOption = angular.element('<option />').val('or')
+                                .text(scope.msg('queries.new.option.or'));
+
+                            var select = angular.element('<select />')
+                                .append(andOption)
+                                .append(orOption)
+                                .change(function(value) {
+                                    group.operator = $(this).val();
+                            })
+                            if (group.operator != 'and') {
+                                select.val(group.operator);
+                            }
+                            div.append(select);
+                        }
+
+                        var constructWhereGroup = function(parentGroup, groupOperator) {
                             return {
                                 uniqueId: new Date().getTime(),
                                 parentGroup: parentGroup,
-                                hierarchyLevel: 0,
+                                hierarchyLevel: (parentGroup === undefined || parentGroup == null)
+                                    ? 0 : parentGroup.hierarchyLevel + 1,
                                 groups: [],
                                 conditions: [],
-                                operator: 'and',
+                                operator: (groupOperator == null) ? 'and' : groupOperator.toLowerCase(),
                                 removeGroup: function(uniqueId) {
                                     var index = -1;
                                     for (var i = 0; i < this.groups.length; i++) {
@@ -352,62 +412,12 @@
                                             .append(angular.element('<i />').addClass('icon-th-list'))
                                             .click(function() {
                                                 var newGroup = constructWhereGroup(group);
-                                                newGroup.hierarchyLevel = group.hierarchyLevel + 1;
 
-                                                if (group.groups.length > 0) {
-                                                    var andOption = angular.element('<option />').val('and')
-                                                        .text(scope.msg('queries.new.option.and'));
-                                                    var orOption = angular.element('<option />').val('or')
-                                                        .text(scope.msg('queries.new.option.or'));
-
-                                                    var select = angular.element('<select />')
-                                                        .append(andOption)
-                                                        .append(orOption)
-                                                        .change(function(value) {
-                                                            group.operator = $(this).val();
-                                                    })
-                                                    div.append(select);
-                                                }
+                                                constructAndOrSelect(div, group, group.groups.length);
 
                                                 div.append(newGroup.constructElement());
                                                 group.groups.push(newGroup);
                                         });
-                                    };
-                                    var resolveConditionType = function(condition, result) {
-                                        switch (result.type) {
-                                            case 'dateDiff':
-                                                condition.createDateDiffComparison(result.form1.tableName,
-                                                    result.field1, result.offset1, result.form2.tableName,
-                                                    result.field2, result.offset2, result.operator, result.value);
-                                                break;
-                                            case 'dateRange':
-                                                condition.createDateRangeComparison(result.form1.tableName,
-                                                    result.field1, result.offset1, result.date1, result.date2);
-                                                break;
-                                            case 'dateValue':
-                                                condition.createDateValueComparison(result.form1.tableName,
-                                                    result.field1, result.offset1, result.operator, result.value);
-                                                break;
-                                            case 'enumRange':
-                                                condition.createEnumRangeComparison(result.form1.tableName,
-                                                    result.field1, result.values);
-                                                break;
-                                            case 'field':
-                                                condition.createFieldComparison(result.form1.tableName, result.field1,
-                                                    result.offset1, result.form2.tableName, result.field2,
-                                                    result.offset2, result.operator);
-                                                break;
-                                            case 'value':
-                                                condition.createValueComparison(result.form1.tableName,
-                                                    result.field1, result.operator, result.value);
-                                                break;
-                                            case 'period':
-                                                condition.createPeriodCondition(result.form1.tableName,
-                                                    result.field1, result.offset1);
-                                                break;
-                                            default:
-                                                return;
-                                        }
                                     };
                                     var constructAddConditionButton = function(div, group) {
                                         return angular.element('<button />').addClass('btn btn-mini')
@@ -466,12 +476,50 @@
                                     whereGroupElement.append(buttonsElement);
                                     whereGroupElement.append(closingBrace);
 
+                                    for (var i = 0; i < this.groups.length; i++) {
+                                        var group = this.groups[i].constructElement();
+                                        if (i > 0) {
+                                            constructAndOrSelect(groupsElement, this.groups[i], i);
+                                        }
+                                        groupsElement.append(group);
+                                    }
+
+                                    for (var i = 0; i < this.conditions.length; i++) {
+                                        var condition = this.conditions[i].constructElement();
+                                        conditionsElement.append(condition);
+                                    }
+
                                     return whereGroupElement;
                                 }
                             };
                         };
+                        var parseEntityWhereGroup = function(parentGroup, group) {
+                            var whereGroup = constructWhereGroup(parentGroup, group.operator);
 
-                        var whereGroup = (query.whereGroup == null) ? constructWhereGroup(null) : query.whereGroup;
+                            for (var i = 0; i < group.groups.length; i++) {
+                                if (group.groups[i] == null) {
+                                    continue;
+                                }
+
+                                var childGroup = parseEntityWhereGroup(whereGroup, group.groups[i]);
+                                whereGroup.groups.push(childGroup);
+                            }
+                            for (var i = 0; i < group.conditions.length; i++) {
+                                if (group.conditions[i] == null || group.conditions[i].type == null) {
+                                    continue;
+                                }
+
+                                var condition = constructCondition(whereGroup);
+                                resolveConditionType(condition, group.conditions[i]);
+
+                                whereGroup.conditions.push(condition);
+                            }
+
+                            return whereGroup;
+                        };
+
+                        var whereGroup = (query.whereGroup == null) ? constructWhereGroup(null, null)
+                            : parseEntityWhereGroup(null, query.whereGroup);
                         element.append(whereGroup.constructElement());
                         query.whereGroup = whereGroup;
                     });

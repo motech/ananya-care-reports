@@ -1,48 +1,32 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 public class GroupByDto {
 
-    private String tableName;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private ComputedFieldEntity computedField;
 
-    private String fieldName;
-
-    private Integer fieldId;
-
+    @JsonView({ QueryJsonView.EditForm.class })
     private HavingDto having;
 
     public GroupByDto() {
 
     }
 
-    public GroupByDto(String tableName, String fieldName, Integer fieldId, HavingDto having) {
-        this.tableName = tableName;
-        this.fieldName = fieldName;
-        this.fieldId = fieldId;
+    public GroupByDto(ComputedFieldEntity computedField, HavingDto having) {
+        this.computedField = computedField;
         this.having = having;
     }
 
-    public String getTableName() {
-        return tableName;
+    public ComputedFieldEntity getComputedField() {
+        return computedField;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public Integer getFieldId() {
-        return fieldId;
-    }
-
-    public void setFieldId(Integer fieldId) {
-        this.fieldId = fieldId;
+    public void setComputedField(ComputedFieldEntity computedField) {
+        this.computedField = computedField;
     }
 
     public HavingDto getHaving() {

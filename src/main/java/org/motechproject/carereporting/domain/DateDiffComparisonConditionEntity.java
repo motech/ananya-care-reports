@@ -2,8 +2,10 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.types.ConditionType;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,30 +26,38 @@ public class DateDiffComparisonConditionEntity extends ConditionEntity {
 
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComparisonSymbolEntity operator;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "field_2_id")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComputedFieldEntity field2;
 
     @NotNull
     @Column(name = "value")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private Integer value;
 
     @Column(name = "offset_1")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
+    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
     private Integer offset1;
 
     @Column(name = "offset_2")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
+    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
     private Integer offset2;
 
     public DateDiffComparisonConditionEntity() {
         super();
+    }
+
+    @Override
+    public String getType() {
+        return ConditionType.DateDiffComparison.getValue();
     }
 
     public DateDiffComparisonConditionEntity(DateDiffComparisonConditionEntity conditionEntity) {
@@ -98,5 +108,19 @@ public class DateDiffComparisonConditionEntity extends ConditionEntity {
 
     public void setOffset2(Integer offset2) {
         this.offset2 = offset2;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        DateDiffComparisonConditionEntity dateDiffComparisonConditionEntity = new DateDiffComparisonConditionEntity();
+
+        dateDiffComparisonConditionEntity.setField1(this.getField1());
+        dateDiffComparisonConditionEntity.setField2(this.getField2());
+        dateDiffComparisonConditionEntity.setOffset1(this.getOffset1());
+        dateDiffComparisonConditionEntity.setOffset2(this.getOffset2());
+        dateDiffComparisonConditionEntity.setOperator(this.getOperator());
+        dateDiffComparisonConditionEntity.setValue(this.getValue());
+
+        return dateDiffComparisonConditionEntity;
     }
 }

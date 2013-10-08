@@ -8,14 +8,15 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jooq.SQLDialect;
+import org.motechproject.carereporting.dao.CombinationDao;
 import org.motechproject.carereporting.dao.DwQueryDao;
 import org.motechproject.carereporting.dao.IndicatorClassificationDao;
 import org.motechproject.carereporting.dao.IndicatorDao;
 import org.motechproject.carereporting.dao.IndicatorTypeDao;
 import org.motechproject.carereporting.dao.IndicatorValueDao;
 import org.motechproject.carereporting.domain.AreaEntity;
+import org.motechproject.carereporting.domain.CalculationEndDateConditionEntity;
 import org.motechproject.carereporting.domain.CombinationEntity;
-import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.ConditionEntity;
 import org.motechproject.carereporting.domain.DashboardEntity;
 import org.motechproject.carereporting.domain.DateDiffComparisonConditionEntity;
@@ -116,6 +117,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     private static final String AREA_LEVEL_NAME_STATE = "state";
     private static final Integer QUERY_VALIDATION_ROW_LIMIT = 0;
     private static final String CLASSIFICATIONS_CACHE = "classifications";
+    private static final String WILDCARD = "*";
 
     @Value("${care.jdbc.schema}")
     private String schemaName;
@@ -161,6 +163,9 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Autowired
     private DwQueryDao dwQueryDao;
+
+    @Autowired
+    private CombinationDao combinationDao;
 
     @Autowired
     private ComputedFieldService computedFieldService;
@@ -227,6 +232,22 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    public DwQueryEntity getDwQueryByName(String dwQueryName) {
+        DwQueryEntity dwQueryEntity = dwQueryDao.getByField("name", dwQueryName);
+        initializeDwQuery(dwQueryEntity);
+        return dwQueryEntity;
+    }
+
+    @Override
+    public DwQueryDto getDwQueryDtoForQuery(Integer dwQueryId) {
+        DwQueryHelper dwQueryHelper = new DwQueryHelper(computedFieldService);
+        DwQueryEntity dwQueryEntity = dwQueryDao.getById(dwQueryId);
+        initializeDwQuery(dwQueryEntity);
+
+        return dwQueryHelper.dwQueryEntityToDto(dwQueryEntity);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
         DwQueryEntity dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
@@ -265,6 +286,28 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    public void updateDwQuery(DwQueryEntity dwQueryEntity) {
+        dwQueryDao.update(dwQueryEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateDwQueryFromDto(DwQueryDto dwQueryDto, Integer queryId) {
+        DwQueryEntity dwQueryEntity = getDwQueryById(queryId);
+        if (dwQueryEntity.getCombination() != null) {
+            combinationDao.remove(dwQueryEntity.getCombination());
+            dwQueryEntity.setCombination(null);
+        }
+
+        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().evict(dwQueryEntity);
+
+        dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
+        dwQueryEntity.setId(queryId);
+        dwQueryDao.update(dwQueryEntity);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void deleteDwQuery(DwQueryEntity dwQueryEntity) {
         this.dwQueryDao.remove(dwQueryEntity);
@@ -284,10 +327,15 @@ public class IndicatorServiceImpl implements IndicatorService {
         Set<SelectColumnEntity> selectColumnEntities = new LinkedHashSet<>();
         for (SelectColumnDto selectColumnDto : dwQueryDto.getSelectColumns()) {
             SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
-            ComputedFieldEntity computedFieldEntity = (selectColumnDto.getField() == null)
-                    ? null : computedFieldService.getComputedFieldById(selectColumnDto.getField());
 
-            selectColumnEntity.setComputedField(computedFieldEntity);
+            if (selectColumnDto.getField() != null
+                    && selectColumnDto.getField().getName().equals(WILDCARD)
+                    && selectColumnDto.getField().getForm() == null) {
+                selectColumnEntity.setComputedField(null);
+            } else {
+                selectColumnEntity.setComputedField(selectColumnDto.getField());
+            }
+
             selectColumnEntity.setFunctionName(selectColumnDto.getFunction());
             selectColumnEntity.setNullValue(selectColumnDto.getNullValue());
             selectColumnEntities.add(selectColumnEntity);
@@ -303,20 +351,45 @@ public class IndicatorServiceImpl implements IndicatorService {
         return dwQueryEntity;
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void deepCopyDwQueryAndSave(String dwQueryName, DwQueryEntity clonedEntity) {
+        try {
+            DwQueryEntity dwQueryEntity = (DwQueryEntity) clonedEntity.clone();
+            dwQueryEntity.setName(dwQueryName);
+            updateDwQueryNames(dwQueryEntity, 0);
+            dwQueryDao.save(dwQueryEntity);
+        } catch (Exception e) {
+            throw new CareRuntimeException(e);
+        }
+    }
+
+    private void updateDwQueryNames(DwQueryEntity dwQueryEntity, Integer index) {
+        dwQueryEntity.setName(getNameWithPrefix(dwQueryEntity.getName(), index));
+        if (dwQueryEntity.getCombination() != null) {
+            DwQueryEntity query = dwQueryEntity.getCombination().getDwQuery();
+            query.setParentQuery(dwQueryEntity);
+            updateDwQueryNames(query, index + 1);
+        }
+    }
+
+    private String getNameWithPrefix(String dwQueryName, Integer index) {
+        return dwQueryName + (index != 0 ? "_"  + index : "");
+    }
+
     private void resolveGroupByDto(GroupByDto groupBy, DwQueryEntity dwQueryEntity) {
-        if (groupBy == null) {
+        if (groupBy == null || groupBy.getComputedField() == null) {
             return;
         }
 
         GroupedByEntity groupedByEntity = new GroupedByEntity();
-        groupedByEntity.setTableName(groupBy.getTableName());
-        groupedByEntity.setFieldName(groupBy.getFieldName());
+        groupedByEntity.setComputedField(groupBy.getComputedField());
 
         if (groupBy.getHaving() != null) {
             HavingEntity havingEntity = new HavingEntity();
 
             SelectColumnEntity selectColumnEntity = new SelectColumnEntity();
-            selectColumnEntity.setComputedField(computedFieldService.getComputedFieldById(groupBy.getFieldId()));
+            selectColumnEntity.setComputedField(groupBy.getComputedField());
             selectColumnEntity.setFunctionName(groupBy.getHaving().getFunction());
 
             havingEntity.setSelectColumnEntity(selectColumnEntity);
@@ -379,6 +452,8 @@ public class IndicatorServiceImpl implements IndicatorService {
             case "period":
                 dwQueryEntity.setHasPeriodCondition(true);
                 return preparePeriodCondition(whereConditionDto);
+            case "calculationEndDate":
+                return prepareCalculationEndDateCondition(whereConditionDto);
             default:
                 return null;
         }
@@ -386,19 +461,19 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity prepareDateDiffCondition(WhereConditionDto whereConditionDto) {
         DateDiffComparisonConditionEntity dateDiffCondition = new DateDiffComparisonConditionEntity();
-        dateDiffCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        dateDiffCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
+        dateDiffCondition.setField1(whereConditionDto.getField1());
+        dateDiffCondition.setField2(whereConditionDto.getField2());
         dateDiffCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
-        dateDiffCondition.setOffset1(whereConditionDto.getFieldOffset1());
-        dateDiffCondition.setOffset2(whereConditionDto.getFieldOffset2());
+        dateDiffCondition.setOffset1(whereConditionDto.getOffset1());
+        dateDiffCondition.setOffset2(whereConditionDto.getOffset2());
         dateDiffCondition.setValue(Integer.parseInt(whereConditionDto.getValue()));
         return dateDiffCondition;
     }
 
     private ConditionEntity prepareDateRangeCondition(WhereConditionDto whereConditionDto) {
         DateRangeComparisonConditionEntity dateRangeCondition = new DateRangeComparisonConditionEntity();
-        dateRangeCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        dateRangeCondition.setOffset1(whereConditionDto.getFieldOffset1());
+        dateRangeCondition.setField1(whereConditionDto.getField1());
+        dateRangeCondition.setOffset1(whereConditionDto.getOffset1());
         dateRangeCondition.setDate1(whereConditionDto.getDate1());
         dateRangeCondition.setDate2(whereConditionDto.getDate2());
         return dateRangeCondition;
@@ -406,20 +481,20 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
         DateValueComparisonConditionEntity dateValueCondition = new DateValueComparisonConditionEntity();
-        dateValueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        dateValueCondition.setField1(whereConditionDto.getField1());
         dateValueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
-        dateValueCondition.setOffset1(whereConditionDto.getFieldOffset1());
+        dateValueCondition.setOffset1(whereConditionDto.getOffset1());
         dateValueCondition.setValue(new Date(whereConditionDto.getValue()));
         return dateValueCondition;
     }
 
     private ConditionEntity prepareEnumRangeCondition(WhereConditionDto whereConditionDto) {
         EnumRangeComparisonConditionEntity enumRangeCondition = new EnumRangeComparisonConditionEntity();
-        enumRangeCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        enumRangeCondition.setField1(whereConditionDto.getField1());
         Set<EnumRangeComparisonConditionValueEntity> values = new LinkedHashSet<>();
         for (String value : whereConditionDto.getValues()) {
             EnumRangeComparisonConditionValueEntity valueEntity = new EnumRangeComparisonConditionValueEntity();
-            valueEntity.setCondition(enumRangeCondition);
+            //valueEntity.setCondition(enumRangeCondition);
             valueEntity.setValue(value);
             values.add(valueEntity);
         }
@@ -429,11 +504,11 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity prepareFieldCondition(WhereConditionDto whereConditionDto) {
         FieldComparisonConditionEntity fieldCondition = new FieldComparisonConditionEntity();
-        fieldCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        fieldCondition.setField2(computedFieldService.getComputedFieldById(whereConditionDto.getField2()));
+        fieldCondition.setField1(whereConditionDto.getField1());
+        fieldCondition.setField2(whereConditionDto.getField2());
         fieldCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
-        String offset1 = (whereConditionDto.getFieldOffset1() == null) ? null : whereConditionDto.getFieldOffset1().toString();
-        String offset2 = (whereConditionDto.getFieldOffset2() == null) ? null : whereConditionDto.getFieldOffset2().toString();
+        String offset1 = (whereConditionDto.getOffset1() == null) ? null : whereConditionDto.getOffset1().toString();
+        String offset2 = (whereConditionDto.getOffset2() == null) ? null : whereConditionDto.getOffset2().toString();
         fieldCondition.setOffset1(offset1);
         fieldCondition.setOffset2(offset2);
         return fieldCondition;
@@ -441,7 +516,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity prepareValueCondition(WhereConditionDto whereConditionDto) {
         ValueComparisonConditionEntity valueCondition = new ValueComparisonConditionEntity();
-        valueCondition.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
+        valueCondition.setField1(whereConditionDto.getField1());
         valueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         valueCondition.setValue(whereConditionDto.getValue());
         return valueCondition;
@@ -449,11 +524,20 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private ConditionEntity preparePeriodCondition(WhereConditionDto whereConditionDto) {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
-        periodConditionEntity.setField1(computedFieldService.getComputedFieldById(whereConditionDto.getField1()));
-        periodConditionEntity.setTableName(whereConditionDto.getTableName1());
-        periodConditionEntity.setColumnName(computedFieldService.getComputedFieldById(whereConditionDto.getField1()).getName());
-        periodConditionEntity.setOffset(whereConditionDto.getFieldOffset1());
+        periodConditionEntity.setField1(whereConditionDto.getField1());
+        periodConditionEntity.setTableName(whereConditionDto.getField1().getForm().getTableName());
+        periodConditionEntity.setColumnName(whereConditionDto.getField1().getName());
+        periodConditionEntity.setOffset(whereConditionDto.getOffset1());
         return periodConditionEntity;
+    }
+
+    private ConditionEntity prepareCalculationEndDateCondition(WhereConditionDto whereConditionDto) {
+        CalculationEndDateConditionEntity calculationEndDateConditionEntity = new CalculationEndDateConditionEntity();
+        calculationEndDateConditionEntity.setField1(whereConditionDto.getField1());
+        calculationEndDateConditionEntity.setTableName(whereConditionDto.getField1().getForm().getTableName());
+        calculationEndDateConditionEntity.setColumnName(whereConditionDto.getField1().getName());
+        calculationEndDateConditionEntity.setOffset(whereConditionDto.getOffset1());
+        return calculationEndDateConditionEntity;
     }
 
     @Transactional
@@ -819,6 +903,9 @@ public class IndicatorServiceImpl implements IndicatorService {
     private void initializeDwQuery(DwQueryEntity dwQueryEntity) {
         Hibernate.initialize(dwQueryEntity.getSelectColumns());
         Hibernate.initialize(dwQueryEntity.getGroupedBy());
+        if (dwQueryEntity.getGroupedBy() != null && dwQueryEntity.getGroupedBy().getComputedField() != null) {
+            Hibernate.initialize(dwQueryEntity.getGroupedBy().getComputedField());
+        }
         Hibernate.initialize(dwQueryEntity.getWhereGroup());
         Hibernate.initialize(dwQueryEntity.getCombination());
         if (dwQueryEntity.getCombination() != null) {

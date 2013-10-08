@@ -48,7 +48,7 @@
                                             </select-columns>
                                             <dimension tableName="bp_form" />
                                             <group-by tableName="bp_form" fieldName="case_id">
-                                                <having function="Count" fieldName="*" operator=">=" value="1" />
+                                                <having function="Count" tableName="bp_form" fieldName="*" operator=">=" value="1" />
                                             </group-by>
                                             <where-group>
                                                 <where-condition type="calculationEndDate">

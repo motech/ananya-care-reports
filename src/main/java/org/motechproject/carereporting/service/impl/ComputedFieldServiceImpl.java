@@ -1,5 +1,7 @@
 package org.motechproject.carereporting.service.impl;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -71,6 +73,16 @@ public class ComputedFieldServiceImpl implements ComputedFieldService {
     @Override
     public ComputedFieldEntity getComputedFieldById(Integer computedFieldId) {
         return computedFieldDao.getByIdWithFields(computedFieldId, "fieldOperations");
+    }
+
+    @Override
+    public ComputedFieldEntity getComputedFieldByFormAndFieldName(String formName, String fieldName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ComputedFieldEntity.class, "field")
+                .setFetchMode("field.form", FetchMode.JOIN)
+                .createAlias("field.form", "form")
+                .add(Restrictions.eq("form.tableName", formName))
+                .add(Restrictions.eq("field.name", fieldName));
+        return (ComputedFieldEntity) criteria.uniqueResult();
     }
 
     @Override

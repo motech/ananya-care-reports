@@ -14,6 +14,7 @@
                 <td>{{item.name}}</td>
                 <td>
                     <span class="btn btn-link"  ng-show="hasRole('CAN_CREATE_INDICATORS')" ng-click="viewQuerySql($index)"><i class="icon-info-sign"></i></span>
+                    <span class="btn btn-link"  ng-show="hasRole('CAN_EDIT_INDICATORS')" ng-click="editQuery($index)"><i class="icon-pencil"></i></span>
                     <span class="btn btn-link"  ng-show="hasRole('CAN_CREATE_INDICATORS')" ng-click="deleteQuery($index)"><i class="icon-remove"></i></span>
                 </td>
             </tr>

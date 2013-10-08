@@ -1,6 +1,7 @@
 package org.dwQueryBuilder.builders.query.helpers;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.where.DateDiffComparison;
 import org.dwQueryBuilder.data.conditions.where.DateRangeComparison;
@@ -36,6 +37,7 @@ public final class ConditionHelper {
     }
 
     public static SelectConditionStep buildWhereConditionGroup(String schemaName,
+                                                               DwQuery dwQuery,
                                                                SelectConditionStep selectConditionStep,
                                                                WhereConditionGroup group,
                                                                Boolean useSchemaName,
@@ -43,13 +45,14 @@ public final class ConditionHelper {
         SelectConditionStep step = selectConditionStep;
 
         if (group != null) {
-            step = step.and(getConditionsRecursive(schemaName, group, useSchemaName, useAlias));
+            step = step.and(getConditionsRecursive(schemaName, dwQuery, group, useSchemaName, useAlias));
         }
 
         return step;
     }
 
     public static Condition getConditionsRecursive(String schemaName,
+                                                   DwQuery dwQuery,
                                                    WhereConditionGroup whereConditionGroup,
                                                    Boolean useSchemaName,
                                                    Boolean useAlias) {
@@ -61,7 +64,7 @@ public final class ConditionHelper {
 
         if (whereConditionGroup.getConditionGroups() != null) {
             for (WhereConditionGroup group : whereConditionGroup.getConditionGroups()) {
-                Condition subCondition = getConditionsRecursive(schemaName, group, useSchemaName, useAlias);
+                Condition subCondition = getConditionsRecursive(schemaName, dwQuery, group, useSchemaName, useAlias);
 
                 if (condition == null) {
                     condition = subCondition;
@@ -77,7 +80,7 @@ public final class ConditionHelper {
 
         if (whereConditionGroup.getConditions() != null) {
             for (WhereCondition whereCondition : whereConditionGroup.getConditions()) {
-                condition = buildWhereConditionAnd(schemaName, whereCondition, condition, useSchemaName, useAlias);
+                condition = buildWhereConditionAnd(schemaName,  dwQuery, whereCondition, condition, useSchemaName, useAlias);
             }
         }
 
@@ -85,6 +88,7 @@ public final class ConditionHelper {
     }
 
     public static Condition buildWhereConditionAnd(String schemaName,
+                                                   DwQuery dwQuery,
                                                    WhereCondition whereCondition,
                                                    Condition condition,
                                                    Boolean useSchemaName,
@@ -92,21 +96,22 @@ public final class ConditionHelper {
         Condition newCondition = condition;
 
         if (condition == null) {
-            newCondition = buildWhereCondition(schemaName, whereCondition, useSchemaName, useAlias);
+            newCondition = buildWhereCondition(schemaName, dwQuery, whereCondition, useSchemaName, useAlias);
         } else {
-            newCondition = newCondition.and(buildWhereCondition(schemaName, whereCondition, useSchemaName, useAlias));
+            newCondition = newCondition.and(buildWhereCondition(schemaName, dwQuery, whereCondition, useSchemaName, useAlias));
         }
 
         return newCondition;
     }
 
     public static Condition buildWhereCondition(String schemaName,
+                                                DwQuery dwQuery,
                                                 WhereCondition whereCondition,
                                                 Boolean useSchemaName,
                                                 Boolean useAlias) {
         Condition condition = null;
         Field field1 = SelectColumnHelper.resolveSelectColumn(
-                schemaName, whereCondition.getSelectColumn1(), useSchemaName, useAlias);
+                schemaName, dwQuery, whereCondition.getSelectColumn1(), useSchemaName, useAlias);
 
         if (whereCondition instanceof ValueComparison) {
 
@@ -126,7 +131,7 @@ public final class ConditionHelper {
 
             DateDiffComparison dateDiffComparison = (DateDiffComparison) whereCondition;
             Field field2 = SelectColumnHelper.resolveSelectColumn(
-                    schemaName, dateDiffComparison.getSelectColumn2(), useSchemaName, useAlias);
+                    schemaName, dwQuery, dateDiffComparison.getSelectColumn2(), useSchemaName, useAlias);
             condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
                     field2, dateDiffComparison.getValue(), dateDiffComparison.getColumn1Offset(),
                     dateDiffComparison.getColumn2Offset());
@@ -135,7 +140,7 @@ public final class ConditionHelper {
 
             FieldComparison fieldComparison = (FieldComparison) whereCondition;
             Field field2 = SelectColumnHelper.resolveSelectColumn(
-                    schemaName, fieldComparison.getSelectColumn2(), useSchemaName, useAlias);
+                    schemaName, dwQuery, fieldComparison.getSelectColumn2(), useSchemaName, useAlias);
             condition = buildCondition(
                     field1,
                     Integer.parseInt(fieldComparison.getColumn1Offset()),
@@ -216,6 +221,7 @@ public final class ConditionHelper {
     }
 
     public static Condition buildCondition(String schemaName,
+                                           DwQuery dwQuery,
                                            SelectColumn selectColumn,
                                            ComparisonType comparisonType,
                                            String value,
@@ -225,7 +231,7 @@ public final class ConditionHelper {
 
             if (selectColumn.getFunction() != null) {
                 Field aggregateFunction = SelectColumnHelper.resolveAggregateFunction(
-                        schemaName, selectColumn, useSchemaName);
+                        schemaName, dwQuery, selectColumn, useSchemaName);
 
                 switch (comparisonType) {
                     case Less:
@@ -244,7 +250,7 @@ public final class ConditionHelper {
                         return trueCondition();
                 }
             } else {
-                Field field = SelectColumnHelper.resolveSelectColumn(schemaName, selectColumn, false, false);
+                Field field = SelectColumnHelper.resolveSelectColumn(schemaName, dwQuery, selectColumn, false, false);
                 return buildCondition(field, comparisonType, value, selectColumn.getValueToLowerCase());
             }
         } catch (Exception e) {

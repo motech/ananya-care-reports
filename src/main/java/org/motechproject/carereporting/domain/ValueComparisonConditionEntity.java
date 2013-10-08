@@ -2,8 +2,10 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.types.ConditionType;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,16 +26,23 @@ public class ValueComparisonConditionEntity extends ConditionEntity {
 
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComparisonSymbolEntity operator;
 
     @NotNull
     @Column(name = "value")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private String value;
 
     public ValueComparisonConditionEntity() {
         super();
+    }
+
+    @Override
+    public String getType() {
+        return ConditionType.ValueComparison.getValue();
     }
 
     public ValueComparisonConditionEntity(ValueComparisonConditionEntity conditionEntity) {
@@ -57,5 +66,16 @@ public class ValueComparisonConditionEntity extends ConditionEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        ValueComparisonConditionEntity valueComparisonConditionEntity = new ValueComparisonConditionEntity();
+
+        valueComparisonConditionEntity.setField1(this.getField1());
+        valueComparisonConditionEntity.setOperator(this.getOperator());
+        valueComparisonConditionEntity.setValue(this.getValue());
+
+        return valueComparisonConditionEntity;
     }
 }

@@ -2,6 +2,7 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -22,22 +23,26 @@ import java.util.Set;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "dw_query_id"))
 })
-public class DwQueryEntity extends AbstractEntity {
+public class DwQueryEntity extends AbstractEntity implements Cloneable {
 
     @Column(name = "table_name", length = 100)
+    @JsonView({ QueryJsonView.EditForm.class })
     private String tableName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "dw_query_select_column", joinColumns = { @JoinColumn(name = "dw_query_id") },
             inverseJoinColumns = { @JoinColumn(name = "select_column_id") })
+    @JsonView({ QueryJsonView.EditForm.class })
     private Set<SelectColumnEntity> selectColumns;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "combination_id", referencedColumnName = "combination_id")
+    @JsonView({ QueryJsonView.EditForm.class })
     private CombinationEntity combination;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "grouped_by_id", referencedColumnName = "grouped_by_id")
+    @JsonView({ QueryJsonView.EditForm.class })
     private GroupedByEntity groupedBy;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -45,14 +50,15 @@ public class DwQueryEntity extends AbstractEntity {
     private WhereGroupEntity whereGroup;
 
     @Column(name = "has_period_condition")
+    @JsonView({ QueryJsonView.EditForm.class })
     private boolean hasPeriodCondition;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity parentQuery;
 
-    @JsonView({ BaseView.class })
     @Column(name = "name")
+    @JsonView({ BaseView.class })
     private String name;
 
     public DwQueryEntity() {
@@ -134,5 +140,30 @@ public class DwQueryEntity extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        DwQueryEntity dwQueryEntity = new DwQueryEntity();
+
+        dwQueryEntity.setName(this.getName());
+        dwQueryEntity.setTableName(this.tableName);
+        dwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());
+        for (SelectColumnEntity column : this.getSelectColumns()) {
+            dwQueryEntity.getSelectColumns().add((SelectColumnEntity) column.clone());
+        }
+
+        if (this.getGroupedBy() != null) {
+            dwQueryEntity.setGroupedBy((GroupedByEntity) this.getGroupedBy().clone());
+        }
+
+        dwQueryEntity.setWhereGroup((WhereGroupEntity) this.whereGroup.clone());
+
+        if (dwQueryEntity.getCombination() != null) {
+            dwQueryEntity.setCombination((CombinationEntity) dwQueryEntity.getCombination().clone());
+            dwQueryEntity.getCombination().getDwQuery().setParentQuery(this);
+        }
+
+        return dwQueryEntity;
     }
 }

@@ -1,47 +1,55 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.ComputedFieldEntity;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 import java.util.Date;
 import java.util.List;
 
 public class WhereConditionDto {
 
-    private String tableName1;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private ComputedFieldEntity field1;
 
-    private Integer field1;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private ComputedFieldEntity field2;
 
-    private String tableName2;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private Integer offset1;
 
-    private Integer field2;
+    @JsonView({ QueryJsonView.EditForm.class })
+    private Integer offset2;
 
-    private Integer fieldOffset1;
-
-    private Integer fieldOffset2;
-
+    @JsonView({ QueryJsonView.EditForm.class })
     private String operator;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String type;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String value;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private List<String> values;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private Date date1;
-    
+
+    @JsonView({ QueryJsonView.EditForm.class })
     private Date date2;
     
     public WhereConditionDto() {
         
     }
-    
-    public WhereConditionDto(String tableName1, Integer field1, String tableName2, Integer field2, Integer fieldOffset1,
-                             Integer fieldOffset2, String operator, String type, String value, List<String> values,
+
+    public WhereConditionDto(ComputedFieldEntity field1, ComputedFieldEntity field2, Integer offset1,
+                             Integer offset2, String operator, String type, String value, List<String> values,
                              Date date1, Date date2) {
-        this.tableName1 = tableName1;
         this.field1 = field1;
-        this.tableName2 = tableName2;
         this.field2 = field2;
-        this.fieldOffset1 = fieldOffset1;
-        this.fieldOffset2 = fieldOffset2;
+        this.offset1 = offset1;
+        this.offset2 = offset2;
         this.operator = operator;
         this.type = type;
         this.value = value;
@@ -50,52 +58,36 @@ public class WhereConditionDto {
         this.date2 = date2;
     }
 
-    public String getTableName1() {
-        return tableName1;
-    }
-
-    public void setTableName1(String tableName1) {
-        this.tableName1 = tableName1;
-    }
-
-    public Integer getField1() {
+    public ComputedFieldEntity getField1() {
         return field1;
     }
 
-    public void setField1(Integer field1) {
+    public void setField1(ComputedFieldEntity field1) {
         this.field1 = field1;
     }
 
-    public String getTableName2() {
-        return tableName2;
-    }
-
-    public void setTableName2(String tableName2) {
-        this.tableName2 = tableName2;
-    }
-
-    public Integer getField2() {
+    public ComputedFieldEntity getField2() {
         return field2;
     }
 
-    public void setField2(Integer field2) {
+    public void setField2(ComputedFieldEntity field2) {
         this.field2 = field2;
     }
 
-    public Integer getFieldOffset1() {
-        return fieldOffset1;
+    public Integer getOffset1() {
+        return offset1;
     }
 
-    public void setFieldOffset1(Integer fieldOffset1) {
-        this.fieldOffset1 = fieldOffset1;
+    public void setOffset1(Integer offset1) {
+        this.offset1 = offset1;
     }
 
-    public Integer getFieldOffset2() {
-        return fieldOffset2;
+    public Integer getOffset2() {
+        return offset2;
     }
 
-    public void setFieldOffset2(Integer fieldOffset2) {
-        this.fieldOffset2 = fieldOffset2;
+    public void setOffset2(Integer offset2) {
+        this.offset2 = offset2;
     }
 
     public String getOperator() {

@@ -4,6 +4,7 @@ import org.motechproject.carereporting.domain.ComputedFieldEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.FormEntity;
 import org.motechproject.carereporting.domain.dto.FieldDto;
+import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 public class ComputedFieldEntityInitializer {
 
+    private static final String WILDCARD = "*";
     @Autowired
     private FormsService formsService;
 
@@ -56,6 +58,14 @@ public class ComputedFieldEntityInitializer {
     @Transactional(readOnly = false)
     private void createFields(FormEntity formEntity) {
         setupSecurityContext();
+
+        computedFieldService.createNewComputedField(new ComputedFieldEntity(
+                WILDCARD,
+                FieldType.Number,
+                formEntity,
+                new LinkedHashSet<FieldOperationEntity>(),
+                true));
+
         Set<FieldDto> fields = formsService.getFieldsByFormEntity(formEntity);
         for (FieldDto field : fields) {
             computedFieldService.createNewComputedField(new ComputedFieldEntity(

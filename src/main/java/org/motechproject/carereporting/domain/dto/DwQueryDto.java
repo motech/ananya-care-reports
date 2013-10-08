@@ -1,29 +1,42 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class DwQueryDto {
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String dimension;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private List<SelectColumnDto> selectColumns;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private WhereGroupDto whereGroup;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String joinType;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String key1;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String key2;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private DwQueryDto combineWith;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private GroupByDto groupBy;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String name;
 
     public DwQueryDto() {
-
+        this.selectColumns = new ArrayList<>();
     }
 
     public DwQueryDto(String dimension, List<SelectColumnDto> selectColumns, WhereGroupDto whereGroup,

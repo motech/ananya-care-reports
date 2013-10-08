@@ -33,6 +33,7 @@ import org.motechproject.carereporting.domain.DateValueComparisonConditionEntity
 import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.EnumRangeComparisonConditionEntity;
 import org.motechproject.carereporting.domain.EnumRangeComparisonConditionValueEntity;
+import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
@@ -40,9 +41,18 @@ import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
+import org.motechproject.carereporting.domain.dto.DwQueryDto;
+import org.motechproject.carereporting.domain.dto.GroupByDto;
+import org.motechproject.carereporting.domain.dto.HavingDto;
+import org.motechproject.carereporting.domain.dto.SelectColumnDto;
+import org.motechproject.carereporting.domain.dto.WhereConditionDto;
+import org.motechproject.carereporting.domain.dto.WhereGroupDto;
+import org.motechproject.carereporting.domain.types.ConditionType;
+import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +63,17 @@ import java.util.Set;
 public class DwQueryHelper {
 
     private static final int SECONDS_PER_DAY = 86_400;
+    private static final String WILDCARD = "*";
+
+    private ComputedFieldService computedFieldService;
+
+    public DwQueryHelper() {
+
+    }
+
+    public DwQueryHelper(ComputedFieldService computedFieldService) {
+        this.computedFieldService = computedFieldService;
+    }
 
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
@@ -92,27 +113,42 @@ public class DwQueryHelper {
     }
 
     private GroupBy prepareGroupBy(GroupedByEntity groupByEntity) {
-        GroupByConditionBuilder builder = new GroupByConditionBuilder()
-                .withField(groupByEntity.getTableName(), groupByEntity.getFieldName());
+        String tableName = groupByEntity.getComputedField().getForm().getTableName();
+        String fieldName = groupByEntity.getComputedField().getName();
+
+        GroupByConditionBuilder builder = new GroupByConditionBuilder().withField(tableName, fieldName);
         if (groupByEntity.getHaving() != null) {
-            builder.withHaving(prepareHaving(groupByEntity.getHaving(), groupByEntity.getTableName(), groupByEntity.getFieldName()));
+            builder.withHaving(prepareHaving(groupByEntity.getHaving()));
         }
         return builder.build();
     }
 
-    private HavingConditionBuilder prepareHaving(HavingEntity havingEntity, String tableName, String fieldName) {
+    private HavingConditionBuilder prepareHaving(HavingEntity havingEntity) {
+        String tableName = (havingEntity.getSelectColumnEntity().getComputedField() == null)
+                ? null : havingEntity.getSelectColumnEntity().getComputedField().getForm().getTableName();
+        String fieldName = (havingEntity.getSelectColumnEntity().getComputedField() == null)
+                ? WILDCARD : havingEntity.getSelectColumnEntity().getComputedField().getName();
+
         return new HavingConditionBuilder()
                 .withComparison(ComparisonType.fromSymbol(havingEntity.getOperator()), havingEntity.getValue())
                 .withSelectColumn(prepareSelectColumn(havingEntity.getSelectColumnEntity(), tableName, fieldName));
     }
 
-    private SelectColumnBuilder prepareSelectColumn(SelectColumnEntity selectColumnEntity, String defaultTableName, String defaultFieldName) {
+    private SelectColumnBuilder prepareSelectColumn(SelectColumnEntity selectColumnEntity,
+                                                    String defaultTableName, String defaultFieldName) {
         SelectColumnBuilder builder;
         if (selectColumnEntity.getComputedField() == null) {
-            builder = new SelectColumnBuilder().withColumn(defaultTableName, defaultFieldName != null ? defaultFieldName : "*");
+            builder = new SelectColumnBuilder().withColumn(
+                    defaultTableName, defaultFieldName != null ? defaultFieldName : "*");
         } else {
-            builder = new SelectColumnBuilder()
-                .withColumn(prepareComputedColumn(selectColumnEntity.getComputedField()));
+            if (selectColumnEntity.getComputedField().getName().equals(WILDCARD)
+                    && selectColumnEntity.getComputedField().getForm() == null) {
+                builder = new SelectColumnBuilder().withColumn(null, WILDCARD);
+            } else {
+                builder = new SelectColumnBuilder()
+                        .withColumn(prepareComputedColumn(selectColumnEntity.getComputedField()));
+            }
+
         }
         if (StringUtils.isNotEmpty(selectColumnEntity.getFunctionName())) {
             builder.withFunction(
@@ -134,6 +170,10 @@ public class DwQueryHelper {
             builder.withGroup(prepareWhereConditionGroup(nestedGroup));
         }
         for (ConditionEntity condition: whereGroupEntity.getConditions()) {
+            if (condition == null) {
+                continue;
+            }
+
             addCondition(builder, condition);
         }
         if (whereGroupEntity.getOperator() != null) {
@@ -348,5 +388,167 @@ public class DwQueryHelper {
         return new WhereConditionBuilder()
                 .withValueComparison(selectColumn, ComparisonType.NotEqual, "test")
                 .build();
+    }
+
+    public DwQueryDto dwQueryEntityToDto(DwQueryEntity dwQueryEntity) {
+
+        DwQueryDto dwQueryDto = new DwQueryDto();
+        dwQueryDto.setName(dwQueryEntity.getName());
+        dwQueryDto.setDimension(dwQueryEntity.getTableName());
+
+        if (dwQueryEntity.getWhereGroup() != null) {
+            dwQueryDto.setWhereGroup(convertWhereGroupToDto(dwQueryEntity.getWhereGroup()));
+        }
+
+        if (dwQueryEntity.getCombination() != null && dwQueryEntity.getCombination().getDwQuery() != null) {
+            DwQueryDto combineWith = dwQueryEntityToDto(dwQueryEntity.getCombination().getDwQuery());
+            combineWith.setKey1(dwQueryEntity.getCombination().getReferencedKey());
+            combineWith.setKey2(dwQueryEntity.getCombination().getForeignKey());
+            combineWith.setJoinType(dwQueryEntity.getCombination().getType());
+
+            dwQueryDto.setCombineWith(combineWith);
+        }
+
+        for (SelectColumnEntity selectColumnEntity : dwQueryEntity.getSelectColumns()) {
+            dwQueryDto.getSelectColumns().add(new SelectColumnDto(selectColumnEntity.getComputedField(),
+                    selectColumnEntity.getFunctionName(), selectColumnEntity.getNullValue()));
+        }
+
+        if (dwQueryEntity.getGroupedBy() != null) {
+            HavingDto havingDto = (dwQueryEntity.getGroupedBy().getHaving() == null) ? null : new HavingDto(
+                    dwQueryEntity.getGroupedBy().getHaving().getSelectColumnEntity().getFunctionName(),
+                    dwQueryEntity.getGroupedBy().getHaving().getOperator(),
+                    dwQueryEntity.getGroupedBy().getHaving().getValue());
+
+            dwQueryDto.setGroupBy(new GroupByDto(dwQueryEntity.getGroupedBy().getComputedField(), havingDto));
+        }
+
+        return dwQueryDto;
+    }
+
+    private WhereGroupDto convertWhereGroupToDto(WhereGroupEntity whereGroupEntity) {
+        WhereGroupDto whereGroupDto = new WhereGroupDto();
+        whereGroupDto.setOperator(whereGroupEntity.getOperator());
+
+        if (whereGroupEntity.getConditions() != null) {
+            for (ConditionEntity condition : whereGroupEntity.getConditions()) {
+                whereGroupDto.getConditions().add(convertConditionToDto(condition));
+            }
+        }
+
+        if (whereGroupEntity.getWhereGroups() != null) {
+            for (WhereGroupEntity group : whereGroupEntity.getWhereGroups()) {
+                whereGroupDto.getGroups().add(convertWhereGroupToDto(group));
+            }
+        }
+
+        return whereGroupDto;
+    }
+
+    private WhereConditionDto convertConditionToDto(ConditionEntity conditionEntity) {
+        WhereConditionDto whereConditionDto = new WhereConditionDto();
+        whereConditionDto.setType(conditionEntity.getType());
+
+        switch (conditionEntity.getType()) {
+            case ConditionType.FIELD_COMPARISON:
+                convertFieldComparisonConditionToDto((FieldComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.VALUE_COMPARISON:
+                convertValueComparisonConditionToDto((ValueComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.CALCULATION_END_DATE:
+                convertCalculationEndDateConditionToDto((CalculationEndDateConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.DATE_DIFF_COMPARISON:
+                convertDateDiffComparisonConditionToDto((DateDiffComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.DATE_RANGE_COMPARISON:
+                convertDateRangeComparisonConditionToDto((DateRangeComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.DATE_VALUE_COMPARISON:
+                convertDateValueComparisonConditionToDto((DateValueComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.ENUM_RANGE_COMPARISON:
+                convertEnumRangeComparisonConditionToDto((EnumRangeComparisonConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            case ConditionType.PERIOD:
+                convertPeriodComparisonConditionToDto((PeriodConditionEntity) conditionEntity, whereConditionDto);
+                break;
+            default:
+                return null;
+        }
+
+        return whereConditionDto;
+    }
+
+    private void convertFieldComparisonConditionToDto(FieldComparisonConditionEntity condition,
+                                                      WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        whereConditionDto.setField2(condition.getField2());
+        whereConditionDto.setOffset1(Integer.parseInt(condition.getOffset1()));
+        whereConditionDto.setOffset2(Integer.parseInt(condition.getOffset2()));
+        whereConditionDto.setOperator(condition.getOperator().getName());
+    }
+
+    private void convertValueComparisonConditionToDto(ValueComparisonConditionEntity condition,
+                                                      WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        whereConditionDto.setOperator(condition.getOperator().getName());
+        whereConditionDto.setValue(condition.getValue());
+    }
+
+    private void convertCalculationEndDateConditionToDto(CalculationEndDateConditionEntity condition,
+                                                         WhereConditionDto whereConditionDto) {
+        ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldByFormAndFieldName(
+                condition.getTableName(), condition.getColumnName());
+
+        whereConditionDto.setField1(computedFieldEntity);
+        whereConditionDto.setOffset1(condition.getOffset());
+    }
+
+    private void convertDateDiffComparisonConditionToDto(DateDiffComparisonConditionEntity condition,
+                                                         WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        whereConditionDto.setField2(condition.getField2());
+        whereConditionDto.setOffset1(condition.getOffset1());
+        whereConditionDto.setOffset2(condition.getOffset2());
+        whereConditionDto.setOperator(condition.getOperator().getName());
+        whereConditionDto.setValue(condition.getValue().toString());
+    }
+
+    private void convertDateRangeComparisonConditionToDto(DateRangeComparisonConditionEntity condition,
+                                                          WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        whereConditionDto.setOffset1(condition.getOffset1());
+        whereConditionDto.setDate1(condition.getDate1());
+        whereConditionDto.setDate2(condition.getDate2());
+    }
+
+    private void convertDateValueComparisonConditionToDto(DateValueComparisonConditionEntity condition,
+                                                          WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        whereConditionDto.setOffset1(condition.getOffset1());
+        whereConditionDto.setOperator(condition.getOperator().getName());
+        whereConditionDto.setValue(condition.getValue().toString());
+    }
+
+    private void convertEnumRangeComparisonConditionToDto(EnumRangeComparisonConditionEntity condition,
+                                                          WhereConditionDto whereConditionDto) {
+        whereConditionDto.setField1(condition.getField1());
+        if (condition.getValues() != null) {
+            whereConditionDto.setValues(new ArrayList<String>());
+            for (EnumRangeComparisonConditionValueEntity value : condition.getValues()) {
+                whereConditionDto.getValues().add(value.getValue());
+            }
+        }
+    }
+
+    private void convertPeriodComparisonConditionToDto(PeriodConditionEntity condition,
+                                                       WhereConditionDto whereConditionDto) {
+        ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldByFormAndFieldName(
+                condition.getTableName(), condition.getColumnName());
+
+        whereConditionDto.setField1(computedFieldEntity);
+        whereConditionDto.setOffset1(condition.getOffset());
     }
 }

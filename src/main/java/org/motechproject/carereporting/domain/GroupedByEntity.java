@@ -1,10 +1,15 @@
 package org.motechproject.carereporting.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.BaseView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,41 +19,33 @@ import javax.persistence.Table;
 @AttributeOverrides({
         @AttributeOverride(name = "id", column = @Column(name = "grouped_by_id"))
 })
-public class GroupedByEntity extends AbstractEntity {
+public class GroupedByEntity extends AbstractEntity implements Cloneable {
 
-    @Column(name = "table_name")
-    private String tableName;
-
-    @Column(name = "field_name")
-    private String fieldName;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "computed_field_id", referencedColumnName = "computed_field_id")
+    @JsonView({ BaseView.class })
+    private ComputedFieldEntity computedField;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "having_id", referencedColumnName = "having_id")
+    @JsonView({ QueryJsonView.EditForm.class })
     private HavingEntity having;
 
     public GroupedByEntity() {
+
     }
 
     public GroupedByEntity(GroupedByEntity groupedBy) {
-        tableName = groupedBy.getTableName();
-        fieldName = groupedBy.getFieldName();
-        having = groupedBy.getHaving() != null ? new HavingEntity(groupedBy.getHaving()) : null;
+        this.computedField = groupedBy.getComputedField();
+        this.having = groupedBy.getHaving() != null ? new HavingEntity(groupedBy.getHaving()) : null;
     }
 
-    public String getTableName() {
-        return tableName;
+    public ComputedFieldEntity getComputedField() {
+        return computedField;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public void setComputedField(ComputedFieldEntity computedField) {
+        this.computedField = computedField;
     }
 
     public HavingEntity getHaving() {
@@ -57,5 +54,17 @@ public class GroupedByEntity extends AbstractEntity {
 
     public void setHaving(HavingEntity having) {
         this.having = having;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GroupedByEntity groupedByEntity = new GroupedByEntity();
+
+        groupedByEntity.setComputedField(this.getComputedField());
+        if (this.getHaving() != null) {
+            groupedByEntity.setHaving((HavingEntity) this.getHaving().clone());
+        }
+
+        return groupedByEntity;
     }
 }

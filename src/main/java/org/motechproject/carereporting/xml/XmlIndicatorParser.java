@@ -37,6 +37,7 @@ import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
+import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.xml.mapping.indicators.Classification;
 import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
@@ -73,6 +74,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 @Component
 @Transactional(readOnly = true)
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -94,6 +97,9 @@ public class XmlIndicatorParser {
     private ComputedFieldDao computedFieldDao;
 
     @Autowired
+    private ComputedFieldService computedFieldService;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -112,6 +118,7 @@ public class XmlIndicatorParser {
     private DwQueryDao dwQueryDao;
 
     private static final String ALL_ROLES_STRING = "ALL";
+    private static final String WILDCARD = "*";
 
     @Transactional
     public IndicatorEntity parse(InputStream is) throws JAXBException {
@@ -172,10 +179,6 @@ public class XmlIndicatorParser {
         return indicatorEntity;
     }
 
-    private String getNameWithPrefix(IndicatorEntity indicatorEntity, String prefix, Integer index) {
-        return indicatorEntity.getName() + "_" + prefix + (index != 0 ? index : "");
-    }
-
     private void updateIndicatorQueryNamesAndParents(IndicatorEntity indicatorEntity, DwQueryEntity dwQueryEntity, String prefix, Integer index) {
         dwQueryEntity.setName(getNameWithPrefix(indicatorEntity, prefix, index));
         if (dwQueryEntity.getCombination() != null) {
@@ -183,6 +186,10 @@ public class XmlIndicatorParser {
             query.setParentQuery(dwQueryEntity);
             updateIndicatorQueryNamesAndParents(indicatorEntity, query, prefix, index + 1);
         }
+    }
+
+    private String getNameWithPrefix(IndicatorEntity indicatorEntity, String prefix, Integer index) {
+        return indicatorEntity.getName() + "_" + prefix + (index != 0 ? index : "");
     }
 
     private LevelEntity findAreaLevelByLevelName(String levelName) {
@@ -289,7 +296,7 @@ public class XmlIndicatorParser {
         findBy.put("form", form);
         ComputedFieldEntity field = computedFieldDao.getByFields(findBy);
         if (field == null) {
-            throw new CareRuntimeException("This indicators depends on computed field: " +
+            throw new CareRuntimeException("This indicator depends on computed field: " +
                     condition.getTableName() + "." + condition.getField() + ". Please, define this computed field first.");
         }
         conditionEntity.setField1(field);
@@ -349,7 +356,7 @@ public class XmlIndicatorParser {
 
         for (String value : condition.getValues()) {
             EnumRangeComparisonConditionValueEntity enumValue = new EnumRangeComparisonConditionValueEntity(value);
-            enumValue.setCondition(enumRangeComparisonConditionEntity);
+            //enumValue.setCondition(enumRangeComparisonConditionEntity);
             values.add(enumValue);
         }
         enumRangeComparisonConditionEntity.setValues(values);
@@ -470,8 +477,8 @@ public class XmlIndicatorParser {
 
     private GroupedByEntity prepareGroupBy(DwQuery dwQuery) {
         GroupedByEntity groupedByEntity = new GroupedByEntity();
-        groupedByEntity.setTableName(dwQuery.getGroupBy().getTableName());
-        groupedByEntity.setFieldName(dwQuery.getGroupBy().getFieldName());
+        groupedByEntity.setComputedField(computedFieldService.getComputedFieldByFormAndFieldName(
+                dwQuery.getGroupBy().getTableName(), dwQuery.getGroupBy().getFieldName()));
         groupedByEntity.setHaving(prepareHaving(dwQuery.getGroupBy()));
         return groupedByEntity;
     }
@@ -482,6 +489,14 @@ public class XmlIndicatorParser {
         having.setValue(groupBy.getHaving().getValue());
         SelectColumnEntity selectCol = new SelectColumnEntity();
         selectCol.setFunctionName(groupBy.getHaving().getFunction().toString());
+
+        if (isNotBlank(groupBy.getHaving().getTableName()) && isNotBlank(groupBy.getHaving().getFieldName())) {
+            String fieldName = (groupBy.getHaving().getFieldName() == null) ? WILDCARD : groupBy.getHaving().getFieldName();
+
+            selectCol.setComputedField(computedFieldService.getComputedFieldByFormAndFieldName(
+                    groupBy.getHaving().getTableName(), fieldName));
+        }
+
         having.setSelectColumnEntity(selectCol);
         return having;
     }

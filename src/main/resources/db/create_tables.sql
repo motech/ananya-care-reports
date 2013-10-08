@@ -206,16 +206,18 @@ CREATE TABLE IF NOT EXISTS dashboard_app."having"
 
 CREATE TABLE IF NOT EXISTS dashboard_app.grouped_by
 (
-  grouped_by_id serial NOT NULL,
-  having_id integer,
-  table_name character varying NOT NULL,
-  field_name character varying NOT NULL,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  CONSTRAINT grouped_by_pk PRIMARY KEY (grouped_by_id ),
-  CONSTRAINT grouped_by_having_id FOREIGN KEY (having_id)
-      REFERENCES dashboard_app."having" (having_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL
+    grouped_by_id serial NOT NULL,
+    having_id integer,
+    computed_field_id integer,
+    creation_date timestamp without time zone,
+    modification_date timestamp without time zone,
+    CONSTRAINT grouped_by_pk PRIMARY KEY (grouped_by_id ),
+    CONSTRAINT grouped_by_having_id FOREIGN KEY (having_id)
+        REFERENCES dashboard_app."having" (having_id) MATCH FULL
+        ON UPDATE SET NULL ON DELETE SET NULL,
+    CONSTRAINT computed_field_fk FOREIGN KEY (computed_field_id)
+        REFERENCES dashboard_app.computed_field(computed_field_id) MATCH FULL
+        ON UPDATE SET NULL ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
@@ -740,12 +742,14 @@ CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_comparison
 CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_comparison_value
 (
   enum_range_comparison_value_id serial NOT NULL,
-  enum_range_comparison_id integer NOT NULL,
   value varchar(50),
   creation_date timestamp without time zone,
   modification_date timestamp without time zone,
-  CONSTRAINT enum_range_comparison_value_pk PRIMARY KEY (enum_range_comparison_value_id ),
-  CONSTRAINT enum_range_comparison_value_enum_range_comparison FOREIGN KEY (enum_range_comparison_id)
-      REFERENCES dashboard_app.enum_range_comparison (enum_range_comparison_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT enum_range_comparison_value_pk PRIMARY KEY (enum_range_comparison_value_id )
+);
+
+CREATE TABLE IF NOT EXISTS dashboard_app.enum_range_enum_range_value
+(
+    enum_range_id integer,
+    enum_range_value_id integer
 );

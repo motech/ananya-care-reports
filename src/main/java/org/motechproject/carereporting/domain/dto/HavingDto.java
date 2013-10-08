@@ -1,11 +1,17 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 public class HavingDto {
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String function;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String operator;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String value;
 
     public HavingDto() {

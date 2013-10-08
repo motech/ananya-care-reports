@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.ComputedFieldView;
-import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -46,7 +45,7 @@ public class ComputedFieldEntity extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "form_id")
-    @JsonView({ComputedFieldView.class, IndicatorJsonView.IndicatorModificationDetails.class })
+    @JsonView({ BaseView.class })
     private FormEntity form;
 
     @NotNull
@@ -114,9 +113,10 @@ public class ComputedFieldEntity extends AbstractEntity {
 
     @JsonIgnore
     public boolean isRegularField() {
-        return  fieldOperations.size() == 0 ||
+        return (fieldOperations == null ||
+                fieldOperations.size() == 0 ||
                     (fieldOperations.size() == 1 &&
-                    fieldOperations.iterator().next().getField2() == null);
+                    fieldOperations.iterator().next().getField2() == null));
     }
 
     @JsonIgnore

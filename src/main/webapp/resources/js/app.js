@@ -13,6 +13,7 @@
             .when('/indicators/date-depth', { templateUrl: 'resources/partials/indicators/dateDepth.html', controller: 'dateDepthController'})
             .when('/indicators/queries', { templateUrl: 'resources/partials/indicators/listQueries.html', controller: 'queryListController' })
             .when('/indicators/queries/new', { templateUrl: 'resources/partials/indicators/editQuery.html', controller: 'createDwQueryController' })
+            .when('/indicators/queries/edit/:queryId', { templateUrl: 'resources/partials/indicators/editQuery.html', controller: 'createDwQueryController' })
             .when('/admin/forms', { templateUrl: 'resources/partials/admin/forms/listForms.html', controller: 'formListController' })
             .when('/admin/forms/:formId', { templateUrl: 'resources/partials/admin/forms/editForm.html', controller: 'formController' })
             .when('/indicators/classifications', { templateUrl: 'resources/partials/indicators/listClassifications.html', controller: 'classificationsListController'})

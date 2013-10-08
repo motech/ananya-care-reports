@@ -2,8 +2,10 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.types.ConditionType;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -27,21 +29,28 @@ public class DateValueComparisonConditionEntity extends ConditionEntity {
 
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComparisonSymbolEntity operator;
 
     @NotNull
     @Column(name = "value")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     @Temporal(TemporalType.DATE)
     private Date value;
 
     @Column(name = "offset_1")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
+    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
     private Integer offset1;
 
     public DateValueComparisonConditionEntity() {
         super();
+    }
+
+    @Override
+    public String getType() {
+        return ConditionType.DateValueComparison.getValue();
     }
 
     public DateValueComparisonConditionEntity(DateValueComparisonConditionEntity conditionEntity) {
@@ -74,5 +83,17 @@ public class DateValueComparisonConditionEntity extends ConditionEntity {
 
     public void setOffset1(Integer offset1) {
         this.offset1 = offset1;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        DateValueComparisonConditionEntity dateValueComparisonConditionEntity = new DateValueComparisonConditionEntity();
+
+        dateValueComparisonConditionEntity.setField1(this.getField1());
+        dateValueComparisonConditionEntity.setOffset1(this.getOffset1());
+        dateValueComparisonConditionEntity.setOperator(this.getOperator());
+        dateValueComparisonConditionEntity.setValue(this.getValue());
+
+        return dateValueComparisonConditionEntity;
     }
 }

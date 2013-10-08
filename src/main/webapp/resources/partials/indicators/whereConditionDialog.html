@@ -18,7 +18,7 @@
                             <label for="dateComparisonOffset1">{{msg('queries.whereConditionDialog.comparison.label.offset')}}:</label>
                             <input type="number" pattern="-?[1-9][0-9]*" id="dateComparisonOffset1" class="input-block-level" ng-model="condition.offset1" />
                             <label for="dateComparisonOperator">{{msg('queries.whereConditionDialog.comparison.label.operator')}}:</label>
-                            <select id="dateComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item.name for item in formData.operators"></select>
+                            <select id="dateComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item for item in formData.operators"></select>
                         </div>
                         <div class="nested-well span6">
                             <label for="dateComparisonField2">{{msg('queries.whereConditionDialog.comparison.label.field2')}}:</label>
@@ -59,7 +59,7 @@
                             <label for="dateValueComparisonOffset1">{{msg('queries.whereConditionDialog.comparison.label.offset')}}:</label>
                             <input type="number" pattern="-?[1-9][0-9]*" id="dateValueComparisonOffset1" class="input-block-level" ng-model="condition.offset1" />
                             <label for="dateValueComparisonOperator">{{msg('queries.whereConditionDialog.comparison.label.operator')}}:</label>
-                            <select id="dateValueComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item.name for item in formData.operators"></select>
+                            <select id="dateValueComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item for item in formData.operators"></select>
                         </div>
                         <div class="nested-well span6">
                             <label for="dateValueComparisonValue">{{msg('queries.whereConditionDialog.comparison.label.value')}}:</label>
@@ -125,7 +125,7 @@
                             <select id="fieldComparisonForm1" class="input-block-level" ng-model="condition.form1" ng-options="item as item.displayName for item in formData.forms"></select>
                             <select id="fieldComparisonField1" class="input-block-level" ng-model="condition.field1" ng-options="item as item.name for item in formData.computedFields1"></select>
                             <label for="fieldComparisonOperator">{{msg('queries.whereConditionDialog.comparison.label.operator')}}:</label>
-                            <select id="fieldComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item.name for item in formData.operators"></select>
+                            <select id="fieldComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item for item in formData.operators"></select>
                         </div>
                         <div class="nested-well span6">
                             <label for="fieldComparisonField2">{{msg('queries.whereConditionDialog.comparison.label.field2')}}:</label>
@@ -144,13 +144,24 @@
                             <input type="number" pattern="-?[1-9][0-9]*" id="periodConditionOffset1" class="input-block-level" ng-model="condition.offset1" />
                         </div>
                     </div>
+                    <div class="row-fluid" ng-switch-when="calculationEndDate">
+                        <div class="nested-well span6">
+                            <label for="calculationEndDateConditionField1">{{msg('queries.whereConditionDialog.comparison.label.field1')}}:</label>
+                            <select id="calculationEndDateConditionForm1" class="input-block-level" ng-model="condition.form1" ng-options="item as item.displayName for item in formData.forms"></select>
+                            <select id="calculationEndDateConditionField1" class="input-block-level" ng-model="condition.field1" ng-options="item as item.name for item in formData.computedFields1"></select>
+                        </div>
+                        <div class="nested-well span6">
+                            <label for="calculationEndDateConditionOffset1">{{msg('queries.whereConditionDialog.comparison.label.offset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="calculationEndDateConditionOffset1" class="input-block-level" ng-model="condition.offset1" />
+                        </div>
+                    </div>
                     <div class="row-fluid" ng-switch-when="value">
                         <div class="nested-well span6">
                             <label for="dateComparisonField1">{{msg('queries.whereConditionDialog.comparison.label.field1')}}:</label>
                             <select id="valueComparisonForm1" class="input-block-level" ng-model="condition.form1" ng-options="item as item.displayName for item in formData.forms"></select>
                             <select id="valueComparisonField1" class="input-block-level" ng-model="condition.field1" ng-options="item as item.name for item in formData.computedFields1"></select>
                             <label for="valueComparisonOperator">{{msg('queries.whereConditionDialog.comparison.label.operator')}}:</label>
-                            <select id="valueComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item.name for item in formData.operators"></select>
+                            <select id="valueComparisonOperator" class="input-block-level" ng-model="condition.operator" ng-options="item as item for item in formData.operators"></select>
                         </div>
                         <div class="nested-well span6">
                             <div ng-switch="condition.field1.type">

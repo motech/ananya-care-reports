@@ -2,8 +2,10 @@ package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.types.ConditionType;
 import org.motechproject.carereporting.domain.views.ComplexConditionJsonView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,25 +26,32 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
 
     @ManyToOne
     @JoinColumn(name = "comparison_symbol_id", nullable = false)
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComparisonSymbolEntity operator;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "field_2_id")
-    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class })
+    @JsonView({ IndicatorJsonView.IndicatorDetails.class, ComplexConditionJsonView.ComplexConditionDetails.class,
+        QueryJsonView.EditForm.class })
     private ComputedFieldEntity field2;
 
     @Column(name = "offset_1")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
+    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
     private String offset1;
 
     @Column(name = "offset_2")
-    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class })
+    @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
     private String offset2;
 
     public FieldComparisonConditionEntity() {
         super();
+    }
+
+    @Override
+    public String getType() {
+        return ConditionType.FieldComparison.getValue();
     }
 
     public FieldComparisonConditionEntity(FieldComparisonConditionEntity conditionEntity) {
@@ -84,5 +93,18 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
 
     public void setOffset2(String offset2) {
         this.offset2 = offset2;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        FieldComparisonConditionEntity fieldComparisonConditionEntity = new FieldComparisonConditionEntity();
+
+        fieldComparisonConditionEntity.setField1(this.getField1());
+        fieldComparisonConditionEntity.setField2(this.getField2());
+        fieldComparisonConditionEntity.setOffset1(this.getOffset1());
+        fieldComparisonConditionEntity.setOffset2(this.getOffset2());
+        fieldComparisonConditionEntity.setOperator(this.getOperator());
+
+        return fieldComparisonConditionEntity;
     }
 }

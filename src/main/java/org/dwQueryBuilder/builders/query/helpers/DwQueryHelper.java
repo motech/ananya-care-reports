@@ -9,7 +9,6 @@ import org.jooq.Select;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectLimitStep;
 import org.jooq.SelectSelectStep;
 
 import static org.jooq.impl.DSL.tableByName;
@@ -28,7 +27,7 @@ public final class DwQueryHelper {
             SelectHavingConditionStep selectHavingConditionStep = null;
             if (dwQuery.getGroupBy() != null) {
                 selectHavingConditionStep = GroupByHelper
-                        .buildGroupBy(schemaName, selectSelectStep, dwQuery.getGroupBy());
+                        .buildGroupBy(schemaName, dwQuery, selectSelectStep, dwQuery.getGroupBy());
             }
 
             selectSelectStep = (selectHavingConditionStep != null)
@@ -37,13 +36,11 @@ public final class DwQueryHelper {
             Select select = null;
 
             SelectConditionStep selectConditionStep = buildFromQuery(schemaName, selectSelectStep, dwQuery);
+            if (dwQuery.getLimit() != null) {
+                select = selectConditionStep.limit(dwQuery.getLimit());
+            }
             select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
             select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, dwQuery.getTableName());
-
-            if (dwQuery.getLimit() != null) {
-                SelectLimitStep selectLimitStep = (SelectLimitStep) select;
-                select = selectLimitStep.limit(dwQuery.getLimit());
-            }
 
             return select;
         } catch (Exception e) {
@@ -101,14 +98,14 @@ public final class DwQueryHelper {
     @SuppressWarnings("unchecked")
     public static SelectConditionStep buildFromQuery(String schemaName,
                                                      SelectSelectStep selectSelectStep,
-                                                     DwQuery simpleDwQuery) {
+                                                     DwQuery dwQuery) {
         SelectJoinStep selectJoinStep = selectSelectStep.from(tableByName(
-                schemaName, simpleDwQuery.getTableName()));
+                schemaName, dwQuery.getTableName()));
 
         SelectConditionStep selectConditionStep = selectJoinStep.where();
-        if (simpleDwQuery.getWhereConditionGroup() != null) {
-            selectConditionStep = ConditionHelper.buildWhereConditionGroup(schemaName, selectConditionStep,
-                    simpleDwQuery.getWhereConditionGroup(), false, false);
+        if (dwQuery.getWhereConditionGroup() != null) {
+            selectConditionStep = ConditionHelper.buildWhereConditionGroup(schemaName, dwQuery, selectConditionStep,
+                    dwQuery.getWhereConditionGroup(), false, false);
         }
 
         return selectConditionStep;

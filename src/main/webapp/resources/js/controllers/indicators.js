@@ -217,7 +217,7 @@ care.controller('createIndicatorController', function($rootScope, $scope, $http,
             $scope.indicator.frequency = $scope.formData.frequencies[0].id;
             $scope.selectedChart.reportType = $scope.formData.reportTypes[0];
             $scope.selectedClassification = $scope.listClassifications[0];
-            $scope.indicator.numerator = $scope.formData.dwQueries[0].id;
+            $scope.indicator.numerator = ($scope.formData.dwQueries.length > 0) ? $scope.formData.dwQueries[0].id : null;
 
             for(var i = 0; i < $scope.formData.roles.length; i++) {
                 var id = $scope.formData.roles[i].id;

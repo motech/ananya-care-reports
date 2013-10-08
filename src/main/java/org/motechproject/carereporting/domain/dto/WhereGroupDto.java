@@ -1,14 +1,20 @@
 package org.motechproject.carereporting.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.motechproject.carereporting.domain.views.QueryJsonView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WhereGroupDto {
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private List<WhereGroupDto> groups;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private List<WhereConditionDto> conditions;
 
+    @JsonView({ QueryJsonView.EditForm.class })
     private String operator;
 
     public WhereGroupDto() {

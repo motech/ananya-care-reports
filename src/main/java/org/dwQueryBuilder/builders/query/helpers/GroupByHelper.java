@@ -1,5 +1,6 @@
 package org.dwQueryBuilder.builders.query.helpers;
 
+import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.data.GroupBy;
 import org.dwQueryBuilder.data.conditions.HavingCondition;
 import org.jooq.SelectHavingConditionStep;
@@ -15,6 +16,7 @@ public final class GroupByHelper {
     }
 
     public static SelectHavingConditionStep buildGroupBy(String schemaName,
+                                                         DwQuery dwQuery,
                                                          SelectSelectStep selectSelectStep,
                                                          GroupBy groupBy) {
         SelectHavingStep selectHavingStep = selectSelectStep.groupBy(
@@ -29,6 +31,7 @@ public final class GroupByHelper {
             return selectSelectStep.having(
                     ConditionHelper.buildCondition(
                             schemaName,
+                            dwQuery,
                             havingCondition.getSelectColumn(),
                             havingCondition.getOperator(),
                             havingCondition.getValue(),

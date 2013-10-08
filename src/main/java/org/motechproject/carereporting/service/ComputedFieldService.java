@@ -20,6 +20,8 @@ public interface ComputedFieldService {
 
     ComputedFieldEntity getComputedFieldById(Integer computedFieldId);
 
+    ComputedFieldEntity getComputedFieldByFormAndFieldName(String formName, String fieldName);
+
     Set<ComputedFieldEntity> getAllComputedFields(boolean origin);
 
     @PreAuthorize(HAS_ROLE_CAN_CREATE_COMPUTED_FIELDS)

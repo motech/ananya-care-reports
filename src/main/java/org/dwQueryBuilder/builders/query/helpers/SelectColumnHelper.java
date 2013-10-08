@@ -3,6 +3,7 @@ package org.dwQueryBuilder.builders.query.helpers;
 import org.apache.commons.lang.NotImplementedException;
 import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.ComputedColumnOperation;
+import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.DwQuery;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
@@ -34,13 +35,16 @@ public final class SelectColumnHelper {
         SelectSelectStep step = selectSelectStep;
 
         for (SelectColumn selectColumn : dwQuery.getSelectColumns()) {
-            step = step.select(resolveSelectColumn(schemaName, selectColumn, true, true));
+            step = step.select(resolveSelectColumn(schemaName, dwQuery, selectColumn, true, true));
         }
 
         return selectSelectStep;
     }
 
-    public static Field resolveSelectColumn(String schemaName, SelectColumn selectColumn, Boolean useSchemaName,
+    public static Field resolveSelectColumn(String schemaName,
+                                            DwQuery dwQuery,
+                                            SelectColumn selectColumn,
+                                            Boolean useSchemaName,
                                             Boolean useAlias) {
         Field field;
 
@@ -50,13 +54,13 @@ public final class SelectColumnHelper {
         }
 
         if (selectColumn.getFunction() != null) {
-            field = resolveAggregateFunction(schemaName, selectColumn, useSchemaName);
+            field = resolveAggregateFunction(schemaName, dwQuery, selectColumn, useSchemaName);
         } else {
 
             if (WILDCARD.equals(selectColumn.getComputedColumn().getFieldName())) {
                 field = resolveWildcard(schemaName, selectColumn.getComputedColumn(), useSchemaName);
             } else {
-                field = resolveComputedColumn(schemaName, selectColumn.getComputedColumn(), useSchemaName);
+                field = resolveComputedColumn(schemaName, dwQuery, selectColumn.getComputedColumn(), useSchemaName);
             }
 
             if (selectColumn.hasNullValue()) {
@@ -94,25 +98,39 @@ public final class SelectColumnHelper {
     }
 
     public static Field resolveAggregateFunction(String schemaName,
-                                                             SelectColumn selectColumn,
-                                                             Boolean useSchemaName) {
+                                                 DwQuery dwQuery,
+                                                 SelectColumn selectColumn,
+                                                 Boolean useSchemaName) {
         Field aggregateFunction;
 
         if (selectColumn.getComputedColumn().getFieldName().equals(WILDCARD)) {
             aggregateFunction = buildSelectColumnFunctionForWildcard(schemaName, selectColumn, useSchemaName);
         } else {
-            aggregateFunction = buildSelectColumnFunction(schemaName, selectColumn, useSchemaName);
+            aggregateFunction = buildSelectColumnFunction(schemaName, dwQuery, selectColumn, useSchemaName);
         }
 
         return aggregateFunction;
     }
 
     public static Field resolveComputedColumn(String schemaName,
+                                              DwQuery dwQuery,
                                               ComputedColumn computedColumn,
                                               Boolean useSchemaName) {
         Field field;
+        Boolean useSchema = useSchemaName;
 
-        if (useSchemaName) {
+        if (computedColumn.getTableName() != null) {
+            if (dwQuery.getCombineWith() != null) {
+                for (DwQueryCombination combination : dwQuery.getCombineWith()) {
+                    if (computedColumn.getTableName().equals(combination.getDwQuery().getTableName())) {
+                        useSchema = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (useSchema) {
             field = fieldByName(schemaName, computedColumn.getTableName(), computedColumn.getFieldName());
         } else {
             field = fieldByName(computedColumn.getTableName(), computedColumn.getFieldName());
@@ -120,7 +138,7 @@ public final class SelectColumnHelper {
 
         if (computedColumn.hasOperations()) {
             for (ComputedColumnOperation operation : computedColumn.getOperations()) {
-                Field field2 = resolveComputedColumn(schemaName, operation.getComputedColumn(), useSchemaName);
+                Field field2 = resolveComputedColumn(schemaName, dwQuery, operation.getComputedColumn(), useSchemaName);
 
                 switch (operation.getOperatorType()) {
                     case Add:
@@ -145,10 +163,11 @@ public final class SelectColumnHelper {
     }
 
     public static Field buildSelectColumnFunction(String schemaName,
+                                                  DwQuery dwQuery,
                                                   SelectColumn selectColumn,
                                                   Boolean useSchemaName) {
         try {
-            Field field = resolveComputedColumn(schemaName, selectColumn.getComputedColumn(), useSchemaName);
+            Field field = resolveComputedColumn(schemaName, dwQuery, selectColumn.getComputedColumn(), useSchemaName);
             if (selectColumn.hasNullValue()) {
                 field = field.nvl(selectColumn.getNullValue());
             }
