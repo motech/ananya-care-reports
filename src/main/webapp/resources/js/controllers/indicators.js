@@ -30,6 +30,15 @@ Array.prototype.removeFilter = function(array, filter) {
     return temp;
 };
 
+Array.prototype.pushUnique = function(element) {
+    for(var i = 0; i < this.length; i++) {
+        if(this[i].name == element.name) {
+            return;
+        }
+    }
+    this.push(element);
+}
+
 care.controller('uploadIndicatorController', function($scope) {
     $scope.title = 'indicators.uploadXml.title';
     $scope.error = typeof springError != 'undefined' ? springError : undefined;
@@ -90,7 +99,9 @@ care.controller('indicatorListController', function($scope, $http, $dialog, $fil
             $scope.classification = new Array();
             var ind = new Array();
             for(var i = 0; i < classification.length; i++) {
-                ind = ind.concat(classification[i].indicators);
+                for(var j = 0; j < classification[i].indicators.length; j++) {
+                    ind.pushUnique(classification[i].indicators[j]);
+                }
             }
             $scope.classification = [{
                 id: 0,
