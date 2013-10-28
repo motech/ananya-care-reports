@@ -21,7 +21,7 @@ import javax.persistence.Table;
 })
 public class GroupedByEntity extends AbstractEntity implements Cloneable {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "computed_field_id", referencedColumnName = "computed_field_id")
     @JsonView({ BaseView.class })
     private ComputedFieldEntity computedField;
