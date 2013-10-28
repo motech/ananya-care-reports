@@ -118,6 +118,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 report.indicatorName = indicator.name;
                 report.frequencyId = indicator.defaultFrequency.id;
                 report.additive = indicator.isAdditive;
+                report.categorized = indicator.isCategorized;
                 report.rowIndex = $scope.reportRows.length;
                 report.index = 0;
                 report.displayType = 'chart';

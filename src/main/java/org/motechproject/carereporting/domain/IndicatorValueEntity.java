@@ -59,6 +59,7 @@ public class IndicatorValueEntity extends AbstractEntity {
     private Date date;
 
     @Column(name = "category")
+    @JsonView({ DashboardJsonView.class })
     private String category;
 
     public IndicatorValueEntity() {

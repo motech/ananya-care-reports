@@ -154,11 +154,13 @@
                                             <thead>
                                             <th>{{msg('dashboards.charts.details.table.header.date')}}</th>
                                             <th>{{msg('dashboards.charts.details.table.header.value')}}</th>
+                                            <th ng-show="report.categorized">Category</th>
                                             </thead>
                                             <tbody>
                                             <tr ng-repeat="item in report.chart">
                                                 <td class="span8">{{formatDate(item.date)}}</td>
                                                 <td class="span4">{{item.value}}{{report.reportType.name == 'Pie Chart' && '%' || '' }}</td>
+                                                <td class="span4" ng-show="report.categorized">{{item.category}}</td>
                                             </tr>
                                             </tbody>
                                         </table>
