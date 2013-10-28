@@ -116,7 +116,7 @@
                         if (report.displayType != "chart") {
                             return;
                         }
-                        if (report.computing === null) {
+                        if (report.computing == null || report.computing == true) {
                             $(element[0]).html("<p class='text-center' style='margin-top: 50px;'>" + scope.msg('dashboards.charts.computing') + "</p>");
                             return;
                         }

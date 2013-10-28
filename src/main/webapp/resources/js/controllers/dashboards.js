@@ -113,7 +113,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 }
                 report.indicatorId = indicator.id;
                 report.needsRefreshing = true;
-                report.computing = indicator.isComputed;
+                report.computing = !indicator.isComputed;
                 report.indicatorAreaId = $scope.userArea.id;
                 report.indicatorName = indicator.name;
                 report.frequencyId = indicator.defaultFrequency.id;
