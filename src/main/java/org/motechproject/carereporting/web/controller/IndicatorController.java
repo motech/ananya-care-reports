@@ -371,9 +371,16 @@ public class IndicatorController extends BaseController {
     }
 
     private void validateIndicatorQueries(IndicatorEntity indicatorEntity) {
-        indicatorService.validateDwQuery(indicatorEntity.getNumerator());
+        DwQueryEntity numerator = (indicatorEntity.getNumerator().getId() == null)
+                ? indicatorEntity.getNumerator()
+                : indicatorService.getDwQueryById(indicatorEntity.getNumerator().getId());
+        indicatorService.validateDwQuery(numerator);
+
         if (indicatorEntity.getDenominator() != null) {
-            indicatorService.validateDwQuery(indicatorEntity.getDenominator());
+            DwQueryEntity denominator = (indicatorEntity.getDenominator().getId() == null)
+                    ? indicatorEntity.getDenominator()
+                    : indicatorService.getDwQueryById(indicatorEntity.getDenominator().getId());
+            indicatorService.validateDwQuery(denominator);
         }
     }
 
