@@ -43,11 +43,16 @@ public class CsvExportServiceImpl implements ExportService {
     private List<String[]> prepareCsvLines(List<IndicatorValueEntity> indicatorValues) {
         List<String[]> csvLines = new ArrayList<String[]>();
 
+        boolean categorized  = indicatorValues.size() > 0 && indicatorValues.get(0).getCategory() != null;
+
         List<String> header = new ArrayList<String>();
         header.add("Area");
         header.add("Frequency");
         header.add("Date");
         header.add("Value");
+        if (categorized) {
+            header.add("Category");
+        }
         csvLines.add(header.toArray(new String[header.size()]));
 
         for (IndicatorValueEntity indicatorValue : indicatorValues) {
@@ -56,6 +61,9 @@ public class CsvExportServiceImpl implements ExportService {
             line.add(indicatorValue.getFrequency().getFrequencyName());
             line.add(indicatorValue.getDateString());
             line.add(indicatorValue.getValue().toString());
+            if (categorized) {
+                line.add(indicatorValue.getCategory());
+            }
             csvLines.add(line.toArray(new String[line.size()]));
         }
         return csvLines;
