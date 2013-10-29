@@ -52,7 +52,7 @@ public class FormsController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String getForm(@PathVariable Integer formId) {
-        return writeAsString(IndicatorJsonView.IndicatorDetails.class,
+        return writeAsString(BaseView.class,
                 formsService.getFormByIdWithFields(formId, "computedFields", "fields"));
     }
 
