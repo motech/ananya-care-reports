@@ -16,6 +16,13 @@
                 <include>insert_initial_data.sql</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <outputDirectory>sample-indicators</outputDirectory>
+            <directory>target/${project.artifactId}-${project.version}/WEB-INF/classes/indicators</directory>
+            <includes>
+                <include>*.xml</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <files>
         <file>
