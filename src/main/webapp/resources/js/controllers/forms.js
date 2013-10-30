@@ -32,7 +32,7 @@ care.controller('formController', function($scope, $http, $routeParams, $locatio
 care.controller('formListController', function($scope, $http, $dialog, $errorService, $simplifiedHttpService) {
     $scope.title = 'forms.title';
 
-    var reloadMsg = $scope.msg('forms.list.reloadForms');
+    var reloadMsg = $scope.msg('forms.list.reloadForms.title');
     var loadingMsg = $scope.msg('forms.list.reloadForms.loading');
 
     $scope.isListReloaded = false;

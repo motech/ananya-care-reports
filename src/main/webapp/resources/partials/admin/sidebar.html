@@ -1,7 +1,7 @@
 <div class="sidebar span2">
     <nav>
         <ul class="nav nav-list">
-            <li class="nav-header">{{msg('menu.admin')}}</li>
+            <li class="nav-header">{{msg('menu.admin.title')}}</li>
             <li ng-class="{active: getLocation() == '#/admin/forms'}" ng-show="hasRole('CAN_EDIT_FORMS')"><a href="#/admin/forms"><i class="icon-list"></i> {{msg('menu.forms')}}</a></li>
             <li ng-class="{active: getLocation() == '#/admin/computed-fields'}" ng-show="hasRole('CAN_CREATE_COMPUTED_FIELDS')"><a href="#/admin/computed-fields"><i class="icon-briefcase"></i> {{msg('menu.admin.computedFields')}}</a></li>
         </ul>

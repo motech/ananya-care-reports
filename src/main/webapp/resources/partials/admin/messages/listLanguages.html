@@ -34,7 +34,7 @@
                             <td ng-class="{ muted: item.code == 'df' }">{{item.name}}</td>
                             <td>
                                 <button ng-show="hasRole('CAN_EDIT_LANGUAGES') && item.code != 'df'" class="btn" ng-click="editLanguage(item)">{{msg('common.edit')}}</button>
-                                <button ng-show="hasRole('CAN_REMOVE_LANGUAGES')" class="btn btn-danger pull-right" ng-click="removeLanguage(item)" ng-hide="item.code == 'df'">{{msg('common.remove')}}</button>
+                                <button ng-show="hasRole('CAN_REMOVE_LANGUAGES') && item.code != 'df'" class="btn btn-danger pull-right" ng-click="removeLanguage(item)">{{msg('common.remove')}}</button>
                                 <span class="text-error" ng-show="item.code == 'df'">{{msg('languages.list.cannotModify')}}</span>
                             </td>
                         </tr>

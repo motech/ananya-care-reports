@@ -93,10 +93,10 @@
                         <ul class="nav">
                             <li ng-class="{active: getLocation() == '#/'}"><a href="#">{{msg('menu.dashboards')}}</a></li>
                             <sec:authorize access="hasRole('CAN_CREATE_CLASSIFICATIONS') || hasRole('CAN_CREATE_INDICATORS') || hasRole('CAN_EDIT_CALCULATION')">
-                                <li ng-class="{active: getLocation().startsWith('#/indicators')}"><a href="#/indicators">{{msg('menu.indicators')}}</a></li>
+                                <li ng-class="{active: getLocation().startsWith('#/indicators')}"><a href="#/indicators">{{msg('menu.indicators.title')}}</a></li>
                             </sec:authorize>
                             <sec:authorize access="hasRole('CAN_CREATE_COMPUTED_FIELDS') || hasRole('CAN_CREATE_LANGUAGES') || hasRole('CAN_EDIT_FORMS')">
-                                <li ng-class="{active: getLocation().startsWith('#/admin')}"><a href="#/admin/forms">{{msg('menu.admin')}}</a></li>
+                                <li ng-class="{active: getLocation().startsWith('#/admin')}"><a href="#/admin/forms">{{msg('menu.admin.title')}}</a></li>
                             </sec:authorize>
                         </ul>
                         <div class="btn-toolbar pull-right">
@@ -106,7 +106,7 @@
                                 </a>
                                 <ul class="dropdown-menu nav-list dropdown-blue right-align">
                                     <li class="nav-header"><sec:authentication property="principal.username" /></li>
-                                    <li><a href="#/account/settings/"><i class="icon-user"></i> My Account Settings</a></li>
+                                    <li><a href="#/account/settings/"><i class="icon-user"></i> {{msg('account.settings.menu.title')}}</a></li>
                                     <li class="divider"></li>
                                     <li><a href="logout"><i class="icon-off"></i>{{msg('menu.logout')}}</a></li>
                                 </ul>
