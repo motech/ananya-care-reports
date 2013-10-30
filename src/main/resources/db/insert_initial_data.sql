@@ -94,7 +94,7 @@ insert into cron_task(second, minute, hour, day, month, week_day, year, frequenc
 
 insert into date_depth(date_depth) values ('2012-01-01');
 
-insert into language(language_id, code, name, creation_date, modification_date) values ('1', 'df', 'Default English', now(), now());
+insert into language(code, name, creation_date, modification_date) values ('df', 'Default English', now(), now());
 
 insert into value_comparison(condition_id, value, creation_date, modification_date, comparison_symbol_id) values (1, '90', now(), now(), 4);
 insert into value_comparison(condition_id, value, creation_date, modification_date, comparison_symbol_id) values (2, 'true', now(), now(), 1);
