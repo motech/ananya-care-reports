@@ -548,7 +548,7 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         return true;
     };
 
-    $scope.save = function(update, copy) {
+    $scope.save = function(update) {
         var convertSelectColumnsToDto = function(selectColumns) {
             var newColumns = [];
 
@@ -668,7 +668,6 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
         console.log(lastDwQuery);
 
         var url = (update === true) ? 'api/indicator/queries/' + $scope.editQueryId : 'api/indicator/queries/new';
-        url = (copy === true) ? url + '?clonedQueryId=' + $scope.editQueryId : url;
         var httpMethod = (update === true) ? 'PUT' : 'POST';
 
         $http({

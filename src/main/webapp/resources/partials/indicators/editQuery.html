@@ -187,13 +187,13 @@
                             <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
                             <div class="pull-right btn-group">
                                 <tip msg='queries.edit.duplicate.tip' />
-                                <button type="button" class="btn" ng-click="save(false, true)" ng-disabled="!isFormValid() || formData.queryName == formData.originalQueryName">{{msg('queries.edit.label.duplicate')}}</button>
-                                <button type="button" class="btn btn-primary" ng-click="save(true, false)" ng-disabled="!isFormValid()">{{msg('common.update')}}</button>
+                                <button type="button" class="btn" ng-click="save(false)" ng-disabled="!isFormValid() || formData.queryName == formData.originalQueryName">{{msg('queries.edit.label.duplicate')}}</button>
+                                <button type="button" class="btn btn-primary" ng-click="save(true)" ng-disabled="!isFormValid()">{{msg('common.update')}}</button>
                             </div>
                         </div>
                         <div ng-switch-when="false">
                             <button class="btn btn-success" ng-click="addQueryForm()">{{msg('queries.new.addQuery')}}</button>
-                            <button type="button" class="btn btn-primary pull-right" ng-click="save(false, false)" ng-disabled="!isFormValid()">{{msg('common.save')}}</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-click="save(false)" ng-disabled="!isFormValid()">{{msg('common.save')}}</button>
                         </div>
                     </div>
                 </div>

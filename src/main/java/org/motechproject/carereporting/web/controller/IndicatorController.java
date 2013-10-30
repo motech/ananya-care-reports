@@ -132,17 +132,12 @@ public class IndicatorController extends BaseController {
             produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createNewDwQuery(@RequestBody @Valid DwQueryDto dwQueryDto, BindingResult bindingResult,
-                                 @RequestParam(value = "clonedQueryId", required = false) Integer clonedQueryId) {
+    public void createNewDwQuery(@RequestBody @Valid DwQueryDto dwQueryDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CareApiRuntimeException(bindingResult.getFieldErrors());
         }
 
-        if (clonedQueryId == null || clonedQueryId <= 0) {
-            indicatorService.createNewDwQuery(dwQueryDto);
-        } else {
-            indicatorService.deepCopyDwQueryAndSave(dwQueryDto.getName(), indicatorService.getDwQueryById(clonedQueryId));
-        }
+        indicatorService.createNewDwQuery(dwQueryDto);
     }
 
     @RequestMapping(value = "/queries/{queryId}", method = RequestMethod.PUT,

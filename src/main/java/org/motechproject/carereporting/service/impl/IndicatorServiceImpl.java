@@ -304,6 +304,7 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
         dwQueryEntity.setId(queryId);
+        validateDwQuery(dwQueryEntity);
         dwQueryDao.update(dwQueryEntity);
     }
 
@@ -355,7 +356,8 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     public void deepCopyDwQueryAndSave(String dwQueryName, DwQueryEntity clonedEntity) {
         try {
-            DwQueryEntity dwQueryEntity = (DwQueryEntity) clonedEntity.clone();
+            DwQueryEntity dwQueryEntity = new DwQueryEntity(clonedEntity);
+            validateDwQuery(dwQueryEntity);
             dwQueryEntity.setName(dwQueryName);
             updateDwQueryNames(dwQueryEntity, 0);
             dwQueryDao.save(dwQueryEntity);
