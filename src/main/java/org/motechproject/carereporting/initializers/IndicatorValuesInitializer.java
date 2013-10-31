@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.motechproject.carereporting.context.ApplicationContextProvider;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
+import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.indicator.IndicatorCalculator;
 import org.motechproject.carereporting.service.CronService;
 import org.motechproject.carereporting.service.IndicatorService;
@@ -40,18 +41,24 @@ public class IndicatorValuesInitializer implements Runnable {
     public void run() {
         LOG.info(indicatorEntity.getName() + ": start calculation");
 
-        Date startDate = cronService.getDateDepth();
-        Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
+        try {
+            Date startDate = cronService.getDateDepth();
+            Set<FrequencyEntity> frequencyEntities = cronService.getAllFrequencies();
 
-        for (FrequencyEntity frequencyEntity: frequencyEntities) {
-            Date endDate = DateResolver.resolveDates(frequencyEntity, new Date())[1];
-            Date date = new Date(startDate.getTime());
+            for (FrequencyEntity frequencyEntity: frequencyEntities) {
+                Date endDate = DateResolver.resolveDates(frequencyEntity, new Date())[1];
+                Date date = new Date(startDate.getTime());
 
-            while (date.before(endDate)) {
-                Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
-                indicatorCalculator.calculateIndicatorValues(indicatorEntity, frequencyEntity, dates[0], dates[1]);
-                date = dates[1];
+                while (date.before(endDate)) {
+                    Date[] dates = DateResolver.resolveDates(frequencyEntity, date, date);
+                    indicatorCalculator.calculateIndicatorValues(indicatorEntity, frequencyEntity, dates[0], dates[1]);
+                    date = dates[1];
+                }
             }
+        } catch(RuntimeException e) {
+            indicatorService.setComputedForIndicator(indicatorEntity, true);
+            LOG.info(indicatorEntity.getName() + ": calculation failed");
+            throw new CareRuntimeException(e);
         }
         indicatorService.setComputedForIndicator(indicatorEntity, true);
         LOG.info(indicatorEntity.getName() + ": calculation finished");
