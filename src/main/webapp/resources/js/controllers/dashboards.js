@@ -69,6 +69,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         $http.get('api/users/indicators')
             .success(function(indicators) {
                 $scope.indicators = indicators;
+                $scope.fetchDashboards();
             }).error(function() {
                 $errorService.genericError($scope, 'indicators.list.error.cannotLoadIndicatorList');
             });
@@ -308,8 +309,6 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }
         }
     };
-
-    $scope.fetchDashboards();
 
     $scope.trendPerClassification = {};
 
