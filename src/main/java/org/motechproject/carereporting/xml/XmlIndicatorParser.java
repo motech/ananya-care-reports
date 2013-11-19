@@ -347,8 +347,14 @@ public class XmlIndicatorParser {
 
     private ConditionEntity createFieldComparisonCondition(WhereCondition condition) {
         FieldComparisonConditionEntity fieldComparisonConditionEntity = new FieldComparisonConditionEntity();
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("name", condition.getSecondField());
+        fields.put("form", formDao.getByField("tableName", condition.getTableName()));
+
         fieldComparisonConditionEntity.setOperator(comparisonSymbolDao.getByField("name", condition.getOperator()));
-        fieldComparisonConditionEntity.setField2(computedFieldDao.getByField("name", condition.getSecondField()));
+        fieldComparisonConditionEntity.setField2(computedFieldDao.getByFields(fields));
+        fieldComparisonConditionEntity.setOffset1(condition.getOffset1());
+        fieldComparisonConditionEntity.setOffset2(condition.getOffset2());
         return fieldComparisonConditionEntity;
     }
 

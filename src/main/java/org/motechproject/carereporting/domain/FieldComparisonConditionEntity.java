@@ -39,11 +39,11 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
 
     @Column(name = "offset_1")
     @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
-    private String offset1;
+    private Integer offset1;
 
     @Column(name = "offset_2")
     @JsonView({ ComplexConditionJsonView.ListComplexConditions.class, QueryJsonView.EditForm.class })
-    private String offset2;
+    private Integer offset2;
 
     public FieldComparisonConditionEntity() {
         super();
@@ -79,19 +79,19 @@ public class FieldComparisonConditionEntity extends ConditionEntity {
         this.field2 = field2;
     }
 
-    public String getOffset1() {
+    public Integer getOffset1() {
         return offset1;
     }
 
-    public void setOffset1(String offset1) {
+    public void setOffset1(Integer offset1) {
         this.offset1 = offset1;
     }
 
-    public String getOffset2() {
+    public Integer getOffset2() {
         return offset2;
     }
 
-    public void setOffset2(String offset2) {
+    public void setOffset2(Integer offset2) {
         this.offset2 = offset2;
     }
 

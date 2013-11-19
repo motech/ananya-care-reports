@@ -210,6 +210,8 @@ public class DwQueryHelper {
             builder.withCondition(prepareDateValueComparisonCondition((DateValueComparisonConditionEntity) condition));
         } else if (condition instanceof EnumRangeComparisonConditionEntity) {
             builder.withCondition(prepareEnumRangeComparisonCondition((EnumRangeComparisonConditionEntity) condition));
+        } else if (condition instanceof FieldComparisonConditionEntity) {
+            builder.withCondition(prepareFieldComparisonCondition((FieldComparisonConditionEntity) condition));
         } else if (condition instanceof PeriodConditionEntity) {
             PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
             if (periodCondition.getOffset() != null) {
@@ -232,6 +234,18 @@ public class DwQueryHelper {
                         prepareComputedField(condition.getField1()),
                         ComparisonType.fromSymbol(condition.getOperator().getName()),
                         condition.getValue());
+    }
+
+    private WhereConditionBuilder prepareFieldComparisonCondition(FieldComparisonConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withFieldComparison(
+                        condition.getField1().getForm().getTableName(),
+                        condition.getField1().getName(),
+                        condition.getOffset1() != null ? condition.getOffset1().toString() : null,
+                        ComparisonType.fromSymbol(condition.getOperator().getName()),
+                        condition.getField2().getForm().getTableName(),
+                        condition.getField2().getName(),
+                        condition.getOffset2() != null ? condition.getOffset2().toString() : null);
     }
 
     private WhereConditionBuilder prepareDateDiffComparisonCondition(DateDiffComparisonConditionEntity condition) {
@@ -502,8 +516,8 @@ public class DwQueryHelper {
                                                       WhereConditionDto whereConditionDto) {
         whereConditionDto.setField1(condition.getField1());
         whereConditionDto.setField2(condition.getField2());
-        whereConditionDto.setOffset1(Integer.parseInt(condition.getOffset1()));
-        whereConditionDto.setOffset2(Integer.parseInt(condition.getOffset2()));
+        whereConditionDto.setOffset1(condition.getOffset1());
+        whereConditionDto.setOffset2(condition.getOffset2());
         whereConditionDto.setOperator(condition.getOperator().getName());
     }
 
