@@ -1,0 +1,40 @@
+<indicator additive="false">
+    <name>Number of children 6-11 months old, which received DPT3</name>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <reportviews>
+            <reportview name="Program Manager"/>
+        </reportviews>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Line Chart" label-x="Time" label-y="Value"/>
+    </reports>
+    <area level="Block"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Count" fieldName="*"/>
+            </select-columns>
+            <dimension tableName="child_case"/>
+            <where-group>
+                <where-condition type="fieldComparison">
+                    <table-name>child_case</table-name>
+                    <field>dob</field>
+                    <second-field>dpt_3_date</second-field>
+                    <operator>&lt;</operator>
+                </where-condition>
+                <where-condition type="period">
+                    <table-name>child_case</table-name>
+                    <field>dob</field>
+                    <offset>330</offset>
+                    <second-offset>180</second-offset>
+                </where-condition>
+            </where-group>
+        </dw-query>
+    </numerator>
+</indicator>

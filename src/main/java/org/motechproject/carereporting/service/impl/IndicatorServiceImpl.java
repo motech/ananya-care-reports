@@ -510,8 +510,8 @@ public class IndicatorServiceImpl implements IndicatorService {
         fieldCondition.setField1(whereConditionDto.getField1());
         fieldCondition.setField2(whereConditionDto.getField2());
         fieldCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
-        Integer offset1 = (whereConditionDto.getOffset1() == null) ? null : whereConditionDto.getOffset1();
-        Integer offset2 = (whereConditionDto.getOffset2() == null) ? null : whereConditionDto.getOffset2();
+        Integer offset1 = whereConditionDto.getOffset1();
+        Integer offset2 = whereConditionDto.getOffset2();
         fieldCondition.setOffset1(offset1);
         fieldCondition.setOffset2(offset2);
         return fieldCondition;
