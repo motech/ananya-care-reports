@@ -40,6 +40,7 @@ public class SelectColumn {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+
     @XmlAttribute
     public String getNullValue() {
         return nullValue;

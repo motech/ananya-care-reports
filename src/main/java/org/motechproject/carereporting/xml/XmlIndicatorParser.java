@@ -29,6 +29,7 @@ import org.motechproject.carereporting.domain.HavingEntity;
 import org.motechproject.carereporting.domain.IndicatorClassificationEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.OrderByEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.RoleEntity;
@@ -43,6 +44,7 @@ import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
 import org.motechproject.carereporting.xml.mapping.indicators.GroupBy;
 import org.motechproject.carereporting.xml.mapping.indicators.Indicator;
+import org.motechproject.carereporting.xml.mapping.indicators.OrderBy;
 import org.motechproject.carereporting.xml.mapping.indicators.Query;
 import org.motechproject.carereporting.xml.mapping.indicators.Report;
 import org.motechproject.carereporting.xml.mapping.indicators.Role;
@@ -414,7 +416,25 @@ public class XmlIndicatorParser {
         if (dwQuery.getCombineWith() != null) {
             dwQueryEntity.setCombination(prepareCombination(dwQuery.getCombineWith()));
         }
+        if (dwQuery.getOrderBy() != null && dwQuery.getOrderBy().size() > 0) {
+            dwQueryEntity.setOrderBy(prepareOrderBy(dwQueryEntity, dwQuery.getOrderBy()));
+        }
+        dwQueryEntity.setLimit(dwQuery.getLimit());
+
         return dwQueryEntity;
+    }
+
+    private Set<OrderByEntity> prepareOrderBy(DwQueryEntity dwQueryEntity, List<OrderBy> orderByList) {
+        Set<OrderByEntity> orderByEntitySet = new LinkedHashSet<>();
+        for (OrderBy orderBy : orderByList) {
+            OrderByEntity orderByEntity = new OrderByEntity();
+            orderByEntity.setDwQuery(dwQueryEntity);
+            orderByEntity.setSelectColumn(prepareSelectColumn(orderBy.getSelectColumn(), null));
+            orderByEntity.setType(orderBy.getType());
+            orderByEntitySet.add(orderByEntity);
+        }
+
+        return orderByEntitySet;
     }
 
     private CombinationEntity prepareCombination(CombineWith combineWith) {

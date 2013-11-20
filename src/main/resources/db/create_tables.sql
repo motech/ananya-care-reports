@@ -222,27 +222,42 @@ CREATE TABLE IF NOT EXISTS dashboard_app.grouped_by
 
 CREATE TABLE IF NOT EXISTS dashboard_app.dw_query
 (
-  dw_query_id serial NOT NULL,
-  combination_id integer,
-  grouped_by_id integer,
-  creation_date timestamp without time zone,
-  modification_date timestamp without time zone,
-  where_group_id integer,
-  has_period_condition boolean,
-  table_name character varying(100),
-  parent_id integer,
-  name character varying(100),
-  CONSTRAINT dw_query_pk PRIMARY KEY (dw_query_id ),
-  CONSTRAINT dw_query_grouped_by_id FOREIGN KEY (grouped_by_id)
-      REFERENCES dashboard_app.grouped_by (grouped_by_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL,
-  CONSTRAINT dw_query_where_group_id FOREIGN KEY (where_group_id)
-      REFERENCES dashboard_app.where_group (where_group_id) MATCH FULL
-      ON UPDATE SET NULL ON DELETE SET NULL,
-  CONSTRAINT dw_query_parent_id FOREIGN KEY (parent_id)
-      REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
-      ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
-  CONSTRAINT dw_query_uk UNIQUE (name)
+    dw_query_id serial NOT NULL,
+    combination_id integer,
+    grouped_by_id integer,
+    creation_date timestamp without time zone,
+    modification_date timestamp without time zone,
+    where_group_id integer,
+    has_period_condition boolean,
+    table_name character varying(100),
+    parent_id integer,
+    name character varying(100),
+    result_limit integer DEFAULT NULL,
+    CONSTRAINT dw_query_pk PRIMARY KEY (dw_query_id ),
+    CONSTRAINT dw_query_grouped_by_id FOREIGN KEY (grouped_by_id)
+        REFERENCES dashboard_app.grouped_by (grouped_by_id) MATCH FULL
+        ON UPDATE SET NULL ON DELETE SET NULL,
+    CONSTRAINT dw_query_where_group_id FOREIGN KEY (where_group_id)
+        REFERENCES dashboard_app.where_group (where_group_id) MATCH FULL
+        ON UPDATE SET NULL ON DELETE SET NULL,
+    CONSTRAINT dw_query_parent_id FOREIGN KEY (parent_id)
+        REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
+        ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
+    CONSTRAINT dw_query_uk UNIQUE (name)
+);
+
+CREATE TABLE IF NOT EXISTS dashboard_app.order_by
+(
+    order_by_id serial NOT NULL,
+    dw_query_id integer NOT NULL,
+    select_column_id integer NOT NULL,
+    type character varying (15) NOT NULL,
+    creation_date timestamp without time zone,
+    modification_date timestamp without time zone,
+    CONSTRAINT order_by_dw_query_id FOREIGN KEY (dw_query_id)
+        REFERENCES dashboard_app.dw_query (dw_query_id) MATCH FULL
+        ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
+    CONSTRAINT order_by_uk UNIQUE (order_by_id, select_column_id)
 );
 
 CREATE TABLE IF NOT EXISTS dashboard_app.dw_query_select_column

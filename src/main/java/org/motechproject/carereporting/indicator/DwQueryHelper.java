@@ -20,6 +20,7 @@ import org.dwQueryBuilder.data.conditions.where.WhereCondition;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.OrderByType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.motechproject.carereporting.domain.AreaEntity;
@@ -37,6 +38,7 @@ import org.motechproject.carereporting.domain.FieldComparisonConditionEntity;
 import org.motechproject.carereporting.domain.FieldOperationEntity;
 import org.motechproject.carereporting.domain.GroupedByEntity;
 import org.motechproject.carereporting.domain.HavingEntity;
+import org.motechproject.carereporting.domain.OrderByEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.SelectColumnEntity;
 import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
@@ -57,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -109,6 +112,20 @@ public class DwQueryHelper {
         if (dwQueryEntity.getWhereGroup() != null) {
             dwQueryBuilder.withWhereConditionGroup(prepareWhereConditionGroup(dwQueryEntity.getWhereGroup()));
         }
+        if (dwQueryEntity.getOrderBy() != null && dwQueryEntity.getOrderBy().size() > 0) {
+            List<org.dwQueryBuilder.data.OrderBy> orderByList = new ArrayList<>();
+            for (OrderByEntity orderByEntity : dwQueryEntity.getOrderBy()) {
+                orderByList.add(new org.dwQueryBuilder.data.OrderBy(
+                        prepareSelectColumn(orderByEntity.getSelectColumn(), dwQueryEntity.getTableName(), null).build(),
+                        OrderByType.valueOf(orderByEntity.getType().getValue())
+                ));
+            }
+            dwQueryBuilder.withOrderBy(orderByList);
+        }
+        if (dwQueryEntity.getLimit() != null) {
+            dwQueryBuilder.withLimit(dwQueryEntity.getLimit());
+        }
+
         return dwQueryBuilder.build();
     }
 

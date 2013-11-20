@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -49,6 +50,9 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
     @JoinColumn(name = "where_group_id", referencedColumnName = "where_group_id")
     private WhereGroupEntity whereGroup;
 
+    @OneToMany(mappedBy = "dwQuery", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<OrderByEntity> orderBy;
+
     @Column(name = "has_period_condition")
     @JsonView({ QueryJsonView.EditForm.class })
     private boolean hasPeriodCondition;
@@ -56,6 +60,9 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "dw_query_id")
     private DwQueryEntity parentQuery;
+
+    @Column(name = "result_limit", nullable = true)
+    private Integer limit;
 
     @Column(name = "name")
     @JsonView({ BaseView.class })
@@ -76,6 +83,12 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
         whereGroup = dwQueryEntity.getWhereGroup() != null ? new WhereGroupEntity(dwQueryEntity.getWhereGroup()) : null;
         parentQuery = dwQueryEntity.getParentQuery();
         name = dwQueryEntity.getName();
+        if (dwQueryEntity.getOrderBy() != null) {
+            orderBy = new LinkedHashSet<>();
+            for (OrderByEntity orderByEntity : dwQueryEntity.getOrderBy()) {
+                orderBy.add(new OrderByEntity(orderByEntity));
+            }
+        }
     }
 
     public String getTableName() {
@@ -142,6 +155,22 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
         this.name = name;
     }
 
+    public Set<OrderByEntity> getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(Set<OrderByEntity> orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         DwQueryEntity dwQueryEntity = new DwQueryEntity();
@@ -159,10 +188,19 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
 
         dwQueryEntity.setWhereGroup((WhereGroupEntity) this.whereGroup.clone());
 
-        if (dwQueryEntity.getCombination() != null) {
-            dwQueryEntity.setCombination((CombinationEntity) dwQueryEntity.getCombination().clone());
-            dwQueryEntity.getCombination().getDwQuery().setParentQuery(this);
+        if (this.getCombination() != null) {
+            dwQueryEntity.setCombination((CombinationEntity) this.getCombination().clone());
+            dwQueryEntity.getCombination().getDwQuery().setParentQuery(dwQueryEntity);
         }
+
+        if (this.getOrderBy() != null) {
+            dwQueryEntity.setOrderBy(new LinkedHashSet<OrderByEntity>());
+            for (OrderByEntity orderByEntity : dwQueryEntity.getOrderBy()) {
+                dwQueryEntity.getOrderBy().add((OrderByEntity) orderByEntity.clone());
+            }
+        }
+
+        dwQueryEntity.setLimit(this.getLimit());
 
         return dwQueryEntity;
     }

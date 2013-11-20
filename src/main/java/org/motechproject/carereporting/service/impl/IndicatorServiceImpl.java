@@ -35,6 +35,7 @@ import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorTypeEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.OrderByEntity;
 import org.motechproject.carereporting.domain.PeriodConditionEntity;
 import org.motechproject.carereporting.domain.ReportEntity;
 import org.motechproject.carereporting.domain.ReportTypeEntity;
@@ -910,6 +911,12 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         Hibernate.initialize(dwQueryEntity.getWhereGroup());
         Hibernate.initialize(dwQueryEntity.getCombination());
+        Hibernate.initialize(dwQueryEntity.getOrderBy());
+        if (dwQueryEntity.getOrderBy() != null) {
+            for (OrderByEntity orderByEntity : dwQueryEntity.getOrderBy()) {
+                Hibernate.initialize(orderByEntity.getSelectColumn());
+            }
+        }
         if (dwQueryEntity.getCombination() != null) {
             initializeDwQuery(dwQueryEntity.getCombination().getDwQuery());
         }

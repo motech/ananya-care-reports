@@ -1,15 +1,23 @@
 package org.dwQueryBuilder.builders.query.helpers;
 
 import org.dwQueryBuilder.data.DwQueryCombination;
+import org.dwQueryBuilder.data.OrderBy;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.DwQuery;
+import org.dwQueryBuilder.data.enums.OrderByType;
 import org.dwQueryBuilder.exceptions.QueryBuilderRuntimeException;
 import org.jooq.DSLContext;
 import org.jooq.Select;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectOrderByStep;
 import org.jooq.SelectSelectStep;
+import org.jooq.SortField;
+import org.jooq.SortOrder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.jooq.impl.DSL.tableByName;
 
@@ -41,6 +49,9 @@ public final class DwQueryHelper {
             }
             select = chooseSelectStep(select, selectConditionStep, selectHavingConditionStep, selectSelectStep);
             select = buildCombineWithStep(dslContext, schemaName, dwQuery, select, dwQuery.getTableName());
+            if (dwQuery.getOrderBy() != null && dwQuery.getOrderBy().size() > 0) {
+                select = buildOrderByStep(select, dwQuery);
+            }
 
             return select;
         } catch (Exception e) {
@@ -74,6 +85,24 @@ public final class DwQueryHelper {
             }
         }
 
+        return newSelect;
+    }
+
+    private static Select buildOrderByStep(Select select, DwQuery dwQuery) {
+        Select newSelect = select;
+        SelectOrderByStep selectOrderByStep = (SelectOrderByStep) newSelect;
+        List<SortField> orderBy = new ArrayList<>();
+        for (OrderBy orderByField : dwQuery.getOrderBy()) {
+            SortOrder sortOrder = (orderByField.getType().equals(OrderByType.Ascending))
+                    ? SortOrder.ASC : SortOrder.DESC;
+
+            SortField sortField = SelectColumnHelper.resolveSelectColumn(
+                    null, dwQuery, orderByField.getSelectColumn(), false,
+                    orderByField.getSelectColumn().hasAlias()).sort(sortOrder);
+            orderBy.add(sortField);
+        }
+
+        newSelect = selectOrderByStep.orderBy(orderBy);
         return newSelect;
     }
 

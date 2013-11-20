@@ -111,8 +111,30 @@
                 </xs:complexType>
             </xs:element>
             <xs:element name="where-group" minOccurs="0" type="where_group" />
+            <xs:element name="order-by-group" type="order_by_group" minOccurs="0" maxOccurs="1" />
+            <xs:element name="limit" type="xs:positiveInteger" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
+
+    <xs:complexType name="order_by_group">
+        <xs:sequence minOccurs="0">
+            <xs:element name="order-by" type="order_by" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="order_by" >
+        <xs:choice minOccurs="1" maxOccurs="1">
+            <xs:element name="select-column" type="select_column" minOccurs="1" maxOccurs="1" />
+        </xs:choice>
+        <xs:attribute name="type" type="order_by_type" use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="order_by_type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ascending" />
+            <xs:enumeration value="descending" />
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="having">
         <xs:attribute name="function" use="optional" type="aggregation_function" />
@@ -197,15 +219,15 @@
     </xs:complexType>
     <xs:complexType name="select_columns">
         <xs:sequence>
-            <xs:element name="select-column" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:attribute name="fieldName" use="required" type="xs:string" />
-                    <xs:attribute name="tableName" use="optional" type="xs:string" />
-                    <xs:attribute name="aggregation" use="optional" type="xs:string" />
-                    <xs:attribute name="nullValue" use="optional" type="xs:string" />
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="select-column" maxOccurs="unbounded" type="select_column" />
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="select_column">
+        <xs:attribute name="fieldName" use="required" type="xs:string" />
+        <xs:attribute name="tableName" use="optional" type="xs:string" />
+        <xs:attribute name="aggregation" use="optional" type="xs:string" />
+        <xs:attribute name="nullValue" use="optional" type="xs:string" />
     </xs:complexType>
 
 </xs:schema>

@@ -1,11 +1,14 @@
 package org.dwQueryBuilder.builders;
 
+import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.DwQueryCombination;
+import org.dwQueryBuilder.data.OrderBy;
 import org.dwQueryBuilder.data.SelectColumn;
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 import org.dwQueryBuilder.data.enums.CombineType;
 import org.dwQueryBuilder.data.enums.ComparisonType;
 import org.dwQueryBuilder.data.enums.OperatorType;
+import org.dwQueryBuilder.data.enums.OrderByType;
 import org.dwQueryBuilder.data.enums.SelectColumnFunctionType;
 import org.dwQueryBuilder.data.enums.WhereConditionJoinType;
 import org.dwQueryBuilder.data.DwQuery;
@@ -124,6 +127,10 @@ public class QueryBuilderTest {
             "select * from \"report\".\"mother_case\" limit 1 offset 0";
     private static final String EXPECTED_POSTGRESQL_LIMIT_ZERO_SQL_STRING =
             "select * from \"report\".\"mother_case\" limit 0 offset 0";
+    private static final String EXPECTED_POSTGRESQL_ORDER_BY_MULTIPLE_SQL_STRING =
+            "select coalesce(\"report\".\"mother_case\".\"id\", '0'), coalesce(\"report\".\"mother_case\".\"age\", " +
+                    "'0') from \"report\".\"mother_case\" order by coalesce(\"mother_case\".\"age\", '0') asc," +
+                    " coalesce(\"mother_case\".\"id\", '0') desc";
 
     @Test
     public void testPostgreSqlQueryBuilderSimpleConditionWithDateDiffComparison() {
@@ -686,5 +693,30 @@ public class QueryBuilderTest {
 
         assertNotNull(sqlString);
         assertEquals(EXPECTED_POSTGRESQL_LIMIT_ZERO_SQL_STRING, sqlString);
+    }
+
+    @Test
+    public void testPostgreSqlOrderBy() {
+        SelectColumn selectId = new SelectColumnBuilder()
+                .withColumn(MOTHER_CASE, ID)
+                .withNullValue("0")
+                .build();
+        SelectColumn selectAge = new SelectColumnBuilder()
+                .withColumn(MOTHER_CASE, AGE)
+                .withNullValue("0")
+                .build();
+
+        DwQuery dwQuery = new DwQueryBuilder()
+                .withSelectColumn(selectId)
+                .withSelectColumn(selectAge)
+                .withTableName(MOTHER_CASE)
+                .withOrderBy(new OrderBy(selectAge, OrderByType.Ascending))
+                .withOrderBy(new OrderBy(selectId, OrderByType.Descending))
+                .build();
+        String sqlString = QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES,
+                TEST_SCHEMA_NAME, dwQuery, false);
+
+        assertNotNull(sqlString);
+        assertEquals(EXPECTED_POSTGRESQL_ORDER_BY_MULTIPLE_SQL_STRING, sqlString);
     }
 }

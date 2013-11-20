@@ -18,6 +18,10 @@ public class DwQuery {
 
     private List<SelectColumn> selectColumns;
 
+    private List<OrderBy> orderBy;
+
+    private Integer limit;
+
     @XmlElement
     public Dimension getDimension() {
         return dimension;
@@ -62,5 +66,24 @@ public class DwQuery {
 
     public void setCombineWith(CombineWith combineWith) {
         this.combineWith = combineWith;
+    }
+
+    @XmlElementWrapper(name = "order-by-group")
+    @XmlElement(name = "order-by")
+    public List<OrderBy> getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(List<OrderBy> orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    @XmlElement(name = "limit")
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 }

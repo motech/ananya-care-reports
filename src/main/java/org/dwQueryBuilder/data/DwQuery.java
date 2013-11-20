@@ -2,6 +2,7 @@ package org.dwQueryBuilder.data;
 
 import org.dwQueryBuilder.data.conditions.where.WhereConditionGroup;
 
+import java.util.List;
 import java.util.Set;
 
 public class DwQuery {
@@ -10,6 +11,7 @@ public class DwQuery {
     private GroupBy groupBy;
     private Set<DwQueryCombination> combineWith;
     private WhereConditionGroup whereConditionGroup;
+    private List<OrderBy> orderBy;
     private Integer limit;
 
     public DwQuery(Set<SelectColumn> selectColumns,
@@ -17,12 +19,14 @@ public class DwQuery {
                    GroupBy groupBy,
                    Set<DwQueryCombination> combineWith,
                    WhereConditionGroup whereConditionGroup,
+                   List<OrderBy> orderBy,
                    Integer limit) {
         this.selectColumns = selectColumns;
         this.tableName = tableName;
         this.groupBy = groupBy;
         this.combineWith = combineWith;
         this.whereConditionGroup = whereConditionGroup;
+        this.orderBy = orderBy;
         this.limit = limit;
     }
 
@@ -64,6 +68,14 @@ public class DwQuery {
 
     public void setWhereConditionGroup(WhereConditionGroup whereConditionGroup) {
         this.whereConditionGroup = whereConditionGroup;
+    }
+
+    public List<OrderBy> getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(List<OrderBy> orderBy) {
+        this.orderBy = orderBy;
     }
 
     public Integer getLimit() {
