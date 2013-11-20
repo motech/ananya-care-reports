@@ -5,4 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
+    <changeSet id="CARE #119" author="Krzysztof Kaczmarczyk">
+        <sql>
+            ALTER TABLE dashboard_app.period_comparison ADD column end_offset integer;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

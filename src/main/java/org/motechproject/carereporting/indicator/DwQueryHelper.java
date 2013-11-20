@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class DwQueryHelper {
 
     private static final int SECONDS_PER_DAY = 86_400;
@@ -214,7 +215,10 @@ public class DwQueryHelper {
             builder.withCondition(prepareFieldComparisonCondition((FieldComparisonConditionEntity) condition));
         } else if (condition instanceof PeriodConditionEntity) {
             PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
-            if (periodCondition.getOffset() != null) {
+            if (periodCondition.getOffset1() != null && periodCondition.getOffset2() != null) {
+                builder.withCondition(preparePeriodConditionFromDateWithTwoOffsets(periodCondition));
+                builder.withCondition(preparePeriodConditionToDateWithTwoOffsets(periodCondition));
+            } else if (periodCondition.getOffset1() != null || periodCondition.getOffset2() != null) {
                 builder.withCondition(preparePeriodConditionFromDate(periodCondition));
                 builder.withCondition(preparePeriodConditionToDate(periodCondition));
             } else {
@@ -241,11 +245,11 @@ public class DwQueryHelper {
                 .withFieldComparison(
                         condition.getField1().getForm().getTableName(),
                         condition.getField1().getName(),
-                        condition.getOffset1() != null ? condition.getOffset1().toString() : null,
+                        condition.getOffset1() != null ? condition.getOffset1().toString() : "0",
                         ComparisonType.fromSymbol(condition.getOperator().getName()),
                         condition.getField2().getForm().getTableName(),
                         condition.getField2().getName(),
-                        condition.getOffset2() != null ? condition.getOffset2().toString() : null);
+                        condition.getOffset2() != null ? condition.getOffset2().toString() : "0");
     }
 
     private WhereConditionBuilder prepareDateDiffComparisonCondition(DateDiffComparisonConditionEntity condition) {
@@ -298,7 +302,8 @@ public class DwQueryHelper {
                         prepareComputedField(condition.getField1()),
                         ComparisonType.Less,
                         "%(toDate)",
-                        condition.getOffset() < 0 ? condition.getOffset() : 0);
+                        condition.getOffset1() < 0 ?
+                                condition.getOffset1() : condition.getOffset2() > 0 ? condition.getOffset2() : 0);
     }
 
     private WhereConditionBuilder preparePeriodConditionFromDate(PeriodConditionEntity condition) {
@@ -307,7 +312,32 @@ public class DwQueryHelper {
                         prepareComputedField(condition.getField1()),
                         ComparisonType.GreaterEqual,
                         "%(fromDate)",
-                        condition.getOffset() > 0 ? condition.getOffset() : 0);
+                        condition.getOffset1() > 0 ?
+                                condition.getOffset1() : condition.getOffset2() < 0 ? condition.getOffset2() : 0);
+    }
+
+    private WhereConditionBuilder preparePeriodConditionToDateWithTwoOffsets(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        prepareComputedField(condition.getField1()),
+                        ComparisonType.Less,
+                        "%(toDate)",
+                        condition.getOffset2() > 0 ?
+                                (condition.getOffset1() < 0 ? condition.getOffset1()
+                                        + condition.getOffset2() : condition.getOffset2()) :
+                                (condition.getOffset1() < 0 ? condition.getOffset1() : 0));
+    }
+
+    private WhereConditionBuilder preparePeriodConditionFromDateWithTwoOffsets(PeriodConditionEntity condition) {
+        return new WhereConditionBuilder()
+                .withDateValueComparison(
+                        prepareComputedField(condition.getField1()),
+                        ComparisonType.GreaterEqual,
+                        "%(fromDate)",
+                        condition.getOffset1() > 0 ?
+                                (condition.getOffset2() < 0 ? condition.getOffset1()
+                                        + condition.getOffset2() : condition.getOffset1()) :
+                                (condition.getOffset2() < 0 ? condition.getOffset2() : 0));
     }
 
     private WhereConditionBuilder prepareCalculationEndDateCondition(CalculationEndDateConditionEntity condition) {
@@ -580,6 +610,7 @@ public class DwQueryHelper {
                 condition.getTableName(), condition.getColumnName());
 
         whereConditionDto.setField1(computedFieldEntity);
-        whereConditionDto.setOffset1(condition.getOffset());
+        whereConditionDto.setOffset1(condition.getOffset1());
+        whereConditionDto.setOffset2(condition.getOffset2());
     }
 }

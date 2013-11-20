@@ -530,7 +530,8 @@ public class IndicatorServiceImpl implements IndicatorService {
         periodConditionEntity.setField1(whereConditionDto.getField1());
         periodConditionEntity.setTableName(whereConditionDto.getField1().getForm().getTableName());
         periodConditionEntity.setColumnName(whereConditionDto.getField1().getName());
-        periodConditionEntity.setOffset(whereConditionDto.getOffset1());
+        periodConditionEntity.setOffset1(whereConditionDto.getOffset1());
+        periodConditionEntity.setOffset2(whereConditionDto.getOffset2());
         return periodConditionEntity;
     }
 

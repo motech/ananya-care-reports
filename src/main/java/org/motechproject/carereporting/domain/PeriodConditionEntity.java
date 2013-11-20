@@ -25,7 +25,11 @@ public class PeriodConditionEntity extends ConditionEntity {
 
     @Column(name = "start_offset")
     @JsonView({ QueryJsonView.EditForm.class })
-    private Integer offset;
+    private Integer offset1;
+
+    @Column(name = "end_offset")
+    @JsonView({ QueryJsonView.EditForm.class })
+    private Integer offset2;
 
     @Column(name = "table_name")
     @JsonView({ QueryJsonView.EditForm.class })
@@ -42,7 +46,8 @@ public class PeriodConditionEntity extends ConditionEntity {
     public PeriodConditionEntity(PeriodConditionEntity conditionEntity) {
         super(conditionEntity);
         columnName = conditionEntity.getColumnName();
-        offset = conditionEntity.getOffset();
+        offset1 = conditionEntity.getOffset1();
+        offset2 = conditionEntity.getOffset2();
         tableName = conditionEntity.getTableName();
     }
 
@@ -54,12 +59,20 @@ public class PeriodConditionEntity extends ConditionEntity {
         this.columnName = columnName;
     }
 
-    public Integer getOffset() {
-        return offset;
+    public Integer getOffset1() {
+        return offset1;
     }
 
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public void setOffset1(Integer offset1) {
+        this.offset1 = offset1;
+    }
+
+    public Integer getOffset2() {
+        return offset2;
+    }
+
+    public void setOffset2(Integer offset2) {
+        this.offset2 = offset2;
     }
 
     public String getTableName() {
@@ -75,7 +88,8 @@ public class PeriodConditionEntity extends ConditionEntity {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
 
         periodConditionEntity.setField1(this.getField1());
-        periodConditionEntity.setOffset(this.getOffset());
+        periodConditionEntity.setOffset1(this.getOffset1());
+        periodConditionEntity.setOffset2(this.getOffset2());
         periodConditionEntity.setTableName(this.getTableName());
         periodConditionEntity.setColumnName(this.getColumnName());
 
