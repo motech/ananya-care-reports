@@ -1,5 +1,5 @@
 <indicator additive="false">
-    <name> % of children 6-11 months old, which received DPT3</name>
+    <name>% of children 6-8 months old, receiving cereal</name>
     <classifications>
         <classification name="Birth preparedness plan"/>
     </classifications>
@@ -11,13 +11,12 @@
     </owners>
     <trend>3</trend>
     <reports>
-        <report type="Pie Chart" label-x="Time" label-y="%"/>
-        <report type="Line Chart" label-x="Time" label-y="Value"/>
+        <report type="Pie Chart" label-x="Time" label-y="Value"/>
     </reports>
     <area level="Block"/>
     <default-frequency>Daily</default-frequency>
     <numerator>
-        <indicator-name>Number of children 6-11 months old, which received DPT3</indicator-name>
+        <indicator-name>Number of children 6-8 months old, receiving cereal</indicator-name>
     </numerator>
     <denominator>
         <dw-query>
@@ -30,7 +29,7 @@
                     <table-name>child_case</table-name>
                     <field>dob</field>
                     <offset>180</offset>
-                    <second-offset>330</second-offset>
+                    <second-offset>240</second-offset>
                 </where-condition>
             </where-group>
         </dw-query>

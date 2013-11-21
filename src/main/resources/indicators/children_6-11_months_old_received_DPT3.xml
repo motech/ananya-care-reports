@@ -31,8 +31,8 @@
                 <where-condition type="period">
                     <table-name>child_case</table-name>
                     <field>dob</field>
-                    <offset>330</offset>
-                    <second-offset>180</second-offset>
+                    <offset>180</offset>
+                    <second-offset>330</second-offset>
                 </where-condition>
             </where-group>
         </dw-query>
