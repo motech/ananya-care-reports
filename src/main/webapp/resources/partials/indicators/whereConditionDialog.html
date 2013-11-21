@@ -140,8 +140,10 @@
                             <select id="periodConditionField1" class="input-block-level" ng-model="condition.field1" ng-options="item as item.name for item in formData.computedFields1"></select>
                         </div>
                         <div class="nested-well span6">
-                            <label for="periodConditionOffset1">{{msg('queries.whereConditionDialog.comparison.label.offset')}}:</label>
+                            <label for="periodConditionOffset1">{{msg('queries.whereConditionDialog.comparison.label.startOffset')}}:</label>
                             <input type="number" pattern="-?[1-9][0-9]*" id="periodConditionOffset1" class="input-block-level" ng-model="condition.offset1" />
+                            <label for="periodConditionOffset2">{{msg('queries.whereConditionDialog.comparison.label.endOffset')}}:</label>
+                            <input type="number" pattern="-?[1-9][0-9]*" id="periodConditionOffset2" class="input-block-level" ng-model="condition.offset2" />
                         </div>
                     </div>
                     <div class="row-fluid" ng-switch-when="calculationEndDate">
