@@ -215,12 +215,10 @@ public class DwQueryHelper {
             builder.withCondition(prepareFieldComparisonCondition((FieldComparisonConditionEntity) condition));
         } else if (condition instanceof PeriodConditionEntity) {
             PeriodConditionEntity periodCondition = (PeriodConditionEntity) condition;
-            if (periodCondition.getOffset1() != null && periodCondition.getOffset2() != null) {
+            if ((periodCondition.getOffset1() != 0 || periodCondition.getOffset2() != 0) &&
+                    !periodCondition.getOffset1().equals(periodCondition.getOffset2())) {
                 builder.withCondition(preparePeriodConditionFromDateWithTwoOffsets(periodCondition));
                 builder.withCondition(preparePeriodConditionToDateWithTwoOffsets(periodCondition));
-            } else if (periodCondition.getOffset1() != null || periodCondition.getOffset2() != null) {
-                builder.withCondition(preparePeriodConditionFromDate(periodCondition));
-                builder.withCondition(preparePeriodConditionToDate(periodCondition));
             } else {
                 builder.withCondition(prepareDateBetweenCondition(periodCondition));
             }
@@ -296,36 +294,14 @@ public class DwQueryHelper {
                 );
     }
 
-    private WhereConditionBuilder preparePeriodConditionToDate(PeriodConditionEntity condition) {
-        return new WhereConditionBuilder()
-                .withDateValueComparison(
-                        prepareComputedField(condition.getField1()),
-                        ComparisonType.Less,
-                        "%(toDate)",
-                        condition.getOffset1() < 0 ?
-                                condition.getOffset1() : condition.getOffset2() > 0 ? condition.getOffset2() : 0);
-    }
-
-    private WhereConditionBuilder preparePeriodConditionFromDate(PeriodConditionEntity condition) {
-        return new WhereConditionBuilder()
-                .withDateValueComparison(
-                        prepareComputedField(condition.getField1()),
-                        ComparisonType.GreaterEqual,
-                        "%(fromDate)",
-                        condition.getOffset1() > 0 ?
-                                condition.getOffset1() : condition.getOffset2() < 0 ? condition.getOffset2() : 0);
-    }
-
     private WhereConditionBuilder preparePeriodConditionToDateWithTwoOffsets(PeriodConditionEntity condition) {
         return new WhereConditionBuilder()
                 .withDateValueComparison(
                         prepareComputedField(condition.getField1()),
                         ComparisonType.Less,
                         "%(toDate)",
-                        condition.getOffset2() > 0 ?
-                                (condition.getOffset1() < 0 ? condition.getOffset1()
-                                        + condition.getOffset2() : condition.getOffset2()) :
-                                (condition.getOffset1() < 0 ? condition.getOffset1() : 0));
+                        condition.getOffset1() < condition.getOffset2() ?
+                                condition.getOffset1() : condition.getOffset2());
     }
 
     private WhereConditionBuilder preparePeriodConditionFromDateWithTwoOffsets(PeriodConditionEntity condition) {
@@ -334,10 +310,8 @@ public class DwQueryHelper {
                         prepareComputedField(condition.getField1()),
                         ComparisonType.GreaterEqual,
                         "%(fromDate)",
-                        condition.getOffset1() > 0 ?
-                                (condition.getOffset2() < 0 ? condition.getOffset1()
-                                        + condition.getOffset2() : condition.getOffset1()) :
-                                (condition.getOffset2() < 0 ? condition.getOffset2() : 0));
+                        condition.getOffset1() > condition.getOffset2() ?
+                                condition.getOffset1() : condition.getOffset2());
     }
 
     private WhereConditionBuilder prepareCalculationEndDateCondition(CalculationEndDateConditionEntity condition) {

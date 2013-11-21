@@ -375,8 +375,8 @@ public class XmlIndicatorParser {
     private ConditionEntity createPeriodCondition(WhereCondition condition) {
         PeriodConditionEntity periodConditionEntity = new PeriodConditionEntity();
         periodConditionEntity.setColumnName(condition.getField());
-        periodConditionEntity.setOffset1(condition.getOffset1());
-        periodConditionEntity.setOffset2(condition.getOffset2());
+        periodConditionEntity.setOffset1(condition.getOffset1() != null ? condition.getOffset1() : 0);
+        periodConditionEntity.setOffset2(condition.getOffset2() != null ? condition.getOffset2() : 0);
         periodConditionEntity.setTableName(condition.getTableName());
         return periodConditionEntity;
     }
