@@ -1,0 +1,80 @@
+<indicator additive="true">
+    <name>% Mothers delivered her last child at a health facility</name>
+    <classifications>
+        <classification name="Birth preparedness plan"/>
+    </classifications>
+    <owners>
+        <user login="mrcaretest@gmail.com"/>
+        <reportviews>
+            <reportview name="Program Manager"/>
+        </reportviews>
+    </owners>
+    <trend>3</trend>
+    <reports>
+        <report type="Pie Chart" label-x="Time" label-y="Value" />
+    </reports>
+    <area level="District"/>
+    <default-frequency>Daily</default-frequency>
+    <numerator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Count" tableName="mother_case" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <combineWith type="Join" dimension-key="id" foreign-key="mother_id">
+                <dw-query>
+                    <select-columns>
+                        <select-column aggregation="Max" tableName="child_case" fieldName="id" />
+                        <select-column tableName="child_case" fieldName="mother_id" />
+                    </select-columns>
+                    <dimension tableName="child_case" />
+                    <combineWith type="Join" dimension-key="mother_id" foreign-key="id">
+                        <dw-query>
+                            <select-columns>
+                                <select-column tableName="mother_case" fieldName="id" />
+                            </select-columns>
+                            <dimension tableName="mother_case" />
+                            <combineWith type="Join" dimension-key="id" foreign-key="case_id">
+                                <dw-query>
+                                    <select-columns>
+                                        <select-column tableName="delivery_mother_form" fieldName="case_id" />
+                                    </select-columns>
+                                    <dimension tableName="delivery_mother_form" />
+                                    <where-group>
+                                        <where-condition type="valueComparison">
+                                            <table-name>delivery_mother_form</table-name>
+                                            <field>where_born</field>
+                                            <operator>=</operator>
+                                            <value>Hospital</value>
+                                        </where-condition>
+                                    </where-group>
+                                </dw-query>
+                            </combineWith>
+                        </dw-query>
+                    </combineWith>
+                    <group-by tableName="child_case" fieldName="mother_id" />
+                </dw-query>
+            </combineWith>
+            <where-group>
+                <where-condition type="period">
+                    <table-name>mother_case</table-name>
+                    <field>add</field>
+                </where-condition>
+            </where-group>
+        </dw-query>
+    </numerator>
+    <denominator>
+        <dw-query>
+            <select-columns>
+                <select-column aggregation="Count" tableName="mother_case" fieldName="*" />
+            </select-columns>
+            <dimension tableName="mother_case" />
+            <where-group>
+                <where-condition type="period">
+                    <table-name>mother_case</table-name>
+                    <field>add</field>
+                </where-condition>
+            </where-group>
+        </dw-query>
+    </denominator>
+</indicator>
