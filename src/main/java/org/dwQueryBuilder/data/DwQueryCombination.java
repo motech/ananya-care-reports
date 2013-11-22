@@ -7,16 +7,18 @@ public class DwQueryCombination {
     private DwQuery dwQuery;
     private String foreignKeyFieldName;
     private String referencedFieldName;
+    private String alias;
 
     public DwQueryCombination() {
     }
 
     public DwQueryCombination(CombineType combineType, DwQuery dwQuery,
-                              String foreignKeyFieldName, String referencedFieldName) {
+                              String foreignKeyFieldName, String referencedFieldName, String alias) {
         this.combineType = combineType;
         this.dwQuery = dwQuery;
         this.foreignKeyFieldName = foreignKeyFieldName;
         this.referencedFieldName = referencedFieldName;
+        this.alias = alias;
     }
 
     public CombineType getCombineType() {
@@ -49,5 +51,13 @@ public class DwQueryCombination {
 
     public void setReferencedFieldName(String referencedFieldName) {
         this.referencedFieldName = referencedFieldName;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

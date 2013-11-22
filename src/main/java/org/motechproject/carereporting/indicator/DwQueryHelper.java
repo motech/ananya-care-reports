@@ -81,7 +81,10 @@ public class DwQueryHelper {
 
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
         DwQuery dwQuery = buildDwQuery(dwQueryEntity);
-        addAreaJoinAndCondition(dwQuery, area);
+        String dwQueryTableName = dwQuery.getTableName();
+        if (dwQueryTableName.equals("flw") || dwQueryTableName.endsWith("_case") || dwQueryTableName.endsWith("_form")) {
+            addAreaJoinAndCondition(dwQuery, area);
+        }
         return dwQuery;
     }
 
@@ -358,7 +361,13 @@ public class DwQueryHelper {
     private void addAreaJoinAndCondition(DwQuery dwQuery, AreaEntity area) {
         Boolean useTestFlwRole = Boolean.parseBoolean(ConfigurationLocator.getCareConfiguration().getProperty(
                 "care.flw.useTestFlwRole"));
-        DwQueryCombination areaJoinCombination = prepareAreaJoin();
+
+        DwQueryCombination areaJoinCombination;
+        if (dwQuery.getTableName().equals("flw")) {
+            areaJoinCombination = prepareAreaJoin("id");
+        } else {
+            areaJoinCombination = prepareAreaJoin("user_id");
+        }
 
         if (dwQuery.getCombineWith() != null) {
             for (DwQueryCombination dwQueryCombination : dwQuery.getCombineWith()) {
@@ -388,9 +397,9 @@ public class DwQueryHelper {
         }
     }
 
-    private DwQueryCombination prepareAreaJoin() {
+    private DwQueryCombination prepareAreaJoin(String flwIdColumnName) {
         return new DwQueryCombinationBuilder()
-                .withKeys("id", "user_id")
+                .withKeys("id", flwIdColumnName)
                 .withCombineType(CombineType.Join)
                 .withDwQuery(
                         new DwQueryBuilder()
@@ -400,12 +409,13 @@ public class DwQueryHelper {
                                 )
                                 .withTableName("flw")
                 )
+                .withAlias("flwareajoin")
                 .build();
     }
 
     private WhereCondition prepareAreaWhereCondition(AreaEntity area) {
         SelectColumn selectColumn = new SelectColumnBuilder()
-                .withColumn("flw", area.getLevel().getName())
+                .withColumn("flwareajoin", area.getLevel().getName())
                 .withValueToLowerCase(true)
                 .build();
 
@@ -416,7 +426,7 @@ public class DwQueryHelper {
 
     private WhereCondition prepareSkipTestFlwRole() {
         SelectColumn selectColumn = new SelectColumnBuilder()
-                .withColumn("flw", "role")
+                .withColumn("flwareajoin", "role")
                 .withValueToLowerCase(true)
                 .build();
 

@@ -80,7 +80,8 @@ public class FormsServiceImpl implements FormsService {
         List<Criterion> criterionList = new LinkedList<>();
         criterionList.add(Restrictions.or(
                 Restrictions.ilike("tableName", "_form", MatchMode.END),
-                Restrictions.ilike("tableName", "_case", MatchMode.END)));
+                Restrictions.ilike("tableName", "_case", MatchMode.END),
+                Restrictions.ilike("tableName", "flw", MatchMode.START)));
 
         return formDao.getAllByFields(criterionList);
     }

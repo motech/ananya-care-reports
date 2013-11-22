@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 public class FormServiceIT extends AbstractTransactionalJUnit4SpringContextTests {
 
     private static final int EXPETED_NUMBER_OF_TABLES = 34;
-    private static final int EXPETED_NUMBER_OF_FORMS = 27;
+    private static final int EXPETED_NUMBER_OF_FORMS = 30;
     private static final int EXPECTED_NUMBER_OF_COLUMNS = 11;
 
     @Autowired
