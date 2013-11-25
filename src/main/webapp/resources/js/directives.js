@@ -302,12 +302,13 @@
                                     var conditionElement = angular.element('<div />');
                                     var removeButton = angular.element('<button />').addClass('btn btn-mini btn-append')
                                         .append(angular.element('<i />').addClass('icon-trash'));
+                                    removeButton.attr('uniqueId', this.uniqueId);
 
                                     conditionElement.text(this.displayName);
                                     conditionElement.append(removeButton);
                                     removeButton.click(function() {
                                         conditionElement.remove();
-                                        parentGroup.removeCondition(this.uniqueId);
+                                        parentGroup.removeCondition(this.attributes.uniqueId.value);
                                     });
 
                                     return conditionElement;
