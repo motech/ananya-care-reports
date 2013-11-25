@@ -506,7 +506,7 @@ public class XmlIndicatorParser {
         GroupedByEntity groupedByEntity = new GroupedByEntity();
         groupedByEntity.setComputedField(computedFieldService.getComputedFieldByFormAndFieldName(
                 dwQuery.getGroupBy().getTableName(), dwQuery.getGroupBy().getFieldName()));
-        if (groupedByEntity.getHaving() != null) {
+        if (dwQuery.getGroupBy().getHaving() != null) {
             groupedByEntity.setHaving(prepareHaving(dwQuery.getGroupBy()));
         }
         return groupedByEntity;

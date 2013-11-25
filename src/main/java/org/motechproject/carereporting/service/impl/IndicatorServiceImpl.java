@@ -909,6 +909,7 @@ public class IndicatorServiceImpl implements IndicatorService {
         Hibernate.initialize(dwQueryEntity.getGroupedBy());
         if (dwQueryEntity.getGroupedBy() != null && dwQueryEntity.getGroupedBy().getComputedField() != null) {
             Hibernate.initialize(dwQueryEntity.getGroupedBy().getComputedField());
+            Hibernate.initialize(dwQueryEntity.getGroupedBy().getHaving());
         }
         Hibernate.initialize(dwQueryEntity.getWhereGroup());
         Hibernate.initialize(dwQueryEntity.getCombination());
