@@ -90,6 +90,9 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -481,13 +484,18 @@ public class IndicatorServiceImpl implements IndicatorService {
         dateRangeCondition.setDate2(whereConditionDto.getDate2());
         return dateRangeCondition;
     }
-
-    private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
+        @SuppressWarnings("PMD.AvoidPrintStackTrace")
+        private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
         DateValueComparisonConditionEntity dateValueCondition = new DateValueComparisonConditionEntity();
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         dateValueCondition.setField1(whereConditionDto.getField1());
         dateValueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         dateValueCondition.setOffset1(whereConditionDto.getOffset1());
-        dateValueCondition.setValue(new Date(whereConditionDto.getValue()));
+        try {
+            dateValueCondition.setValue(formatter.parse(whereConditionDto.getValue()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return dateValueCondition;
     }
 
