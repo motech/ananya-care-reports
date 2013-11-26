@@ -336,7 +336,9 @@ public class DwQueryHelper {
     }
 
     private SelectColumnBuilder prepareComputedField(ComputedFieldEntity computedFieldEntity) {
-        return new SelectColumnBuilder().withColumn(prepareComputedColumn(computedFieldEntity));
+        ComputedColumn computedColumn
+                = prepareComputedColumn(computedFieldService.getComputedFieldById(computedFieldEntity.getId()));
+        return new SelectColumnBuilder().withColumn(computedColumn);
     }
 
     private ComputedColumn prepareComputedColumn(ComputedFieldEntity computedFieldEntity) {
