@@ -174,6 +174,9 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private DwQueryHelper dwQueryHelper;
+
     private JdbcTemplate jdbcTemplate;
 
     @PostConstruct
@@ -241,7 +244,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public DwQueryDto getDwQueryDtoForQuery(Integer dwQueryId) {
-        DwQueryHelper dwQueryHelper = new DwQueryHelper(computedFieldService);
         DwQueryEntity dwQueryEntity = dwQueryDao.getById(dwQueryId);
         initializeDwQuery(dwQueryEntity);
 
@@ -265,7 +267,6 @@ public class IndicatorServiceImpl implements IndicatorService {
         LOGGER.debug("Validating query: " + dwQueryEntity.getName());
 
         try {
-            DwQueryHelper dwQueryHelper = new DwQueryHelper();
             DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
             dwQuery.setLimit(QUERY_VALIDATION_ROW_LIMIT);
 
@@ -317,7 +318,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public String getDwQuerySqlString(DwQueryEntity dwQueryEntity) {
-        DwQueryHelper dwQueryHelper = new DwQueryHelper();
         DwQuery dwQuery = dwQueryHelper.buildDwQuery(dwQueryEntity, areaService.prepareMockArea());
         return QueryBuilder.getDwQueryAsSQLString(SQLDialect.POSTGRES, schemaName, dwQuery, true);
     }
@@ -852,7 +852,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     public byte[] getCaseListReportAsCsv(IndicatorEntity indicatorEntity, Integer areaId, Date fromDate, Date toDate) {
         try {
             DwQueryEntity numerator = indicatorEntity.getNumerator();
-            DwQueryHelper dwQueryHelper = new DwQueryHelper();
             String tableName = numerator.getTableName();
             CaseListReport caseListReport = getCaseListReportFromXml(tableName);
             AreaEntity areaEntity = areaService.getAreaById(areaId);
@@ -906,9 +905,19 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     private void initializeDwQuery(DwQueryEntity dwQueryEntity) {
         Hibernate.initialize(dwQueryEntity.getSelectColumns());
+        for (SelectColumnEntity selectColumnEntity : dwQueryEntity.getSelectColumns()) {
+            Hibernate.initialize(selectColumnEntity.getComputedField());
+
+            if (selectColumnEntity.getComputedField() != null) {
+                Hibernate.initialize(selectColumnEntity.getComputedField().getForm());
+                Hibernate.initialize(selectColumnEntity.getComputedField().getFieldOperations());
+            }
+        }
+
         Hibernate.initialize(dwQueryEntity.getGroupedBy());
         if (dwQueryEntity.getGroupedBy() != null && dwQueryEntity.getGroupedBy().getComputedField() != null) {
             Hibernate.initialize(dwQueryEntity.getGroupedBy().getComputedField());
+
             Hibernate.initialize(dwQueryEntity.getGroupedBy().getHaving());
         }
         Hibernate.initialize(dwQueryEntity.getWhereGroup());

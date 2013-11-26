@@ -9,6 +9,7 @@ import org.motechproject.carereporting.domain.DwQueryEntity;
 import org.motechproject.carereporting.domain.FrequencyEntity;
 import org.motechproject.carereporting.domain.IndicatorEntity;
 import org.motechproject.carereporting.domain.IndicatorValueEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -32,11 +33,11 @@ public class DailyValueCalculator extends IndicatorValueCalculator {
     @Resource(name = "careDataSource")
     private DataSource careDataSource;
 
-    private DwQueryHelper dwQueryHelper = new DwQueryHelper();
+    @Autowired
+    private DwQueryHelper dwQueryHelper;
 
     @Override
-    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to,
-                                                                  String category) {
+    protected IndicatorValueEntity calculateIndicatorValueForArea(IndicatorEntity indicator, FrequencyEntity frequency, AreaEntity area, Date from, Date to, String category) {
         BigDecimal numeratorValue = calculateDwQueryValue(indicator.getNumerator(), area, from, to);
         BigDecimal denominatorValue;
         BigDecimal result = null;

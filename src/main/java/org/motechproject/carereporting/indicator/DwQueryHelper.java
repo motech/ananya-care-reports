@@ -52,6 +52,8 @@ import org.motechproject.carereporting.domain.dto.WhereGroupDto;
 import org.motechproject.carereporting.domain.types.ConditionType;
 import org.motechproject.carereporting.service.ComputedFieldService;
 import org.motechproject.carereporting.utils.configuration.ConfigurationLocator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,19 +66,17 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@Component
 public class DwQueryHelper {
 
     private static final int SECONDS_PER_DAY = 86_400;
     private static final String WILDCARD = "*";
 
+    @Autowired
     private ComputedFieldService computedFieldService;
 
     public DwQueryHelper() {
 
-    }
-
-    public DwQueryHelper(ComputedFieldService computedFieldService) {
-        this.computedFieldService = computedFieldService;
     }
 
     public DwQuery buildDwQuery(DwQueryEntity dwQueryEntity, AreaEntity area) {
@@ -166,8 +166,10 @@ public class DwQueryHelper {
                     && selectColumnEntity.getComputedField().getForm() == null) {
                 builder = new SelectColumnBuilder().withColumn(null, WILDCARD);
             } else {
-                builder = new SelectColumnBuilder()
-                        .withColumn(prepareComputedColumn(selectColumnEntity.getComputedField()));
+                ComputedFieldEntity computedFieldEntity = computedFieldService.getComputedFieldById(
+                        selectColumnEntity.getComputedField().getId());
+
+                builder = new SelectColumnBuilder().withColumn(prepareComputedColumn(computedFieldEntity));
             }
 
         }
