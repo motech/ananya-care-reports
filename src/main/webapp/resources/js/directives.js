@@ -259,7 +259,7 @@
                                     this.field1 = field1;
                                     this.offset1 = (offset1 == null) ? 0 : offset1;
                                     this.operator = operator;
-                                    this.value = value;
+                                    this.value = moment(value).format("L");
                                     this.displayName = constructFieldNameWithOffset(field1.form.tableName, field1.name, offset1)
                                                        + ' ' + operator + ' ' + constructValue(value);
                                 },

@@ -486,17 +486,17 @@ public class IndicatorServiceImpl implements IndicatorService {
         dateRangeCondition.setDate2(whereConditionDto.getDate2());
         return dateRangeCondition;
     }
-        @SuppressWarnings("PMD.AvoidPrintStackTrace")
-        private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
+
+    private ConditionEntity prepareDateValueCondition(WhereConditionDto whereConditionDto) {
         DateValueComparisonConditionEntity dateValueCondition = new DateValueComparisonConditionEntity();
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         dateValueCondition.setField1(whereConditionDto.getField1());
         dateValueCondition.setOperator(computedFieldService.getComparisonSymbolByName(whereConditionDto.getOperator()));
         dateValueCondition.setOffset1(whereConditionDto.getOffset1());
         try {
             dateValueCondition.setValue(formatter.parse(whereConditionDto.getValue()));
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new CareRuntimeException(e);
         }
         return dateValueCondition;
     }
