@@ -262,7 +262,9 @@ public class IndicatorServiceImpl implements IndicatorService {
         try {
             dwQueryDao.save(dwQueryEntity);
         } catch (Exception e) {
-            throw new CareRuntimeException(e);
+            String header = ExceptionHelper.getExceptionRealCause(e).getMessage();
+            String message = e.getMessage();
+            throw new CareQueryCreationException(header, message, e);
         }
     }
 

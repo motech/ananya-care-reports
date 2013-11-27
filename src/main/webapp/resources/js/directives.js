@@ -211,6 +211,8 @@
                             }
                         };
 
+                        var printableNumber = function(n) { return (n >= 0) ? "+" + n : n; };
+
                         var constructCondition = function(parentGroup) {
                             return {
                                 uniqueId: new Date().getTime(),
@@ -285,11 +287,16 @@
                                 createPeriodCondition: function(field1, offset1, offset2) {
                                     this.type = 'period';
                                     this.field1 = field1;
-                                    this.offset1 = (offset1 == null) ? 0 : offset1;
-                                    this.offset2 = (offset2 == null) ? 0 : offset2;
-                                    this.displayName = scope.msg('queries.new.label.periodCondition') + ': ' +
-                                            field1.form.tableName + '.' + field1.name +
-                                            ' offset: ' + offset1 + ' to ' + offset2;
+                                    this.offset1 = (offset1 == null || offset1 === undefined) ? 0 : offset1;
+                                    this.offset2 = (offset2 == null || offset2 === undefined) ? 0 : offset2;
+                                    this.displayName = scope.msg('queries.new.label.periodCondition') + ': ';
+                                    this.displayName += field1.form.tableName + '.' + field1.name;
+                                    if (this.offset1 != 0 || this.offset2 != 0) {
+                                        this.displayName += printableNumber(this.offset1);
+                                        this.displayName += ' ' + scope.msg('common.to') + ' ';
+                                        this.displayName += field1.form.tableName + '.' + field1.name;
+                                        this.displayName += printableNumber(this.offset2);
+                                    }
                                 },
                                 createCalculationEndDateCondition: function(field1, offset1) {
                                     this.type = 'calculationEndDate';
