@@ -438,6 +438,8 @@ public class IndicatorServiceImpl implements IndicatorService {
             }
         }
 
+        String operator = (whereGroup.getOperator() == null) ? "AND" : whereGroup.getOperator().toUpperCase();
+        whereGroupEntity.setOperator(operator);
         return whereGroupEntity;
     }
 
