@@ -283,8 +283,10 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
                 queryForm.editGroupBy = {
                     field: query.groupBy.computedField,
                     having: (query.groupBy.having == null) ? null : {
-                        function: query.groupBy.having.function,
-                        operator: query.groupBy.having.operator,
+                        function: (query.groupBy.having == null) ? $scope.formData.functions[0]
+                            : query.groupBy.having.function,
+                        operator: (query.groupBy.having == null) ? $scope.formData.operators[0]
+                            : query.groupBy.having.operator,
                         value: parseInt(query.groupBy.having.value)
                     }
                 };
@@ -424,8 +426,8 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
             groupBy: {
                 field: null,
                 having: {
-                    function: null,
-                    operator: null,
+                    function: $scope.formData.functions[0],
+                    operator: $scope.formData.operators[0],
                     value: null
                 }
             },
@@ -664,8 +666,6 @@ care.controller('createDwQueryController', function($rootScope, $scope, $http, $
 
             lastDwQuery = dwQuery;
         }
-
-        console.log(lastDwQuery);
 
         var url = (update === true) ? 'api/indicator/queries/' + $scope.editQueryId : 'api/indicator/queries/new';
         var httpMethod = (update === true) ? 'PUT' : 'POST';
