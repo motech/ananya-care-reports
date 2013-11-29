@@ -28,6 +28,7 @@
                         <select-column tableName="delivery_child_form" fieldName="case_id" />
                     </select-columns>
                     <dimension tableName="delivery_child_form" />
+                    <group-by tableName="delivery_child_form" fieldName="case_id" />
                     <where-group>
                         <where-condition type="valueComparison">
                             <table-name>delivery_child_form</table-name>

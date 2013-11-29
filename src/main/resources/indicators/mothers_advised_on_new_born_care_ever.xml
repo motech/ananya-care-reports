@@ -24,14 +24,10 @@
             <combineWith type="Join" dimension-key="id" foreign-key="case_id">
                 <dw-query>
                     <select-columns>
-                        <select-column tableName="bp_form" fieldName="time_end" />
                         <select-column tableName="bp_form" fieldName="case_id" />
-                        <select-column tableName="bp_form" fieldName="cord_care" />
-                        <select-column tableName="bp_form" fieldName="has_danger_signs" />
-                        <select-column tableName="bp_form" fieldName="wrapping" />
-                        <select-column tableName="bp_form" fieldName="immediate_breastfeeding" />
                     </select-columns>
                     <dimension tableName="bp_form" />
+                    <group-by tableName="bp_form" fieldName="case_id" />
                     <where-group>
                         <where-condition type="calculationEndDate">
                             <table-name>bp_form</table-name>
