@@ -51,14 +51,14 @@
         <test.jdbc.driverClassName>org.postgresql.Driver</test.jdbc.driverClassName>
         <test.jdbc.url>jdbc:postgresql://127.0.0.1:5432</test.jdbc.url>
         <test.jdbc.username>postgres</test.jdbc.username>
-        <test.jdbc.password>postgres</test.jdbc.password>
+        <test.jdbc.password>password</test.jdbc.password>
         <test.database>care_reportingtest</test.database>
         <test.performance.database>performancecare_reporting</test.performance.database>
 
         <jdbc.driverClassName>org.postgresql.Driver</jdbc.driverClassName>
         <jdbc.url>jdbc:postgresql://127.0.0.1:5432</jdbc.url>
         <jdbc.username>postgres</jdbc.username>
-        <jdbc.password>postgres</jdbc.password>
+        <jdbc.password>password</jdbc.password>
         <care.database>care_reporting</care.database>
         <care.schema>report</care.schema>
         <care.reporting.schema>dashboard_app</care.reporting.schema>
