@@ -177,15 +177,35 @@ h5 {
 .legend-color {
     width: 20px;
     height: 20px;
-    border: 2px solid white;
+    border: 1px solid white;
+}
+
+.legend-caption {
+    padding: 10px;
+    font-size: 10px;
+}
+
+.legend-range {
+    font-size: 10px;
+    padding: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .legend-positive {
-    background-color: #A8F022;
+    background-color: #008000;
+}
+
+.legend-middle-positive {
+    background-color: #ffc000;
 }
 
 .legend-negative {
-    background-color: #F1A219;
+    background-color: #cd0f17;
+}
+
+.legend-middle-negative {
+    background-color: #FF6666;
 }
 
 .legend-neutral {
@@ -193,7 +213,7 @@ h5 {
 }
 
 .legend-no-data {
-    background-color: grey;
+    background-color: #F3F3F3;
 }
 
 .jvectormap-label {

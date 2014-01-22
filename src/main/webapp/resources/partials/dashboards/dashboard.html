@@ -61,7 +61,7 @@
                         </div>
                         <div class="input-prepend">
                             <span class="add-on"><i class="icon-tag"></i></span>
-                            <select style="width: 200px;" ng-model="map.selectedIndicatorId" ng-options="indicator.id as indicator.name for indicator in map.selectedClassificationIndicators" />
+                            <select style="width: 200px;" ng-model="map.selectedIndicator" ng-options="indicator as indicator.name for indicator in map.selectedClassificationIndicators" />
                         </div>
                     </div>
                     <div class="row">
@@ -74,28 +74,41 @@
                         </div>
                         <span style="width: 60px; margin-bottom: 5px;" ng-click="analyzeMap(map)" class="btn btn-warning">{{msg('dashboards.trends.analyze')}}</span>
                     </div>
+                    <h1 style="text-align: center;">{{map.regionName}}</h1>
                     <div id="{{'mapReport' + $index}}" class="map-report">
                     </div>
-                </div>
-                <div class="row" style="margin-bottom: 5px; margin-top: 20px;">
-                    <table class="offset1">
-                        <tr>
-                            <td class="legend-color legend-positive">&nbsp;</td>
-                            <td>{{msg('dashboards.map.legend.positiveTrend')}}</td>
-                        </tr>
-                        <tr>
-                            <td class="legend-color legend-negative">&nbsp;</td>
-                            <td>{{msg('dashboards.map.legend.negativeTrend')}}</td>
-                        </tr>
-                        <tr>
-                            <td class="legend-color legend-neutral">&nbsp;</td>
-                            <td>{{msg('dashboards.map.legend.neutralTrend')}}</td>
-                        </tr>
-                        <tr>
-                            <td class="legend-color legend-no-data">&nbsp;</td>
-                            <td>{{msg('dashboards.map.legend.noData')}}</td>
-                        </tr>
-                    </table>
+                    <div class="row" style="float: left; width: 100%; margin-bottom: 5px; margin-top: 20px;">
+                        <table>
+                            <tr>
+                                <td class="legend-caption" rowspan="2">Positive trend</td>
+                                <td class="legend-color legend-positive">&nbsp;</td>
+                                <td class="legend-range">{{2*map.selectedIndicator.trend}} and more</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-color legend-middle-positive">&nbsp;</td>
+                                <td class="legend-range">{{map.selectedIndicator.trend}} to {{2*map.selectedIndicator.trend}}</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-caption" style="padding-top: 0; padding-bottom: 0;">Neutral trend</td>
+                                <td class="legend-color legend-neutral">&nbsp;</td>
+                                <td class="legend-range">-{{map.selectedIndicator.trend}} to {{map.selectedIndicator.trend}}</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-caption" rowspan="2">Negative trend</td>
+                                <td class="legend-color legend-middle-negative">&nbsp;</td>
+                                <td class="legend-range">-{{2*map.selectedIndicator.trend}} to -{{map.selectedIndicator.trend}}</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-color legend-negative">&nbsp;</td>
+                                <td class="legend-range">-{{2*map.selectedIndicator.trend}} and less</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-caption" style="padding-top: 0; padding-bottom: 0;">No data</td>
+                                <td style="border-top: 2px solid white;" class="legend-color legend-no-data">&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
 

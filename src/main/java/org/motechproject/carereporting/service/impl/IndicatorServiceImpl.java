@@ -844,7 +844,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
-    public Map<AreaEntity, Integer> getIndicatorTrendForChildAreas(Integer indicatorId, Integer parentAreaId, Integer frequencyId, Date startDate, Date endDate) {
+    public Map<AreaEntity, Float> getIndicatorTrendForChildAreas(Integer indicatorId, Integer parentAreaId, Integer frequencyId, Date startDate, Date endDate) {
         IndicatorEntity indicator = indicatorDao.getById(indicatorId);
 
         if (indicator.getTrend() == null) {
@@ -852,11 +852,33 @@ public class IndicatorServiceImpl implements IndicatorService {
         }
         Set<AreaEntity> areas = areaService.getAreasByParentAreaId(parentAreaId);
 
-        Map<AreaEntity, Integer> areasTrends = new LinkedHashMap<>();
+        Map<AreaEntity, Float> areasTrends = new LinkedHashMap<>();
         for (AreaEntity area: areas) {
-            int trend = getTrendForIndicator(area, indicator, frequencyId, startDate, endDate);
+            float trend = getDetailedTrendForIndicator(area, indicator, frequencyId, startDate, endDate);
             areasTrends.put(area, trend);
         }
+
+        for (Map.Entry<AreaEntity, Float> entry: areasTrends.entrySet()) {
+            float newValue = entry.getValue();
+
+            if (entry.getValue() > indicator.getTrend().floatValue()) {
+                if (entry.getValue() > 2*indicator.getTrend().floatValue()) {
+                    newValue = 1;
+                } else {
+                    newValue = 0.5f;
+                }
+            } else if (entry.getValue() < -indicator.getTrend().floatValue()) {
+                if (entry.getValue() < -2*indicator.getTrend().floatValue()) {
+                    newValue = -1;
+                } else {
+                    newValue = -0.5f;
+                }
+            } else {
+                newValue = 0;
+            }
+            areasTrends.put(entry.getKey(), newValue);
+        }
+
         return areasTrends;
     }
 
@@ -1027,4 +1049,24 @@ public class IndicatorServiceImpl implements IndicatorService {
         return TREND_NEUTRAL;
     }
 
+    private float getDetailedTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
+        FrequencyEntity frequency = cronService.getFrequencyById(frequencyId);
+        Date[] dates = DateResolver.resolveDates(frequency, startDate, endDate);
+
+        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicator.getId(), area.getId(),
+                frequencyId, dates[0], dates[1], null);
+
+        if (values.size() < 2) {
+            return 0;
+        }
+
+        BigDecimal diff = values.get(values.size() - 1).getValue().subtract(values.get(0).getValue());
+
+        if (diff.compareTo(indicator.getTrend().negate()) < 0) {
+            return diff.subtract(indicator.getTrend().negate()).abs().negate().floatValue();
+        } else if (diff.compareTo(indicator.getTrend()) > 0) {
+            return diff.subtract(indicator.getTrend()).abs().floatValue();
+        }
+        return 0;
+    }
 }

@@ -39,7 +39,7 @@ public class MapReportController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @Cacheable("map")
-    public Map<AreaEntity, Integer> getMapReportData(@RequestParam Integer indicatorId, @RequestParam Integer frequencyId,
+    public Map<AreaEntity, Float> getMapReportData(@RequestParam Integer indicatorId, @RequestParam Integer frequencyId,
                                                  @RequestParam Date startDate, @RequestParam Date endDate, @RequestParam String level,
                                                  @RequestParam(required = false) String state) {
         UserEntity user = userService.getCurrentlyLoggedUser();

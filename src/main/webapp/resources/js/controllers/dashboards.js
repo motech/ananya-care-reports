@@ -279,6 +279,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         } else if (dashboard.name == "Map report") {
             for (var i=0; i<$scope.maps.length; i+=1) {
                 var map = $scope.maps[i];
+                map.regionName = '';
                 $('#maprange' + i).daterangepicker({
                     ranges: {
                     'Today': [moment(), moment()],
@@ -362,7 +363,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             endDate: moment(),
             selectedIndicatorClassificationId: null,
             selectedClassificationIndicators: [],
-            selectedIndicatorId: null,
+            selectedIndicator: null,
             containerId: "mapReport" + i,
             frequencyId: 1,
             level: "state"
@@ -391,7 +392,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
         if(map.selectedClassification != null) {
              map.selectedClassificationIndicators = map.selectedClassification.indicators;
             if(map.selectedClassificationIndicators.length > 0) {
-                map.selectedIndicatorId = map.selectedClassification.indicators[0].id;
+                map.selectedIndicator = map.selectedClassification.indicators[0];
              }
         }
     };
@@ -412,8 +413,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
     $scope.fetchClassifications();
 
     $scope.fetchMapReport = function(map, stateCode) {
-        if(map.selectedIndicatorId != null) {
-            var url = 'api/map-report?indicatorId=' + map.selectedIndicatorId + '&startDate=' + map.startDate.format('L') + '&endDate=' + map.endDate.format('L') +
+        if(map.selectedIndicator != null) {
+            var url = 'api/map-report?indicatorId=' + map.selectedIndicator.id + '&startDate=' + map.startDate.format('L') + '&endDate=' + map.endDate.format('L') +
                        '&frequencyId=' + map.frequencyId + "&level=" + map.level;
             if (stateCode != undefined) {
                 url += "&state=" + stateCode;
@@ -424,10 +425,11 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         data[i] = data[i].toString();
                     }
                 }
+                map.regionName = (map.level == "block" && stateCode != undefined) ? stateCode : "BIHAR";
                 $('#' + map.containerId).html('').vectorMap({
-                    map: map.level == "block" ? 'bihar-block' : "bihar-state",
+                    map: (map.level == "block" && stateCode != undefined) ? stateCode.toLowerCase() : "bihar-state",
                     onRegionClick: function(event, code) {
-                        if (map.level == "block") {
+                        if (map.level == "block" || !data[code]) {
                             return;
                         }
                         map.level = "block";
@@ -435,29 +437,32 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         $scope.fetchMapReport(map, code);
                     },
                     onViewportChange: function(e, scale) {
-                        if (scale > 1 && scale < 2 && map.level == "block") {
+                        if (scale <= 0.5 && map.level == "block") {
                             map.level = "state";
                             $scope.analyzeMap(map);
                         }
                     },
+                    zoomMin: 0.5,
                     focusOn: {
                       x: 0.5,
                       y: 0.5,
-                      scale: map.level == "block" ? 3 : 1
+                      scale: 1
                     },
                     series: {
                         regions: [{
                             values: data,
                             scale: {
-                                "1": '#A8F022',
-                                "-1": '#F1A219',
-                                "0": '#82AAFF'
+                                "1": '#008000',
+                                "0.5": '#ffc000',
+                                "0": '#82AAFF',
+                                "-0.5": '#FF6666',
+                                "-1": '#cd0f17'
                             }
                         }]
                     },
                     regionStyle: {
                       initial: {
-                        fill: 'grey',
+                        fill: '#F3F3F3',
                         "fill-opacity": 1,
                         stroke: '#444444',
                         "stroke-width": 0.5,
@@ -470,6 +475,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         "stroke-opacity": 1
                       }
                     },
+                    backgroundColor: "#ffffff",
                     onRegionLabelShow: function(e, el, code) {
                         if (data[code] == undefined) {
                             $(el).html($scope.msg('dashboards.map.noData', code));
@@ -477,9 +483,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         var ads = data[code];
                         $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
                         el.html('<span class="name">' + el.html() + '</span>');
-                        if (data[code] == 1) {
+                        if (data[code] > 1) {
                             el.html(el.html() + ' <img src="resources/images/trend_positive.png" />');
-                        } else if (data[code] == -1) {
+                        } else if (data[code] < 0) {
                             el.html(el.html() + ' <img src="resources/images/trend_negative.png" />');
                         } else if (data[code] != undefined) {
                             el.html(el.html() + ' <img src="resources/images/trend_neutral.png" />');
