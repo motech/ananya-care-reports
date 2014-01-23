@@ -298,6 +298,7 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 });
                 $('#maprange' + i).val(map.startDate.format('L') + ' - ' + map.endDate.format('L'));
                 $("#mapReport" + i).html('');
+                $scope.analyzeMap(map);
             }
         } else {
             $scope.currentReportsPage = 0;
