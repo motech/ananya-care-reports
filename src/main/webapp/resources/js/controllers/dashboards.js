@@ -292,9 +292,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                     startDate: moment().subtract('days', 29),
                     endDate: moment()
                     }, function(start, end) {
-                        map.startDate = start;
-                        map.endDate = end;
-                        $('#maprange' + i).val(start.format('L') + ' - ' + end.format('L'));
+                        var index = $(this.element).attr("data-map-index");
+                        $scope.maps[index].startDate = start;
+                        $scope.maps[index].endDate = end;
                 });
                 $('#maprange' + i).val(map.startDate.format('L') + ' - ' + map.endDate.format('L'));
                 $("#mapReport" + i).html('');
