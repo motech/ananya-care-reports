@@ -1060,13 +1060,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             return 0;
         }
 
-        BigDecimal diff = values.get(values.size() - 1).getValue().subtract(values.get(0).getValue());
-
-        if (diff.compareTo(indicator.getTrend().negate()) < 0) {
-            return diff.subtract(indicator.getTrend().negate()).abs().negate().floatValue();
-        } else if (diff.compareTo(indicator.getTrend()) > 0) {
-            return diff.subtract(indicator.getTrend()).abs().floatValue();
-        }
-        return 0;
+        BigDecimal valueDifference = values.get(values.size() - 1).getValue().subtract(values.get(0).getValue());
+        return valueDifference.floatValue();
     }
 }
