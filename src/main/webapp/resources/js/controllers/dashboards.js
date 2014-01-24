@@ -324,36 +324,36 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                 '&areaId=' + $scope.areaId +
                 '&frequencyId=' + $scope.frequencyId;
         $http.get(url)
-                .success(function(indicatorClassifications) {
-            $scope.indicatorClassifications = indicatorClassifications;
-            $scope.trendPerClassification = {};
+            .success(function(indicatorClassifications) {
+                $scope.indicatorClassifications = indicatorClassifications;
+                $scope.trendPerClassification = {};
 
-            for (var c = 0; c < $scope.indicatorClassifications.length; c++) {
-                if (!$scope.indicatorClassifications.hasOwnProperty(c)) {
-                    continue;
-                }
-
-                var classification = $scope.indicatorClassifications[c];
-                var key = 'classification_' + classification.name;
-                var indicators = $scope.getIndicatorsForClassification(classification);
-                for (var i = 0; i < indicators.length; i++) {
-                    if ($scope.trendPerClassification[key] === undefined) {
-                        $scope.trendPerClassification[key] = {
-                            negative: 0,
-                            positive: 0
-                        };
+                for (var c = 0; c < $scope.indicatorClassifications.length; c++) {
+                    if (!$scope.indicatorClassifications.hasOwnProperty(c)) {
+                        continue;
                     }
 
-                    var trend = indicators[i].trend;
-                    if (trend < 0) {
-                        $scope.trendPerClassification[key].negative++;
-                    } else if (trend > 0) {
-                        $scope.trendPerClassification[key].positive++;
+                    var classification = $scope.indicatorClassifications[c];
+                    var key = 'classification_' + classification;
+                    var indicators = $scope.getIndicatorsForClassification(classification);
+                    for (var i = 0; i < indicators.length; i++) {
+                        if ($scope.trendPerClassification[key] === undefined) {
+                            $scope.trendPerClassification[key] = {
+                                negative: 0,
+                                positive: 0
+                            };
+                        }
+
+                        var trend = indicators[i].trend;
+                        if (trend < 0) {
+                            $scope.trendPerClassification[key].negative++;
+                        } else if (trend > 0) {
+                            $scope.trendPerClassification[key].positive++;
+                        }
                     }
                 }
-            }
-            $scope.loading = false;
-        });
+                $scope.loading = false;
+            });
         }
     };
 

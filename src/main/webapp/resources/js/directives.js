@@ -67,13 +67,21 @@
                                     }
                                     indicator = indicatorClassification.indicators[i];
                                     switch (indicator.trend) {
-                                    case 0:
-                                        trend = scope.msg('dashboards.trends.trend.neutral');
-                                        labelClass = "label-info";
-                                        break;
                                     case 1:
                                         trend = scope.msg('dashboards.trends.trend.positive');
-                                        labelClass = "label-success";
+                                        labelClass = "label-success legend-positive";
+                                        break;
+                                    case 0.5:
+                                        trend = scope.msg('dashboards.trends.trend.positive');
+                                        labelClass = "label-success legend-middle-positive";
+                                        break;
+                                    case 0:
+                                        trend = scope.msg('dashboards.trends.trend.neutral');
+                                        labelClass = "label-info legend-neutral";
+                                        break;
+                                    case -0.5:
+                                        trend = scope.msg('dashboards.trends.trend.negative');
+                                        labelClass = "label-success legend-middle-negative";
                                         break;
                                     case -1:
                                         trend = scope.msg('dashboards.trends.trend.negative');

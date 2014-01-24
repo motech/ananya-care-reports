@@ -14,12 +14,12 @@ public class IndicatorWithTrendDto implements Serializable {
     private IndicatorEntity indicator;
 
     @JsonView(TrendJsonView.class)
-    private int trend;
+    private float trend;
 
     public IndicatorWithTrendDto() {
     }
 
-    public IndicatorWithTrendDto(IndicatorEntity indicator, int trend) {
+    public IndicatorWithTrendDto(IndicatorEntity indicator, float trend) {
         this.indicator = indicator;
         this.trend = trend;
     }
@@ -32,11 +32,11 @@ public class IndicatorWithTrendDto implements Serializable {
         this.indicator = indicator;
     }
 
-    public int getTrend() {
+    public float getTrend() {
         return trend;
     }
 
-    public void setTrend(int trend) {
+    public void setTrend(float trend) {
         this.trend = trend;
     }
 }

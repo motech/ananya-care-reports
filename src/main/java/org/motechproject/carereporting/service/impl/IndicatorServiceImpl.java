@@ -107,9 +107,6 @@ import java.util.Set;
 public class IndicatorServiceImpl implements IndicatorService {
 
     private static final Logger LOGGER = Logger.getLogger(IndicatorServiceImpl.class);
-    private static final int TREND_NEUTRAL = 0;
-    private static final int TREND_NEGATIVE = -1;
-    private static final int TREND_POSITIVE = 1;
     private static final SQLDialect SQL_DIALECT = SQLDialect.POSTGRES;
     private static final String REPLACE_SELECT_WITH_SELECT_COLUMNS =
             "select (.*?) from \\\"(.*?)\\\"\\.\\\"(\\w*?_case)\\\"(.*)?";
@@ -826,12 +823,33 @@ public class IndicatorServiceImpl implements IndicatorService {
 
                 if (isIndicatorAccessibleForUser(indicator, user) && indicator.getTrend() != null) {
                     IndicatorWithTrendDto trendIndicator = new IndicatorWithTrendDto(indicator,
-                            getTrendForIndicator(area, indicator, frequencyId, startDate, endDate));
+                            calculateTrendForIndicator(area, indicator, frequencyId, startDate, endDate));
                     trendClassification.getIndicators().add(trendIndicator);
                 }
             }
         }
         return classifications;
+    }
+
+    private float calculateTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId,
+                                             Date startDate, Date endDate) {
+        float trend = getDetailedTrendForIndicator(area, indicator, frequencyId, startDate, endDate);
+
+        if (trend > indicator.getTrend().floatValue()) {
+            if (trend > 2.0f * indicator.getTrend().floatValue()) {
+                return 1.0f;
+            } else {
+                return 0.5f;
+            }
+        } else if (trend < -indicator.getTrend().floatValue()) {
+            if (trend < -2.0f * indicator.getTrend().floatValue()) {
+                return -1.0f;
+            } else {
+                return -0.5f;
+            }
+        } else {
+            return 0.0f;
+        }
     }
 
     private boolean isIndicatorAccessibleForUser(IndicatorEntity indicatorEntity, UserEntity userEntity) {
@@ -1025,28 +1043,6 @@ public class IndicatorServiceImpl implements IndicatorService {
 
         return new QueryCreationFormDto(
                 formEntities);
-    }
-
-    private int getTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
-        FrequencyEntity frequency = cronService.getFrequencyById(frequencyId);
-        Date[] dates = DateResolver.resolveDates(frequency, startDate, endDate);
-
-        List<IndicatorValueEntity> values = indicatorValueDao.getIndicatorValuesForArea(indicator.getId(), area.getId(),
-                frequencyId, dates[0], dates[1], null);
-
-        if (values.size() < 2) {
-            return TREND_NEUTRAL;
-        }
-
-        BigDecimal diff = values.get(values.size() - 1).getValue().subtract(values.get(0).getValue());
-
-        if (diff.compareTo(indicator.getTrend().negate()) < 0) {
-            return TREND_NEGATIVE;
-        } else if (diff.compareTo(indicator.getTrend()) > 0) {
-            return TREND_POSITIVE;
-        }
-
-        return TREND_NEUTRAL;
     }
 
     private float getDetailedTrendForIndicator(AreaEntity area, IndicatorEntity indicator, Integer frequencyId, Date startDate, Date endDate) {
