@@ -68,6 +68,10 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
     @JsonView({ BaseView.class })
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity owner;
+
     public DwQueryEntity() {
     }
 
@@ -89,6 +93,7 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
                 orderBy.add(new OrderByEntity(orderByEntity));
             }
         }
+        owner = dwQueryEntity.getOwner();
     }
 
     public String getTableName() {
@@ -171,10 +176,19 @@ public class DwQueryEntity extends AbstractEntity implements Cloneable {
         this.limit = limit;
     }
 
+    public UserEntity getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         DwQueryEntity dwQueryEntity = new DwQueryEntity();
 
+        dwQueryEntity.setOwner(this.getOwner());
         dwQueryEntity.setName(this.getName());
         dwQueryEntity.setTableName(this.tableName);
         dwQueryEntity.setSelectColumns(new LinkedHashSet<SelectColumnEntity>());

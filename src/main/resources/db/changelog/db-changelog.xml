@@ -11,4 +11,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CARE #159" author="Lech Różański">
+        <sql>
+            ALTER TABLE dashboard_app.dw_query
+                ADD column user_id INTEGER NOT NULL REFERENCES dashboard_app.care_user (user_id) ON DELETE SET NULL
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

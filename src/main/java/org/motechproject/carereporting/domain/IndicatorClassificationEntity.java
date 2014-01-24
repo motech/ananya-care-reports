@@ -1,10 +1,12 @@
 package org.motechproject.carereporting.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.motechproject.carereporting.domain.views.BaseView;
 import org.motechproject.carereporting.domain.views.IndicatorJsonView;
 import org.motechproject.carereporting.domain.views.TrendJsonView;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -17,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -36,7 +39,6 @@ public class IndicatorClassificationEntity extends AbstractEntity {
     private DashboardEntity dashboard;
 
     @ManyToMany(mappedBy = "classifications", fetch = FetchType.LAZY)
-    @JsonView({ TrendJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
     private Set<IndicatorEntity> indicators;
 
     public IndicatorClassificationEntity() {
@@ -64,9 +66,33 @@ public class IndicatorClassificationEntity extends AbstractEntity {
         this.dashboard = dashboard;
     }
 
-    @JsonIgnore
+    @JsonProperty("indicators")
+    @JsonView({ TrendJsonView.class, IndicatorJsonView.ListIndicatorNames.class })
     public Set<IndicatorEntity> getIndicators() {
-        return indicators;
+        if (SecurityContextHolder.getContext() == null
+                || SecurityContextHolder.getContext().getAuthentication() == null) {
+            return null;
+        }
+
+        UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userEntity == null) {
+            return null;
+        }
+
+        for (RoleEntity roleEntity : userEntity.getRoles()) {
+            if ("Admin".equals(roleEntity.getName())) {
+                return this.indicators;
+            }
+        }
+
+        Set<IndicatorEntity> indicatorEntitySet = new LinkedHashSet<>();
+        for (IndicatorEntity indicatorEntity : this.indicators) {
+            if (userEntity.getId().equals(indicatorEntity.getOwner().getId())) {
+                indicatorEntitySet.add(indicatorEntity);
+            }
+        }
+
+        return indicatorEntitySet;
     }
 
     public void setIndicators(Set<IndicatorEntity> indicators) {

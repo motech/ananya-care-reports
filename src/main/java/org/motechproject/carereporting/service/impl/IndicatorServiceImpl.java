@@ -96,6 +96,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -225,7 +226,17 @@ public class IndicatorServiceImpl implements IndicatorService {
 
     @Override
     public Set<DwQueryEntity> getAllTopLevelDwQueries() {
-        return dwQueryDao.getAllByField("parentQuery", null);
+        UserEntity userEntity = userService.getCurrentlyLoggedUser();
+        if (userEntity.getRoles().contains(userService.getRoleByName("Admin"))) {
+            return dwQueryDao.getAllByField("parentQuery", null);
+        }
+
+        Map<String, Object> fields = new HashMap<String, Object>() {{
+            put("parentQuery", null);
+            put("owner.id", userService.getCurrentlyLoggedUser().getId());
+        }};
+
+        return dwQueryDao.getAllByFields(fields);
     }
 
     @Override
@@ -254,6 +265,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
         DwQueryEntity dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
+        dwQueryEntity.setOwner(userService.getCurrentlyLoggedUser());
         validateDwQuery(dwQueryEntity);
 
         try {
@@ -362,6 +374,7 @@ public class IndicatorServiceImpl implements IndicatorService {
             DwQueryEntity dwQueryEntity = new DwQueryEntity(clonedEntity);
             validateDwQuery(dwQueryEntity);
             dwQueryEntity.setName(dwQueryName);
+            dwQueryEntity.setOwner(userService.getCurrentlyLoggedUser());
             updateDwQueryNames(dwQueryEntity, 0);
             dwQueryDao.save(dwQueryEntity);
         } catch (Exception e) {
