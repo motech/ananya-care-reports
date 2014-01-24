@@ -4,7 +4,10 @@ import org.motechproject.carereporting.dao.AreaDao;
 import org.motechproject.carereporting.dao.LevelDao;
 import org.motechproject.carereporting.domain.AreaEntity;
 import org.motechproject.carereporting.domain.LevelEntity;
+import org.motechproject.carereporting.domain.UserEntity;
 import org.motechproject.carereporting.service.AreaService;
+import org.motechproject.carereporting.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,9 @@ public class AreaServiceImpl implements AreaService {
 
     @Autowired
     private LevelDao levelDao;
+
+    @Autowired
+    private UserService userService;
 
     private static final Integer SUPER_USER_AREA_ID = 1;
     private static final String MOCK_AREA_NAME = "<area_name>";
@@ -118,4 +124,31 @@ public class AreaServiceImpl implements AreaService {
     public AreaEntity prepareMockArea() {
         return new AreaEntity(MOCK_AREA_NAME, new LevelEntity(MOCK_AREA_LEVEL_NAME, null));
     }
+
+    @Override
+    public Set<AreaEntity> getAreasAccessibleForCurentUserByParentAreaId(Integer parentAreaId) {
+        Set<AreaEntity> areas = getAllAreasByParentAreaId(parentAreaId);
+        areas = getOnlyAccessibleAreasForCurrentUser(areas);
+        return areas;
+    }
+
+    private Set<AreaEntity> getOnlyAccessibleAreasForCurrentUser(Set<AreaEntity> areas) {
+        Set<AreaEntity> newAreas = new HashSet<AreaEntity>();
+        for (AreaEntity area : areas) {
+            if (isAreaAccesibleForCurrentUser(area)) {
+                newAreas.add(area);
+            }
+        }
+        return newAreas;
+    }
+
+    private boolean isAreaAccesibleForCurrentUser(AreaEntity area) {
+        UserEntity currentlyLoggedUser = userService.getCurrentlyLoggedUser();
+        AreaEntity userArea = currentlyLoggedUser.getArea();
+        if (userArea.equals(area) || getAllAreasByParentAreaId(userArea.getId()).contains(area)) {
+            return true;
+        }
+        return false;
+    }
+
 }

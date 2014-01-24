@@ -415,6 +415,14 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchMapReport = function(map, stateCode) {
         if(map.selectedIndicator != null) {
+
+            if ($scope.userArea.level.hierarchyDepth > 1 && stateCode === undefined) {
+                if ($scope.userArea.level.hierarchyDepth == 3){
+                    map.level = "block";
+                }
+                stateCode = $scope.userArea.parentArea.name;
+            }
+
             var url = 'api/map-report?indicatorId=' + map.selectedIndicator.id + '&startDate=' + map.startDate.format('L') + '&endDate=' + map.endDate.format('L') +
                        '&frequencyId=' + map.frequencyId + "&level=" + map.level;
             if (stateCode != undefined) {
@@ -484,14 +492,9 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
                         var ads = data[code];
                         $(el).removeClass("positive").removeClass("negative").removeClass("neutral").addClass(data[code]);
                         el.html('<span class="name">' + el.html() + '</span>');
-                        if (data[code] > 1) {
-                            el.html(el.html() + ' <img src="resources/images/trend_positive.png" />');
-                        } else if (data[code] < 0) {
-                            el.html(el.html() + ' <img src="resources/images/trend_negative.png" />');
-                        } else if (data[code] != undefined) {
-                            el.html(el.html() + ' <img src="resources/images/trend_neutral.png" />');
-                        }
-                    }
+                    },
+                    zoomButtons: true,
+                    zoomOnScroll: true
                 });
             });
         }

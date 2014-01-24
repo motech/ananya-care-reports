@@ -36,4 +36,6 @@ public interface AreaService {
     void createNewLevel(LevelEntity level);
 
     AreaEntity prepareMockArea();
+
+    Set<AreaEntity> getAreasAccessibleForCurentUserByParentAreaId(Integer parentAreaId);
 }
