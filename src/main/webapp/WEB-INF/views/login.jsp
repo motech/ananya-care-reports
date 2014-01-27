@@ -32,11 +32,6 @@
             <div class="span8">
                 <br/>
                 <div class="page-header">
-                    <h1><spring:message code="login.header" /><br />
-                        <small>
-                            <spring:message code="login.prompt" />
-                        </small>
-                    </h1>
                 </div>
                 <form class="form-horizontal login-form" action="j_spring_security_check" method="POST">
                     <c:if test="${(not empty param.e) and (not empty SPRING_SECURITY_LAST_EXCEPTION)}">
