@@ -12,6 +12,7 @@ import org.motechproject.carereporting.domain.types.FieldType;
 import org.motechproject.carereporting.service.FormsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,16 @@ public class FormsServiceImpl implements FormsService {
     private static final String COLUMN_INFO_IN_TABLE =
             "SELECT column_name, data_type FROM information_schema.COLUMNS WHERE table_schema = ? AND TABLE_NAME = ?";
 
-    private static final String FOREIGN_KEY_FOR_TABLE =
+    private static final String FOREIGN_KEY_FOR_CASE_TABLE =
             "SELECT ccu.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc " +
                     "JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name " +
                     "WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name like '%_case' AND tc.table_name = ?";
+
+    private static final String FOREIGN_KEY_FOR_MULTIPLE_FORM_TABLE =
+            "SELECT tc.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc " +
+                    "JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name " +
+                    "WHERE tc.constraint_type = 'FOREIGN KEY' AND " +
+                    "ccu.table_name like '%_form' AND ccu.table_name = ?";
 
     @Override
     @Transactional(readOnly = false)
@@ -132,7 +139,11 @@ public class FormsServiceImpl implements FormsService {
     @Override
     public String getForeignKeyForTable(String tableName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_TABLE, String.class, tableName);
+        try {
+            return jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_CASE_TABLE, String.class, tableName);
+        } catch (EmptyResultDataAccessException e) {
+            return jdbcTemplate.queryForObject(FOREIGN_KEY_FOR_MULTIPLE_FORM_TABLE, String.class, tableName);
+        }
     }
 
     @Override
@@ -150,9 +161,9 @@ public class FormsServiceImpl implements FormsService {
 
         for (FormEntity formEntity : forms) {
             String foreignKey = getForeignKeyForTable(formEntity.getTableName());
-            if (foreignKey.startsWith("mother")) {
+            if (foreignKey.startsWith("mother") || foreignKey.endsWith("mother_form")) {
                 motherForms.add(formEntity);
-            } else if (foreignKey.startsWith("child")) {
+            } else if (foreignKey.startsWith("child") || foreignKey.endsWith("child_form")) {
                 childForms.add(formEntity);
             } else {
                 otherForms.add(formEntity);
