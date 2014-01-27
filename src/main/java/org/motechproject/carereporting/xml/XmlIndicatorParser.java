@@ -39,6 +39,7 @@ import org.motechproject.carereporting.domain.ValueComparisonConditionEntity;
 import org.motechproject.carereporting.domain.WhereGroupEntity;
 import org.motechproject.carereporting.exception.CareRuntimeException;
 import org.motechproject.carereporting.service.ComputedFieldService;
+import org.motechproject.carereporting.service.UserService;
 import org.motechproject.carereporting.xml.mapping.indicators.Classification;
 import org.motechproject.carereporting.xml.mapping.indicators.CombineWith;
 import org.motechproject.carereporting.xml.mapping.indicators.DwQuery;
@@ -118,6 +119,9 @@ public class XmlIndicatorParser {
 
     @Autowired
     private DwQueryDao dwQueryDao;
+
+    @Autowired
+    private UserService userService;
 
     private static final String ALL_ROLES_STRING = "ALL";
     private static final String WILDCARD = "*";
@@ -406,6 +410,7 @@ public class XmlIndicatorParser {
     private DwQueryEntity prepareDwQuery(DwQuery dwQuery) {
         DwQueryEntity dwQueryEntity = new DwQueryEntity();
         dwQueryEntity.setTableName(dwQuery.getDimension().getName());
+        dwQueryEntity.setOwner(userService.getCurrentlyLoggedUser());
 
         if (dwQuery.getGroupBy() != null) {
             GroupedByEntity groupedByEntity = prepareGroupBy(dwQuery);

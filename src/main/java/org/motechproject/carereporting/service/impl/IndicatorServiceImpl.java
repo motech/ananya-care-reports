@@ -265,7 +265,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     public void createNewDwQuery(DwQueryDto dwQueryDto) {
         DwQueryEntity dwQueryEntity = getDwQueryEntityFromDto(dwQueryDto);
-        dwQueryEntity.setOwner(userService.getCurrentlyLoggedUser());
         validateDwQuery(dwQueryEntity);
 
         try {
@@ -339,6 +338,7 @@ public class IndicatorServiceImpl implements IndicatorService {
     @Transactional(readOnly = false)
     private DwQueryEntity getDwQueryEntityFromDto(DwQueryDto dwQueryDto) {
         DwQueryEntity dwQueryEntity = new DwQueryEntity();
+        dwQueryEntity.setOwner(userService.getCurrentlyLoggedUser());
 
         Set<SelectColumnEntity> selectColumnEntities = new LinkedHashSet<>();
         for (SelectColumnDto selectColumnDto : dwQueryDto.getSelectColumns()) {
