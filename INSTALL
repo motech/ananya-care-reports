@@ -26,23 +26,23 @@ This file describes how to install CARE Reporting application for use in a produ
 
 2. Initializing CARE Reporting database
     
-    2.1. Create a database called "carereporting", in Postgres Server.
+    2.1. Create a database called "care-reporting", in Postgres Server.
 
-        create database carereporting with template=template0 encoding='UTF8';
+        create database care-reporting with template=template0 encoding='UTF8';
 
     2.2. Restore the dump file from TW reporting database. 
 
-        psql -U postgres carereporting < care_reports.sql
+        psql -U postgres care-reporting < care_reports.sql
 
     2.3. Create Care Reporting Dashboard schema. Execute following commands:
 
         (create schema)
-        psql -U postgres carereporting < db/create_tables.sql
+        psql -U postgres care-reporting < db/create_tables.sql
 
         (fill up with data)
-        psql -U postgres carereporting < db/insert_level_data.sql
-        psql -U postgres carereporting < db/insert_area_data.sql
-        psql -U postgres carereporting < db/insert_initial_data.sql
+        psql -U postgres care-reporting < db/insert_level_data.sql
+        psql -U postgres care-reporting < db/insert_area_data.sql
+        psql -U postgres care-reporting < db/insert_initial_data.sql
 
 3. Application deployment
 
