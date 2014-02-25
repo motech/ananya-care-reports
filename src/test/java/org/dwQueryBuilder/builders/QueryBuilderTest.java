@@ -1,6 +1,5 @@
 package org.dwQueryBuilder.builders;
 
-import org.dwQueryBuilder.data.ComputedColumn;
 import org.dwQueryBuilder.data.DwQueryCombination;
 import org.dwQueryBuilder.data.OrderBy;
 import org.dwQueryBuilder.data.SelectColumn;
@@ -58,10 +57,11 @@ public class QueryBuilderTest {
     private static final String AGE_3 = "19";
 
     private static final String EXPECTED_POSTGRESQL_SIMPLE_CONDITION_WITH_DATE_DIFF_SQL_STRING =
-            "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\" " +
-                    "join (select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
-                    "\"report\".\"bp_form\".\"user_id\" where (\"bp_form\".\"ifa_tablets_issued\" <= '120'" +
-                    " or (\"bp_form\".\"time_end\" + '-120') - (\"bp_form\".\"time_start\" + '360') >= '500')";
+            "select count(\"report\".\"bp_form\".\"ifa_tablets_issued\") from \"report\".\"bp_form\" join " +
+                    "(select * from \"report\".\"flw\") as \"flw\" on \"flw\".\"id\" = " +
+                    "\"report\".\"bp_form\".\"user_id\" where (\"bp_form\".\"ifa_tablets_issued\" <= '120' " +
+                    "or (cast(\"bp_form\".\"time_end\" as timestamp with time zone) + '-120') - " +
+                    "(cast(\"bp_form\".\"time_start\" as timestamp with time zone) + '360') >= '500')";
     private static final String EXPECTED_POSTGRESQL_INDICATOR_NON_PERIOD_SPECIFIC_COUNT_OF_CASES_SQL_STRING =
             "select count(*) from \"report\".\"mother_case\" join (select \"report\".\"bp_form\".\"case_id\" " +
                     "from \"report\".\"bp_form\" group by \"report\".\"bp_form\".\"case_id\" having " +

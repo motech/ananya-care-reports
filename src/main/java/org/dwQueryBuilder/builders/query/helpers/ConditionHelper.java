@@ -19,6 +19,7 @@ import org.jooq.Field;
 import org.jooq.Param;
 import org.jooq.SelectConditionStep;
 import org.jooq.types.DayToSecond;
+import org.jooq.util.postgres.PostgresDataType;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -132,9 +133,9 @@ public final class ConditionHelper {
             DateDiffComparison dateDiffComparison = (DateDiffComparison) whereCondition;
             Field field2 = SelectColumnHelper.resolveSelectColumn(
                     schemaName, dwQuery, dateDiffComparison.getSelectColumn2(), useSchemaName, useAlias);
-            condition = buildDateDiffCondition(field1, dateDiffComparison.getOperator(),
-                    field2, dateDiffComparison.getValue(), dateDiffComparison.getColumn1Offset(),
-                    dateDiffComparison.getColumn2Offset());
+            condition = buildDateDiffCondition(field1.cast(PostgresDataType.TIMESTAMPWITHTIMEZONE),
+                    dateDiffComparison.getOperator(), field2.cast(PostgresDataType.TIMESTAMPWITHTIMEZONE),
+                    dateDiffComparison.getValue(), dateDiffComparison.getColumn1Offset(), dateDiffComparison.getColumn2Offset());
 
         } else if (whereCondition instanceof FieldComparison) {
 
