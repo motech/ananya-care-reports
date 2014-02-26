@@ -57,10 +57,14 @@ insert into dashboard (name, tab_position, creation_date, modification_date) val
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Mortality', 4, now(), now());
 insert into dashboard (name, tab_position, creation_date, modification_date) values ('Essential Newborn Care', 5, now(), now());
 
-insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Birth preparedness plan', 3, now(), now());
-insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('IFA Tablets', 4, now(), now());
-insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Mortality', 5, now(), now());
-insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Essential Newborn Care', 6, now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Birth preparedness plan',
+    (select dashboard_id from dashboard_app.dashboard where name = 'Birth preparedness plan'), now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('IFA Tablets',
+    (select dashboard_id from dashboard_app.dashboard where name = 'IFA Tablets'), now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Mortality',
+    (select dashboard_id from dashboard_app.dashboard where name = 'Mortality'), now(), now());
+insert into indicator_classification (name, dashboard_id, creation_date, modification_date) values ('Essential Newborn Care',
+    (select dashboard_id from dashboard_app.dashboard where name = 'Essential Newborn Care'), now(), now());
 
 insert into comparison_symbol (name, creation_date, modification_date) values ('=', now(), now());
 insert into comparison_symbol (name, creation_date, modification_date) values ('>', now(), now());
