@@ -400,8 +400,8 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
 
     $scope.fetchClassifications = function() {
         $http.get('api/indicator/classification').success(function(indicatorClassifications) {
-            $scope.mapClassifications = indicatorClassifications;
-            $scope.maps[0].selectedClassification = $scope.maps[1].selectedClassification = indicatorClassifications[0];
+            $scope.mapClassifications = $scope.excludeIndicatorsWithoutTrend(indicatorClassifications);
+            $scope.maps[0].selectedClassification = $scope.maps[1].selectedClassification = $scope.mapClassifications[0];
             $scope.$watch('maps[0].selectedClassification', function(newValue, oldValue) {
                 $scope.fetchClassificationIndicators($scope.maps[0]);
             }, true);
@@ -410,6 +410,27 @@ care.controller('dashboardController', function($rootScope, $scope, $http, $loca
             }, true);
         });
     };
+
+    $scope.excludeIndicatorsWithoutTrend = function(indicatorClassifications) {
+        var newClassifications = [];
+        for (i = 0; i < indicatorClassifications.length; i++) {
+            var newClassification = $scope.excludeIndicatorsWithoutTrendFromClassification(indicatorClassifications[i]);
+            newClassifications.push(newClassification);
+        }
+        return newClassifications;
+    }
+
+    $scope.excludeIndicatorsWithoutTrendFromClassification = function(classification) {
+        var newClassification = jQuery.extend(true, {}, classification);
+        newClassification.indicators = [];
+        for (j = 0; j < classification.indicators.length; j++) {
+            var indicator = classification.indicators[j];
+            if (indicator.trend != null && indicator.trend != undefined) {
+                newClassification.indicators.push(indicator);
+            }
+        }
+        return newClassification;
+    }
 
     $scope.fetchClassifications();
 
