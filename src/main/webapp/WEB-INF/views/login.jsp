@@ -9,7 +9,7 @@
     <c:set var="req" value="${pageContext.request}" />
     <c:set var="uri" value="${req.requestURI}" />
     <c:set var="url">${req.requestURL}</c:set>
-    <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
+
     <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="resources/css/hqstyle-core.css"/>
     <title><spring:message code="login.title" /> - CARE Reporting</title>

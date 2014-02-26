@@ -24,7 +24,6 @@
                 springErrorType = "${errorType}";
             </script>
         </c:if>
-        <base href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/" />
         <title ng:bind-template="{{msg(pageTitle)}} - CARE Reporting"></title>
 
         <link rel="shortcut icon" href="resources/images/favicon.png" />
